@@ -1,0 +1,92 @@
+
+#########################################################################################################################
+# Library definition
+########################################################################################################################
+name: mtcs_common
+
+
+enums:
+  ########################################################################################################################
+  # InitializationStates
+  ########################################################################################################################
+  InitializationStates:
+    items:
+        [   "SHUTDOWN",
+            "INITIALIZING",
+            "INITIALIZING_FAILED",
+            "INITIALIZED",
+            "LOCKED"  ]
+
+  ########################################################################################################################
+  # Units
+  ########################################################################################################################
+  Units:
+    items: [
+      "DEGREE",
+      "RADIAN",
+      "PERCENT",
+      "RADIANS_PER_SECOND",
+      "DEGREES_PER_SECOND",
+      "MILLIMETERS_PER_SECOND",
+      "REVOLUTIONS_PER_SECOND",
+      "REVOLUTIONS_PER_MINUTE",
+      "AMPS",
+      "MILLIAMPS",
+      "MILLIMETER",
+      "MICROMETER",
+      "DEGREES_CELSIUS",
+      "KELVIN",
+      "BAR",
+      "PASCAL",
+      "UNITLESS",
+      "NEWTON",
+      "DECANEWTON",
+      "VOLT",
+      "MILLIVOLT",
+      "HERTZ",
+      "G",
+      "MILLIG",
+      "NEWTONMETER",
+      "ARCSECONDS",
+      "ARCSECONDS_PER_SECOND",
+      "RADIANS_PER_SQUARE_SECOND",
+      "DEGREES_PER_SQUARE_SECOND",
+      "ARCSECONDS_PER_SQUARE_SECOND",
+      "METERS_PER_SECOND",
+      "HECTOPASCAL",
+      "SECONDS",
+      "MINUTES",
+      "MILLIMETERS_PER_HOUR",
+      "HITS_PER_SQUARE_CENTIMETER",
+      "HITS_PER_SQUARE_CENTIMETER_PER_HOUR"
+    ]
+
+
+
+statemachines:
+
+  ########################################################################################################################
+  # QuantityValue
+  ########################################################################################################################
+  QuantityValue:
+    variables:
+        value: { type: t_double   , comment: "Numeric value" }
+        unit:  { type: Units      , comment: "Unit of the numeric value" }
+
+  ########################################################################################################################
+  # Temperature
+  ########################################################################################################################
+  Temperature:
+    variables_hidden:
+      newCelsiusValue: { type: t_double, comment: "New temperature in degrees Celsius" }
+    variables_read_only:
+      celsius     : { type: QuantityValue, comment: "Temperature in degrees Celsius" }
+      kelvin      : { type: QuantityValue, comment: "Temperature in Kelvin" }
+    calls:
+      celsius:
+        value : newCelsiusValue
+        unit  : Units.DEGREES_CELSIUS
+      kelvin:
+        value : !SUM [newCelsiusValue, !DOUBLE 273.15]
+        unit  : Units.KELVIN
+
