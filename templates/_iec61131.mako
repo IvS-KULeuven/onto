@@ -5,13 +5,15 @@
     from util.factories import Variable, Method, Call, EnumItem, FunctionBlock, GlobalVariable
 
     def getPrefixAndPath(dest, scope = []):
+
+
         e = None
 
         for head in scope:
 
 
             if isinstance(dest, EnumItem):
-                return None, [ dest.owner, dest ]
+                return None, [ dest.parent, dest ]
 
 
             if head.extends is not None and dest.points_to_type is not None:
@@ -46,7 +48,7 @@
         if id(dest) == id(head):
             return []
 
-        if dest.owner is None:
+        if dest.parent is None:
             raise EOFError()
 
         p = None
@@ -57,11 +59,11 @@
         ##     except EOFError:
         ##         pass
 
-        if id(dest.get_object(head.name)) == id(head):
-            return [ dest ]
+        #if id(dest.get_child(head.name)) == id(head):
+        #    return [ dest ]
 
         try:
-            p =  getPathToSubVariable(dest.owner, head) + [ dest ]
+            p =  getPathToSubVariable(dest.parent, head) + [ dest ]
         except EOFError:
             pass
 
@@ -103,7 +105,7 @@
   </contentHeader>
   <types>
     <dataTypes>
-    % for enum in lib.enums.values():
+    % for enum in lib.enums.children.values():
       ${xml_enum(enum, '      ')}
     % endfor
     ## % for struct in structs:
@@ -111,7 +113,7 @@
     ## % endfor
     </dataTypes>
     <pous>
-    % for fb in lib.functionblocks.values():
+    % for fb in lib.functionblocks.children.values():
       ${xml_pou_functionBlock(fb, '      ')}
     % endfor
     </pous>
@@ -164,15 +166,61 @@ ${indent}      ${xml_implementation(fb.implementation, [ fb ], indent+'      ')}
 % endif
 ${indent}    </ST>
 ${indent}  </body>
-## ${indent}  <addData>
-## % if len(methods) > 0:
-## ${indent}    ${xml_methods(methods, node, indent+'    ')}
-## % endif
-## ${indent}  </addData>
+${indent}  <addData>
+% if len(fb.methods) > 0:
+${indent}    ${xml_methods(fb.methods.values(), fb, indent+'    ')}
+% endif
+${indent}  </addData>
 ${indent}</pou>\
 </%def>
 
 
+<%def name="xml_methods(methods, owner, indent='')">\
+    %for method in methods:
+        % if not loop.first:
+${indent}\
+        % endif
+${xml_method(method, owner, indent)}\
+        % if not loop.last:
+
+        % endif
+    %endfor
+</%def>
+
+<%def name="xml_method(node, owner, indent='')">\
+<data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+${indent}  <Method name="${node.name}">
+${indent}    <interface>
+% if returnType is not None:
+${indent}      ${xml_return_type(node.return_type)}
+% endif
+${indent}      ${xml_variables("input" , node.var_in.values()     , indent+'      ')}
+${indent}      ${xml_variables("output", node.var_out.values()    , indent+'      ')}
+${indent}      ${xml_variables("inOut" , node.var_inout.values()  , indent+'      ')}
+${indent}      ${xml_variables("local" , node.var_local.values()  , indent+'      ')}
+${indent}      <addData>
+${indent}        <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+${indent}          <Attributes>
+##${indent}            <Attribute Name="object_name" Value="${label}" />
+${indent}            <Attribute Name="TcRpcEnable" Value="1" />
+${indent}          </Attributes>
+${indent}        </data>
+${indent}      </addData>
+${indent}    </interface>
+${indent}    <body>
+${indent}      <ST>
+% if node.implementation is not None:
+${indent}        ${xml_implementation(node.implementation, [ node, owner ], indent+'        ')}
+% endif
+${indent}      </ST>
+${indent}    </body>
+${indent}  </Method>
+${indent}</data>\
+</%def>
+
+<%def name="xml_return_type(node)">\
+<returnType>${xml_type_element(node)}</returnType>\
+</%def>
 
 <%def name="xml_implementation(implementation, scope, indent='')">\
 <xhtml xmlns="http://www.w3.org/1999/xhtml">${render_implementation(implementation, scope)}</xhtml>\
@@ -211,7 +259,7 @@ ${indent}</${kind}Vars>\
 
 <%def name="layoutExpression(e, scope, indent='', more='    ')">\
 <%
-    print(f"layoutExpression({e}, {scope})")
+    print(f"layoutExpression({e} ({type(e)}), {scope})")
     if e is None or scope is None:
         raise Exception("layoutExpression with None argument!")
 %>\
@@ -239,6 +287,12 @@ ${render_implementation(e, scope, indent=indent)}\
 %>
     %endif
 </%def>
+
+<%def name="layoutMethod(m,scope,indent='',more='    ')">\
+${render_path(m, scope)}\
+</%def>
+
+
 
 <%def name="render_value(node, scope, indent='')">\
 <%

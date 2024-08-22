@@ -1,4 +1,5 @@
 
+from util.objects import Object, resolve
 
 class Operator:
     def __init__(self, name, plc_symbol=None) -> None:
@@ -16,26 +17,27 @@ class OPERATORS:
     NEG = Operator("NEG", "-")
 
 
-class IfThen:
+class IfThen(Object):
     def __init__(self) -> None:
         pass
 
 
-class Expression:
+class Expression(Object):
     def __init__(self, operator) -> None:
+        super().__init__(None, None)
         self.operator = operator
     
-    def apply_resolver(self, resolver, context):
-        pass
 
 
 class UnaryOperation(Expression):
     def __init__(self, operand, operator) -> None:
         super().__init__(operator)
         self.operand = operand
+        self.register_child("operand", operand)
     
-    def apply_resolver(self, resolver, context):
-        self.operand = resolver(self.operand, context)
+    def resolve_children(self, context):
+        super().resolve_children(context)
+        self.operand = self.children["operand"]
 
 
 class BinaryOperation(Expression):
@@ -43,13 +45,13 @@ class BinaryOperation(Expression):
         super().__init__(operator)
         self.left = left
         self.right = right
+        self.register_child("left", self.left)
+        self.register_child("right", self.right)
     
-    def apply_resolver(self, resolver, context):
-        if isinstance(self.left, str):
-            self.left = resolver(self.left, context)
-        if isinstance(self.right, str):
-            self.right = resolver(self.right, context)
-    
+    def resolve_children(self, context):
+        super().resolve_children(context)
+        self.left = self.children["left"]
+        self.right = self.children["right"]
 
 class RecursiveExpression:
     def __init__(self, items, operator) -> None:
@@ -78,8 +80,9 @@ def ASSIGN_constructor(loader, node):
 
 
 
-class Primitive:
+class Primitive(Object):
     def __init__(self, value) -> None:
+        super().__init__(None, None)
         self.value = value
 
 

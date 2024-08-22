@@ -1,6 +1,8 @@
 import argparse, os, sys, fnmatch, glob, os, pathlib
 from mako.template import Template
 from mako.lookup import TemplateLookup
+
+from mako import exceptions
 from pathlib import Path
 import yaml
 try:
@@ -114,7 +116,7 @@ if __name__ == "__main__":
         for template_fp in Path('./templates').rglob('*.mako'):
             if not template_fp.stem.startswith('_'):
                 LOG(f"  Rendering '{template_fp}'")
-                output = render(input_fp, template_fp)
+                output = render(input_fp, template_fp)                
                 
                 filepath_key = str(input_fp).replace('.yaml', '').replace(str(inputdir_fp), '')
 

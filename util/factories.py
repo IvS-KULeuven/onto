@@ -2,11 +2,11 @@ from datetime import datetime
 timeNow = datetime.now().isoformat()
 
 from util.expressions import *
+from util.objects import add_global, get_global, Object, resolve
 
-
-class Primitive:
+class Primitive(Object):
     def __init__(self, name, plc_symbol=None) -> None:
-        self.name = name
+        super().__init__(name, None)
         self.plc_symbol = plc_symbol
 
 
@@ -25,21 +25,21 @@ class PRIMITIVE_TYPES:
     t_uint8      = Primitive("t_uint8"      , plc_symbol="USINT")
     t_string     = Primitive("t_string"     , plc_symbol="STRING")
 
-OBJECTS = {
-    "t_bool"       : PRIMITIVE_TYPES.t_bool,
-    "t_bytestring" : PRIMITIVE_TYPES.t_bytestring,
-    "t_double"     : PRIMITIVE_TYPES.t_double,
-    "t_float"      : PRIMITIVE_TYPES.t_float,
-    "t_int16"      : PRIMITIVE_TYPES.t_int16,
-    "t_int32"      : PRIMITIVE_TYPES.t_int32,
-    "t_int64"      : PRIMITIVE_TYPES.t_int64,
-    "t_int8"       : PRIMITIVE_TYPES.t_int8,
-    "t_uint16"     : PRIMITIVE_TYPES.t_uint16,
-    "t_uint32"     : PRIMITIVE_TYPES.t_uint32,
-    "t_uint64"     : PRIMITIVE_TYPES.t_uint64,
-    "t_uint8"      : PRIMITIVE_TYPES.t_uint8,
-    "t_string"     : PRIMITIVE_TYPES.t_string
-}
+
+add_global("t_bool",       PRIMITIVE_TYPES.t_bool)
+add_global("t_bytestring", PRIMITIVE_TYPES.t_bytestring)
+add_global("t_double",     PRIMITIVE_TYPES.t_double)
+add_global("t_float",      PRIMITIVE_TYPES.t_float)
+add_global("t_int16",      PRIMITIVE_TYPES.t_int16)
+add_global("t_int32",      PRIMITIVE_TYPES.t_int32)
+add_global("t_int64",      PRIMITIVE_TYPES.t_int64)
+add_global("t_int8",       PRIMITIVE_TYPES.t_int8)
+add_global("t_uint16",     PRIMITIVE_TYPES.t_uint16)
+add_global("t_uint32",     PRIMITIVE_TYPES.t_uint32)
+add_global("t_uint64",     PRIMITIVE_TYPES.t_uint64)
+add_global("t_uint8",      PRIMITIVE_TYPES.t_uint8)
+add_global("t_string",     PRIMITIVE_TYPES.t_string)
+
 
 
 class PlcOpenAttribute:
@@ -59,89 +59,60 @@ class QUALIFIERS:
 
 
 
-class Namespace(dict):
-    def __init__(self, name):
-        dict.__init__(self)
-        self.name = name
-        self.objects = {}
+class Namespace(Object):
+    def __init__(self, name, parent):
+        super().__init__(name, parent)
 
-    def get_object(self, name):
-        if name in self.objects:
-            return self.objects[name]
+    def __setitem__(self, name, item):
+        self.register_child(name, item)
+    
+    def __getitem__(self, name):
+        return self.children[name]
+
 
 class StatemachinesNamespace(Namespace):
-    def __init__(self, name):
-        super().__init__(name)
-        self.parts = Namespace("parts")
-        self.processes = Namespace("processes")
-        self.statuses = Namespace("statuses")
+    def __init__(self, name, parent):
+        super().__init__(name, parent)
+        self.parts = Namespace("parts", self)
+        self.processes = Namespace("processes", self)
+        self.statuses = Namespace("statuses", self)
 
 class ProcessesNamespace(Namespace):
-    def __init__(self, name):
-        super().__init__(name)
-        self.args = Namespace("args")
+    def __init__(self, name, parent):
+        super().__init__(name, parent)
+        self.args = Namespace("args", self)
 
 class Library(Namespace):
     def __init__(self, args):
-        super().__init__(args['name'])
-        self.owner = None
+        super().__init__(args['name'], parent=None)  # a library has no parent!
 
         # define the sub-namespaces
-        self.enums = Namespace("enums")
-        self.statuses = Namespace("statuses")
-        self.statemachines = StatemachinesNamespace("statemachines")
-        self.configs = Namespace("configs")
-        self.structs = Namespace("structs")
-        self.processes = ProcessesNamespace("processes")
+        self.enums = Namespace("enums", self)
+        self.statuses = Namespace("statuses", self)
+        self.statemachines = StatemachinesNamespace("statemachines", self)
+        self.configs = Namespace("configs", self)
+        self.structs = Namespace("structs", self)
+        self.processes = ProcessesNamespace("processes", self)
 
         # new:        
-        self.functionblocks = Namespace("functionblocks")
+        self.functionblocks = Namespace("functionblocks", self)
 
 
         # add the enums
         for enum_k, enum_v in args['enums'].items():
             self.enums[enum_k] = Enum(enum_k, self, enum_v)
+
+        # add the structs
+        if 'structs' in args:
+            for struct_k, struct_v in args['structs'].items():
+                self.structs[struct_k] = Struct(struct_k, self, struct_v)
         
         # add the statemachines
         for sm_k, sm_v in args['statemachines'].items():
             sm = Statemachine(sm_k, self, sm_v)
             self.statemachines[sm_k] = sm
             self.functionblocks[sm_k] = sm
-
-
-# def resolve_object(name: str, context):
-#     obj = None
-#     if context is not None:
-#         obj = context.get_object(name)
-#     if obj is None:
-#         global OBJECTS
-#         if name in OBJECTS:
-#             obj = OBJECTS[name]
-#     if obj is not None:
-#         return obj
-#     else:
-#         raise KeyError(f"Object '{name}' was not declared before!")
-
-
-def resolve_object(name: str, context):
-
-    parts = name.split('.')
-    if len(parts) > 1:
-        return resolve_object( name[len(f"{parts[0]}."):], resolve_object(parts[0], context) )
-
-    obj = None
-    if context is not None:
-        obj = context.get_object(name)
-    
-    if obj is None:
-        global OBJECTS
-        if name in OBJECTS:
-            obj = OBJECTS[name]
-    
-    if obj is not None:
-        return obj
-    else:
-        raise KeyError(f"Object '{name}' was not declared before!")
+            self.register_child(sm_k, sm)
 
 
 def check_args(name, args, allowed_args):
@@ -149,48 +120,32 @@ def check_args(name, args, allowed_args):
         if arg not in allowed_args:
             raise Exception(f"Enum {name} contains illegal argument '{arg}' (allowed: {allowed_args})")
 
-class Object:
-    def __init__(self, name, owner) -> None:
-        self.name = name
-        self.owner = owner
-        self.owner.objects[name] = self
-        global OBJECTS
-        OBJECTS[f"{owner.name}.{name}"] = self
-
 
 class Enum(Object):
-    def __init__(self, name, owner, args):
-        super().__init__(name, owner)
+    def __init__(self, name, parent, args):
+        super().__init__(name, parent)
         check_args("Enum", args, ["type", "items", "comment"])
         
         self.type = None
         self.items = []
         self.comment = None
         self.plc_symbol = None
-        self.objects = {}
 
         if 'comment' in args:
             self.comment = args['comment']
         
         if 'type' in args:
-            self.type = resolve_object(args['type'], self)
+            self.type = resolve(args['type'], self)
 
         if 'items' in args:
             for item_number, item_name in enumerate(args['items']):
-                item = EnumItem(item_name, self, item_number)
-                self.items.append(item)
-                self.objects[item_name] = item
-        
-
-    def get_object(self, name):
-        return self.objects[name]
-        
+                self.items.append(EnumItem(item_name, self, item_number))
 
         
 
 class Variable(Object):
-    def __init__(self, name, owner, args={}):
-        super().__init__(name, owner)
+    def __init__(self, name, parent, args={}):
+        super().__init__(name, parent)
         check_args("Variable", args, 
                    ["type", "expand", "initial", "comment",
                     "pointsToType", "attributes", "qualifiers", "arguments",
@@ -205,13 +160,15 @@ class Variable(Object):
         self.comment = None
         self.pointsToType = None
         self.attributes = None
-        self.qualifiers = None
+        self.qualifiers = []
         self.arguments = None
         self.address = None
         self.copyFrom = None
 
         if 'type' in args:
-            self.type = resolve_object(args['type'], self)
+            self.type = resolve(args['type'], self)
+            for child_name in self.type.children:
+                self.register_child(child_name, Variable(child_name, self))
         if 'expand' in args:
             self.expand = args['expand']
         if 'initial' in args:
@@ -219,13 +176,20 @@ class Variable(Object):
         if 'comment' in args:
             self.comment = args['comment']
         if 'pointsToType' in args:
-            self.pointsToType = resolve_object(args['pointsToType'], self)
+            self.pointsToType = resolve(args['pointsToType'], self)
         if 'attributes' in args:
-            self.attributes = args['attributes']
+            self.attributes = {}
+            for attribute_k, attribute_v in args['attributes'].items():
+                self.attributes[attribute_k] = Variable(attribute_k, self, attribute_v)
         if 'qualifiers' in args:
-            self.qualifiers = args['qualifiers']
+            for qualifier in args['qualifiers']:
+                # TODO: resolve?
+                self.qualifiers.append(qualifier)
         if 'arguments' in args:
-            self.arguments = args['arguments']
+            self.arguments = {}
+            for argument_k, argument_v in args['arguments'].items():
+                self.arguments[argument_k] = Variable(argument_k, self, argument_v)
+
         if 'address' in args:
             self.address = args['address']
         if 'copyFrom' in args:
@@ -236,18 +200,11 @@ class Variable(Object):
         if 'copyFrom' in args:
             raise NotImplemented("expand is not implemented yet")
 
-    def get_object(self, name):
-        for d in [self.attributes, self.qualifiers, self.arguments]:
-            if d is not None:
-                if name in d:
-                    return d[name]
-        return self.owner.get_object(name)
-
 
 
 class EnumItem(Variable):
-    def __init__(self, name, owner, number) -> None:
-        super().__init__(name, owner)
+    def __init__(self, name, parent, number) -> None:
+        super().__init__(name, parent)
         self.number = number
 
 
@@ -256,12 +213,12 @@ class EnumItem(Variable):
 class GlobalVariable(Variable):
     pass
 
-class Struct:
+class Struct(Object):
 
-    def __init__(self, name, lib, args={}) -> None:
-        self.name = name
-        self.lib = lib
-        self.items = []
+    def __init__(self, name, parent, args={}) -> None:
+        super().__init__(name, parent)
+        self.items = None
+        self.plc_symbol = None
         for arg in args:
             #if arg not in ["containedBy", "typeOf", "items", "comment", "label"]:
             if arg not in ["items", "comment"]:
@@ -271,11 +228,15 @@ class Struct:
             self.comment = args['comment']
 
         if 'items' in args:
-            for item in args['items']:
-                self.items.append(item)
-        
+            self.items = {}
+            for item_k, item_v in args['items'].items():
+                item = Variable(item_k, self, item_v)
+                self.items[item_k] = item
+                self.register_child(item_k, item)
 
 
+
+# TODO: convert to Object ????
 class Call:
     
     def __init__(self, name, lib, args={}) -> None:
@@ -284,7 +245,7 @@ class Call:
         check_args("Call", args, 
                    ["calls", "assigns"])
         self.calls = None
-        self.assignments = None
+        self.assignments = []
         
 class IfThen:
     
@@ -297,15 +258,54 @@ class IfThen:
         self._then = None
         self._else = None
 
-class Method:
+class Method(Object):
 
-    def __init__(self) -> None:
-        pass
+    def __init__(self, name, parent, args={}) -> None:
+        super().__init__(name, parent)
+        check_args("Method", args, 
+            ["inputArgs", "inOutArgs", "localArgs", "returnType", 
+             "comment", "implementation"])
+        
+        self.comment = None
+        self.var_in = {}
+        self.var_inout = {}
+        self.var_local = {}
+        self.var_out = {} # only here for backwards compatibility
+        self.return_type = None
+        self.implementation = None
+        self.extends = None
+
+        if "comment" in args:
+            self.comment = args["comment"]
+
+        if "inputArgs" in args:
+            self.var_in = {}
+            for arg_name, arg in args["inputArgs"].items():
+                self.var_in[arg_name] = Variable(arg_name, self, arg)
+        
+        if "inOutArgs" in args:
+            self.var_inout = {}
+            for arg_name, arg in args["inOutArgs"].items():
+                self.var_inout[arg_name] = Variable(arg_name, self, arg)
+        
+        if "localArgs" in args:
+            self.var_local = {}
+            for arg_name, arg in args["localArgs"].items():
+                self.var_local[arg_name] = Variable(arg_name, self, arg)
+        
+        if "returnType" in args:
+            self.return_type = resolve(args['returnType'], self)
+            for child_name in self.return_type.children:
+                self.register_child(child_name, Variable(child_name, self.return_type))
+        
+        if "implementation" in args:
+            raise NotImplementedError()
+
 
 class FunctionBlock(Object):
     
-    def __init__(self, name, lib, args={}) -> None:
-        super().__init__(name, lib)
+    def __init__(self, name, parent, args={}) -> None:
+        super().__init__(name, parent)
         check_args("FunctionBlock", args, 
                    ["typeOf", "extends", "comment", "in", "out", "inout"])
         
@@ -316,17 +316,28 @@ class FunctionBlock(Object):
         self.plc_symbol = None
         self.implementation = None
 
-    def get_object(self, name):
-        for d in [self.var_in, self.var_out, self.var_inout, self.var_local]:
-            if name in d:
-                return d[name]
-        return self.owner.get_object(name)
+
+class Status(FunctionBlock):
+    
+    def __init__(self, name, parent, args={}) -> None:
+        super().__init__(name, parent)
+        check_args("Statemachine", args, ["variables", "states"])
+
+        self.variables = {}
+        self.states = {}
+
+        self.var_in["superState"] = Variable("superState", 
+                                             self, 
+                                             {
+                                                 "comment": "Super state (TRUE if the super state is active, or if there is no super state)",
+                                                 "type": "t_bool"
+                                             })
 
 
 class Statemachine(FunctionBlock):
 
-    def __init__(self, name, lib, args={}) -> None:
-        super().__init__(name, lib)
+    def __init__(self, name, parent, args={}) -> None:
+        super().__init__(name, parent)
         
         check_args("Statemachine", args,
                    ["variables", "variables_hidden", "variables_read_only",
@@ -354,21 +365,21 @@ class Statemachine(FunctionBlock):
         self.disabledCallNames = []
 
         if "actualStatus" not in self.var_out:
-            v = Variable("actualStatus", lib)
+            v = Variable("actualStatus", self)
             v.type = PRIMITIVE_TYPES.t_string
             v.comment = "Current status description"
             v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_R]
             self.var_out['actualStatus'] = v
         
         if "previousStatus" not in self.var_out:
-            v = Variable("previousStatus", lib)
+            v = Variable("previousStatus", self)
             v.type = PRIMITIVE_TYPES.t_string
             v.comment = "Previous status description"
             self.var_out["previousStatus"] = v
 
         if "variables" in args:
             for var_name, var in args['variables'].items():
-                v = Variable(var_name, lib, var)
+                v = Variable(var_name, self, var)
                 self.varNames.append(var_name)
                 if v.qualifiers is None:
                     v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_R]
@@ -376,7 +387,7 @@ class Statemachine(FunctionBlock):
 
         if "variables_read_only" in args:
             for var_name, var in args['variables_read_only'].items():
-                v = Variable(var_name, lib, var)
+                v = Variable(var_name, self, var)
                 self.varNames.append(var_name)
                 if v.qualifiers is None:
                     v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_R]
@@ -384,7 +395,7 @@ class Statemachine(FunctionBlock):
 
         if "variables_hidden" in args:
             for var_name, var in args['variables_hidden'].items():
-                v = Variable(var_name, lib, var)
+                v = Variable(var_name, self, var)
                 self.varNames.append(var_name)
                 if v.qualifiers is None:
                     v.qualifiers = [QUALIFIERS.OPC_UA_DEACTIVATE]
@@ -392,7 +403,7 @@ class Statemachine(FunctionBlock):
 
         if "references" in args:
             for var_name, var in args['variables'].items():
-                v = Variable(var_name, lib, var)
+                v = Variable(var_name, self, var)
                 if v.qualifiers is None:
                     v.qualifiers = [QUALIFIERS.OPC_UA_DEACTIVATE]
                 self.var_inout[var_name] = v
@@ -406,6 +417,7 @@ class Statemachine(FunctionBlock):
                 lib = lib,
                 items = kwargs['statuses'])
             #ns["items"].append(struct)
+            # TODO arguments, attributes, ...
             lib["StateMachines"]["Statuses"].append(struct)
             self.var_out[status_name] = Variable(
                 name='statuses', 
@@ -423,6 +435,7 @@ class Statemachine(FunctionBlock):
                 items = kwargs['parts'])
             #ns["items"].append(struct)
             lib["StateMachines"]["Parts"].append(struct)
+            # TODO arguments, attributes, ...
             self.var_out[part_name] = Variable(
                 name='parts', 
                 lib=lib,
@@ -454,24 +467,68 @@ class Statemachine(FunctionBlock):
 
         if "calls" in args:
             for call_name, call in args['calls'].items():
-                c = Call(f"call_var_{call_name}", lib)
-                c.calls = resolve_object(call_name, self)
+                c = Call(f"call_var_{call_name}", self)
+                c.calls = resolve(call_name, self)
                 c.assignments = []
                 for k, v in call.items():
-                    if k not in self.disabledCallNames:
-                        k_obj = resolve_object(k, self)
-                        if isinstance(v, str):
-                            v_obj = resolve_object(v, self)
-                        elif isinstance(v, Expression):
-                            v.apply_resolver(resolve_object, self)
-                            v_obj = v
-                        c.assignments.append(ASSIGN(k_obj, v_obj))
-                
+                    # k should be a child of the callee (c.calls)!
+                    assignment = ASSIGN(c.calls.get_child(k, recursive=False), v)
+                    assignment.resolve_children(self)
+                    c.assignments.append(assignment)
+
                 if self.implementation is None:
                     self.implementation = []
 
                 self.implementation.append(c)
 
 
+        if not '_log' in self.methods:
+            m = Method("_log", self, {
+                           "comment"   : "Log to buffer",
+                           "inputArgs" : {
+                               "name": {
+                                    "type": "t_string", 
+                                    "comment": "Name of this function block instance"} },
+                           "inOutArgs" : {
+                               "buffer" : {
+                                    "type": "LogBuffer", 
+                                    "comment": "Buffer to write all logging to" } },
+                           "localArgs": {
+                                "subBuffer" : { 
+                                    "type": "LogBuffer", 
+                                    "comment": "Temporary buffer to write logging by parts (sub-statemachines) to" } },
+                           "returnType": "t_bool" })
+            
+            m.implementation = []
+
+            c = Call("loggerCall", self)
+            c.calls = resolve("LOGGER", None)
+            c.assignments = [
+                ASSIGN(get_global("LOGGER").get_child("name"), m.get_child("name")),
+                ASSIGN(get_global("LOGGER").get_child("actualStatus"), self.get_child("actualStatus")),
+                ASSIGN(get_global("LOGGER").get_child("previousStatus"), self.get_child("previousStatus")),
+                ASSIGN(get_global("LOGGER").get_child("buffer"), m.get_child("buffer")),
+                ASSIGN(get_global("LOGGER").get_child("subBuffer"), m.get_child("subBuffer"))
+            ]
+
+            m.implementation.append(c)
+
+            self.methods["_log"] = m
 
 
+
+
+add_global("LogBuffer", Struct(name="LogBuffer", parent=None))
+
+
+add_global("LOGGER", GlobalVariable(name="LOGGER", 
+                                    parent=None, 
+                                    args={ "arguments": 
+                                            {
+                                              "name": {"type": "t_string"},
+                                              "actualStatus" : {"type": "t_string"},
+                                              "previousStatus" : {"type": "t_string"},
+                                              "buffer" : {"type": "LogBuffer"},
+                                              "subBuffer" : {"type": "LogBuffer"}
+                                            }
+                                    }))

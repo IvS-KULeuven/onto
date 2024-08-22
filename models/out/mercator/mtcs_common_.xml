@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
-  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2024-08-21T12:37:56.097421" />
-  <contentHeader name="mtcs_common" modificationDateTime="2024-08-21T12:37:56.097421">
+  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2024-08-22T13:53:27.705398" />
+  <contentHeader name="mtcs_common" modificationDateTime="2024-08-22T13:53:27.705398">
     <coordinateInfo>
       <fbd>
         <scaling x="1" y="1" />
@@ -21,19 +21,6 @@
   </contentHeader>
   <types>
     <dataTypes>
-      <dataType name="InitializationStates">
-        <baseType>
-          <enum>
-            <values>
-              <value name="SHUTDOWN" value="0" />
-              <value name="INITIALIZING" value="1" />
-              <value name="INITIALIZING_FAILED" value="2" />
-              <value name="INITIALIZED" value="3" />
-              <value name="LOCKED" value="4" />
-            </values>
-          </enum>
-        </baseType>
-      </dataType>
       <dataType name="Units">
         <baseType>
           <enum>
@@ -89,8 +76,6 @@
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
                   </Attributes>
                 </data>
               </addData>
@@ -103,8 +88,6 @@
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
                   </Attributes>
                 </data>
               </addData>
@@ -130,6 +113,12 @@
             </variable>
             <variable name="previousStatus">
               <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Previous status description</xhtml>
               </documentation>
@@ -144,6 +133,77 @@
           <ST>
           </ST>
         </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_log">
+              <interface>
+                <returnType><BOOL /></returnType>
+                <inputVars>
+                  <variable name="name">
+                    <type><string /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="buffer">
+                    <type><derived name="LogBuffer" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                  <variable name="subBuffer">
+                    <type><derived name="LogBuffer" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
+                    </documentation>
+                  </variable>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
+    name := name,
+    actualStatus := THIS^.actualStatus,
+    previousStatus := THIS^.previousStatus,
+    buffer := buffer,
+    subBuffer := subBuffer);
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+        </addData>
       </pou>
       <pou name="SM_Temperature" pouType="functionBlock">
         <interface>
@@ -153,7 +213,6 @@
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="0" />
                   </Attributes>
                 </data>
               </addData>
@@ -179,6 +238,12 @@
             </variable>
             <variable name="previousStatus">
               <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Previous status description</xhtml>
               </documentation>
@@ -188,8 +253,6 @@
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
                   </Attributes>
                 </data>
               </addData>
@@ -202,8 +265,6 @@
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
                   </Attributes>
                 </data>
               </addData>
@@ -228,6 +289,77 @@ kelvin(
 </xhtml>
           </ST>
         </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_log">
+              <interface>
+                <returnType><BOOL /></returnType>
+                <inputVars>
+                  <variable name="name">
+                    <type><string /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="buffer">
+                    <type><derived name="LogBuffer" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                  <variable name="subBuffer">
+                    <type><derived name="LogBuffer" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
+                    </documentation>
+                  </variable>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
+    name := name,
+    actualStatus := THIS^.actualStatus,
+    previousStatus := THIS^.previousStatus,
+    buffer := buffer,
+    subBuffer := subBuffer);
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+        </addData>
       </pou>
     </pous>
   </types>
