@@ -9,7 +9,7 @@ try:
     from yaml import CLoader as Loader, CDumper as Dumper
 except ImportError:
     from yaml import Loader, Dumper
-from util import expressions, mathematics
+from util import expressions, mathematics, factories
 
 # declare VERBOSE as an evil global
 VERBOSE = False
@@ -28,6 +28,10 @@ def get_loader():
     loader.add_constructor('!ABS', mathematics.ABS_constructor)
     loader.add_constructor('!NEG', mathematics.NEG_constructor)
     loader.add_constructor('!DOUBLE', expressions.Double_constructor)
+    loader.add_constructor('!LIBRARY', factories.LIBRARY_constructor)
+    loader.add_constructor('!ENUM', factories.ENUM_constructor)
+    loader.add_constructor('!ENUMERATION', factories.ENUMERATION_constructor)
+    loader.add_constructor('!STATEMACHINE', factories.STATEMACHINE_constructor)
     return loader
 
 

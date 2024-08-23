@@ -1,6 +1,11 @@
 from datetime import datetime
 timeNow = datetime.now().isoformat()
 
+try:
+    from yaml import CLoader as Loader, CDumper as Dumper
+except ImportError:
+    from yaml import Loader, Dumper
+
 from util.expressions import *
 from util.objects import add_global, get_global, Object, resolve
 
@@ -69,6 +74,7 @@ class Namespace(Object):
     def __getitem__(self, name):
         return self.children[name]
 
+GLOBAL_NS = Namespace("GLOBAL_NS", None)
 
 class StatemachinesNamespace(Namespace):
     def __init__(self, name, parent):
@@ -83,8 +89,8 @@ class ProcessesNamespace(Namespace):
         self.args = Namespace("args", self)
 
 class Library(Namespace):
-    def __init__(self, args):
-        super().__init__(args['name'], parent=None)  # a library has no parent!
+    def __init__(self, name, args):
+        super().__init__(name, GLOBAL_NS)  # a library has no parent!
 
         # define the sub-namespaces
         self.enums = Namespace("enums", self)
@@ -97,22 +103,15 @@ class Library(Namespace):
         # new:        
         self.functionblocks = Namespace("functionblocks", self)
 
+        # add the items
+        for arg_k, arg_v in args.items():
+            if isinstance(arg_k, ENUMERATION):
+                self.enums[arg_k.name] = Enum(arg_k.name, self, arg_v) 
+            elif isinstance(arg_k, STATEMACHINE):
+                sm = Statemachine(arg_k.name, self, arg_v)
+                self.statemachines[arg_k.name] = sm
+                self.functionblocks[arg_k.name] = sm
 
-        # add the enums
-        for enum_k, enum_v in args['enums'].items():
-            self.enums[enum_k] = Enum(enum_k, self, enum_v)
-
-        # add the structs
-        if 'structs' in args:
-            for struct_k, struct_v in args['structs'].items():
-                self.structs[struct_k] = Struct(struct_k, self, struct_v)
-        
-        # add the statemachines
-        for sm_k, sm_v in args['statemachines'].items():
-            sm = Statemachine(sm_k, self, sm_v)
-            self.statemachines[sm_k] = sm
-            self.functionblocks[sm_k] = sm
-            self.register_child(sm_k, sm)
 
 
 def check_args(name, args, allowed_args):
@@ -122,7 +121,7 @@ def check_args(name, args, allowed_args):
 
 
 class Enum(Object):
-    def __init__(self, name, parent, args):
+    def __init__(self, name, parent, args={}):
         super().__init__(name, parent)
         check_args("Enum", args, ["type", "items", "comment"])
         
@@ -141,7 +140,37 @@ class Enum(Object):
             for item_number, item_name in enumerate(args['items']):
                 self.items.append(EnumItem(item_name, self, item_number))
 
-        
+
+def ENUM_constructor(loader: Loader, node):
+    mapping = loader.construct_mapping(node)
+    for name, args in mapping.items():
+        return Enum(name, args['parent'], args)
+
+class ENUMERATION:
+    def __init__(self, name):
+        self.name = name
+
+def ENUMERATION_constructor(loader: Loader, node):
+    name = loader.construct_scalar(node)
+    return ENUMERATION(name)
+
+class LIBRARY:
+    def __init__(self, name):
+        self.name = name
+
+def LIBRARY_constructor(loader: Loader, node):
+    name = loader.construct_scalar(node)
+    return LIBRARY(name)
+
+
+class STATEMACHINE:
+    def __init__(self, name):
+        self.name = name
+
+def STATEMACHINE_constructor(loader: Loader, node):
+    name = loader.construct_scalar(node)
+    return STATEMACHINE(name)
+
 
 class Variable(Object):
     def __init__(self, name, parent, args={}):
@@ -381,7 +410,7 @@ class Statemachine(FunctionBlock):
             for var_name, var in args['variables'].items():
                 v = Variable(var_name, self, var)
                 self.varNames.append(var_name)
-                if v.qualifiers is None:
+                if len(v.qualifiers) == 0:
                     v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_R]
                 self.var_in[var_name] = v
 
@@ -514,6 +543,9 @@ class Statemachine(FunctionBlock):
             m.implementation.append(c)
 
             self.methods["_log"] = m
+
+
+
 
 
 

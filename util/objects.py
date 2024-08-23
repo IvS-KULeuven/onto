@@ -44,10 +44,6 @@ def resolve(subject, context):
     else:
         raise Exception(f"Resolve subject {subject} is unsupported")
 
-    # if obj is not None:
-    #     return obj
-    # else:
-    #     raise KeyError(f"Subject '{subject}' was not declared before!")
 
 
 class Object:

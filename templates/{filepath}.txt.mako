@@ -2,7 +2,10 @@
 <%
     import json
     from util.factories import timeNow, Library
-    lib = Library(M)
+    if len(M) != 1: raise Exception("Only 1 library definition per file!")
+    for item_k, item_v in M.items():
+        lib = Library(item_k.name, item_v)
+        break
 %>\
 ${render_object(lib)}
 
