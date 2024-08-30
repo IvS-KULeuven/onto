@@ -32,6 +32,16 @@ def get_loader():
     loader.add_constructor('!ENUM', factories.ENUM_constructor)
     loader.add_constructor('!ENUMERATION', factories.ENUMERATION_constructor)
     loader.add_constructor('!STATEMACHINE', factories.STATEMACHINE_constructor)
+    loader.add_constructor('!STATUS', factories.STATUS_constructor)
+    loader.add_constructor('!CONFIG', factories.CONFIG_constructor)
+    loader.add_constructor('!AND', expressions.AND_constructor)
+    loader.add_constructor('!OR', expressions.OR_constructor)
+    loader.add_constructor('!NOT', expressions.NOT_constructor)
+    loader.add_constructor('!EQ', expressions.EQ_constructor)
+    loader.add_constructor('!GT', expressions.GT_constructor)
+    loader.add_constructor('!LT', expressions.LT_constructor)
+    loader.add_constructor('!GE', expressions.GE_constructor)
+    loader.add_constructor('!LE', expressions.LE_constructor)
     return loader
 
 

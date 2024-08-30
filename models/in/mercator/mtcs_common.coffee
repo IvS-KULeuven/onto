@@ -262,55 +262,6 @@ root.MTCS_SUMMARIZE_GOOD_OR_DISABLED = (statemachines...) ->
     inputs = ( OR(statemachine.statuses.healthStatus.isGood, statemachine.statuses.enabledStatus.disabled) for statemachine in statemachines)
     return AND( inputs... )
 
-########################################################################################################################
-# InitializationStatus
-########################################################################################################################
-MTCS_MAKE_STATUS THISLIB, "InitializationStatus",
-    variables:
-        "state":
-            type: THISLIB.InitializationStates
-            comment: "Enum!"
-    states:
-        "shutdown":
-            expr: -> EQ( self.state, THISLIB.InitializationStates.SHUTDOWN )
-            comment: "Shutdown"
-        "initializing":
-            expr: -> EQ( self.state, THISLIB.InitializationStates.INITIALIZING )
-            comment: "Initializing"
-        "initializingFailed":
-            expr: -> EQ( self.state, THISLIB.InitializationStates.INITIALIZING_FAILED )
-            comment: "Initializing failed"
-        "initialized":
-            expr: -> EQ( self.state, THISLIB.InitializationStates.INITIALIZED )
-            comment: "Initialized"
-        "locked":
-            expr: -> EQ( self.state, THISLIB.InitializationStates.LOCKED )
-            comment: "Locked"
-
-
-########################################################################################################################
-# MotionStatus
-########################################################################################################################
-MTCS_MAKE_STATUS THISLIB, "MotionStatus",
-    variables:
-        "actVel":
-            type: t_double
-            comment: "Actual velocity"
-        "tolerance":
-            type: t_double
-            comment: "Tolerance (should be positive)!"
-    states:
-        "forward":
-            expr: -> GT(self.actVel, ABS(self.tolerance))
-            comment: "Moving forwared"
-        "backward":
-            expr: -> LT( self.actVel, NEG(ABS(self.tolerance)) )
-            comment: "Moving backward"
-        "standstill":
-            expr: -> NOT( OR( self.forward, self.backward ) )
-            comment: "Standing still"
-
-
 
 
 ########################################################################################################################

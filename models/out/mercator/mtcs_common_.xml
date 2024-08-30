@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
-  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2024-08-23T09:58:41.394073" />
-  <contentHeader name="mtcs_common" modificationDateTime="2024-08-23T09:58:41.394073">
+  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2024-08-26T22:59:47.948171" />
+  <contentHeader name="mtcs_common" modificationDateTime="2024-08-26T22:59:47.948171">
     <coordinateInfo>
       <fbd>
         <scaling x="1" y="1" />
@@ -21,6 +21,60 @@
   </contentHeader>
   <types>
     <dataTypes>
+      <dataType name="InitializationStates">
+        <baseType>
+          <enum>
+            <values>
+              <value name="SHUTDOWN" value="0" />
+              <value name="INITIALIZING" value="1" />
+              <value name="INITIALIZING_FAILED" value="2" />
+              <value name="INITIALIZED" value="3" />
+              <value name="LOCKED" value="4" />
+            </values>
+          </enum>
+        </baseType>
+      </dataType>
+      <dataType name="OperatorStates">
+        <baseType>
+          <enum>
+            <values>
+              <value name="NONE" value="0" />
+              <value name="OBSERVER" value="1" />
+              <value name="TECH" value="2" />
+            </values>
+          </enum>
+        </baseType>
+      </dataType>
+      <dataType name="OperatingStates">
+        <baseType>
+          <enum>
+            <values>
+              <value name="AUTO" value="0" />
+              <value name="MANUAL" value="1" />
+            </values>
+          </enum>
+        </baseType>
+      </dataType>
+      <dataType name="OperatingModeStates">
+        <baseType>
+          <enum>
+            <values>
+              <value name="LOCAL" value="0" />
+              <value name="REMOTE" value="1" />
+            </values>
+          </enum>
+        </baseType>
+      </dataType>
+      <dataType name="LimitSwitches">
+        <baseType>
+          <enum>
+            <values>
+              <value name="POSITIVE_LIMIT_SWITCH" value="0" />
+              <value name="NEGATIVE_LIMIT_SWITCH" value="1" />
+            </values>
+          </enum>
+        </baseType>
+      </dataType>
       <dataType name="Units">
         <baseType>
           <enum>
@@ -66,8 +120,818 @@
           </enum>
         </baseType>
       </dataType>
+      <dataType name="RequestResults">
+        <baseType>
+          <enum>
+            <values>
+              <value name="ACCEPTED" value="0" />
+              <value name="REJECTED" value="1" />
+            </values>
+          </enum>
+        </baseType>
+      </dataType>
+      <dataType name="HiHiLoLoAlarmConfig">
+        <baseType>
+          <struct>
+            <variable name="enabled">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Is the alarm enabled?</xhtml>
+              </documentation>
+            </variable>
+            <variable name="loLo">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">LowLow alarm limit (produces ERROR)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="lo">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Low alarm limit (produces WARNING)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="hi">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">High alarm limit (produces WARNING)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="hiHi">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">HighHigh alarm limit (produces ERROR)</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
     </dataTypes>
     <pous>
+      <pou name="ApertureStatus" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="superState">
+              <type><BOOL /></type>
+              <initialValue><simpleValue value="TRUE" /></initialValue>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Super state (TRUE if the super state is active, or if there is no super state)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="isOpen">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if the &#39;open&#39; limit switch is active</xhtml>
+              </documentation>
+            </variable>
+            <variable name="isClosed">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if the &#39;open&#39; limit switch is active</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="open">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The aperture is open</xhtml>
+              </documentation>
+            </variable>
+            <variable name="closed">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The aperture is closed</xhtml>
+              </documentation>
+            </variable>
+            <variable name="partiallyOpen">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The aperture is partially open</xhtml>
+              </documentation>
+            </variable>
+            <variable name="undefined">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The aperture status is undefined</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <inOutVars>
+          </inOutVars>
+          <localVars>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">open := (isOpen AND (NOT(isClosed))) AND superState;
+closed := (isClosed AND (NOT(isOpen))) AND superState;
+partiallyOpen := (NOT(isOpen OR isClosed)) AND superState;
+undefined := (isOpen AND isClosed) AND superState;
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+        </addData>
+      </pou>
+      <pou name="BusyStatus" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="superState">
+              <type><BOOL /></type>
+              <initialValue><simpleValue value="TRUE" /></initialValue>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Super state (TRUE if the super state is active, or if there is no super state)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="isBusy">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if busy</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="idle">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The subject is idle</xhtml>
+              </documentation>
+            </variable>
+            <variable name="busy">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The subject is busy</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <inOutVars>
+          </inOutVars>
+          <localVars>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">idle := (NOT(isBusy)) AND superState;
+busy := isBusy AND superState;
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+        </addData>
+      </pou>
+      <pou name="StartedStatus" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="superState">
+              <type><BOOL /></type>
+              <initialValue><simpleValue value="TRUE" /></initialValue>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Super state (TRUE if the super state is active, or if there is no super state)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="isStarted">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if started</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="started">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The subject is started</xhtml>
+              </documentation>
+            </variable>
+            <variable name="notStarted">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The subject is started</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <inOutVars>
+          </inOutVars>
+          <localVars>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">started := isStarted AND superState;
+notStarted := (NOT(isStarted)) AND superState;
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+        </addData>
+      </pou>
+      <pou name="EnabledStatus" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="superState">
+              <type><BOOL /></type>
+              <initialValue><simpleValue value="TRUE" /></initialValue>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Super state (TRUE if the super state is active, or if there is no super state)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="isEnabled">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if enabled</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="enabled">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The subject is enabled</xhtml>
+              </documentation>
+            </variable>
+            <variable name="disabled">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The subject is disabled</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <inOutVars>
+          </inOutVars>
+          <localVars>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">enabled := isEnabled AND superState;
+disabled := (NOT(isEnabled)) AND superState;
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+        </addData>
+      </pou>
+      <pou name="PoweredStatus" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="superState">
+              <type><BOOL /></type>
+              <initialValue><simpleValue value="TRUE" /></initialValue>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Super state (TRUE if the super state is active, or if there is no super state)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="isEnabled">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if power is enabled</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="enabled">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The power is enabled</xhtml>
+              </documentation>
+            </variable>
+            <variable name="disabled">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The power is disabled</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <inOutVars>
+          </inOutVars>
+          <localVars>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">enabled := isEnabled AND superState;
+disabled := (NOT(isEnabled)) AND superState;
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+        </addData>
+      </pou>
+      <pou name="HealthStatus" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="superState">
+              <type><BOOL /></type>
+              <initialValue><simpleValue value="TRUE" /></initialValue>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Super state (TRUE if the super state is active, or if there is no super state)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="isGood">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if the subject is in Good health</xhtml>
+              </documentation>
+            </variable>
+            <variable name="hasWarning">
+              <type><BOOL /></type>
+              <initialValue><simpleValue value="FALSE" /></initialValue>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE to add a warning to the Good health state</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="good">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The subject is in Good health</xhtml>
+              </documentation>
+            </variable>
+            <variable name="warning">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The subject is in Good health, but there are one or more warnings present</xhtml>
+              </documentation>
+            </variable>
+            <variable name="bad">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The subject is in Bad health</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <inOutVars>
+          </inOutVars>
+          <localVars>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">good := (isGood AND (NOT(hasWarning))) AND superState;
+warning := (isGood AND hasWarning) AND superState;
+bad := (NOT(isGood)) AND superState;
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+        </addData>
+      </pou>
+      <pou name="InitializationStatus" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="superState">
+              <type><BOOL /></type>
+              <initialValue><simpleValue value="TRUE" /></initialValue>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Super state (TRUE if the super state is active, or if there is no super state)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="state">
+              <type><derived name="InitializationStates" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Enum!</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="shutdown">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Shutdown</xhtml>
+              </documentation>
+            </variable>
+            <variable name="initializing">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Initializing</xhtml>
+              </documentation>
+            </variable>
+            <variable name="initializingFailed">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Initializing failed</xhtml>
+              </documentation>
+            </variable>
+            <variable name="initialized">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Initialized</xhtml>
+              </documentation>
+            </variable>
+            <variable name="locked">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Locked</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <inOutVars>
+          </inOutVars>
+          <localVars>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">shutdown := (state = InitializationStates.SHUTDOWN) AND superState;
+initializing := (state = InitializationStates.INITIALIZING) AND superState;
+initializingFailed := (state = InitializationStates.INITIALIZING_FAILED) AND superState;
+initialized := (state = InitializationStates.INITIALIZED) AND superState;
+locked := (state = InitializationStates.LOCKED) AND superState;
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+        </addData>
+      </pou>
+      <pou name="MotionStatus" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="superState">
+              <type><BOOL /></type>
+              <initialValue><simpleValue value="TRUE" /></initialValue>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Super state (TRUE if the super state is active, or if there is no super state)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="actVel">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Actual velocity</xhtml>
+              </documentation>
+            </variable>
+            <variable name="tolerance">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Tolerance (should be positive)!</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="forward">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Moving forwared</xhtml>
+              </documentation>
+            </variable>
+            <variable name="backward">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Moving backward</xhtml>
+              </documentation>
+            </variable>
+            <variable name="standstill">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Standing still</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <inOutVars>
+          </inOutVars>
+          <localVars>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">forward := (actVel > (ABS(tolerance))) AND superState;
+backward := (actVel < (-(ABS(tolerance)))) AND superState;
+standstill := (NOT(forward OR backward)) AND superState;
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+        </addData>
+      </pou>
       <pou name="SM_QuantityValue" pouType="functionBlock">
         <interface>
           <inputVars>

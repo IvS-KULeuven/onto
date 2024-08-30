@@ -5,50 +5,50 @@
 
 !LIBRARY mtcs_common:
 
-  # ########################################################################################################################
-  # # InitializationStates
-  # ########################################################################################################################
-  # InitializationStates:
-  #   items:
-  #       [   "SHUTDOWN",
-  #           "INITIALIZING",
-  #           "INITIALIZING_FAILED",
-  #           "INITIALIZED",
-  #           "LOCKED"  ]
+  ########################################################################################################################
+  # InitializationStates
+  ########################################################################################################################
+  !ENUMERATION InitializationStates:
+    items:
+        [   "SHUTDOWN",
+            "INITIALIZING",
+            "INITIALIZING_FAILED",
+            "INITIALIZED",
+            "LOCKED"  ]
 
-  # ########################################################################################################################
-  # # OperatorStates
-  # ########################################################################################################################
-  # OperatorStates:
-  #   items:
-  #       [   "NONE",
-  #           "OBSERVER",
-  #           "TECH"      ]
+  ########################################################################################################################
+  # OperatorStates
+  ########################################################################################################################
+  !ENUMERATION OperatorStates:
+    items:
+        [   "NONE",
+            "OBSERVER",
+            "TECH"      ]
 
 
-  # ########################################################################################################################
-  # # OperatingStates
-  # ########################################################################################################################
-  # OperatingStates:
-  #   items:
-  #         [   "AUTO",
-  #             "MANUAL" ]
+  ########################################################################################################################
+  # OperatingStates
+  ########################################################################################################################
+  !ENUMERATION OperatingStates:
+    items:
+          [   "AUTO",
+              "MANUAL" ]
   
-  # ########################################################################################################################
-  # # OperatingModeStates
-  # ########################################################################################################################
-  # OperatingModeStates:
-  #   items:
-  #         [   "LOCAL",
-  #             "REMOTE" ]
+  ########################################################################################################################
+  # OperatingModeStates
+  ########################################################################################################################
+  !ENUMERATION OperatingModeStates:
+    items:
+          [   "LOCAL",
+              "REMOTE" ]
 
-  # ########################################################################################################################
-  # # LeftRightLimitSwitches
-  # ########################################################################################################################
-  # LimitSwitches:
-  #   items:
-  #         [   "POSITIVE_LIMIT_SWITCH",
-  #             "NEGATIVE_LIMIT_SWITCH" ]
+  ########################################################################################################################
+  # LeftRightLimitSwitches
+  ########################################################################################################################
+  !ENUMERATION LimitSwitches:
+    items:
+          [   "POSITIVE_LIMIT_SWITCH",
+              "NEGATIVE_LIMIT_SWITCH" ]
               
   ########################################################################################################################
   # Units
@@ -94,13 +94,226 @@
       "HITS_PER_SQUARE_CENTIMETER_PER_HOUR"
     ]
 
-  # ########################################################################################################################
-  # # RequestResults
-  # ########################################################################################################################
-  # RequestResults:
-  #   items:
-  #         [   "ACCEPTED",
-  #             "REJECTED"   ]
+  ########################################################################################################################
+  # RequestResults
+  ########################################################################################################################
+  !ENUMERATION RequestResults:
+    items:
+          [   "ACCEPTED",
+              "REJECTED"   ]
+
+  ########################################################################################################################
+  # ApertureStatus
+  ########################################################################################################################
+  !STATUS ApertureStatus:
+      variables:
+          isOpen:
+              type: t_bool
+              comment: "TRUE if the 'open' limit switch is active"
+          isClosed:
+              type: t_bool
+              comment: "TRUE if the 'open' limit switch is active"
+      states:
+          open:
+              expr: !AND [ isOpen, !NOT [ isClosed ] ]
+              comment: "The aperture is open"
+          closed:
+              expr: !AND [ isClosed, !NOT [ isOpen ] ]
+              comment: "The aperture is closed"
+          partiallyOpen:
+              expr: !NOT [ !OR [ isOpen, isClosed ] ]
+              comment: "The aperture is partially open"
+          undefined:
+              expr: !AND [ isOpen, isClosed ]
+              comment: "The aperture status is undefined"
+
+  ########################################################################################################################
+  # BusyStatus
+  ########################################################################################################################
+  !STATUS BusyStatus:
+      variables:
+          isBusy:
+              type: t_bool
+              comment: "TRUE if busy"
+      states:
+          idle:
+              expr: !NOT [ isBusy ]
+              comment: "The subject is idle"
+          busy:
+              expr: isBusy
+              comment: "The subject is busy"
+  
+  ########################################################################################################################
+  # StartedStatus
+  ########################################################################################################################
+  !STATUS StartedStatus:
+      variables:
+          isStarted:
+              type: t_bool
+              comment: "TRUE if started"
+      states:
+          started:
+              expr: isStarted
+              comment: "The subject is started"
+          notStarted:
+              expr: !NOT [ isStarted ]
+              comment: "The subject is started"
+    
+  ########################################################################################################################
+  # EnabledStatus
+  ########################################################################################################################
+  !STATUS EnabledStatus:
+      variables:
+          isEnabled:
+              type: t_bool
+              comment: "TRUE if enabled"
+      states:
+          enabled:
+              expr: isEnabled
+              comment: "The subject is enabled"
+          disabled:
+              expr: !NOT [ isEnabled ]
+              comment: "The subject is disabled"
+
+  ########################################################################################################################
+  # PoweredStatus
+  ########################################################################################################################
+  !STATUS PoweredStatus:
+      variables:
+          isEnabled:
+              type: t_bool
+              comment: "TRUE if power is enabled"
+      states:
+          enabled:
+              expr: isEnabled
+              comment: "The power is enabled"
+          disabled:
+              expr: !NOT [isEnabled]
+              comment: "The power is disabled"
+  
+  ########################################################################################################################
+  # HealthStatus
+  ########################################################################################################################
+  !STATUS HealthStatus:
+      variables:
+          isGood:
+              type: t_bool
+              comment: "TRUE if the subject is in Good health"
+          hasWarning:
+              type: t_bool
+              initial: false
+              comment: "TRUE to add a warning to the Good health state"
+      states:
+          good:
+              expr: !AND [isGood, !NOT [hasWarning]]
+              comment: "The subject is in Good health"
+          warning:
+              expr: !AND [isGood, hasWarning]
+              comment: "The subject is in Good health, but there are one or more warnings present"
+          bad:
+              expr: !NOT [isGood]
+              comment: "The subject is in Bad health"
+
+  ################################################################################################
+  # HiHiLoLoAlarmConfig
+  ########################################################################################################################
+  !CONFIG HiHiLoLoAlarmConfig:
+    items:
+        enabled:
+            type: t_bool
+            comment: "Is the alarm enabled?"
+        loLo:
+            type: t_double
+            comment: "LowLow alarm limit (produces ERROR)"
+        lo:
+            type: t_double
+            comment: "Low alarm limit (produces WARNING)"
+        hi:
+            type: t_double
+            comment: "High alarm limit (produces WARNING)"
+        hiHi:
+            type: t_double
+            comment: "HighHigh alarm limit (produces ERROR)"
+
+  ########################################################################################################################
+  # HiHiLoLoAlarmStatus
+  ########################################################################################################################
+  !STATUS HiHiLoLoAlarmStatus:
+        variables:
+            config:
+                type: HiHiLoLoAlarmConfig
+                comment: "Config"
+            value:
+                type: t_double
+                comment: "Value in the correct units to compare to the values from the config"
+        states:
+            disabled:
+                expr: !NOT [config.enabled]
+                comment: "The alarm is disabled"
+            "hiHi":
+                expr: !AND [config.enabled, !GE [value, config.hiHi]]
+                comment: "HighHigh limit active"
+            "hi":
+                expr: !AND [config.enabled, !GE [value, config.hi], !LT [value, config.hiHi]]
+                comment: "High limit active"
+            "ok":
+                expr: !AND [config.enabled, !GT [value, config.lo], !LT [value, config.hi]]
+                comment: "The value is within normal range"
+            "lo":
+                expr: !AND [config.enabled, !LE [value, config.lo], !LT [value, config.loLo]]
+                comment: "Low limit active"
+            "loLo":
+                expr: !AND [config.enabled, !LE [value, config.loLo]]
+                comment: "LowLow limit active"
+
+  ########################################################################################################################
+  # InitializationStatus
+  ########################################################################################################################
+  !STATUS InitializationStatus:
+      variables:
+          state:
+              type: InitializationStates
+              comment: "Enum!"
+      states:
+          shutdown:
+              expr: !EQ [state, InitializationStates.SHUTDOWN]
+              comment: "Shutdown"
+          initializing:
+              expr: !EQ [state, InitializationStates.INITIALIZING]
+              comment: "Initializing"
+          initializingFailed:
+              expr: !EQ [state, InitializationStates.INITIALIZING_FAILED]
+              comment: "Initializing failed"
+          initialized:
+              expr: !EQ [state, InitializationStates.INITIALIZED]
+              comment: "Initialized"
+          locked:
+              expr: !EQ [state, InitializationStates.LOCKED]
+              comment: "Locked"
+
+
+  ########################################################################################################################
+  # MotionStatus
+  ########################################################################################################################
+  !STATUS MotionStatus:
+      variables:
+          actVel:
+              type: t_double
+              comment: "Actual velocity"
+          tolerance:
+              type: t_double
+              comment: "Tolerance (should be positive)!"
+      states:
+          forward:
+              expr: !GT [actVel, !ABS [tolerance]]
+              comment: "Moving forwared"
+          backward:
+              expr: !LT [actVel, !NEG [ !ABS [tolerance]]]
+              comment: "Moving backward"
+          standstill:
+              expr: !NOT [ !OR [forward, backward]]
+              comment: "Standing still"
+
 
 
   ########################################################################################################################
@@ -110,6 +323,7 @@
     variables:
         value: { type: t_double   , comment: "Numeric value" }
         unit:  { type: Units      , comment: "Unit of the numeric value" }
+
 
   ########################################################################################################################
   # Temperature

@@ -1,6 +1,6 @@
 from util.expressions import UnaryOperation, BinaryOperation, \
                             OPERATORS, \
-                            load_binary_sequence
+                            load_binary_sequence, load_unary_sequence
 
 
 PIVALUE =3.1415926535897932384626433
@@ -63,10 +63,10 @@ def POW_constructor(loader, node):
 
 
 def ABS_constructor(loader, node):
-    value = loader.construct_scalar(node)
-    return ABS(value)
+    values = load_unary_sequence(loader, node)
+    return ABS(values[0])
 
 def NEG_constructor(loader, node):
-    value = loader.construct_scalar(node)
-    return NEG(value)
+    values = load_unary_sequence(loader, node)
+    return NEG(values[0])
 

@@ -1,5 +1,24 @@
 mtcs_common (Library):
     enums (Namespace):
+        InitializationStates (Enum):
+            SHUTDOWN (EnumItem):
+            INITIALIZING (EnumItem):
+            INITIALIZING_FAILED (EnumItem):
+            INITIALIZED (EnumItem):
+            LOCKED (EnumItem):
+        OperatorStates (Enum):
+            NONE (EnumItem):
+            OBSERVER (EnumItem):
+            TECH (EnumItem):
+        OperatingStates (Enum):
+            AUTO (EnumItem):
+            MANUAL (EnumItem):
+        OperatingModeStates (Enum):
+            LOCAL (EnumItem):
+            REMOTE (EnumItem):
+        LimitSwitches (Enum):
+            POSITIVE_LIMIT_SWITCH (EnumItem):
+            NEGATIVE_LIMIT_SWITCH (EnumItem):
         Units (Enum):
             DEGREE (EnumItem):
             RADIAN (EnumItem):
@@ -38,12 +57,70 @@ mtcs_common (Library):
             MILLIMETERS_PER_HOUR (EnumItem):
             HITS_PER_SQUARE_CENTIMETER (EnumItem):
             HITS_PER_SQUARE_CENTIMETER_PER_HOUR (EnumItem):
+        RequestResults (Enum):
+            ACCEPTED (EnumItem):
+            REJECTED (EnumItem):
     statuses (Namespace):
+        ApertureStatus (Status):
+            superState (Variable):
+            isOpen (Variable):
+            isClosed (Variable):
+            open (Variable):
+            closed (Variable):
+            partiallyOpen (Variable):
+            undefined (Variable):
+        BusyStatus (Status):
+            superState (Variable):
+            isBusy (Variable):
+            idle (Variable):
+            busy (Variable):
+        StartedStatus (Status):
+            superState (Variable):
+            isStarted (Variable):
+            started (Variable):
+            notStarted (Variable):
+        EnabledStatus (Status):
+            superState (Variable):
+            isEnabled (Variable):
+            enabled (Variable):
+            disabled (Variable):
+        PoweredStatus (Status):
+            superState (Variable):
+            isEnabled (Variable):
+            enabled (Variable):
+            disabled (Variable):
+        HealthStatus (Status):
+            superState (Variable):
+            isGood (Variable):
+            hasWarning (Variable):
+            good (Variable):
+            warning (Variable):
+            bad (Variable):
+        InitializationStatus (Status):
+            superState (Variable):
+            state (Variable):
+                SHUTDOWN (Variable):
+                INITIALIZING (Variable):
+                INITIALIZING_FAILED (Variable):
+                INITIALIZED (Variable):
+                LOCKED (Variable):
+            shutdown (Variable):
+            initializing (Variable):
+            initializingFailed (Variable):
+            initialized (Variable):
+            locked (Variable):
+        MotionStatus (Status):
+            superState (Variable):
+            actVel (Variable):
+            tolerance (Variable):
+            forward (Variable):
+            backward (Variable):
+            standstill (Variable):
     statemachines (StatemachinesNamespace):
         parts (Namespace):
         processes (Namespace):
         statuses (Namespace):
-        QuantityValue (Statemachine):
+        SM_QuantityValue (Statemachine):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
@@ -89,7 +166,7 @@ mtcs_common (Library):
                 name (Variable):
                 buffer (Variable):
                 subBuffer (Variable):
-        Temperature (Statemachine):
+        SM_Temperature (Statemachine):
             actualStatus (Variable):
             previousStatus (Variable):
             celsius (Variable):
@@ -110,11 +187,78 @@ mtcs_common (Library):
                 buffer (Variable):
                 subBuffer (Variable):
     configs (Namespace):
+        HiHiLoLoAlarmConfig (Config):
+            enabled (Variable):
+            loLo (Variable):
+            lo (Variable):
+            hi (Variable):
+            hiHi (Variable):
     structs (Namespace):
+        HiHiLoLoAlarmConfig (Config):
+            enabled (Variable):
+            loLo (Variable):
+            lo (Variable):
+            hi (Variable):
+            hiHi (Variable):
     processes (ProcessesNamespace):
         args (Namespace):
     functionblocks (Namespace):
-        QuantityValue (Statemachine):
+        ApertureStatus (Status):
+            superState (Variable):
+            isOpen (Variable):
+            isClosed (Variable):
+            open (Variable):
+            closed (Variable):
+            partiallyOpen (Variable):
+            undefined (Variable):
+        BusyStatus (Status):
+            superState (Variable):
+            isBusy (Variable):
+            idle (Variable):
+            busy (Variable):
+        StartedStatus (Status):
+            superState (Variable):
+            isStarted (Variable):
+            started (Variable):
+            notStarted (Variable):
+        EnabledStatus (Status):
+            superState (Variable):
+            isEnabled (Variable):
+            enabled (Variable):
+            disabled (Variable):
+        PoweredStatus (Status):
+            superState (Variable):
+            isEnabled (Variable):
+            enabled (Variable):
+            disabled (Variable):
+        HealthStatus (Status):
+            superState (Variable):
+            isGood (Variable):
+            hasWarning (Variable):
+            good (Variable):
+            warning (Variable):
+            bad (Variable):
+        InitializationStatus (Status):
+            superState (Variable):
+            state (Variable):
+                SHUTDOWN (Variable):
+                INITIALIZING (Variable):
+                INITIALIZING_FAILED (Variable):
+                INITIALIZED (Variable):
+                LOCKED (Variable):
+            shutdown (Variable):
+            initializing (Variable):
+            initializingFailed (Variable):
+            initialized (Variable):
+            locked (Variable):
+        MotionStatus (Status):
+            superState (Variable):
+            actVel (Variable):
+            tolerance (Variable):
+            forward (Variable):
+            backward (Variable):
+            standstill (Variable):
+        SM_QuantityValue (Statemachine):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
@@ -160,7 +304,7 @@ mtcs_common (Library):
                 name (Variable):
                 buffer (Variable):
                 subBuffer (Variable):
-        Temperature (Statemachine):
+        SM_Temperature (Statemachine):
             actualStatus (Variable):
             previousStatus (Variable):
             celsius (Variable):
@@ -180,6 +324,25 @@ mtcs_common (Library):
                 name (Variable):
                 buffer (Variable):
                 subBuffer (Variable):
+    InitializationStates (Enum):
+        SHUTDOWN (EnumItem):
+        INITIALIZING (EnumItem):
+        INITIALIZING_FAILED (EnumItem):
+        INITIALIZED (EnumItem):
+        LOCKED (EnumItem):
+    OperatorStates (Enum):
+        NONE (EnumItem):
+        OBSERVER (EnumItem):
+        TECH (EnumItem):
+    OperatingStates (Enum):
+        AUTO (EnumItem):
+        MANUAL (EnumItem):
+    OperatingModeStates (Enum):
+        LOCAL (EnumItem):
+        REMOTE (EnumItem):
+    LimitSwitches (Enum):
+        POSITIVE_LIMIT_SWITCH (EnumItem):
+        NEGATIVE_LIMIT_SWITCH (EnumItem):
     Units (Enum):
         DEGREE (EnumItem):
         RADIAN (EnumItem):
@@ -218,7 +381,71 @@ mtcs_common (Library):
         MILLIMETERS_PER_HOUR (EnumItem):
         HITS_PER_SQUARE_CENTIMETER (EnumItem):
         HITS_PER_SQUARE_CENTIMETER_PER_HOUR (EnumItem):
-    QuantityValue (Statemachine):
+    RequestResults (Enum):
+        ACCEPTED (EnumItem):
+        REJECTED (EnumItem):
+    ApertureStatus (Status):
+        superState (Variable):
+        isOpen (Variable):
+        isClosed (Variable):
+        open (Variable):
+        closed (Variable):
+        partiallyOpen (Variable):
+        undefined (Variable):
+    BusyStatus (Status):
+        superState (Variable):
+        isBusy (Variable):
+        idle (Variable):
+        busy (Variable):
+    StartedStatus (Status):
+        superState (Variable):
+        isStarted (Variable):
+        started (Variable):
+        notStarted (Variable):
+    EnabledStatus (Status):
+        superState (Variable):
+        isEnabled (Variable):
+        enabled (Variable):
+        disabled (Variable):
+    PoweredStatus (Status):
+        superState (Variable):
+        isEnabled (Variable):
+        enabled (Variable):
+        disabled (Variable):
+    HealthStatus (Status):
+        superState (Variable):
+        isGood (Variable):
+        hasWarning (Variable):
+        good (Variable):
+        warning (Variable):
+        bad (Variable):
+    HiHiLoLoAlarmConfig (Config):
+        enabled (Variable):
+        loLo (Variable):
+        lo (Variable):
+        hi (Variable):
+        hiHi (Variable):
+    InitializationStatus (Status):
+        superState (Variable):
+        state (Variable):
+            SHUTDOWN (Variable):
+            INITIALIZING (Variable):
+            INITIALIZING_FAILED (Variable):
+            INITIALIZED (Variable):
+            LOCKED (Variable):
+        shutdown (Variable):
+        initializing (Variable):
+        initializingFailed (Variable):
+        initialized (Variable):
+        locked (Variable):
+    MotionStatus (Status):
+        superState (Variable):
+        actVel (Variable):
+        tolerance (Variable):
+        forward (Variable):
+        backward (Variable):
+        standstill (Variable):
+    SM_QuantityValue (Statemachine):
         actualStatus (Variable):
         previousStatus (Variable):
         value (Variable):
@@ -264,7 +491,73 @@ mtcs_common (Library):
             name (Variable):
             buffer (Variable):
             subBuffer (Variable):
-    Temperature (Statemachine):
+    QuantityValue (FunctionBlock):
+        actualStatus (Variable):
+        previousStatus (Variable):
+        value (Variable):
+        unit (Variable):
+            DEGREE (Variable):
+            RADIAN (Variable):
+            PERCENT (Variable):
+            RADIANS_PER_SECOND (Variable):
+            DEGREES_PER_SECOND (Variable):
+            MILLIMETERS_PER_SECOND (Variable):
+            REVOLUTIONS_PER_SECOND (Variable):
+            REVOLUTIONS_PER_MINUTE (Variable):
+            AMPS (Variable):
+            MILLIAMPS (Variable):
+            MILLIMETER (Variable):
+            MICROMETER (Variable):
+            DEGREES_CELSIUS (Variable):
+            KELVIN (Variable):
+            BAR (Variable):
+            PASCAL (Variable):
+            UNITLESS (Variable):
+            NEWTON (Variable):
+            DECANEWTON (Variable):
+            VOLT (Variable):
+            MILLIVOLT (Variable):
+            HERTZ (Variable):
+            G (Variable):
+            MILLIG (Variable):
+            NEWTONMETER (Variable):
+            ARCSECONDS (Variable):
+            ARCSECONDS_PER_SECOND (Variable):
+            RADIANS_PER_SQUARE_SECOND (Variable):
+            DEGREES_PER_SQUARE_SECOND (Variable):
+            ARCSECONDS_PER_SQUARE_SECOND (Variable):
+            METERS_PER_SECOND (Variable):
+            HECTOPASCAL (Variable):
+            SECONDS (Variable):
+            MINUTES (Variable):
+            MILLIMETERS_PER_HOUR (Variable):
+            HITS_PER_SQUARE_CENTIMETER (Variable):
+            HITS_PER_SQUARE_CENTIMETER_PER_HOUR (Variable):
+        _log (Method):
+            name (Variable):
+            buffer (Variable):
+            subBuffer (Variable):
+    SM_Temperature (Statemachine):
+        actualStatus (Variable):
+        previousStatus (Variable):
+        celsius (Variable):
+            actualStatus (Variable):
+            previousStatus (Variable):
+            value (Variable):
+            unit (Variable):
+            _log (Variable):
+        kelvin (Variable):
+            actualStatus (Variable):
+            previousStatus (Variable):
+            value (Variable):
+            unit (Variable):
+            _log (Variable):
+        newCelsiusValue (Variable):
+        _log (Method):
+            name (Variable):
+            buffer (Variable):
+            subBuffer (Variable):
+    Temperature (FunctionBlock):
         actualStatus (Variable):
         previousStatus (Variable):
         celsius (Variable):

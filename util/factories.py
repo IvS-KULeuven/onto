@@ -111,6 +111,14 @@ class Library(Namespace):
                 sm = Statemachine(arg_k.name, self, arg_v)
                 self.statemachines[arg_k.name] = sm
                 self.functionblocks[arg_k.name] = sm
+            elif isinstance(arg_k, STATUS):
+                sts = Status(arg_k.name, self, arg_v) 
+                self.statuses[arg_k.name] = sts
+                self.functionblocks[arg_k.name] = sts
+            elif isinstance(arg_k, CONFIG):
+                cfg = Config(arg_k.name, self, arg_v) 
+                self.configs[arg_k.name] = cfg
+                self.structs[arg_k.name] = cfg
 
 
 
@@ -171,6 +179,21 @@ def STATEMACHINE_constructor(loader: Loader, node):
     name = loader.construct_scalar(node)
     return STATEMACHINE(name)
 
+class STATUS:
+    def __init__(self, name):
+        self.name = name
+
+def STATUS_constructor(loader: Loader, node):
+    name = loader.construct_scalar(node)
+    return STATUS(name)
+
+class CONFIG:
+    def __init__(self, name):
+        self.name = name
+
+def CONFIG_constructor(loader: Loader, node):
+    name = loader.construct_scalar(node)
+    return CONFIG(name)
 
 class Variable(Object):
     def __init__(self, name, parent, args={}):
@@ -259,9 +282,7 @@ class Struct(Object):
         if 'items' in args:
             self.items = {}
             for item_k, item_v in args['items'].items():
-                item = Variable(item_k, self, item_v)
-                self.items[item_k] = item
-                self.register_child(item_k, item)
+                self.items[item_k] = Variable(item_k, self, item_v)
 
 
 
@@ -342,37 +363,75 @@ class FunctionBlock(Object):
         self.var_out = {}
         self.var_inout = {}
         self.var_local = {}
+        self.extends = None
+        self.methods = {}
         self.plc_symbol = None
         self.implementation = None
+
+        if "extends" in args:
+            self.extends = resolve(args["extends"], self)
+            for child_name, child in self.extends.children.items():
+                self.register_child(child_name, child)
 
 
 class Status(FunctionBlock):
     
     def __init__(self, name, parent, args={}) -> None:
         super().__init__(name, parent)
-        check_args("Statemachine", args, ["variables", "states"])
+        check_args("Status", args, ["variables", "states"])
 
         self.variables = {}
         self.states = {}
 
-        self.var_in["superState"] = Variable("superState", 
-                                             self, 
-                                             {
-                                                 "comment": "Super state (TRUE if the super state is active, or if there is no super state)",
-                                                 "type": "t_bool"
-                                             })
+        self.var_in["superState"] = Variable(
+            "superState", 
+            self, 
+            {
+                "comment": "Super state (TRUE if the super state is active, or if there is no super state)",
+                "type": "t_bool",
+                "initial": True
+            })
+
+        if "variables" in args:
+            for var_name, var_args in args["variables"].items():
+                self.var_in[var_name] = Variable(var_name, self, var_args)
+        
+        if "states" in args:
+            for var_name, var_args in args["states"].items():
+                v = Variable(
+                    var_name, 
+                    self, 
+                    {
+                        "type": "t_bool",
+                        "comment": var_args["comment"] 
+                    })
+                v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_R]
+                self.var_out[var_name] = v
+        
+        self.implementation = []
+        for state_name, state_args in args["states"].items():
+            assignment = ASSIGN(self.get_child(state_name), AND( state_args['expr'], self.get_child('superState') ))
+            assignment.resolve_children(self)
+            self.implementation.append(assignment)
+        
+
+class Config(Struct):
+    
+    def __init__(self, name, parent, args={}) -> None:
+        super().__init__(name, parent, args)
 
 
 class Statemachine(FunctionBlock):
 
     def __init__(self, name, parent, args={}) -> None:
-        super().__init__(name, parent)
+        super().__init__(f"SM_{name}", parent)
         
         check_args("Statemachine", args,
                    ["variables", "variables_hidden", "variables_read_only",
                     "statuses", "parts", "local", "methods", "calls",
                     "disabled_calls", "updates", "references", "extends",
                     "processes", "constraints"])
+        
 
         self.extends = None
         self.variables = {}
@@ -385,7 +444,7 @@ class Statemachine(FunctionBlock):
         
 
         if 'extends' in args:
-            raise NotImplemented(f"{name}: 'extends' is not implemented yet")
+            raise NotImplemented(f"SM_{name}: 'extends' is not implemented yet")
 
         self.varNames = []
         self.statusNames = []
@@ -438,21 +497,21 @@ class Statemachine(FunctionBlock):
                 self.var_inout[var_name] = v
 
         if "statuses" in args:
-            raise NotImplementedError()
-            for status_name, status in kwargs['statuses']:
+            for status_name in args['statuses']:
                 self.statusNames.append(status_name)
             struct = Struct(
                 name = f'{name}Statuses',
-                lib = lib,
-                items = kwargs['statuses'])
-            #ns["items"].append(struct)
-            # TODO arguments, attributes, ...
-            lib["StateMachines"]["Statuses"].append(struct)
-            self.var_out[status_name] = Variable(
+                parent = self.parent,
+                args = { "items": args['statuses'] }
+            )
+            self.parent["StateMachines"]["Statuses"].append(struct)
+            self.parent.structs.append(struct)
+            self.var_out["statuses"] = Variable(
                 name='statuses', 
-                lib=lib,
-                type=struct,
-                comment="Statuses of the state machine")
+                parent=self,
+                args = {
+                    "comment": "Statuses of the state machine",
+                    "type": f'{name}Statuses'})
         
         if "parts" in args:
             raise NotImplementedError()
@@ -544,6 +603,10 @@ class Statemachine(FunctionBlock):
 
             self.methods["_log"] = m
 
+        # finally, also add the main state machine (to be implemented by the user):
+        self.parent.register_child(
+            name, 
+            FunctionBlock(name, self.parent, { "extends": f"SM_{name}" }))
 
 
 

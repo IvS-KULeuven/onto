@@ -3,18 +3,20 @@
     import pprint
     from util.expressions import IfThen, BinaryOperation, UnaryOperation, Primitive
     from util.factories import Variable, Method, Call, EnumItem, FunctionBlock, GlobalVariable
+    from xml.sax.saxutils import escape as sax_escape
+
+
+    def escape(s):
+        return sax_escape(s, entities={
+            "'": "&#39;",
+            "\"": "&quot;"
+        })
 
     def getPrefixAndPath(dest, scope = []):
-
-
         e = None
-
         for head in scope:
-
-
             if isinstance(dest, EnumItem):
                 return None, [ dest.parent, dest ]
-
 
             if head.extends is not None and dest.points_to_type is not None:
                 if id(head.extends) == id(dest.points_to_type):
@@ -108,9 +110,9 @@
     % for enum in lib.enums.children.values():
       ${xml_enum(enum, '      ')}
     % endfor
-    ## % for struct in structs:
-    ##   ${xml_struct(struct, '      ')}
-    ## % endfor
+    % for struct in lib.structs.children.values():
+      ${xml_struct(struct, '      ')}
+    % endfor
     </dataTypes>
     <pous>
     % for fb in lib.functionblocks.children.values():
@@ -149,7 +151,7 @@ ${indent}</dataType>\
 
 
 <%def name="xml_pou_functionBlock(fb, indent='')">\
-<pou name="SM_${fb.name}" pouType="functionBlock">
+<pou name="${fb.name}" pouType="functionBlock">
 ${indent}  <interface>
 ${indent}    ${xml_variables("input" , fb.var_in.values()    , indent+'    ')}
 ${indent}    ${xml_variables("output", fb.var_out.values()   , indent+'    ')}
@@ -384,6 +386,23 @@ ${indent+more}${render_assignment(assignment, scope)}\
 </%def>
 
 
+
+
+<%def name="layoutUnaryOperation(node, scope, indent='', more='    ')">\
+<%
+    if node.operator.plc_symbol is None:
+        raise Exception("Unknown symbol in layoutUnaryOperation(%s) for operator %s" %(node.name), operator.name)
+%>\
+    %if node.operator.plc_symbol == '^':
+${layoutExpression(operand, scope)}^\
+    %else:
+${node.operator.plc_symbol}(${layoutExpression(node.operand, scope)})\
+    %endif
+</%def>
+
+
+
+
 <%def name="xml_variable(node, indent='')">\
 \
 % if node.address is not None:
@@ -408,7 +427,7 @@ ${indent}  </addData>
         % endif
         % if node.comment is not None:
 ${indent}  <documentation>
-${indent}    <xhtml xmlns="http://www.w3.org/1999/xhtml">${node.comment}</xhtml>
+${indent}    <xhtml xmlns="http://www.w3.org/1999/xhtml">${escape(node.comment)}</xhtml>
 ${indent}  </documentation>
         % endif
 ${indent}</variable>\
@@ -439,4 +458,17 @@ ${xml_type_element(node.type)}\
     %elif node.points_to_type is not None:
 <pointer><baseType>${xml_type_element(node.points_to_type)}</baseType></pointer>\
     %endif
+</%def>
+
+
+<%def name="xml_struct(node,indent='')">\
+<dataType name="${node.name}">
+${indent}  <baseType>
+${indent}    <struct>
+             %for item in node.items.values():
+${indent}      ${xml_variable(item, indent+'      ')}
+             %endfor
+${indent}    </struct>
+${indent}  </baseType>
+${indent}</dataType>\
 </%def>
