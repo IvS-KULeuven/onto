@@ -28,6 +28,7 @@ def get_loader():
     loader.add_constructor('!ABS', mathematics.ABS_constructor)
     loader.add_constructor('!NEG', mathematics.NEG_constructor)
     loader.add_constructor('!DOUBLE', expressions.Double_constructor)
+    loader.add_constructor('!BOOL', expressions.Bool_constructor)
     loader.add_constructor('!LIBRARY', factories.LIBRARY_constructor)
     loader.add_constructor('!ENUM', factories.ENUM_constructor)
     loader.add_constructor('!ENUMERATION', factories.ENUMERATION_constructor)

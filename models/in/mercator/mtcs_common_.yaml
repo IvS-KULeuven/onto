@@ -201,7 +201,7 @@
               comment: "TRUE if the subject is in Good health"
           hasWarning:
               type: t_bool
-              initial: false
+              initial: !BOOL false
               comment: "TRUE to add a warning to the Good health state"
       states:
           good:
@@ -213,6 +213,56 @@
           bad:
               expr: !NOT [isGood]
               comment: "The subject is in Bad health"
+
+
+  ########################################################################################################################
+  # InitializationStatus
+  ########################################################################################################################
+  !STATUS InitializationStatus:
+      variables:
+          state:
+              type: InitializationStates
+              comment: "Enum!"
+      states:
+          shutdown:
+              expr: !EQ [state, InitializationStates.SHUTDOWN]
+              comment: "Shutdown"
+          initializing:
+              expr: !EQ [state, InitializationStates.INITIALIZING]
+              comment: "Initializing"
+          initializingFailed:
+              expr: !EQ [state, InitializationStates.INITIALIZING_FAILED]
+              comment: "Initializing failed"
+          initialized:
+              expr: !EQ [state, InitializationStates.INITIALIZED]
+              comment: "Initialized"
+          locked:
+              expr: !EQ [state, InitializationStates.LOCKED]
+              comment: "Locked"
+
+
+  ########################################################################################################################
+  # MotionStatus
+  ########################################################################################################################
+  !STATUS MotionStatus:
+      variables:
+          actVel:
+              type: t_double
+              comment: "Actual velocity"
+          tolerance:
+              type: t_double
+              comment: "Tolerance (should be positive)!"
+      states:
+          forward:
+              expr: !GT [actVel, !ABS [tolerance]]
+              comment: "Moving forwared"
+          backward:
+              expr: !LT [actVel, !NEG [ !ABS [tolerance]]]
+              comment: "Moving backward"
+          standstill:
+              expr: !NOT [ !OR [forward, backward]]
+              comment: "Standing still"
+
 
   ################################################################################################
   # HiHiLoLoAlarmConfig
@@ -266,53 +316,127 @@
                 expr: !AND [config.enabled, !LE [value, config.loLo]]
                 comment: "LowLow limit active"
 
+
   ########################################################################################################################
-  # InitializationStatus
+  # MeasurementConfig
   ########################################################################################################################
-  !STATUS InitializationStatus:
-      variables:
-          state:
-              type: InitializationStates
-              comment: "Enum!"
-      states:
-          shutdown:
-              expr: !EQ [state, InitializationStates.SHUTDOWN]
-              comment: "Shutdown"
-          initializing:
-              expr: !EQ [state, InitializationStates.INITIALIZING]
-              comment: "Initializing"
-          initializingFailed:
-              expr: !EQ [state, InitializationStates.INITIALIZING_FAILED]
-              comment: "Initializing failed"
-          initialized:
-              expr: !EQ [state, InitializationStates.INITIALIZED]
-              comment: "Initialized"
-          locked:
-              expr: !EQ [state, InitializationStates.LOCKED]
-              comment: "Locked"
+  !CONFIG MeasurementConfig:
+    items:
+        enabled:
+            type: t_bool
+            comment: "Is the quantity being measured? (Can be false e.g. if the sensor is deliberately not connected (yet).)"
+        gain:
+            type: t_double
+            comment: "Gain to be applied to the measured value (default: 1 = no gain)"
+            initial: !DOUBLE 1.0
+        offset:
+            type: t_double
+            comment: "Offset to be added to the measured value (default: 0 = no offset)"
+        alarms:
+            type: HiHiLoLoAlarmConfig
+            comment: "Config"
 
 
   ########################################################################################################################
-  # MotionStatus
+  # OpeningStatus
   ########################################################################################################################
-  !STATUS MotionStatus:
-      variables:
-          actVel:
-              type: t_double
-              comment: "Actual velocity"
-          tolerance:
-              type: t_double
-              comment: "Tolerance (should be positive)!"
-      states:
-          forward:
-              expr: !GT [actVel, !ABS [tolerance]]
-              comment: "Moving forwared"
-          backward:
-              expr: !LT [actVel, !NEG [ !ABS [tolerance]]]
-              comment: "Moving backward"
-          standstill:
-              expr: !NOT [ !OR [forward, backward]]
-              comment: "Standing still"
+  !STATUS OpeningStatus:
+    variables:
+        isOpening:
+            type: t_bool
+            comment: "TRUE if opening"
+        isClosing:
+            type: t_bool
+            comment: "TRUE if closing"
+    states:
+        opening:
+            expr: !AND [ isOpening, !NOT [isClosing] ]
+            comment: "Opening"
+        closing:
+            expr: !AND [ isClosing, !NOT [isOpening] ]
+            comment: "Closing"
+        standstill:
+            expr: !NOT [ !OR [ isClosing, isOpening ] ]
+            comment: "Standing still"
+
+
+  ########################################################################################################################
+  # OperatorStatus
+  ########################################################################################################################
+  !STATUS OperatorStatus:
+    variables:
+        state:
+            type: OperatorStates
+            comment: "Enum!"
+    states:
+        none:
+            expr: !EQ [ state, OperatorStates.NONE ]
+            comment: "None"
+        tech:
+            expr: !EQ [ state, OperatorStates.TECH ]
+            comment: "Tech"
+        observer:
+            expr: !EQ [ state, OperatorStates.OBSERVER ]
+            comment: "Observer"
+
+
+  ########################################################################################################################
+  # OperatingStatus
+  ########################################################################################################################
+  !STATUS OperatingStatus:
+    variables:
+        state:
+            type: OperatingStates
+            comment: "Enum!"
+    states:
+        auto:
+            expr: !EQ [state, OperatingStates.AUTO ]
+            comment: "Auto"
+        manual:
+            expr: !EQ [state, OperatingStates.MANUAL ]
+            comment: "Manual"
+
+
+  ########################################################################################################################
+  # OperatingModeStatus
+  ########################################################################################################################
+  !STATUS OperatingModeStatus:
+    variables:
+        state:
+            type: OperatingModeStates
+            comment: "Enum!"
+    states:
+        local:
+            expr: !EQ [state, OperatingModeStates.LOCAL]
+            comment: "Local"
+        remote:
+            expr: !EQ [state, OperatingModeStates.REMOTE]
+            comment: "Remote"
+
+
+  ########################################################################################################################
+  # MTCSStatus
+  ########################################################################################################################
+  !STATUS ActivityStatus:
+    variables:
+        isMoving:
+            type: t_bool
+            comment: "TRUE if moving"
+        isAwake:
+            type: t_bool
+            comment: "TRUE if awake"
+    states:
+        moving:
+            expr: !AND [isAwake, isMoving]
+            comment: "Opening"
+        awake:
+            expr: !AND [isAwake, !NOT [isMoving]]
+            comment: "Opening"
+        sleeping:
+            expr: !NOT [isAwake]
+            comment: "Opening"
+
+
 
 
 
@@ -326,19 +450,292 @@
 
 
   ########################################################################################################################
+  # AngularPosition
+  ########################################################################################################################
+  !STATEMACHINE AngularPosition:
+    variables_hidden:
+        newDegreesValue: { type: t_double, comment: "New position value in degrees" }
+    variables_read_only:
+        radians     : { type: QuantityValue, comment: "Angular position in radians" }
+        degrees     : { type: QuantityValue, comment: "Angular position in degrees" }
+        arcseconds  : { type: QuantityValue, comment: "Angular position in arcseconds" }
+    calls:
+        radians:
+            value : !MUL [newDegreesValue, !DOUBLE 0.017453292519943295 ] # PI/180
+            unit  : Units.RADIAN
+        degrees:
+            value : newDegreesValue
+            unit  : Units.DEGREE
+        arcseconds:
+            value : !MUL [newDegreesValue, !DOUBLE 3600.0]
+            unit  : Units.ARCSECONDS
+
+
+  ########################################################################################################################
+  # LinearPosition
+  ########################################################################################################################
+  !STATEMACHINE LinearPosition:
+    variables_hidden:
+        newMillimetersValue: { type: t_double, comment: "New position value in millimeters" }
+    variables_read_only:
+        millimeters: { type: QuantityValue, comment: "Linear position in millimeters" }
+        micrometers: { type: QuantityValue, comment: "Linear position in micrometers" }
+    calls:
+        millimeters:
+            value : newMillimetersValue
+            unit  : Units.MILLIMETER
+        micrometers:
+            value : !MUL [ newMillimetersValue, !DOUBLE 1000.0 ]
+            unit  : Units.MICROMETER
+
+  ########################################################################################################################
+  # AngularVelocity
+  ########################################################################################################################
+  !STATEMACHINE AngularVelocity:
+    variables_hidden:
+        newDegreesPerSecondValue: { type: t_double, comment: "New velocity value in degrees per second" }
+    variables_read_only:
+        radiansPerSecond    : { type: QuantityValue, comment: "Angular velocity in radians per second" }
+        degreesPerSecond    : { type: QuantityValue, comment: "Angular velocity in degrees per second" }
+        arcsecondsPerSecond : { type: QuantityValue, comment: "Angular velocity in arcseconds per second" }
+    calls:
+        radiansPerSecond:
+            value : !MUL [newDegreesPerSecondValue, !DOUBLE 0.017453292519943295 ]
+            unit  : Units.RADIANS_PER_SECOND
+        degreesPerSecond:
+            value : newDegreesPerSecondValue
+            unit  : Units.DEGREES_PER_SECOND
+        arcsecondsPerSecond:
+            value : !MUL [newDegreesPerSecondValue, !DOUBLE 3600.0 ]
+            unit  : Units.ARCSECONDS_PER_SECOND
+
+  ########################################################################################################################
+  # AngularAcceleration
+  ########################################################################################################################
+  !STATEMACHINE AngularAcceleration:
+    variables_hidden:
+        newDegreesPerSquareSecondValue: { type: t_double, comment: "New velocity value in degrees per second^2" }
+    variables_read_only:
+        radiansPerSquareSecond   : { type: QuantityValue, comment: "Angular velocity in radians per second^2" }
+        degreesPerSquareSecond   : { type: QuantityValue, comment: "Angular velocity in degrees per second^2" }
+        arcsecondsPerSquareSecond: { type: QuantityValue, comment: "Angular velocity in arcseconds per second^2" }
+    calls:
+        radiansPerSquareSecond:
+            value : !MUL [newDegreesPerSquareSecondValue, !DOUBLE 0.017453292519943295 ]
+            unit  : Units.RADIANS_PER_SQUARE_SECOND
+        degreesPerSquareSecond:
+            value : newDegreesPerSquareSecondValue
+            unit  : Units.DEGREES_PER_SQUARE_SECOND
+        arcsecondsPerSquareSecond:
+            value : !MUL [newDegreesPerSquareSecondValue, !DOUBLE 3600.0 ]
+            unit  : Units.ARCSECONDS_PER_SQUARE_SECOND
+
+  ########################################################################################################################
+  # AngularVelocity
+  ########################################################################################################################
+  !STATEMACHINE LinearVelocity:
+    variables_hidden:
+        newMillimetersPerSecondValue: { type: t_double, comment: "New velocity value in millimeters per second" }
+    variables_read_only:
+        millimetersPerSecond: { type: QuantityValue, comment: "Linear velocity in millimeters per second" }
+    calls:
+        millimetersPerSecond:
+            value : newMillimetersPerSecondValue
+            unit  : Units.MILLIMETERS_PER_SECOND
+
+  ########################################################################################################################
+  # Voltage
+  ########################################################################################################################
+  !STATEMACHINE Voltage:
+    variables_hidden:
+        newVoltValue: { type: t_double, comment: "New voltage" }
+    variables_read_only:
+        volt       : { type: QuantityValue, comment: "Voltage in Volt" }
+        milliVolt  : { type: QuantityValue, comment: "Voltage in millivolt" }
+    calls:
+        volt:
+            value : newVoltValue
+            unit  : Units.VOLT
+        milliVolt:
+            value : !MUL [newVoltValue, !DOUBLE 1000.0 ]
+            unit  : Units.MILLIVOLT
+
+  ########################################################################################################################
+  # GForce
+  ########################################################################################################################
+  !STATEMACHINE GForce:
+    variables_hidden:
+        newMilliGValue: { type: t_double, comment: "New milliG value" }
+    variables_read_only:
+        g       : { type: QuantityValue, comment: "Acceleration in g units" }
+        milliG  : { type: QuantityValue, comment: "Acceleration in in milli g units" }
+    calls:
+        g:
+            value : !DIV [ newMilliGValue, !DOUBLE 1000.0 ]
+            unit  : Units.G
+        milliG:
+            value : newMilliGValue
+            unit  : Units.MILLIG
+
+  ########################################################################################################################
+  # Current
+  ########################################################################################################################
+  !STATEMACHINE Current:
+    variables_hidden:
+        newAmpsValue: { type: t_double, comment: "New current in amps" }
+    variables_read_only:
+        amps        : { type: QuantityValue, comment: "Current in amps" }
+        milliAmps   : { type: QuantityValue, comment: "Current in milliamps" }
+    calls:
+        amps:
+            value : newAmpsValue
+            unit  : Units.AMPS
+        milliAmps:
+            value : !MUL [newAmpsValue, !DOUBLE 1000.0 ]
+            unit  : Units.MILLIAMPS
+
+
+  ########################################################################################################################
+  # Torque
+  ########################################################################################################################
+  !STATEMACHINE Torque:
+    variables_hidden:
+        newNewtonmeterValue: { type: t_double, comment: "New torque in Nm" }
+    variables_read_only:
+        newtonmeter: { type: QuantityValue, comment: "Torque in Nm" }
+    calls:
+        newtonmeter:
+            value : newNewtonmeterValue
+            unit  : Units.NEWTONMETER
+
+  ########################################################################################################################
+  # TorqueLimit
+  ########################################################################################################################
+  !STATEMACHINE TorqueLimit:
+    variables_hidden:
+        newFractionValue : { type: t_double, comment: "New torque limit as a unitless fraction (between 0 and 1)" }
+        maxNewtonmeter   : { type: t_double, comment: "Newtonmeters corresponding to 100 percent (fraction=1)" }
+    variables_read_only:
+        unitless        : { type: QuantityValue, comment: "Torque limit as a unitless fraction" }
+        percent         : { type: QuantityValue, comment: "Torque limit in percent" }
+        newtonmeter     : { type: QuantityValue, comment: "Torque in Nm" }
+    calls:
+        unitless:
+            value : newFractionValue
+            unit  : Units.UNITLESS
+        percent:
+            value : !MUL [newFractionValue, !DOUBLE 100.0 ]
+            unit  : Units.PERCENT
+        newtonmeter:
+            value : !MUL [newFractionValue, maxNewtonmeter]
+            unit  : Units.NEWTONMETER
+
+
+  ########################################################################################################################
+  # AverageCurrent
+  ########################################################################################################################
+  !STATEMACHINE AverageCurrent:
+    extends: Current
+
+
+  ########################################################################################################################
+  # Duration
+  ########################################################################################################################
+  !STATEMACHINE Duration:
+    variables_hidden:
+        newSecondsValue: { type: t_double, comment: "New duration in seconds" }
+    variables_read_only:
+        seconds     : { type: QuantityValue, comment: "Duration in seconds" }
+        minutes     : { type: QuantityValue, comment: "Duration in minutes" }
+    calls:
+        seconds:
+            value : newSecondsValue
+            unit  : Units.SECONDS
+        minutes:
+            value : !DIV [newSecondsValue, !DOUBLE 60.0 ]
+            unit  : Units.MINUTES
+
+  ########################################################################################################################
   # Temperature
   ########################################################################################################################
   !STATEMACHINE Temperature:
     variables_hidden:
-      newCelsiusValue: { type: t_double, comment: "New temperature in degrees Celsius" }
+        newCelsiusValue: { type: t_double, comment: "New temperature in degrees Celsius" }
     variables_read_only:
-      celsius     : { type: QuantityValue, comment: "Temperature in degrees Celsius" }
-      kelvin      : { type: QuantityValue, comment: "Temperature in Kelvin" }
+        celsius     : { type: QuantityValue, comment: "Temperature in degrees Celsius" }
+        kelvin      : { type: QuantityValue, comment: "Temperature in Kelvin" }
     calls:
-      celsius:
-        value : newCelsiusValue
-        unit  : Units.DEGREES_CELSIUS
-      kelvin:
-        value : !SUM [newCelsiusValue, !DOUBLE 273.15]
-        unit  : Units.KELVIN
+        celsius:
+            value : newCelsiusValue
+            unit  : Units.DEGREES_CELSIUS
+        kelvin:
+            value : !SUM [ newCelsiusValue, !DOUBLE 273.15 ]
+            unit  : Units.KELVIN
+
+
+  ########################################################################################################################
+  # Pressure
+  ########################################################################################################################
+  !STATEMACHINE Pressure:
+    variables_hidden:
+        newBarValue: { type: t_double, comment: "New pressure in Bar" }
+    variables_read_only:
+        bar        : { type: QuantityValue, comment: "Pressure in Bar" }
+        pascal     : { type: QuantityValue, comment: "Pressure in Pascal" }
+        hectoPascal: { type: QuantityValue, comment: "Pressure in HectoPascal" }
+    calls:
+        bar:
+            value  : newBarValue
+            unit   : Units.BAR
+        pascal:
+            value  : !MUL [newBarValue, !DOUBLE 100000 ]
+            unit   : Units.PASCAL
+
+  ########################################################################################################################
+  # Frequency
+  ########################################################################################################################
+  !STATEMACHINE Frequency:
+    variables_hidden:
+        newHertzValue: { type: t_double, comment: "New frequency in Hz" }
+    variables_read_only:
+        hertz       : { type: QuantityValue, comment: "Frequency in Hertz" }
+    calls:
+        hertz:
+            value : newHertzValue
+            unit  : Units.HERTZ
+
+  ########################################################################################################################
+  # Force
+  ########################################################################################################################
+  !STATEMACHINE Force:
+    variables_hidden:
+        newNewtonValue  : { type: t_double, comment: "New force in Newton" }
+    variables_read_only:
+        newton          : { type: QuantityValue, comment: "Force in Newton" }
+        decaNewton      : { type: QuantityValue, comment: "Force in decaNewton" }
+    calls:
+        newton:
+            value  : newNewtonValue
+            unit   : Units.NEWTON
+        decaNewton:
+            value  : !DIV [ newNewtonValue, !DOUBLE 10 ]
+            unit   : Units.DECANEWTON
+
+  ########################################################################################################################
+  # Fraction
+  ########################################################################################################################
+  !STATEMACHINE Fraction:
+    variables_hidden:
+        newFractionValue: { type: t_double, comment: "New fraction (between 0 and 1)" }
+    variables_read_only:
+        unitless   : { type: QuantityValue, comment: "Fraction as a unitless value between 0 and 1" }
+        percent    : { type: QuantityValue, comment: "Fraction as a percentage value between 0 and 100" }
+    calls:
+        unitless:
+            value : newFractionValue
+            unit  : Units.UNITLESS
+        percent:
+            value : !MUL [newFractionValue, !DOUBLE 100 ]
+            unit  : Units.PERCENT
+
 

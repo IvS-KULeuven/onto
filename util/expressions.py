@@ -23,6 +23,7 @@ class OPERATORS:
     LT = Operator("LT", "<")
     GE = Operator("GE", ">=")
     LE = Operator("LE", "<=")
+    PLC_DEREF = Operator("PLC_DEREF", "^")
 
 
 class IfThen(Object):
@@ -49,10 +50,13 @@ class UnaryOperation(Expression):
 
 
 class BinaryOperation(Expression):
-    def __init__(self, left, right, operator) -> None:
+    def __init__(self, operands, operator) -> None:
         super().__init__(operator)
-        self.left = left
-        self.right = right
+        self.left = operands[0]
+        if len(operands) > 2:
+            self.right = BinaryOperation(operands[1:], operator)
+        else:
+            self.right = operands[1]
         self.register_child("left", self.left)
         self.register_child("right", self.right)
     
@@ -68,42 +72,45 @@ class RecursiveExpression:
 
 
 class ASSIGN(BinaryOperation):
-    def __init__(self, left, right) -> None:
-        super().__init__(left, right, OPERATORS.ASSIGN)
+    def __init__(self, operands) -> None:
+        super().__init__(operands, OPERATORS.ASSIGN)
 
 
 class AND(BinaryOperation):
-    def __init__(self, left, right) -> None:
-        super().__init__(left, right, OPERATORS.AND)
+    def __init__(self, operands) -> None:
+        super().__init__(operands, OPERATORS.AND)
 
 class OR(BinaryOperation):
-    def __init__(self, left, right) -> None:
-        super().__init__(left, right, OPERATORS.OR)
+    def __init__(self, operands) -> None:
+        super().__init__(operands, OPERATORS.OR)
 
 class EQ(BinaryOperation):
-    def __init__(self, left, right) -> None:
-        super().__init__(left, right, OPERATORS.EQ)
+    def __init__(self, operands) -> None:
+        super().__init__(operands, OPERATORS.EQ)
 
 class LT(BinaryOperation):
-    def __init__(self, left, right) -> None:
-        super().__init__(left, right, OPERATORS.LT)
+    def __init__(self, operands) -> None:
+        super().__init__(operands, OPERATORS.LT)
 
 class GT(BinaryOperation):
-    def __init__(self, left, right) -> None:
-        super().__init__(left, right, OPERATORS.GT)
+    def __init__(self, operands) -> None:
+        super().__init__(operands, OPERATORS.GT)
 
 class GE(BinaryOperation):
-    def __init__(self, left, right) -> None:
-        super().__init__(left, right, OPERATORS.GE)
+    def __init__(self, operands) -> None:
+        super().__init__(operands, OPERATORS.GE)
 
 class LE(BinaryOperation):
-    def __init__(self, left, right) -> None:
-        super().__init__(left, right, OPERATORS.LE)
+    def __init__(self, operands) -> None:
+        super().__init__(operands, OPERATORS.LE)
 
 class NOT(UnaryOperation):
     def __init__(self, operand) -> None:
         super().__init__(operand, OPERATORS.NOT)
 
+class PLC_DEREF(UnaryOperation):
+    def __init__(self, operand) -> None:
+        super().__init__(operand, OPERATORS.PLC_DEREF)
 
 
 def load_unary_sequence(loader, node):
@@ -114,10 +121,10 @@ def load_unary_sequence(loader, node):
     return values
 
 def load_binary_sequence(loader, node):
-    """Helper function to load a sequency of exactly 2 items"""
+    """Helper function to load a sequence of minimum 2 items"""
     values = loader.construct_sequence(node)
-    if len(values) != 2:
-        raise Exception(f"Binary operation {str(values)} requires exactly 2 arguments, not {len(values)}!")
+    if len(values) < 2:
+        raise Exception(f"Binary operation {str(values)} requires at least 2 arguments, not {len(values)}!")
     return values
 
 # unary constructors
@@ -129,28 +136,28 @@ def NOT_constructor(loader, node):
 
 def ASSIGN_constructor(loader, node):
     values = load_binary_sequence(loader, node)
-    return ASSIGN(values[0], values[1])
+    return ASSIGN(values)
 def AND_constructor(loader, node):
     values = load_binary_sequence(loader, node)
-    return AND(values[0], values[1])
+    return AND(values)
 def OR_constructor(loader, node):
     values = load_binary_sequence(loader, node)
-    return OR(values[0], values[1])
+    return OR(values)
 def EQ_constructor(loader, node):
     values = load_binary_sequence(loader, node)
-    return EQ(values[0], values[1])
+    return EQ(values)
 def GT_constructor(loader, node):
     values = load_binary_sequence(loader, node)
-    return GT(values[0], values[1])
+    return GT(values)
 def LT_constructor(loader, node):
     values = load_binary_sequence(loader, node)
-    return LT(values[0], values[1])
+    return LT(values)
 def GE_constructor(loader, node):
     values = load_binary_sequence(loader, node)
-    return GE(values[0], values[1])
+    return GE(values)
 def LE_constructor(loader, node):
     values = load_binary_sequence(loader, node)
-    return LE(values[0], values[1])
+    return LE(values)
 
 
 
@@ -161,10 +168,23 @@ class Primitive(Object):
 
 
 class Double(Primitive):
-    def __init__(self, value) -> None:
-        super().__init__(value)
-        print("DOUBLE " + str(self.value))
+    def __init__(self, value: str) -> None:
+        super().__init__(float(value))
 
 def Double_constructor(loader, node):
     value = loader.construct_scalar(node)
     return Double(value)
+
+class Bool(Primitive):
+    def __init__(self, value: str) -> None:
+        if str(value).upper() == "TRUE":
+            v = True
+        elif str(value).upper() == "FALSE":
+            v = False
+        else:
+            raise Exception(f"Invalid argument '{str(value)}' for BOOL, must be either TRUE or FALSE (case insensitive)")
+        super().__init__(v)
+
+def Bool_constructor(loader, node):
+    value = loader.construct_scalar(node)
+    return Bool(value)

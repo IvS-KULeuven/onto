@@ -9,7 +9,9 @@
     def escape(s):
         return sax_escape(s, entities={
             "'": "&#39;",
-            "\"": "&quot;"
+            "\"": "&quot;",
+            "<": "&lt;",
+            ">": "&gt;"
         })
 
     def getPrefixAndPath(dest, scope = []):
@@ -19,7 +21,7 @@
                 return None, [ dest.parent, dest ]
 
             if head.extends is not None and dest.points_to_type is not None:
-                if id(head.extends) == id(dest.points_to_type):
+                if head.extends.name == dest.points_to_type.name:
                     return "SUPER", []
 
             try:
@@ -72,7 +74,7 @@
         if p is not None:
             return p
 
-        raise EOFError( "Destination %s was not found as a subvariable of %s" %(dest,head)
+        raise EOFError( "Destination %s (%s) was not found as a subvariable of %s (%s)" %(dest.name, type(dest).__name__, head.name, type(head).__name__)
                         + "\n\n"
                         + "Destination:\n"
                         + pprint.pformat(dest.__dict__)
@@ -176,6 +178,15 @@ ${indent}  </addData>
 ${indent}</pou>\
 </%def>
 
+<%def name="xml_pou_extends(node, indent='')">\
+<addData>
+${indent}  <data name="http://www.3s-software.com/plcopenxml/pouinheritance" handleUnknown="implementation">
+${indent}    <Inheritance>
+${indent}      <Extends>${node.name}</Extends>
+${indent}    </Inheritance>
+${indent}  </data>
+${indent}</addData>\
+</%def>
 
 <%def name="xml_methods(methods, owner, indent='')">\
     %for method in methods:
@@ -299,8 +310,6 @@ ${render_path(m, scope)}\
 <%def name="render_value(node, scope, indent='')">\
 <%
     print(f" +++ render_value({node}, {scope})")
-    if node.value is None:
-        raise Exception(f"Error in render_value({node}): value is None!")
 %>\
 ${node.value}\
 </%def>
@@ -326,7 +335,7 @@ ${layoutExpression(node.left, scope)} ${node.operator.plc_symbol} ${layoutExpres
         %else:
 ${layoutExpression(node.left, scope)}\
         %endif
- ${node.operator.plc_symbol} \
+ ${escape(node.operator.plc_symbol)} \
         %if useBracketsForRight:
 (${layoutExpression(node.right, scope)})\
         %else:
@@ -390,11 +399,12 @@ ${indent+more}${render_assignment(assignment, scope)}\
 
 <%def name="layoutUnaryOperation(node, scope, indent='', more='    ')">\
 <%
+    print("+++ layoutUnaryOperation")
     if node.operator.plc_symbol is None:
         raise Exception("Unknown symbol in layoutUnaryOperation(%s) for operator %s" %(node.name), operator.name)
 %>\
     %if node.operator.plc_symbol == '^':
-${layoutExpression(operand, scope)}^\
+${layoutExpression(node.operand, scope)}^\
     %else:
 ${node.operator.plc_symbol}(${layoutExpression(node.operand, scope)})\
     %endif
@@ -412,7 +422,7 @@ ${node.operator.plc_symbol}(${layoutExpression(node.operand, scope)})\
 % endif
 ${indent}  ${xml_type(node)}
         % if node.initial is not None:
-${indent}  <initialValue><simpleValue value="${str(node.initial).upper()}" /></initialValue>
+${indent}  <initialValue><simpleValue value="${str(node.initial.value).upper()}" /></initialValue>
         % endif
         % if node.qualifiers is not None:
 ${indent}  <addData>

@@ -210,7 +210,7 @@ class Variable(Object):
         self.expand = None
         self.initial = None
         self.comment = None
-        self.pointsToType = None
+        self.points_to_type = None
         self.attributes = None
         self.qualifiers = []
         self.arguments = None
@@ -228,7 +228,7 @@ class Variable(Object):
         if 'comment' in args:
             self.comment = args['comment']
         if 'pointsToType' in args:
-            self.pointsToType = resolve(args['pointsToType'], self)
+            self.points_to_type = resolve(args['pointsToType'], self)
         if 'attributes' in args:
             self.attributes = {}
             for attribute_k, attribute_v in args['attributes'].items():
@@ -363,6 +363,7 @@ class FunctionBlock(Object):
         self.var_out = {}
         self.var_inout = {}
         self.var_local = {}
+        self.attributes = {}
         self.extends = None
         self.methods = {}
         self.plc_symbol = None
@@ -370,8 +371,25 @@ class FunctionBlock(Object):
 
         if "extends" in args:
             self.extends = resolve(args["extends"], self)
+            # if self.name == "SM_AverageCurrent":
+            #     print("OK " + self.name + " " + args["extends"]+ " +++ " + self.extends.name)
+
+            self.attributes["SUPER"] = Pointer("SUPER", self, { "type": self.extends })
+            
+            # print("**   points_to_type %s" % self.attributes["SUPER"].points_to_type.name)
+
             for child_name, child in self.extends.children.items():
-                self.register_child(child_name, child)
+                if not child_name == "SUPER":
+                    self.register_child(child_name, child)
+
+            # if self.name == "SM_AverageCurrent":
+            #     print("OK " + self.name + " " + args["extends"]+ " +++ " + self.extends.name)
+            #     for child_name, child in self.children.items():
+            #         print(" - %s" % child_name)
+            #         if child_name == "SUPER":
+            #             print("    points_to_type %s" % child.points_to_type.name)
+            #     import sys 
+            #     sys.exit(1)
 
 
 class Status(FunctionBlock):
@@ -389,7 +407,7 @@ class Status(FunctionBlock):
             {
                 "comment": "Super state (TRUE if the super state is active, or if there is no super state)",
                 "type": "t_bool",
-                "initial": True
+                "initial": Bool(True)
             })
 
         if "variables" in args:
@@ -410,7 +428,7 @@ class Status(FunctionBlock):
         
         self.implementation = []
         for state_name, state_args in args["states"].items():
-            assignment = ASSIGN(self.get_child(state_name), AND( state_args['expr'], self.get_child('superState') ))
+            assignment = ASSIGN([self.get_child(state_name), AND([state_args['expr'], self.get_child('superState')])])
             assignment.resolve_children(self)
             self.implementation.append(assignment)
         
@@ -420,11 +438,30 @@ class Config(Struct):
     def __init__(self, name, parent, args={}) -> None:
         super().__init__(name, parent, args)
 
+class Pointer(Variable):
+
+    def __init__(self, name, parent, args={}) -> None:
+        super().__init__(name, parent)
+        
+        check_args("Pointer", args, ["to", "type"])
+
+        self.points_to = None
+        self.points_to_type = None
+
+        if "to" in args:
+            self.points_to = resolve(args["to"], self)
+        if "type" in args:
+            self.points_to_type = resolve(args["type"], self)
+
+
 
 class Statemachine(FunctionBlock):
 
     def __init__(self, name, parent, args={}) -> None:
-        super().__init__(f"SM_{name}", parent)
+        if "extends" in args:
+            super().__init__(f"SM_{name}", parent, { "extends" : args["extends"] } )
+        else:
+            super().__init__(f"SM_{name}", parent)
         
         check_args("Statemachine", args,
                    ["variables", "variables_hidden", "variables_read_only",
@@ -432,8 +469,6 @@ class Statemachine(FunctionBlock):
                     "disabled_calls", "updates", "references", "extends",
                     "processes", "constraints"])
         
-
-        self.extends = None
         self.variables = {}
         self.variables_hidden = {}
         self.variables_read_only = {}
@@ -441,10 +476,7 @@ class Statemachine(FunctionBlock):
         self.parts = {}
         self.local = {}
         self.methods = {}
-        
-
-        if 'extends' in args:
-            raise NotImplemented(f"SM_{name}: 'extends' is not implemented yet")
+        self.processes = {}
 
         self.varNames = []
         self.statusNames = []
@@ -452,14 +484,14 @@ class Statemachine(FunctionBlock):
         self.processNames = []
         self.disabledCallNames = []
 
-        if "actualStatus" not in self.var_out:
+        if "actualStatus" not in self.children:
             v = Variable("actualStatus", self)
             v.type = PRIMITIVE_TYPES.t_string
             v.comment = "Current status description"
             v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_R]
             self.var_out['actualStatus'] = v
         
-        if "previousStatus" not in self.var_out:
+        if "previousStatus" not in self.children:
             v = Variable("previousStatus", self)
             v.type = PRIMITIVE_TYPES.t_string
             v.comment = "Previous status description"
@@ -469,31 +501,35 @@ class Statemachine(FunctionBlock):
             for var_name, var in args['variables'].items():
                 v = Variable(var_name, self, var)
                 self.varNames.append(var_name)
-                if len(v.qualifiers) == 0:
-                    v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_R]
+                if QUALIFIERS.OPC_UA_ACTIVATE not in v.qualifiers:
+                    v.qualifiers.append(QUALIFIERS.OPC_UA_ACTIVATE)
+                if QUALIFIERS.OPC_UA_ACCESS_R not in v.qualifiers:
+                    v.qualifiers.append(QUALIFIERS.OPC_UA_ACCESS_R)
                 self.var_in[var_name] = v
 
         if "variables_read_only" in args:
             for var_name, var in args['variables_read_only'].items():
                 v = Variable(var_name, self, var)
                 self.varNames.append(var_name)
-                if v.qualifiers is None:
-                    v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_R]
+                if QUALIFIERS.OPC_UA_ACTIVATE not in v.qualifiers:
+                    v.qualifiers.append(QUALIFIERS.OPC_UA_ACTIVATE)
+                if QUALIFIERS.OPC_UA_ACCESS_R not in v.qualifiers:
+                    v.qualifiers.append(QUALIFIERS.OPC_UA_ACCESS_R)
                 self.var_out[var_name] = v
 
         if "variables_hidden" in args:
             for var_name, var in args['variables_hidden'].items():
                 v = Variable(var_name, self, var)
                 self.varNames.append(var_name)
-                if v.qualifiers is None:
-                    v.qualifiers = [QUALIFIERS.OPC_UA_DEACTIVATE]
+                if QUALIFIERS.OPC_UA_DEACTIVATE not in v.qualifiers:
+                    v.qualifiers.append(QUALIFIERS.OPC_UA_DEACTIVATE)
                 self.var_in[var_name] = v
 
         if "references" in args:
             for var_name, var in args['variables'].items():
                 v = Variable(var_name, self, var)
-                if v.qualifiers is None:
-                    v.qualifiers = [QUALIFIERS.OPC_UA_DEACTIVATE]
+                if QUALIFIERS.OPC_UA_DEACTIVATE not in v.qualifiers:
+                    v.qualifiers.append(QUALIFIERS.OPC_UA_DEACTIVATE)
                 self.var_inout[var_name] = v
 
         if "statuses" in args:
@@ -514,41 +550,82 @@ class Statemachine(FunctionBlock):
                     "type": f'{name}Statuses'})
         
         if "parts" in args:
-            raise NotImplementedError()
-            for part_name, part in kwargs['statuses']:
+            for part_name in args['parts']:
                 self.partNames.append(part_name)
             struct = Struct(
                 name = f'{name}Parts',
-                lib = lib,
-                items = kwargs['parts'])
-            #ns["items"].append(struct)
-            lib["StateMachines"]["Parts"].append(struct)
+                parent = self.parent,
+                args = { "items" : args['parts'] }
+            )
+            self.parent["StateMachines"]["Parts"].append(struct)
+            self.parent.structs.append(struct)
             # TODO arguments, attributes, ...
-            self.var_out[part_name] = Variable(
+            self.var_out["parts"] = Variable(
                 name='parts', 
-                lib=lib,
-                type=struct,
-                comment="Parts of the state machine")
+                parent=self,
+                args = {
+                    "comment": "Parts of the state machine",
+                    "type": f'{name}Parts'})
 
         # calls of members can be disabled e.g. in case a  
         # separte PLC program (at a faster cycle time) calls
         # the member (as for the 'axes' member of MTCS)
         if "disabled_calls" in args:
-            raise NotImplementedError()
-            self.disabledCallNames.append(kwargs["disabled_calls"])
+            self.disabledCallNames.append(args["disabled_calls"])
 
         if "processes" in args:
-            raise NotImplementedError()
             struct = Struct(
                 name = f'{name}Processes',
-                lib = lib,
-                items = kwargs['processes'])
-            lib["StateMachines"]["Processes"].append(struct)
-            self.var_out[part_name] = Variable(
+                parent = self.parent,
+                args = {"items" : args['processes']})
+            self.parent["StateMachines"]["Processes"].append(struct)
+            self.var_out["processes"] = Variable(
                 name='processes', 
-                lib=lib,
-                type=struct,
-                comment="Processes of the state machine")
+                parent=self,
+                args = {
+                    "comment": "Processes of the state machine",
+                    "type": f'{name}Processes'
+                })
+
+        if "processes" in args:
+            for process_name, process_args in args.processes.items():
+                self.processNames.append(process_name)
+                m = Method(
+                    name = process_name,
+                    parent = self,
+                    args = {
+                        "comment": process_args["comment"],
+                        "returnType": "RequestResults",
+                        "inputArgs": [ var.name for var in resolve(process_args["type"], context=self).request.var_in ]
+                    })
+                
+                self.methods[process_name] = m
+
+                # c = Call(f"call_{process_name}", self)
+                # c.calls = m.get_child("request")
+                # c.assignments = []
+                # for k, v in call.items():
+                #     # k should be a child of the callee (c.calls)!
+                #     assignment = ASSIGN([c.calls.get_child(k, recursive=False), v])
+                #     assignment.resolve_children(self)
+                #     c.assignments.append(assignment)
+
+                # m.implementation = [
+                #     ASSIGN([m, c])
+                # ]
+
+                    # # add the implementation of the method
+                    # self[name].ADD HAS IMPLEMENTATION(
+                    #     [
+                    #         ASSIGN(
+                    #             self[name],
+                    #             CALL(
+                    #                     calls: self.processes[name].request,
+                    #                     assigns: __BUILD__( ( __PAIR__(v._name, v) for v in PATHS(self[name], HAS_VAR_IN) ) ) ) "callRequest"
+                    #         )
+                    #     ]
+                    # ) "implementation"
+
 
         # ============ IMPLEMENTATION PART ============
 
@@ -560,7 +637,7 @@ class Statemachine(FunctionBlock):
                 c.assignments = []
                 for k, v in call.items():
                     # k should be a child of the callee (c.calls)!
-                    assignment = ASSIGN(c.calls.get_child(k, recursive=False), v)
+                    assignment = ASSIGN([c.calls.get_child(k, recursive=False), v])
                     assignment.resolve_children(self)
                     c.assignments.append(assignment)
 
@@ -568,9 +645,17 @@ class Statemachine(FunctionBlock):
                     self.implementation = []
 
                 self.implementation.append(c)
+        
+        if self.extends is not None:
+            if self.implementation is None:
+                self.implementation = []
+            
+            c = Call(f"call_SUPER", self)
+            c.calls = PLC_DEREF(self.children["SUPER"])
+            self.implementation.append(c)
+        
 
-
-        if not '_log' in self.methods:
+        if not '_log' in self.children:
             m = Method("_log", self, {
                            "comment"   : "Log to buffer",
                            "inputArgs" : {
@@ -592,11 +677,11 @@ class Statemachine(FunctionBlock):
             c = Call("loggerCall", self)
             c.calls = resolve("LOGGER", None)
             c.assignments = [
-                ASSIGN(get_global("LOGGER").get_child("name"), m.get_child("name")),
-                ASSIGN(get_global("LOGGER").get_child("actualStatus"), self.get_child("actualStatus")),
-                ASSIGN(get_global("LOGGER").get_child("previousStatus"), self.get_child("previousStatus")),
-                ASSIGN(get_global("LOGGER").get_child("buffer"), m.get_child("buffer")),
-                ASSIGN(get_global("LOGGER").get_child("subBuffer"), m.get_child("subBuffer"))
+                ASSIGN([get_global("LOGGER").get_child("name"), m.get_child("name")]),
+                ASSIGN([get_global("LOGGER").get_child("actualStatus"), self.get_child("actualStatus")]),
+                ASSIGN([get_global("LOGGER").get_child("previousStatus"), self.get_child("previousStatus")]),
+                ASSIGN([get_global("LOGGER").get_child("buffer"), m.get_child("buffer")]),
+                ASSIGN([get_global("LOGGER").get_child("subBuffer"), m.get_child("subBuffer")])
             ]
 
             m.implementation.append(c)

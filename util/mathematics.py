@@ -12,24 +12,24 @@ class ABS(UnaryOperation):
         super().__init__(operand, OPERATORS.ABS)
 
 class SUM(BinaryOperation):
-    def __init__(self, left, right) -> None:
-        super().__init__(left, right, OPERATORS.SUM)
+    def __init__(self, operands) -> None:
+        super().__init__(operands, OPERATORS.SUM)
 
 class SUB(BinaryOperation):
-    def __init__(self, left, right) -> None:
-        super().__init__(left, right, OPERATORS.SUB)
+    def __init__(self, operands) -> None:
+        super().__init__(operands, OPERATORS.SUB)
 
 class MUL(BinaryOperation):
-    def __init__(self, left, right) -> None:
-        super().__init__(left, right, OPERATORS.MUL)
+    def __init__(self, operands) -> None:
+        super().__init__(operands, OPERATORS.MUL)
 
 class DIV(BinaryOperation):
-    def __init__(self, left, right) -> None:
-        super().__init__(left, right, OPERATORS.DIV)
+    def __init__(self, operands) -> None:
+        super().__init__(operands, OPERATORS.DIV)
 
 class POW(BinaryOperation):
-    def __init__(self, left, right) -> None:
-        super().__init__(left, right, OPERATORS.POW)
+    def __init__(self, operands) -> None:
+        super().__init__(operands, OPERATORS.POW)
     
 class NEG(UnaryOperation):
     def __init__(self, operand) -> None:
@@ -41,23 +41,23 @@ class NEG(UnaryOperation):
 
 def SUM_constructor(loader, node):
     values = load_binary_sequence(loader, node)
-    return SUM(values[0], values[1])
+    return SUM(values)
 
 def SUB_constructor(loader, node):
     values = load_binary_sequence(loader, node)
-    return SUB(values[0], values[1])
+    return SUB(values)
 
 def MUL_constructor(loader, node):
     values = load_binary_sequence(loader, node)
-    return MUL(values[0], values[1])
+    return MUL(values)
 
 def DIV_constructor(loader, node):
     values = load_binary_sequence(loader, node)
-    return DIV(values[0], values[1])
+    return DIV(values)
 
 def POW_constructor(loader, node):
     values = load_binary_sequence(loader, node)
-    return POW(values[0], values[1])
+    return POW(values)
 
 # unary constructors
 
