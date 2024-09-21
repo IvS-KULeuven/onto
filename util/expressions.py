@@ -18,6 +18,7 @@ class OPERATORS:
     AND = Operator("AND", "AND")
     OR  = Operator("OR", "OR")
     NOT = Operator("NOT", "NOT")
+    ADR = Operator("ADR", "ADR")
     EQ = Operator("EQ", "=")
     GT = Operator("GT", ">")
     LT = Operator("LT", "<")
@@ -108,6 +109,10 @@ class NOT(UnaryOperation):
     def __init__(self, operand) -> None:
         super().__init__(operand, OPERATORS.NOT)
 
+class ADR(UnaryOperation):
+    def __init__(self, operand) -> None:
+        super().__init__(operand, OPERATORS.ADR)
+
 class PLC_DEREF(UnaryOperation):
     def __init__(self, operand) -> None:
         super().__init__(operand, OPERATORS.PLC_DEREF)
@@ -131,6 +136,9 @@ def load_binary_sequence(loader, node):
 def NOT_constructor(loader, node):
     values = load_unary_sequence(loader, node)
     return NOT(values[0])
+def ADR_constructor(loader, node):
+    values = load_unary_sequence(loader, node)
+    return ADR(values[0])
 
 # binary constructors
 

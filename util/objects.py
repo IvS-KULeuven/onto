@@ -79,4 +79,4 @@ class Object:
         if recursive and self.parent is not None:
             return self.parent.get_child(name)
 
-        raise Exception(f"Child {name} not found!")
+        raise Exception(f"{name} not found as child of {self.name}!")

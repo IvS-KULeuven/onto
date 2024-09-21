@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
-  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2024-09-20T11:52:05.221369" />
-  <contentHeader name="mtcs_common" modificationDateTime="2024-09-20T11:52:05.221369">
+  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2024-09-21T23:57:20.383988" />
+  <contentHeader name="mtcs_common" modificationDateTime="2024-09-21T23:57:20.383988">
     <coordinateInfo>
       <fbd>
         <scaling x="1" y="1" />
@@ -246,6 +246,60 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Config</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="BaseProcessStatuses">
+        <baseType>
+          <struct>
+            <variable name="enabledStatus">
+              <type><derived name="EnabledStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Is the process enabled or not?</xhtml>
+              </documentation>
+            </variable>
+            <variable name="busyStatus">
+              <type><derived name="BusyStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Is the process busy or not?</xhtml>
+              </documentation>
+            </variable>
+            <variable name="healthStatus">
+              <type><derived name="HealthStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Is the process in a healthy state or not?</xhtml>
+              </documentation>
+            </variable>
+            <variable name="startedStatus">
+              <type><derived name="StartedStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Is the process started or not?</xhtml>
               </documentation>
             </variable>
           </struct>
@@ -4353,6 +4407,177 @@ percent(
     previousStatus := THIS^.previousStatus,
     buffer := buffer,
     subBuffer := subBuffer);
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+        </addData>
+      </pou>
+      <pou name="SM_BaseProcess" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="isEnabled">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Should the trigger be enabled?</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="actualStatus">
+              <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Current status description</xhtml>
+              </documentation>
+            </variable>
+            <variable name="previousStatus">
+              <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Previous status description</xhtml>
+              </documentation>
+            </variable>
+            <variable name="statuses">
+              <type><derived name="BaseProcessStatuses" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Statuses of the state machine</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <inOutVars>
+          </inOutVars>
+          <localVars>
+            <variable name="do_request">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Write TRUE to request the start of the process</xhtml>
+              </documentation>
+            </variable>
+            <variable name="do_request_result">
+              <type><derived name="RequestResults" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Result of the request</xhtml>
+              </documentation>
+            </variable>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">statuses.enabledStatus( isEnabled := isEnabled );
+statuses.busyStatus();
+statuses.healthStatus();
+statuses.startedStatus();
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_log">
+              <interface>
+                <returnType><BOOL /></returnType>
+                <inputVars>
+                  <variable name="name">
+                    <type><string /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="buffer">
+                    <type><derived name="LogBuffer" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                  <variable name="subBuffer">
+                    <type><derived name="LogBuffer" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
+                    </documentation>
+                  </variable>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
+    name := name,
+    actualStatus := THIS^.actualStatus,
+    previousStatus := THIS^.previousStatus,
+    buffer := buffer,
+    subBuffer := subBuffer,
+    pHealthStatus := ADR(THIS^.statuses.healthStatus),
+    pBusyStatus := ADR(THIS^.statuses.busyStatus));
 </xhtml>
                 </ST>
               </body>

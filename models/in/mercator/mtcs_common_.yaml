@@ -738,4 +738,21 @@
             value : !MUL [newFractionValue, !DOUBLE 100 ]
             unit  : Units.PERCENT
 
+########################################################################################################################
+# BaseProcess
+########################################################################################################################
+  !STATEMACHINE BaseProcess:
+    variables_hidden:
+        isEnabled           : { type: t_bool, comment: "Should the trigger be enabled?" }
+    statuses:
+        enabledStatus       : { type: EnabledStatus    , comment: "Is the process enabled or not?" }
+        busyStatus          : { type: BusyStatus       , comment: "Is the process busy or not?" }
+        healthStatus        : { type: HealthStatus     , comment: "Is the process in a healthy state or not?" }
+        startedStatus       : { type: StartedStatus    , comment: "Is the process started or not?" }
+    local:
+        do_request          : { type: t_bool           , comment: "Write TRUE to request the start of the process" }
+        do_request_result   : { type: RequestResults   , comment: "Result of the request" }
+    calls:
+        enabledStatus:
+            isEnabled: isEnabled
 

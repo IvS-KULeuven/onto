@@ -99,11 +99,6 @@ mtcs_common (Library):
         InitializationStatus (Status):
             superState (Variable):
             state (Variable):
-                SHUTDOWN (Variable):
-                INITIALIZING (Variable):
-                INITIALIZING_FAILED (Variable):
-                INITIALIZED (Variable):
-                LOCKED (Variable):
             shutdown (Variable):
             initializing (Variable):
             initializingFailed (Variable):
@@ -141,24 +136,17 @@ mtcs_common (Library):
         OperatorStatus (Status):
             superState (Variable):
             state (Variable):
-                NONE (Variable):
-                OBSERVER (Variable):
-                TECH (Variable):
             none (Variable):
             tech (Variable):
             observer (Variable):
         OperatingStatus (Status):
             superState (Variable):
             state (Variable):
-                AUTO (Variable):
-                MANUAL (Variable):
             auto (Variable):
             manual (Variable):
         OperatingModeStatus (Status):
             superState (Variable):
             state (Variable):
-                LOCAL (Variable):
-                REMOTE (Variable):
             local (Variable):
             remote (Variable):
         ActivityStatus (Status):
@@ -172,48 +160,34 @@ mtcs_common (Library):
         parts (Namespace):
         processes (Namespace):
         statuses (Namespace):
+            BaseProcessStatuses (Struct):
+                enabledStatus (Variable):
+                    superState (Variable):
+                    isEnabled (Variable):
+                    enabled (Variable):
+                    disabled (Variable):
+                busyStatus (Variable):
+                    superState (Variable):
+                    isBusy (Variable):
+                    idle (Variable):
+                    busy (Variable):
+                healthStatus (Variable):
+                    superState (Variable):
+                    isGood (Variable):
+                    hasWarning (Variable):
+                    good (Variable):
+                    warning (Variable):
+                    bad (Variable):
+                startedStatus (Variable):
+                    superState (Variable):
+                    isStarted (Variable):
+                    started (Variable):
+                    notStarted (Variable):
         SM_QuantityValue (Statemachine):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-                DEGREE (Variable):
-                RADIAN (Variable):
-                PERCENT (Variable):
-                RADIANS_PER_SECOND (Variable):
-                DEGREES_PER_SECOND (Variable):
-                MILLIMETERS_PER_SECOND (Variable):
-                REVOLUTIONS_PER_SECOND (Variable):
-                REVOLUTIONS_PER_MINUTE (Variable):
-                AMPS (Variable):
-                MILLIAMPS (Variable):
-                MILLIMETER (Variable):
-                MICROMETER (Variable):
-                DEGREES_CELSIUS (Variable):
-                KELVIN (Variable):
-                BAR (Variable):
-                PASCAL (Variable):
-                UNITLESS (Variable):
-                NEWTON (Variable):
-                DECANEWTON (Variable):
-                VOLT (Variable):
-                MILLIVOLT (Variable):
-                HERTZ (Variable):
-                G (Variable):
-                MILLIG (Variable):
-                NEWTONMETER (Variable):
-                ARCSECONDS (Variable):
-                ARCSECONDS_PER_SECOND (Variable):
-                RADIANS_PER_SQUARE_SECOND (Variable):
-                DEGREES_PER_SQUARE_SECOND (Variable):
-                ARCSECONDS_PER_SQUARE_SECOND (Variable):
-                METERS_PER_SECOND (Variable):
-                HECTOPASCAL (Variable):
-                SECONDS (Variable):
-                MINUTES (Variable):
-                MILLIMETERS_PER_HOUR (Variable):
-                HITS_PER_SQUARE_CENTIMETER (Variable):
-                HITS_PER_SQUARE_CENTIMETER_PER_HOUR (Variable):
             _log (Method):
                 name (Variable):
                 buffer (Variable):
@@ -222,26 +196,20 @@ mtcs_common (Library):
             actualStatus (Variable):
             previousStatus (Variable):
             radians (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             degrees (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             arcseconds (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             newDegreesValue (Variable):
             _log (Method):
                 name (Variable):
@@ -251,19 +219,15 @@ mtcs_common (Library):
             actualStatus (Variable):
             previousStatus (Variable):
             millimeters (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             micrometers (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             newMillimetersValue (Variable):
             _log (Method):
                 name (Variable):
@@ -273,26 +237,20 @@ mtcs_common (Library):
             actualStatus (Variable):
             previousStatus (Variable):
             radiansPerSecond (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             degreesPerSecond (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             arcsecondsPerSecond (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             newDegreesPerSecondValue (Variable):
             _log (Method):
                 name (Variable):
@@ -302,26 +260,20 @@ mtcs_common (Library):
             actualStatus (Variable):
             previousStatus (Variable):
             radiansPerSquareSecond (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             degreesPerSquareSecond (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             arcsecondsPerSquareSecond (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             newDegreesPerSquareSecondValue (Variable):
             _log (Method):
                 name (Variable):
@@ -331,12 +283,10 @@ mtcs_common (Library):
             actualStatus (Variable):
             previousStatus (Variable):
             millimetersPerSecond (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             newMillimetersPerSecondValue (Variable):
             _log (Method):
                 name (Variable):
@@ -346,19 +296,15 @@ mtcs_common (Library):
             actualStatus (Variable):
             previousStatus (Variable):
             volt (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             milliVolt (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             newVoltValue (Variable):
             _log (Method):
                 name (Variable):
@@ -368,19 +314,15 @@ mtcs_common (Library):
             actualStatus (Variable):
             previousStatus (Variable):
             g (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             milliG (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             newMilliGValue (Variable):
             _log (Method):
                 name (Variable):
@@ -390,19 +332,15 @@ mtcs_common (Library):
             actualStatus (Variable):
             previousStatus (Variable):
             amps (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             milliAmps (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             newAmpsValue (Variable):
             _log (Method):
                 name (Variable):
@@ -412,12 +350,10 @@ mtcs_common (Library):
             actualStatus (Variable):
             previousStatus (Variable):
             newtonmeter (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             newNewtonmeterValue (Variable):
             _log (Method):
                 name (Variable):
@@ -427,26 +363,20 @@ mtcs_common (Library):
             actualStatus (Variable):
             previousStatus (Variable):
             unitless (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             percent (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             newtonmeter (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             newFractionValue (Variable):
             maxNewtonmeter (Variable):
             _log (Method):
@@ -459,19 +389,15 @@ mtcs_common (Library):
             actualStatus (Variable):
             previousStatus (Variable):
             amps (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             milliAmps (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             newAmpsValue (Variable):
             _log (Method):
                 name (Variable):
@@ -481,19 +407,15 @@ mtcs_common (Library):
             actualStatus (Variable):
             previousStatus (Variable):
             seconds (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             minutes (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             newSecondsValue (Variable):
             _log (Method):
                 name (Variable):
@@ -503,19 +425,15 @@ mtcs_common (Library):
             actualStatus (Variable):
             previousStatus (Variable):
             celsius (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             kelvin (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             newCelsiusValue (Variable):
             _log (Method):
                 name (Variable):
@@ -525,26 +443,20 @@ mtcs_common (Library):
             actualStatus (Variable):
             previousStatus (Variable):
             bar (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             pascal (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             hectoPascal (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             newBarValue (Variable):
             _log (Method):
                 name (Variable):
@@ -554,12 +466,10 @@ mtcs_common (Library):
             actualStatus (Variable):
             previousStatus (Variable):
             hertz (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             newHertzValue (Variable):
             _log (Method):
                 name (Variable):
@@ -569,19 +479,15 @@ mtcs_common (Library):
             actualStatus (Variable):
             previousStatus (Variable):
             newton (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             decaNewton (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             newNewtonValue (Variable):
             _log (Method):
                 name (Variable):
@@ -591,20 +497,49 @@ mtcs_common (Library):
             actualStatus (Variable):
             previousStatus (Variable):
             unitless (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             percent (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             newFractionValue (Variable):
+            _log (Method):
+                name (Variable):
+                buffer (Variable):
+                subBuffer (Variable):
+        SM_BaseProcess (Statemachine):
+            actualStatus (Variable):
+            previousStatus (Variable):
+            isEnabled (Variable):
+            statuses (Variable):
+                enabledStatus (Variable):
+                    superState (Variable):
+                    isEnabled (Variable):
+                    enabled (Variable):
+                    disabled (Variable):
+                busyStatus (Variable):
+                    superState (Variable):
+                    isBusy (Variable):
+                    idle (Variable):
+                    busy (Variable):
+                healthStatus (Variable):
+                    superState (Variable):
+                    isGood (Variable):
+                    hasWarning (Variable):
+                    good (Variable):
+                    warning (Variable):
+                    bad (Variable):
+                startedStatus (Variable):
+                    superState (Variable):
+                    isStarted (Variable):
+                    started (Variable):
+                    notStarted (Variable):
+            do_request (Variable):
+            do_request_result (Variable):
             _log (Method):
                 name (Variable):
                 buffer (Variable):
@@ -643,6 +578,29 @@ mtcs_common (Library):
                 lo (Variable):
                 hi (Variable):
                 hiHi (Variable):
+        BaseProcessStatuses (Struct):
+            enabledStatus (Variable):
+                superState (Variable):
+                isEnabled (Variable):
+                enabled (Variable):
+                disabled (Variable):
+            busyStatus (Variable):
+                superState (Variable):
+                isBusy (Variable):
+                idle (Variable):
+                busy (Variable):
+            healthStatus (Variable):
+                superState (Variable):
+                isGood (Variable):
+                hasWarning (Variable):
+                good (Variable):
+                warning (Variable):
+                bad (Variable):
+            startedStatus (Variable):
+                superState (Variable):
+                isStarted (Variable):
+                started (Variable):
+                notStarted (Variable):
     processes (ProcessesNamespace):
         args (Namespace):
     functionblocks (Namespace):
@@ -684,11 +642,6 @@ mtcs_common (Library):
         InitializationStatus (Status):
             superState (Variable):
             state (Variable):
-                SHUTDOWN (Variable):
-                INITIALIZING (Variable):
-                INITIALIZING_FAILED (Variable):
-                INITIALIZED (Variable):
-                LOCKED (Variable):
             shutdown (Variable):
             initializing (Variable):
             initializingFailed (Variable):
@@ -726,24 +679,17 @@ mtcs_common (Library):
         OperatorStatus (Status):
             superState (Variable):
             state (Variable):
-                NONE (Variable):
-                OBSERVER (Variable):
-                TECH (Variable):
             none (Variable):
             tech (Variable):
             observer (Variable):
         OperatingStatus (Status):
             superState (Variable):
             state (Variable):
-                AUTO (Variable):
-                MANUAL (Variable):
             auto (Variable):
             manual (Variable):
         OperatingModeStatus (Status):
             superState (Variable):
             state (Variable):
-                LOCAL (Variable):
-                REMOTE (Variable):
             local (Variable):
             remote (Variable):
         ActivityStatus (Status):
@@ -758,43 +704,6 @@ mtcs_common (Library):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-                DEGREE (Variable):
-                RADIAN (Variable):
-                PERCENT (Variable):
-                RADIANS_PER_SECOND (Variable):
-                DEGREES_PER_SECOND (Variable):
-                MILLIMETERS_PER_SECOND (Variable):
-                REVOLUTIONS_PER_SECOND (Variable):
-                REVOLUTIONS_PER_MINUTE (Variable):
-                AMPS (Variable):
-                MILLIAMPS (Variable):
-                MILLIMETER (Variable):
-                MICROMETER (Variable):
-                DEGREES_CELSIUS (Variable):
-                KELVIN (Variable):
-                BAR (Variable):
-                PASCAL (Variable):
-                UNITLESS (Variable):
-                NEWTON (Variable):
-                DECANEWTON (Variable):
-                VOLT (Variable):
-                MILLIVOLT (Variable):
-                HERTZ (Variable):
-                G (Variable):
-                MILLIG (Variable):
-                NEWTONMETER (Variable):
-                ARCSECONDS (Variable):
-                ARCSECONDS_PER_SECOND (Variable):
-                RADIANS_PER_SQUARE_SECOND (Variable):
-                DEGREES_PER_SQUARE_SECOND (Variable):
-                ARCSECONDS_PER_SQUARE_SECOND (Variable):
-                METERS_PER_SECOND (Variable):
-                HECTOPASCAL (Variable):
-                SECONDS (Variable):
-                MINUTES (Variable):
-                MILLIMETERS_PER_HOUR (Variable):
-                HITS_PER_SQUARE_CENTIMETER (Variable):
-                HITS_PER_SQUARE_CENTIMETER_PER_HOUR (Variable):
             _log (Method):
                 name (Variable):
                 buffer (Variable):
@@ -803,26 +712,20 @@ mtcs_common (Library):
             actualStatus (Variable):
             previousStatus (Variable):
             radians (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             degrees (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             arcseconds (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             newDegreesValue (Variable):
             _log (Method):
                 name (Variable):
@@ -832,19 +735,15 @@ mtcs_common (Library):
             actualStatus (Variable):
             previousStatus (Variable):
             millimeters (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             micrometers (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             newMillimetersValue (Variable):
             _log (Method):
                 name (Variable):
@@ -854,26 +753,20 @@ mtcs_common (Library):
             actualStatus (Variable):
             previousStatus (Variable):
             radiansPerSecond (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             degreesPerSecond (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             arcsecondsPerSecond (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             newDegreesPerSecondValue (Variable):
             _log (Method):
                 name (Variable):
@@ -883,26 +776,20 @@ mtcs_common (Library):
             actualStatus (Variable):
             previousStatus (Variable):
             radiansPerSquareSecond (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             degreesPerSquareSecond (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             arcsecondsPerSquareSecond (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             newDegreesPerSquareSecondValue (Variable):
             _log (Method):
                 name (Variable):
@@ -912,12 +799,10 @@ mtcs_common (Library):
             actualStatus (Variable):
             previousStatus (Variable):
             millimetersPerSecond (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             newMillimetersPerSecondValue (Variable):
             _log (Method):
                 name (Variable):
@@ -927,19 +812,15 @@ mtcs_common (Library):
             actualStatus (Variable):
             previousStatus (Variable):
             volt (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             milliVolt (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             newVoltValue (Variable):
             _log (Method):
                 name (Variable):
@@ -949,19 +830,15 @@ mtcs_common (Library):
             actualStatus (Variable):
             previousStatus (Variable):
             g (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             milliG (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             newMilliGValue (Variable):
             _log (Method):
                 name (Variable):
@@ -971,19 +848,15 @@ mtcs_common (Library):
             actualStatus (Variable):
             previousStatus (Variable):
             amps (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             milliAmps (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             newAmpsValue (Variable):
             _log (Method):
                 name (Variable):
@@ -993,12 +866,10 @@ mtcs_common (Library):
             actualStatus (Variable):
             previousStatus (Variable):
             newtonmeter (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             newNewtonmeterValue (Variable):
             _log (Method):
                 name (Variable):
@@ -1008,26 +879,20 @@ mtcs_common (Library):
             actualStatus (Variable):
             previousStatus (Variable):
             unitless (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             percent (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             newtonmeter (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             newFractionValue (Variable):
             maxNewtonmeter (Variable):
             _log (Method):
@@ -1040,19 +905,15 @@ mtcs_common (Library):
             actualStatus (Variable):
             previousStatus (Variable):
             amps (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             milliAmps (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             newAmpsValue (Variable):
             _log (Method):
                 name (Variable):
@@ -1062,19 +923,15 @@ mtcs_common (Library):
             actualStatus (Variable):
             previousStatus (Variable):
             seconds (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             minutes (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             newSecondsValue (Variable):
             _log (Method):
                 name (Variable):
@@ -1084,19 +941,15 @@ mtcs_common (Library):
             actualStatus (Variable):
             previousStatus (Variable):
             celsius (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             kelvin (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             newCelsiusValue (Variable):
             _log (Method):
                 name (Variable):
@@ -1106,26 +959,20 @@ mtcs_common (Library):
             actualStatus (Variable):
             previousStatus (Variable):
             bar (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             pascal (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             hectoPascal (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             newBarValue (Variable):
             _log (Method):
                 name (Variable):
@@ -1135,12 +982,10 @@ mtcs_common (Library):
             actualStatus (Variable):
             previousStatus (Variable):
             hertz (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             newHertzValue (Variable):
             _log (Method):
                 name (Variable):
@@ -1150,19 +995,15 @@ mtcs_common (Library):
             actualStatus (Variable):
             previousStatus (Variable):
             newton (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             decaNewton (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             newNewtonValue (Variable):
             _log (Method):
                 name (Variable):
@@ -1172,20 +1013,49 @@ mtcs_common (Library):
             actualStatus (Variable):
             previousStatus (Variable):
             unitless (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             percent (Variable):
-                SUPER (Variable):
                 actualStatus (Variable):
                 previousStatus (Variable):
                 value (Variable):
                 unit (Variable):
-                _log (Variable):
             newFractionValue (Variable):
+            _log (Method):
+                name (Variable):
+                buffer (Variable):
+                subBuffer (Variable):
+        SM_BaseProcess (Statemachine):
+            actualStatus (Variable):
+            previousStatus (Variable):
+            isEnabled (Variable):
+            statuses (Variable):
+                enabledStatus (Variable):
+                    superState (Variable):
+                    isEnabled (Variable):
+                    enabled (Variable):
+                    disabled (Variable):
+                busyStatus (Variable):
+                    superState (Variable):
+                    isBusy (Variable):
+                    idle (Variable):
+                    busy (Variable):
+                healthStatus (Variable):
+                    superState (Variable):
+                    isGood (Variable):
+                    hasWarning (Variable):
+                    good (Variable):
+                    warning (Variable):
+                    bad (Variable):
+                startedStatus (Variable):
+                    superState (Variable):
+                    isStarted (Variable):
+                    started (Variable):
+                    notStarted (Variable):
+            do_request (Variable):
+            do_request_result (Variable):
             _log (Method):
                 name (Variable):
                 buffer (Variable):
@@ -1288,11 +1158,6 @@ mtcs_common (Library):
     InitializationStatus (Status):
         superState (Variable):
         state (Variable):
-            SHUTDOWN (Variable):
-            INITIALIZING (Variable):
-            INITIALIZING_FAILED (Variable):
-            INITIALIZED (Variable):
-            LOCKED (Variable):
         shutdown (Variable):
         initializing (Variable):
         initializingFailed (Variable):
@@ -1346,24 +1211,17 @@ mtcs_common (Library):
     OperatorStatus (Status):
         superState (Variable):
         state (Variable):
-            NONE (Variable):
-            OBSERVER (Variable):
-            TECH (Variable):
         none (Variable):
         tech (Variable):
         observer (Variable):
     OperatingStatus (Status):
         superState (Variable):
         state (Variable):
-            AUTO (Variable):
-            MANUAL (Variable):
         auto (Variable):
         manual (Variable):
     OperatingModeStatus (Status):
         superState (Variable):
         state (Variable):
-            LOCAL (Variable):
-            REMOTE (Variable):
         local (Variable):
         remote (Variable):
     ActivityStatus (Status):
@@ -1378,43 +1236,6 @@ mtcs_common (Library):
         previousStatus (Variable):
         value (Variable):
         unit (Variable):
-            DEGREE (Variable):
-            RADIAN (Variable):
-            PERCENT (Variable):
-            RADIANS_PER_SECOND (Variable):
-            DEGREES_PER_SECOND (Variable):
-            MILLIMETERS_PER_SECOND (Variable):
-            REVOLUTIONS_PER_SECOND (Variable):
-            REVOLUTIONS_PER_MINUTE (Variable):
-            AMPS (Variable):
-            MILLIAMPS (Variable):
-            MILLIMETER (Variable):
-            MICROMETER (Variable):
-            DEGREES_CELSIUS (Variable):
-            KELVIN (Variable):
-            BAR (Variable):
-            PASCAL (Variable):
-            UNITLESS (Variable):
-            NEWTON (Variable):
-            DECANEWTON (Variable):
-            VOLT (Variable):
-            MILLIVOLT (Variable):
-            HERTZ (Variable):
-            G (Variable):
-            MILLIG (Variable):
-            NEWTONMETER (Variable):
-            ARCSECONDS (Variable):
-            ARCSECONDS_PER_SECOND (Variable):
-            RADIANS_PER_SQUARE_SECOND (Variable):
-            DEGREES_PER_SQUARE_SECOND (Variable):
-            ARCSECONDS_PER_SQUARE_SECOND (Variable):
-            METERS_PER_SECOND (Variable):
-            HECTOPASCAL (Variable):
-            SECONDS (Variable):
-            MINUTES (Variable):
-            MILLIMETERS_PER_HOUR (Variable):
-            HITS_PER_SQUARE_CENTIMETER (Variable):
-            HITS_PER_SQUARE_CENTIMETER_PER_HOUR (Variable):
         _log (Method):
             name (Variable):
             buffer (Variable):
@@ -1426,43 +1247,6 @@ mtcs_common (Library):
         previousStatus (Variable):
         value (Variable):
         unit (Variable):
-            DEGREE (Variable):
-            RADIAN (Variable):
-            PERCENT (Variable):
-            RADIANS_PER_SECOND (Variable):
-            DEGREES_PER_SECOND (Variable):
-            MILLIMETERS_PER_SECOND (Variable):
-            REVOLUTIONS_PER_SECOND (Variable):
-            REVOLUTIONS_PER_MINUTE (Variable):
-            AMPS (Variable):
-            MILLIAMPS (Variable):
-            MILLIMETER (Variable):
-            MICROMETER (Variable):
-            DEGREES_CELSIUS (Variable):
-            KELVIN (Variable):
-            BAR (Variable):
-            PASCAL (Variable):
-            UNITLESS (Variable):
-            NEWTON (Variable):
-            DECANEWTON (Variable):
-            VOLT (Variable):
-            MILLIVOLT (Variable):
-            HERTZ (Variable):
-            G (Variable):
-            MILLIG (Variable):
-            NEWTONMETER (Variable):
-            ARCSECONDS (Variable):
-            ARCSECONDS_PER_SECOND (Variable):
-            RADIANS_PER_SQUARE_SECOND (Variable):
-            DEGREES_PER_SQUARE_SECOND (Variable):
-            ARCSECONDS_PER_SQUARE_SECOND (Variable):
-            METERS_PER_SECOND (Variable):
-            HECTOPASCAL (Variable):
-            SECONDS (Variable):
-            MINUTES (Variable):
-            MILLIMETERS_PER_HOUR (Variable):
-            HITS_PER_SQUARE_CENTIMETER (Variable):
-            HITS_PER_SQUARE_CENTIMETER_PER_HOUR (Variable):
         _log (Method):
             name (Variable):
             buffer (Variable):
@@ -1471,26 +1255,20 @@ mtcs_common (Library):
         actualStatus (Variable):
         previousStatus (Variable):
         radians (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         degrees (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         arcseconds (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         newDegreesValue (Variable):
         _log (Method):
             name (Variable):
@@ -1502,26 +1280,20 @@ mtcs_common (Library):
         actualStatus (Variable):
         previousStatus (Variable):
         radians (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         degrees (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         arcseconds (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         newDegreesValue (Variable):
         _log (Method):
             name (Variable):
@@ -1531,19 +1303,15 @@ mtcs_common (Library):
         actualStatus (Variable):
         previousStatus (Variable):
         millimeters (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         micrometers (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         newMillimetersValue (Variable):
         _log (Method):
             name (Variable):
@@ -1555,19 +1323,15 @@ mtcs_common (Library):
         actualStatus (Variable):
         previousStatus (Variable):
         millimeters (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         micrometers (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         newMillimetersValue (Variable):
         _log (Method):
             name (Variable):
@@ -1577,26 +1341,20 @@ mtcs_common (Library):
         actualStatus (Variable):
         previousStatus (Variable):
         radiansPerSecond (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         degreesPerSecond (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         arcsecondsPerSecond (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         newDegreesPerSecondValue (Variable):
         _log (Method):
             name (Variable):
@@ -1608,26 +1366,20 @@ mtcs_common (Library):
         actualStatus (Variable):
         previousStatus (Variable):
         radiansPerSecond (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         degreesPerSecond (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         arcsecondsPerSecond (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         newDegreesPerSecondValue (Variable):
         _log (Method):
             name (Variable):
@@ -1637,26 +1389,20 @@ mtcs_common (Library):
         actualStatus (Variable):
         previousStatus (Variable):
         radiansPerSquareSecond (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         degreesPerSquareSecond (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         arcsecondsPerSquareSecond (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         newDegreesPerSquareSecondValue (Variable):
         _log (Method):
             name (Variable):
@@ -1668,26 +1414,20 @@ mtcs_common (Library):
         actualStatus (Variable):
         previousStatus (Variable):
         radiansPerSquareSecond (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         degreesPerSquareSecond (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         arcsecondsPerSquareSecond (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         newDegreesPerSquareSecondValue (Variable):
         _log (Method):
             name (Variable):
@@ -1697,12 +1437,10 @@ mtcs_common (Library):
         actualStatus (Variable):
         previousStatus (Variable):
         millimetersPerSecond (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         newMillimetersPerSecondValue (Variable):
         _log (Method):
             name (Variable):
@@ -1714,12 +1452,10 @@ mtcs_common (Library):
         actualStatus (Variable):
         previousStatus (Variable):
         millimetersPerSecond (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         newMillimetersPerSecondValue (Variable):
         _log (Method):
             name (Variable):
@@ -1729,19 +1465,15 @@ mtcs_common (Library):
         actualStatus (Variable):
         previousStatus (Variable):
         volt (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         milliVolt (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         newVoltValue (Variable):
         _log (Method):
             name (Variable):
@@ -1753,19 +1485,15 @@ mtcs_common (Library):
         actualStatus (Variable):
         previousStatus (Variable):
         volt (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         milliVolt (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         newVoltValue (Variable):
         _log (Method):
             name (Variable):
@@ -1775,19 +1503,15 @@ mtcs_common (Library):
         actualStatus (Variable):
         previousStatus (Variable):
         g (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         milliG (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         newMilliGValue (Variable):
         _log (Method):
             name (Variable):
@@ -1799,19 +1523,15 @@ mtcs_common (Library):
         actualStatus (Variable):
         previousStatus (Variable):
         g (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         milliG (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         newMilliGValue (Variable):
         _log (Method):
             name (Variable):
@@ -1821,19 +1541,15 @@ mtcs_common (Library):
         actualStatus (Variable):
         previousStatus (Variable):
         amps (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         milliAmps (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         newAmpsValue (Variable):
         _log (Method):
             name (Variable):
@@ -1845,19 +1561,15 @@ mtcs_common (Library):
         actualStatus (Variable):
         previousStatus (Variable):
         amps (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         milliAmps (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         newAmpsValue (Variable):
         _log (Method):
             name (Variable):
@@ -1867,12 +1579,10 @@ mtcs_common (Library):
         actualStatus (Variable):
         previousStatus (Variable):
         newtonmeter (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         newNewtonmeterValue (Variable):
         _log (Method):
             name (Variable):
@@ -1884,12 +1594,10 @@ mtcs_common (Library):
         actualStatus (Variable):
         previousStatus (Variable):
         newtonmeter (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         newNewtonmeterValue (Variable):
         _log (Method):
             name (Variable):
@@ -1899,26 +1607,20 @@ mtcs_common (Library):
         actualStatus (Variable):
         previousStatus (Variable):
         unitless (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         percent (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         newtonmeter (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         newFractionValue (Variable):
         maxNewtonmeter (Variable):
         _log (Method):
@@ -1931,26 +1633,20 @@ mtcs_common (Library):
         actualStatus (Variable):
         previousStatus (Variable):
         unitless (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         percent (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         newtonmeter (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         newFractionValue (Variable):
         maxNewtonmeter (Variable):
         _log (Method):
@@ -1963,19 +1659,15 @@ mtcs_common (Library):
         actualStatus (Variable):
         previousStatus (Variable):
         amps (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         milliAmps (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         newAmpsValue (Variable):
         _log (Method):
             name (Variable):
@@ -1987,19 +1679,15 @@ mtcs_common (Library):
         actualStatus (Variable):
         previousStatus (Variable):
         amps (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         milliAmps (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         newAmpsValue (Variable):
         _log (Method):
             name (Variable):
@@ -2009,19 +1697,15 @@ mtcs_common (Library):
         actualStatus (Variable):
         previousStatus (Variable):
         seconds (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         minutes (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         newSecondsValue (Variable):
         _log (Method):
             name (Variable):
@@ -2033,19 +1717,15 @@ mtcs_common (Library):
         actualStatus (Variable):
         previousStatus (Variable):
         seconds (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         minutes (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         newSecondsValue (Variable):
         _log (Method):
             name (Variable):
@@ -2055,19 +1735,15 @@ mtcs_common (Library):
         actualStatus (Variable):
         previousStatus (Variable):
         celsius (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         kelvin (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         newCelsiusValue (Variable):
         _log (Method):
             name (Variable):
@@ -2079,19 +1755,15 @@ mtcs_common (Library):
         actualStatus (Variable):
         previousStatus (Variable):
         celsius (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         kelvin (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         newCelsiusValue (Variable):
         _log (Method):
             name (Variable):
@@ -2101,26 +1773,20 @@ mtcs_common (Library):
         actualStatus (Variable):
         previousStatus (Variable):
         bar (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         pascal (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         hectoPascal (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         newBarValue (Variable):
         _log (Method):
             name (Variable):
@@ -2132,26 +1798,20 @@ mtcs_common (Library):
         actualStatus (Variable):
         previousStatus (Variable):
         bar (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         pascal (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         hectoPascal (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         newBarValue (Variable):
         _log (Method):
             name (Variable):
@@ -2161,12 +1821,10 @@ mtcs_common (Library):
         actualStatus (Variable):
         previousStatus (Variable):
         hertz (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         newHertzValue (Variable):
         _log (Method):
             name (Variable):
@@ -2178,12 +1836,10 @@ mtcs_common (Library):
         actualStatus (Variable):
         previousStatus (Variable):
         hertz (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         newHertzValue (Variable):
         _log (Method):
             name (Variable):
@@ -2193,19 +1849,15 @@ mtcs_common (Library):
         actualStatus (Variable):
         previousStatus (Variable):
         newton (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         decaNewton (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         newNewtonValue (Variable):
         _log (Method):
             name (Variable):
@@ -2217,19 +1869,15 @@ mtcs_common (Library):
         actualStatus (Variable):
         previousStatus (Variable):
         newton (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         decaNewton (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         newNewtonValue (Variable):
         _log (Method):
             name (Variable):
@@ -2239,19 +1887,15 @@ mtcs_common (Library):
         actualStatus (Variable):
         previousStatus (Variable):
         unitless (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         percent (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         newFractionValue (Variable):
         _log (Method):
             name (Variable):
@@ -2263,20 +1907,107 @@ mtcs_common (Library):
         actualStatus (Variable):
         previousStatus (Variable):
         unitless (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         percent (Variable):
-            SUPER (Variable):
             actualStatus (Variable):
             previousStatus (Variable):
             value (Variable):
             unit (Variable):
-            _log (Variable):
         newFractionValue (Variable):
+        _log (Method):
+            name (Variable):
+            buffer (Variable):
+            subBuffer (Variable):
+    SM_BaseProcess (Statemachine):
+        actualStatus (Variable):
+        previousStatus (Variable):
+        isEnabled (Variable):
+        statuses (Variable):
+            enabledStatus (Variable):
+                superState (Variable):
+                isEnabled (Variable):
+                enabled (Variable):
+                disabled (Variable):
+            busyStatus (Variable):
+                superState (Variable):
+                isBusy (Variable):
+                idle (Variable):
+                busy (Variable):
+            healthStatus (Variable):
+                superState (Variable):
+                isGood (Variable):
+                hasWarning (Variable):
+                good (Variable):
+                warning (Variable):
+                bad (Variable):
+            startedStatus (Variable):
+                superState (Variable):
+                isStarted (Variable):
+                started (Variable):
+                notStarted (Variable):
+        do_request (Variable):
+        do_request_result (Variable):
+        _log (Method):
+            name (Variable):
+            buffer (Variable):
+            subBuffer (Variable):
+    BaseProcessStatuses (Struct):
+        enabledStatus (Variable):
+            superState (Variable):
+            isEnabled (Variable):
+            enabled (Variable):
+            disabled (Variable):
+        busyStatus (Variable):
+            superState (Variable):
+            isBusy (Variable):
+            idle (Variable):
+            busy (Variable):
+        healthStatus (Variable):
+            superState (Variable):
+            isGood (Variable):
+            hasWarning (Variable):
+            good (Variable):
+            warning (Variable):
+            bad (Variable):
+        startedStatus (Variable):
+            superState (Variable):
+            isStarted (Variable):
+            started (Variable):
+            notStarted (Variable):
+    BaseProcess (FunctionBlock):
+        SUPER (Pointer):
+           points_to_type: SM_BaseProcess
+        actualStatus (Variable):
+        previousStatus (Variable):
+        isEnabled (Variable):
+        statuses (Variable):
+            enabledStatus (Variable):
+                superState (Variable):
+                isEnabled (Variable):
+                enabled (Variable):
+                disabled (Variable):
+            busyStatus (Variable):
+                superState (Variable):
+                isBusy (Variable):
+                idle (Variable):
+                busy (Variable):
+            healthStatus (Variable):
+                superState (Variable):
+                isGood (Variable):
+                hasWarning (Variable):
+                good (Variable):
+                warning (Variable):
+                bad (Variable):
+            startedStatus (Variable):
+                superState (Variable):
+                isStarted (Variable):
+                started (Variable):
+                notStarted (Variable):
+        do_request (Variable):
+        do_request_result (Variable):
         _log (Method):
             name (Variable):
             buffer (Variable):

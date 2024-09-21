@@ -219,8 +219,9 @@ class Variable(Object):
 
         if 'type' in args:
             self.type = resolve(args['type'], self)
-            for child_name in self.type.children:
-                self.register_child(child_name, Variable(child_name, self))
+            for child_name, child in self.type.children.items():
+                if child.type is not None:
+                    self.register_child(child_name, Variable(child_name, self, { "type": child.type  }))
         if 'expand' in args:
             self.expand = args['expand']
         if 'initial' in args:
@@ -324,6 +325,7 @@ class Method(Object):
         self.return_type = None
         self.implementation = None
         self.extends = None
+        self.type = None
 
         if "comment" in args:
             self.comment = args["comment"]
@@ -478,10 +480,11 @@ class Statemachine(FunctionBlock):
         self.methods = {}
         self.processes = {}
 
-        self.varNames = []
-        self.statusNames = []
-        self.partNames = []
-        self.processNames = []
+        self.vars = {}
+
+        # self.statusNames = []
+        # self.partNames = []
+        # self.processNames = []
         self.disabledCallNames = []
 
         if "actualStatus" not in self.children:
@@ -490,40 +493,42 @@ class Statemachine(FunctionBlock):
             v.comment = "Current status description"
             v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_R]
             self.var_out['actualStatus'] = v
+            self.vars['actualStatus'] = v
         
         if "previousStatus" not in self.children:
             v = Variable("previousStatus", self)
             v.type = PRIMITIVE_TYPES.t_string
             v.comment = "Previous status description"
             self.var_out["previousStatus"] = v
+            self.vars['previousStatus'] = v
 
         if "variables" in args:
             for var_name, var in args['variables'].items():
                 v = Variable(var_name, self, var)
-                self.varNames.append(var_name)
                 if QUALIFIERS.OPC_UA_ACTIVATE not in v.qualifiers:
                     v.qualifiers.append(QUALIFIERS.OPC_UA_ACTIVATE)
                 if QUALIFIERS.OPC_UA_ACCESS_R not in v.qualifiers:
                     v.qualifiers.append(QUALIFIERS.OPC_UA_ACCESS_R)
                 self.var_in[var_name] = v
+                self.vars[var_name] = v
 
         if "variables_read_only" in args:
             for var_name, var in args['variables_read_only'].items():
                 v = Variable(var_name, self, var)
-                self.varNames.append(var_name)
                 if QUALIFIERS.OPC_UA_ACTIVATE not in v.qualifiers:
                     v.qualifiers.append(QUALIFIERS.OPC_UA_ACTIVATE)
                 if QUALIFIERS.OPC_UA_ACCESS_R not in v.qualifiers:
                     v.qualifiers.append(QUALIFIERS.OPC_UA_ACCESS_R)
                 self.var_out[var_name] = v
+                self.vars[var_name] = v
 
         if "variables_hidden" in args:
             for var_name, var in args['variables_hidden'].items():
                 v = Variable(var_name, self, var)
-                self.varNames.append(var_name)
                 if QUALIFIERS.OPC_UA_DEACTIVATE not in v.qualifiers:
                     v.qualifiers.append(QUALIFIERS.OPC_UA_DEACTIVATE)
                 self.var_in[var_name] = v
+                self.vars[var_name] = v
 
         if "references" in args:
             for var_name, var in args['variables'].items():
@@ -531,23 +536,26 @@ class Statemachine(FunctionBlock):
                 if QUALIFIERS.OPC_UA_DEACTIVATE not in v.qualifiers:
                     v.qualifiers.append(QUALIFIERS.OPC_UA_DEACTIVATE)
                 self.var_inout[var_name] = v
+                self.vars[var_name] = v
 
         if "statuses" in args:
-            for status_name in args['statuses']:
-                self.statusNames.append(status_name)
             struct = Struct(
                 name = f'{name}Statuses',
                 parent = self.parent,
                 args = { "items": args['statuses'] }
             )
-            self.parent["StateMachines"]["Statuses"].append(struct)
-            self.parent.structs.append(struct)
+            self.parent.statemachines.statuses[struct.name] = struct
+            self.parent.structs[struct.name] = struct
             self.var_out["statuses"] = Variable(
                 name='statuses', 
                 parent=self,
                 args = {
                     "comment": "Statuses of the state machine",
                     "type": f'{name}Statuses'})
+            for status_name in args['statuses']:
+                self.statuses[status_name] = self.var_out["statuses"].get_child(status_name)
+
+
         
         if "parts" in args:
             for part_name in args['parts']:
@@ -566,6 +574,8 @@ class Statemachine(FunctionBlock):
                 args = {
                     "comment": "Parts of the state machine",
                     "type": f'{name}Parts'})
+            for part_name in args['parts']:
+                self.parts[part_name] = self.var_out["parts"].get_child(status_name)
 
         # calls of members can be disabled e.g. in case a  
         # separte PLC program (at a faster cycle time) calls
@@ -586,6 +596,8 @@ class Statemachine(FunctionBlock):
                     "comment": "Processes of the state machine",
                     "type": f'{name}Processes'
                 })
+            for process_name in args['processes']:
+                self.processes[process_name] = self.var_out["processes"].get_child(process_name)
 
         if "processes" in args:
             for process_name, process_args in args.processes.items():
@@ -626,26 +638,96 @@ class Statemachine(FunctionBlock):
                     #     ]
                     # ) "implementation"
 
+        # add the local variables
+        if "local" in args:
+            for var_name, var in args['local'].items():
+                v = Variable(var_name, self, var)
+                v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE]
+                self.var_local[var_name] = v
+                self.vars[var_name] = v
+
+        # add the methods
+        if "methods" in args:
+            for method_name, method in args["methods"].items():
+                self.methods[method_name] = Method(method_name, self, method)
+
 
         # ============ IMPLEMENTATION PART ============
 
+        # call the variables (if specified by the "calls" argument)
+        objects_to_call = {}
+        for var_name, var in self.vars.items():
+            if "calls" in args:
+                if (var_name in args["calls"]) and (var_name not in self.disabledCallNames):
+                    objects_to_call[var_name] = var
+        for part_name, part in self.parts.items():
+            if part_name not in self.disabledCallNames:
+                objects_to_call[part_name] = part
+        for status_name, status in self.statuses.items():
+            if status_name not in self.disabledCallNames:
+                objects_to_call[status_name] = status
+        for process_name, process in self.processes.items():
+            if process_name not in self.disabledCallNames:
+                objects_to_call[process_name] = process
 
-        if "calls" in args:
-            for call_name, call in args['calls'].items():
-                c = Call(f"call_var_{call_name}", self)
-                c.calls = resolve(call_name, self)
-                c.assignments = []
-                for k, v in call.items():
-                    # k should be a child of the callee (c.calls)!
-                    assignment = ASSIGN([c.calls.get_child(k, recursive=False), v])
-                    assignment.resolve_children(self)
-                    c.assignments.append(assignment)
+        for child_name, child in objects_to_call.items():
+            c = Call(f"call_{child_name}", self)
+            c.calls = child
+            c.assignments = []
+            if "calls" in args:
+                if child_name in args["calls"]:
+                    for k, v in args["calls"][child_name].items():
+                        # k should be a child of the callee (c.calls)!
+                        assignment = ASSIGN([c.calls.get_child(k, recursive=False), v])
+                        assignment.resolve_children(self)
+                        c.assignments.append(assignment)
 
-                if self.implementation is None:
-                    self.implementation = []
+            if self.implementation is None:
+                self.implementation = []
 
-                self.implementation.append(c)
+            self.implementation.append(c)
         
+
+        # # call the explicitly called variables
+        # if "calls" in args:
+        #     for call_name, call in args['calls'].items():
+        #         c = Call(f"call_var_{call_name}", self)
+        #         c.calls = resolve(call_name, self)
+        #         c.assignments = []
+        #         for k, v in call.items():
+        #             # k should be a child of the callee (c.calls)!
+        #             assignment = ASSIGN([c.calls.get_child(k, recursive=False), v])
+        #             assignment.resolve_children(self)
+        #             c.assignments.append(assignment)
+
+        #         if self.implementation is None:
+        #             self.implementation = []
+
+        #         self.implementation.append(c)
+        
+        # # call the parts
+
+        # # call the statuses 
+        # for status_name, status in self.statuses.items():
+        #     c = Call(f"call_status_{status_name}", self)
+        #     c.calls = resolve(status_name, self)
+        #     c.assignments = []
+        #     for k, v in status.items():
+        #         # k should be a child of the callee (c.calls)!
+        #         assignment = ASSIGN([c.calls.get_child(k, recursive=False), v])
+        #         assignment.resolve_children(self)
+        #         c.assignments.append(assignment)
+
+        #     if self.implementation is None:
+        #         self.implementation = []
+
+        #     self.implementation.append(c)
+
+
+
+        # # call the processes
+
+
         if self.extends is not None:
             if self.implementation is None:
                 self.implementation = []
@@ -684,6 +766,16 @@ class Statemachine(FunctionBlock):
                 ASSIGN([get_global("LOGGER").get_child("subBuffer"), m.get_child("subBuffer")])
             ]
 
+            if "healthStatus" in self.statuses:
+                    c.assignments.append(  
+                        ASSIGN([get_global("LOGGER").get_child("pHealthStatus"), ADR(self.statuses["healthStatus"])])
+                    )
+            if "busyStatus" in self.statuses:
+                    c.assignments.append(  
+                        ASSIGN([get_global("LOGGER").get_child("pBusyStatus"), ADR(self.statuses["busyStatus"])])
+                    )
+
+
             m.implementation.append(c)
 
             self.methods["_log"] = m
@@ -709,6 +801,8 @@ add_global("LOGGER", GlobalVariable(name="LOGGER",
                                               "actualStatus" : {"type": "t_string"},
                                               "previousStatus" : {"type": "t_string"},
                                               "buffer" : {"type": "LogBuffer"},
-                                              "subBuffer" : {"type": "LogBuffer"}
+                                              "subBuffer" : {"type": "LogBuffer"},
+                                              "pHealthStatus" : {"type": "t_string"},
+                                              "pBusyStatus" : {"type": "t_string"}
                                             }
                                     }))

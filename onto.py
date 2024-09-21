@@ -21,6 +21,7 @@ def get_loader():
     """Return a yaml loader."""
     loader = yaml.SafeLoader
     loader.add_constructor('!ASSIGN', expressions.ASSIGN_constructor)
+    loader.add_constructor('!ADR', expressions.ADR_constructor)
     loader.add_constructor('!SUM', mathematics.SUM_constructor)
     loader.add_constructor('!SUB', mathematics.SUB_constructor)
     loader.add_constructor('!MUL', mathematics.MUL_constructor)
