@@ -30,6 +30,8 @@ class PRIMITIVE_TYPES:
     t_uint8      = Primitive("t_uint8"      , plc_symbol="USINT")
     t_string     = Primitive("t_string"     , plc_symbol="STRING")
     t_byte       = Primitive("t_byte"       , plc_symbol="BYTE")
+    t_word       = Primitive("t_word"       , plc_symbol="WORD")
+    t_dword      = Primitive("t_dword"      , plc_symbol="DWORD")
 
 
 add_global("t_bool",       PRIMITIVE_TYPES.t_bool)
@@ -46,6 +48,8 @@ add_global("t_uint64",     PRIMITIVE_TYPES.t_uint64)
 add_global("t_uint8",      PRIMITIVE_TYPES.t_uint8)
 add_global("t_string",     PRIMITIVE_TYPES.t_string)
 add_global("t_byte",       PRIMITIVE_TYPES.t_byte)
+add_global("t_word",       PRIMITIVE_TYPES.t_word)
+add_global("t_dword",       PRIMITIVE_TYPES.t_dword)
 
 
 
@@ -117,10 +121,16 @@ class Library(Namespace):
                 sts = Status(arg_k.name, self, arg_v) 
                 self.statuses[arg_k.name] = sts
                 self.functionblocks[arg_k.name] = sts
+            elif isinstance(arg_k, FB):
+                fb = FunctionBlock(arg_k.name, self, arg_v) 
+                self.functionblocks[arg_k.name] = fb
             elif isinstance(arg_k, CONFIG):
                 cfg = Config(arg_k.name, self, arg_v) 
                 self.configs[arg_k.name] = cfg
                 self.structs[arg_k.name] = cfg
+            elif isinstance(arg_k, STRUCT):
+                struct = Struct(arg_k.name, self, arg_v) 
+                self.structs[arg_k.name] = struct
             elif isinstance(arg_k, PROCESS):
                 proc = Process(arg_k.name, self, arg_v) 
                 self.processes[arg_k.name] = proc
@@ -201,6 +211,23 @@ def CONFIG_constructor(loader: Loader, node):
     name = loader.construct_scalar(node)
     return CONFIG(name)
 
+
+class FB:
+    def __init__(self, name):
+        self.name = name
+
+def FB_constructor(loader: Loader, node):
+    name = loader.construct_scalar(node)
+    return FB(name)
+
+class STRUCT:
+    def __init__(self, name):
+        self.name = name
+
+def STRUCT_constructor(loader: Loader, node):
+    name = loader.construct_scalar(node)
+    return STRUCT(name)
+
 class PROCESS:
     def __init__(self, name):
         self.name = name
@@ -234,8 +261,9 @@ class Variable(Object):
         if 'type' in args:
             self.type = resolve(args['type'], self)
             for child_name, child in self.type.children.items():
-                if child.type is not None:
-                    self.register_child(child_name, Variable(child_name, self, { "type": child.type  }))
+                if hasattr(child, 'type'):
+                    if child.type is not None:
+                        self.register_child(child_name, Variable(child_name, self, { "type": child.type  }))
         if 'expand' in args:
             self.expand = args['expand']
         if 'initial' in args:

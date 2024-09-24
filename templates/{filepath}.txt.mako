@@ -1,11 +1,12 @@
 <%namespace name="iec61131" file="_iec61131.mako"/>\
 <%
     import json
-    from util.factories import timeNow, Library
-    if len(M) != 1: raise Exception("Only 1 library definition per file!")
+    from util.factories import timeNow, Library, LIBRARY
+    #if len(M) != 1: raise Exception("Only 1 library definition per file!")
     for item_k, item_v in M.items():
-        lib = Library(item_k.name, item_v)
-        break
+        if isinstance(item_k, LIBRARY):
+          lib = Library(item_k.name, item_v)
+          break
 %>\
 ${render_object(lib)}
 

@@ -1,11 +1,10 @@
+!IMPORT models/in/mercator/zeckhoff.yaml:
 
 #########################################################################################################################
 # Library definition
 ########################################################################################################################
 
 !LIBRARY mtcs_common:
-
-  !IMPORT beckhoff
 
   ########################################################################################################################
   # InitializationStates
@@ -797,6 +796,14 @@
   !PROCESS Process: # default process
     extends: BaseProcess
 
+
+  ########################################################################################################################
+  # McProcess
+  ########################################################################################################################
+  !PROCESS McProcess:
+    extends: BaseMcProcess
+
+
   ########################################################################################################################
   # ChangeSetpointProcess
   ########################################################################################################################
@@ -937,7 +944,7 @@
         isEnabled           : { type: t_bool                        , comment: "Is control enabled?" }
         standstillTolerance : { type: t_double                      , comment: "Tolerance in [main units] per second: if < ABS(this value), then the axis is considered to be standing still" }
     variables:
-        axis_ref            : { type: beckhoff.Tc2_MC2.AXIS_REF     , comment: "The AXIS_REF to be linked to the NC I/O" }
+        axis_ref            : { type: Tc2_MC2.AXIS_REF              , comment: "The AXIS_REF to be linked to the NC I/O" }
         isGearingSupported  : { type: t_bool , initial: !BOOL FALSE , comment: "Is gearIn/gearOut supported?" }
     variables_read_only:
         isJogEnabled        : { type: t_bool                        , comment: "True if jog is enabled" }

@@ -1,0 +1,183 @@
+#########################################################################################################################
+# Library definition
+########################################################################################################################
+
+!LIBRARY Tc2_MC2:
+
+  ########################################################################################################################
+  # ST_AxisStatus
+  ########################################################################################################################
+  !STRUCT ST_AxisStatus:
+    items:
+        UpdateTaskIndex:
+            type    : t_byte
+            comment : "Task-Index of the task that updated this data set"
+        UpdateCycleTime:
+            type    : t_double
+            comment : "Task cycle time of the task which calls the status function"
+        CycleCounter:
+            type    : t_uint32
+            comment : "PLC cycle counter when this data set updated"
+        NcCycleCounter:
+            type    : t_double
+            comment : "NC cycle counter incremented after NC task updated NcToPlc data structures"
+        Error:
+            type    : t_bool
+            comment : "Axis error state"
+        ErrorId:
+            type    : t_uint32
+            comment : "Axis error code"
+        Disabled:
+            type    : t_double
+            comment : "Disabled state according to the PLCopen motion control statemachine*)"
+        ControlLoopClosed:
+            type    : t_bool
+            comment : "Is the control loop closed?"
+        ExtSetPointGenEnabled:
+            type    : t_bool
+            comment : "Is the external setpoint generator enabled?"
+
+  ########################################################################################################################
+  # PLCTONC_AXIS_REF
+  ########################################################################################################################
+  !STRUCT PLCTONC_AXIS_REF:
+    items:
+        ControlDWord:
+            type    : t_dword
+            comment : "Control double word"
+        Override:
+            type    : t_dword
+            comment : "Velocity override"
+        AxisModeRequest:
+            type    : t_dword
+            comment : "Axis operating mode (PLC request)"
+        AxisModeDWord:
+            type    : t_dword
+            comment : "Optional mode parameter"
+        AxisModeLReal:
+            type    : t_double
+            comment : "Optional mode parameter"
+        PositionCorrection:
+            type    : t_double
+            comment : "Correction value for current position"
+        ExtSetPos:
+            type    : t_double
+            comment : "External position setpoint"
+        ExtSetVelo:
+            type    : t_double
+            comment : "External velocity setpoint"
+        ExtSetAcc:
+            type    : t_double
+            comment : "External acceleration setpoint"
+        ExtSetDirection:
+            type    : t_int32
+            comment : "External direction setpoint"
+        ExtControllerOutput:
+            type    : t_double
+            comment : "External controller output"
+        GearRatio1:
+            type    : t_double
+            comment : "Gear ratio for dynamic multi master coupling modes"
+        GearRatio2:
+            type    : t_double
+            comment : "Gear ratio for dynamic multi master coupling modes"
+        GearRatio3:
+            type    : t_double
+            comment : "Gear ratio for dynamic multi master coupling modes"
+        GearRatio4:
+            type    : t_double
+            comment : "Gear ratio for dynamic multi master coupling modes"
+
+  ########################################################################################################################
+  # NCTOPLC_AXIS_REF
+  ########################################################################################################################
+  !STRUCT NCTOPLC_AXIS_REF:
+    items:
+        StateDWord:
+            type    : t_dword
+            comment : "Status double word"
+        ErrorCode:
+            type    : t_dword
+            comment : "Axis error code"
+        AxisState:
+            type    : t_dword
+            comment : "Axis moving status"
+        AxisModeConfirmation:
+            type    : t_dword
+            comment : "Axis mode confirmation (feedback from NC)"
+        HomingState:
+            type    : t_dword
+            comment : "State of axis calibration (homing)"
+        CoupleState:
+            type    : t_dword
+            comment : "Axis coupling state"
+        SvbEntries:
+            type    : t_dword
+            comment : "SVB entries/orders (SVB = Set preparation task)"
+        SafEntries:
+            type    : t_dword
+            comment : "SAF entries/orders (SAF = Set execution task)"
+        AxisId:
+            type    : t_dword
+            comment : "Axis ID"
+        OpModeDWord:
+            type    : t_dword
+            comment : "Current operation mode"
+        ActiveControlLoopIndex:
+            type    : t_word
+            comment : "Active control loop index"
+        ControlLoopIndex:
+            type    : t_word
+            comment : "Axis control loop index (0, 1, 2, when multiple control loops are used)"
+        ActPos:
+            type    : t_double
+            comment : "Actual position (absolut value from NC)"
+        ModuloActPos:
+            type    : t_double
+            comment : "comment : Actual modulo positio"
+        ModuloActTurns:
+            type    : t_int32
+            comment : "Actual modulo turns"
+        ActVelo:
+            type    : t_double
+            comment : "Actual velocity"
+        PosDiff:
+            type    : t_double
+            comment : "Position difference (lag distance)"
+        SetPos:
+            type    : t_double
+            comment : "Setpoint position"
+        SetVelo:
+            type    : t_double
+            comment : "Setpoint velocity"
+        SetAcc:
+            type    : t_double
+            comment : "Setpoint acceleration"
+        TargetPos:
+            type    : t_double
+            comment : "Estimated target position"
+        ModuloSetPos:
+            type    : t_double
+            comment : "Setpoint modulo position"
+        ModuloSetTurns:
+            type    : t_int32
+            comment : "Setpoint modulo turns"
+        CmdNo:
+            type    : t_word
+            comment : "Continuous actual command number"
+        CmdState:
+            type    : t_word
+            comment : "Command state"
+
+  ########################################################################################################################
+  # AXIS_REF
+  ########################################################################################################################
+  !FB AXIS_REF:
+    in:
+        PlcToNc:
+            type    : PLCTONC_AXIS_REF
+    out:
+        NcToPlc:
+            type    : NCTOPLC_AXIS_REF
+        Status:
+            type    : ST_AxisStatus
