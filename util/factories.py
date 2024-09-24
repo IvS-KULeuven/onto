@@ -29,6 +29,7 @@ class PRIMITIVE_TYPES:
     t_uint64     = Primitive("t_uint64"     , plc_symbol="ULINT")
     t_uint8      = Primitive("t_uint8"      , plc_symbol="USINT")
     t_string     = Primitive("t_string"     , plc_symbol="STRING")
+    t_byte       = Primitive("t_byte"       , plc_symbol="BYTE")
 
 
 add_global("t_bool",       PRIMITIVE_TYPES.t_bool)
@@ -44,6 +45,7 @@ add_global("t_uint32",     PRIMITIVE_TYPES.t_uint32)
 add_global("t_uint64",     PRIMITIVE_TYPES.t_uint64)
 add_global("t_uint8",      PRIMITIVE_TYPES.t_uint8)
 add_global("t_string",     PRIMITIVE_TYPES.t_string)
+add_global("t_byte",       PRIMITIVE_TYPES.t_byte)
 
 
 
