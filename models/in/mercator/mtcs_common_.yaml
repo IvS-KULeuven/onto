@@ -5,6 +5,8 @@
 
 !LIBRARY mtcs_common:
 
+  #!IMPORT beckhoff
+
   ########################################################################################################################
   # InitializationStates
   ########################################################################################################################
@@ -802,4 +804,238 @@
     extends: BaseProcess
     arguments:
         setpoint     : { type: t_double, comment: "New setpoint value" }
+
+  ########################################################################################################################
+  # ChangeParameterProcess
+  ########################################################################################################################
+  !PROCESS ChangeParameterProcess:
+    extends: BaseProcess
+    arguments:
+        parameter     : { type: t_double, comment: "New parameter value" }
+
+
+  ########################################################################################################################
+  # McMoveAbsoluteProcess
+  ########################################################################################################################
+  !PROCESS McMoveAbsoluteProcess:
+    extends: BaseMcProcess
+    arguments:
+        position    : { type: t_double, comment: "New position setpoint" }
+        maxVelocity : { type: t_double, comment: "Maximum velocity" }
+
+  ########################################################################################################################
+  # McMoveRelativeProcess
+  ########################################################################################################################
+  !PROCESS McMoveRelativeProcess:
+    extends: BaseMcProcess
+    arguments:
+        distance    : { type: t_double, comment: "Distance to move" }
+        maxVelocity : { type: t_double, comment: "Maximum velocity" }
+
+  ########################################################################################################################
+  # McPowerProcess
+  ########################################################################################################################
+  !PROCESS McPowerProcess:
+    extends: BaseMcProcess
+    arguments:
+        enable    : { type: t_bool, comment: "Enable the power or not" }
+
+  ########################################################################################################################
+  # McSetPositionProcess
+  ########################################################################################################################
+  !PROCESS McSetPositionProcess:
+    extends: BaseMcProcess
+    arguments:
+        value   : { type: t_double, comment: "New position to be taken over by the encoder" }
+
+  ########################################################################################################################
+  # McStopProcess
+  ########################################################################################################################
+  !PROCESS McStopProcess:
+    extends: BaseMcProcess
+    arguments:
+        deceleration    : { type: t_double, comment: "Deceleration (use 0 for default). If non zero, then also jerk must be non zero!" }
+        jerk            : { type: t_double, comment: "Jerk (use 0 for default). If non zero, then also deceleration must be non zero!" }
+
+  ########################################################################################################################
+  # McMoveVelocityProcess
+  ########################################################################################################################
+  !PROCESS McMoveVelocityProcess:
+    extends: BaseMcProcess
+    arguments:
+        value   : { type: t_double, comment: "New velocity" }
+
+  ########################################################################################################################
+  # SwitchProcess
+  ########################################################################################################################
+  !PROCESS SetEnabledProcess:
+    extends: BaseProcess
+    arguments:
+        enabled : { type: t_bool, comment: "True to enable, false to disable" }
+
+  ########################################################################################################################
+  # McWriteParameter
+  ########################################################################################################################
+  !PROCESS McWriteParameter:
+    extends: BaseMcProcess
+    arguments:
+        parameterNumber : { type: t_int16   , comment: "Number of the parameter" }
+        value           : { type: t_double  , comment: "Value to write"}
+
+
+  ########################################################################################################################
+  # McReadParameter
+  ########################################################################################################################
+  !PROCESS McReadParameter:
+    extends: BaseMcProcess
+    arguments:
+        parameterNumber : { type: t_int16   , comment: "Number of the parameter" }
+    variables:
+        value           : { type: t_double  , comment: "Value that was read"}
+
+  ########################################################################################################################
+  # McWriteBoolParameter
+  ########################################################################################################################
+  !PROCESS McWriteBoolParameter:
+    extends: BaseMcProcess
+    arguments:
+        parameterNumber : { type: t_int16   , comment: "Number of the parameter" }
+        value           : { type: t_bool    , comment: "Value to write"}
+
+
+  ########################################################################################################################
+  # McReadParameter
+  ########################################################################################################################
+  !PROCESS McReadBoolParameter:
+    extends: BaseMcProcess
+    arguments:
+        parameterNumber : { type: t_int16   , comment: "Number of the parameter" }
+    variables:
+        value           : { type: t_bool  , comment: "Value that was read"}
+        
+        
+  ########################################################################################################################
+  # McStartProbing
+  ########################################################################################################################
+  !PROCESS McProbe:
+    extends: BaseMcProcess
+    arguments:
+        risingEdge       : { type: t_bool    , comment: "True to probe the rising edge, false to probe the falling edge" }
+        timeout          : { type: t_double  , comment: "Timeout, in seconds. After this timeout, probing is aborted. timeout <= 0 means endless probing." }
+    variables:
+        recordedPosition : { type: t_double  , comment: "Value that was probed"}
+
+
+
+
+
+  ########################################################################################################################
+  # BaseAxis
+  ########################################################################################################################
+  !STATEMACHINE BaseAxis:
+    variables_hidden:
+        isEnabled           : { type: t_bool                        , comment: "Is control enabled?" }
+        standstillTolerance : { type: t_double                      , comment: "Tolerance in [main units] per second: if < ABS(this value), then the axis is considered to be standing still" }
+    variables:
+        axis_ref            : { type: beckhoff.Tc2_MC2.AXIS_REF     , comment: "The AXIS_REF to be linked to the NC I/O" }
+        isGearingSupported  : { type: t_bool , initial: !BOOL FALSE , comment: "Is gearIn/gearOut supported?" }
+    variables_read_only:
+        isJogEnabled        : { type: t_bool                        , comment: "True if jog is enabled" }
+    statuses:
+        busyStatus          : { type: BusyStatus            , comment: "Is the NcAxis in a busy state?" }
+        healthStatus        : { type: HealthStatus          , comment: "Is the NcAxis in a healthy state?" }
+        poweredStatus       : { type: PoweredStatus         , comment: "Is the NcAxis powered?" }
+        extSetGenStatus     : { type: EnabledStatus         , comment: "Is the NcAxis its external setpoint generator enabled?" }
+        motionStatus        : { type: MotionStatus          , comment: "Is the NcAxis moving forward or backward or standing still?" }
+    processes:
+        moveAbsolute        : { type: McMoveAbsoluteProcess , comment: "Move absolute" }
+        moveRelative        : { type: McMoveRelativeProcess , comment: "Move relative" }
+        moveVelocity        : { type: McMoveVelocityProcess , comment: "Move at a constant velocity" }
+        reset               : { type: McProcess             , comment: "Reset any errors" }
+        stop                : { type: McProcess             , comment: "Stop any movement" }
+        stopParametrized    : { type: McStopProcess         , comment: "Stop any movement" }
+        power               : { type: McPowerProcess        , comment: "Power on/off the axis" }
+        gearIn              : { type: McProcess             , comment: "Couple to master axis" }
+        gearOut             : { type: McProcess             , comment: "Decouple from master axis" }
+        initialize          : { type: Process               , comment: "Start initializing the axis" }
+        setPosition         : { type: McSetPositionProcess  , comment: "Set the axis position" }
+        enableExtSetGen     : { type: McProcess             , comment: "Enable the external setpoint generator" }
+        disableExtSetGen    : { type: McProcess             , comment: "Disable the external setpoint generator" }
+        forceCalibration    : { type: McProcess             , comment: "Force the calibration (homing) flag to TRUE" }
+        resetCalibration    : { type: McProcess             , comment: "Reset the calibration (homing) flag to FALSE" }
+        readParameter       : { type: McReadParameter       , comment: "Read a numerical parameter" }
+        readBoolParameter   : { type: McReadBoolParameter   , comment: "Read a boolean parameter" }
+        writeParameter      : { type: McWriteParameter      , comment: "Write a numerical parameter" }
+        writeBoolParameter  : { type: McWriteBoolParameter  , comment: "Write a boolean parameter" }
+        probeStart          : { type: McProbe               , comment: "Start probing a hardware pulse, until a pulse is found" }
+        probeAbort          : { type: McProcess             , comment: "Stop probing even though the probe position is not found (yet)" }
+    calls:
+        busyStatus:
+            isBusy                      : !OR [ processes.moveAbsolute.statuses.busyStatus.busy,
+                                                processes.moveRelative.statuses.busyStatus.busy,
+                                                processes.reset.statuses.busyStatus.busy,
+                                                processes.power.statuses.busyStatus.busy,
+                                                processes.gearIn.statuses.busyStatus.busy,
+                                                processes.gearOut.statuses.busyStatus.busy,
+                                                processes.initialize.statuses.busyStatus.busy,
+                                                processes.setPosition.statuses.busyStatus.busy,
+                                                processes.enableExtSetGen.statuses.busyStatus.busy,
+                                                processes.disableExtSetGen.statuses.busyStatus.busy,
+                                                processes.forceCalibration.statuses.busyStatus.busy,
+                                                processes.resetCalibration.statuses.busyStatus.busy,
+                                                processes.readParameter.statuses.busyStatus.busy,
+                                                processes.readBoolParameter.statuses.busyStatus.busy,
+                                                processes.writeParameter.statuses.busyStatus.busy,
+                                                processes.writeBoolParameter.statuses.busyStatus.busy,
+                                                processes.probeAbort.statuses.busyStatus.busy ]
+        healthStatus:
+            isGood                      : !NOT [axis_ref.Status.Error]
+        poweredStatus:
+            isEnabled                   : !NOT [axis_ref.Status.Disabled]
+        motionStatus:
+            actVel                      : axis_ref.NcToPlc.ActVelo
+            tolerance                   : standstillTolerance
+        extSetGenStatus:
+            isEnabled                   : axis_ref.Status.ExtSetPointGenEnabled
+        # processes
+        power:
+            isEnabled                   : !AND [ isEnabled, processes.power.statuses.busyStatus.idle ]
+        initialize:
+            isEnabled                   : !AND [ isEnabled, statuses.busyStatus.idle ]
+        moveAbsolute:
+            isEnabled                   : isEnabled
+        moveRelative:
+            isEnabled                   : isEnabled
+        moveVelocity:
+            isEnabled                   : !AND [ isEnabled, processes.moveVelocity.statuses.busyStatus.idle ]
+        reset:
+            isEnabled                   : !AND [ isEnabled, processes.reset.statuses.busyStatus.idle ]
+        gearIn:
+            isEnabled                   : !AND [ isEnabled, processes.gearIn.statuses.busyStatus.idle,isGearingSupported ]
+        gearOut:
+            isEnabled                   : !AND [ isEnabled, processes.gearOut.statuses.busyStatus.idle,isGearingSupported ]
+        stop:
+            isEnabled                   : !AND [ isEnabled, processes.stop.statuses.busyStatus.idle ]
+        setPosition:
+            isEnabled                   : !AND [ isEnabled, processes.setPosition.statuses.busyStatus.idle ]
+        enableExtSetGen:
+            isEnabled                   : !AND [ isEnabled, processes.enableExtSetGen.statuses.busyStatus.idle ]
+        disableExtSetGen:
+            isEnabled                   : !AND [ isEnabled, processes.disableExtSetGen.statuses.busyStatus.idle ]
+        forceCalibration:
+            isEnabled                   : !AND [ isEnabled, statuses.busyStatus.idle ]
+        resetCalibration:
+            isEnabled                   : !AND [ isEnabled, statuses.busyStatus.idle ]
+        readParameter:
+            isEnabled                   : !AND [ isEnabled, statuses.busyStatus.idle ]
+        readBoolParameter:
+            isEnabled                   : !AND [ isEnabled, statuses.busyStatus.idle ]
+        writeParameter:
+            isEnabled                   : !AND [ isEnabled, statuses.busyStatus.idle ]
+        writeBoolParameter:
+            isEnabled                   : !AND [ isEnabled, statuses.busyStatus.idle ]
+        probeStart:
+            isEnabled                   : !AND [ isEnabled, statuses.busyStatus.idle ]
+        probeAbort:
+            isEnabled                   : !AND [ isEnabled, statuses.busyStatus.idle ]
 
