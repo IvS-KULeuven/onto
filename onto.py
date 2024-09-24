@@ -36,6 +36,7 @@ def get_loader():
     loader.add_constructor('!STATEMACHINE', factories.STATEMACHINE_constructor)
     loader.add_constructor('!STATUS', factories.STATUS_constructor)
     loader.add_constructor('!CONFIG', factories.CONFIG_constructor)
+    loader.add_constructor('!PROCESS', factories.PROCESS_constructor)
     loader.add_constructor('!AND', expressions.AND_constructor)
     loader.add_constructor('!OR', expressions.OR_constructor)
     loader.add_constructor('!NOT', expressions.NOT_constructor)

@@ -15,14 +15,17 @@
         })
 
     def getPrefixAndPath(dest, scope = []):
+        #print(f" --- getPrefixAndPath({dest.name})")
         e = None
         for head in scope:
             if isinstance(dest, EnumItem):
                 return None, [ dest.parent, dest ]
 
-            if head.extends is not None and dest.points_to_type is not None:
-                if head.extends.name == dest.points_to_type.name:
-                    return "SUPER", []
+            if hasattr(head, "extends") and hasattr(dest, "points_to_type"):
+
+                if head.extends is not None and dest.points_to_type is not None:
+                    if head.extends.name == dest.points_to_type.name:
+                        return "SUPER", []
 
             try:
                 if isinstance(head, FunctionBlock):
@@ -50,6 +53,7 @@
             return [dest]
 
         if id(dest) == id(head):
+        #if dest.name == head.name:
             return []
 
         if dest.parent is None:
@@ -66,21 +70,47 @@
         #if id(dest.get_child(head.name)) == id(head):
         #    return [ dest ]
 
+        # check parent of superclasses too!
+        all_heads = []
+
         try:
-            p =  getPathToSubVariable(dest.parent, head) + [ dest ]
+
+            def get_heads_recursively(head):
+                ret = [head]
+                if hasattr(head, 'extends'):
+                    if head.extends is not None:
+                        ret += get_heads_recursively(head.extends)
+                return ret
+
+            all_heads = get_heads_recursively(head)
+
+            for any_head in all_heads:
+                try:
+                    p = getPathToSubVariable(dest.parent, any_head) + [ dest ]
+                    break
+                except EOFError:
+                    pass
+
         except EOFError:
             pass
 
         if p is not None:
             return p
 
+        if 'parent' in dest.__dict__:
+            dest_parent = dest.__dict__['parent'].name
+        else:
+            dest_parent = ''
+
         raise EOFError( "Destination %s (%s) was not found as a subvariable of %s (%s)" %(dest.name, type(dest).__name__, head.name, type(head).__name__)
                         + "\n\n"
-                        + "Destination:\n"
+                        + "Destination (child of parent " + dest_parent + "):\n"
                         + pprint.pformat(dest.__dict__)
                         + "\n\n"
                         + "Head:\n"
-                        + pprint.pformat(head.__dict__))
+                        + pprint.pformat(head.__dict__)
+                        + "\n\n"
+                        + str(all_heads))
 
 
 %>\
@@ -201,10 +231,11 @@ ${xml_method(method, owner, indent)}\
 </%def>
 
 <%def name="xml_method(node, owner, indent='')">\
+<% print(f"+++ xml_method({node.name})") %>\
 <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
 ${indent}  <Method name="${node.name}">
 ${indent}    <interface>
-% if returnType is not None:
+% if node.return_type is not None:
 ${indent}      ${xml_return_type(node.return_type)}
 % endif
 ${indent}      ${xml_variables("input" , node.var_in.values()     , indent+'      ')}
@@ -232,6 +263,7 @@ ${indent}</data>\
 </%def>
 
 <%def name="xml_return_type(node)">\
+<% print(f"+++ xml_return_type {node}") %>\
 <returnType>${xml_type_element(node)}</returnType>\
 </%def>
 
@@ -301,11 +333,23 @@ ${render_implementation(e, scope, indent=indent)}\
     %endif
 </%def>
 
-<%def name="layoutMethod(m,scope,indent='',more='    ')">\
+<%def name="layoutMethod(m, scope,indent='',more='    ')">\
+<% print("+++ layoutMethod") %>\
 ${render_path(m, scope)}\
 </%def>
 
 
+<%def name="layoutIfThen(node, scope, indent='', more='    ')">\
+<% print("+++ layoutIfThen START") %>\
+IF ${layoutExpression(node.if_, scope)} THEN
+${indent+more}${layoutExpressions(node.then_, scope, indent=indent+more)}\
+    %if node.else_ is not None:
+${indent}ELSE
+${indent+more}${layoutExpressions(node.else_, scope, indent=indent+more)}\
+    %endif
+${indent}END_IF\
+<% print("+++ layoutIfThen END") %>\
+</%def>
 
 <%def name="render_value(node, scope, indent='')">\
 <%
@@ -316,6 +360,7 @@ ${node.value}\
 
 
 <%def name="layoutVariable(v,scope,indent='',more='    ')">\
+<% print(f" +++ layoutVariable({v}, {scope})") %>\
 ${render_path(v, scope)}\
 </%def>
 
@@ -367,10 +412,14 @@ ${item.name}\
 
 
 <%def name="render_assignment(node, scope)">\
+<% print(f"+++ render_assignment(node={node.name}, scope={[item.name for item in scope]}) START") %>\
 ${node.left.name} := ${layoutExpression(node.right, scope=scope)}\
 </%def>
 
 <%def name="layoutCall(node, scope, indent='', more='    ')">\
+<%
+    print(f"+++ layoutCall(node={node.name}, scope={[item.name for item in scope]}) START")
+%>\
 % if isinstance(node.calls, UnaryOperation):
 ${layoutUnaryOperation(node.calls, scope, indent=indent)}\
 % else:
@@ -392,6 +441,7 @@ ${indent+more}${render_assignment(assignment, scope)}\
             % endif
         % endfor
     % endif
+<% print(f"layoutCall END") %>\
 </%def>
 
 
@@ -399,7 +449,7 @@ ${indent+more}${render_assignment(assignment, scope)}\
 
 <%def name="layoutUnaryOperation(node, scope, indent='', more='    ')">\
 <%
-    print("+++ layoutUnaryOperation")
+    print(f"+++ layoutUnaryOperation({node})")
     if node.operator.plc_symbol is None:
         raise Exception("Unknown symbol in layoutUnaryOperation(%s) for operator %s" %(node.name), operator.name)
 %>\
@@ -445,11 +495,13 @@ ${indent}</variable>\
 
 
 <%def name="xml_type(node)">\
+<% print(f"+++ xml_type({node})") %>\
 <type>${xml_type_contents(node)}</type>\
 </%def>
 
 
 <%def name="xml_type_element(node)">\
+<% print(f"xml_type_element({node})") %>\
   %if node.plc_symbol is not None:
 ##for some reason, STRING must be rendered lowercase, otherwise you cannot import the file in TwinCAT !!!
     % if node.plc_symbol == 'STRING':
@@ -463,6 +515,7 @@ ${indent}</variable>\
 </%def>
 
 <%def name="xml_type_contents(node)">\
+<% print(f"+++ xml_type_contents {node}") %>\
     %if node.type is not None:
 ${xml_type_element(node.type)}\
     %elif node.points_to_type is not None:

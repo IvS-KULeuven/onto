@@ -119,6 +119,10 @@ class Library(Namespace):
                 cfg = Config(arg_k.name, self, arg_v) 
                 self.configs[arg_k.name] = cfg
                 self.structs[arg_k.name] = cfg
+            elif isinstance(arg_k, PROCESS):
+                proc = Process(arg_k.name, self, arg_v) 
+                self.processes[arg_k.name] = proc
+                self.functionblocks[arg_k.name] = proc
 
 
 
@@ -195,6 +199,14 @@ def CONFIG_constructor(loader: Loader, node):
     name = loader.construct_scalar(node)
     return CONFIG(name)
 
+class PROCESS:
+    def __init__(self, name):
+        self.name = name
+
+def PROCESS_constructor(loader: Loader, node):
+    name = loader.construct_scalar(node)
+    return PROCESS(name)
+
 class Variable(Object):
     def __init__(self, name, parent, args={}):
         super().__init__(name, parent)
@@ -248,8 +260,8 @@ class Variable(Object):
         if 'copyFrom' in args:
             self.copyFrom = args['copyFrom']
 
-        if 'expand' in args:
-            raise NotImplemented("expand is not implemented yet")
+        #if 'expand' in args:
+        #    raise NotImplemented("expand is not implemented yet")
         if 'copyFrom' in args:
             raise NotImplemented("expand is not implemented yet")
 
@@ -296,18 +308,12 @@ class Call:
         check_args("Call", args, 
                    ["calls", "assigns"])
         self.calls = None
+        if "calls" in args:
+            self.calls = args["calls"]
         self.assignments = []
-        
-class IfThen:
-    
-    def __init__(self, name, lib, args={}) -> None:
-        self.name = name
-        self.lib = lib
-        check_args("IfThen", args, 
-                   ["if", "then", "else"])
-        self._if = None
-        self._then = None
-        self._else = None
+        if "assigns" in args:
+            self.assignments = args["assigns"]
+      
 
 class Method(Object):
 
@@ -326,6 +332,7 @@ class Method(Object):
         self.implementation = None
         self.extends = None
         self.type = None
+        self.points_to_type = None
 
         if "comment" in args:
             self.comment = args["comment"]
@@ -347,8 +354,8 @@ class Method(Object):
         
         if "returnType" in args:
             self.return_type = resolve(args['returnType'], self)
-            for child_name in self.return_type.children:
-                self.register_child(child_name, Variable(child_name, self.return_type))
+            #for child_name in self.return_type.children:
+            #    self.register_child(child_name, Variable(child_name, self.return_type))
         
         if "implementation" in args:
             raise NotImplementedError()
@@ -476,7 +483,6 @@ class Statemachine(FunctionBlock):
         self.variables_read_only = {}
         self.statuses = {}
         self.parts = {}
-        self.local = {}
         self.methods = {}
         self.processes = {}
 
@@ -531,7 +537,7 @@ class Statemachine(FunctionBlock):
                 self.vars[var_name] = v
 
         if "references" in args:
-            for var_name, var in args['variables'].items():
+            for var_name, var in args['references'].items():
                 v = Variable(var_name, self, var)
                 if QUALIFIERS.OPC_UA_DEACTIVATE not in v.qualifiers:
                     v.qualifiers.append(QUALIFIERS.OPC_UA_DEACTIVATE)
@@ -565,8 +571,8 @@ class Statemachine(FunctionBlock):
                 parent = self.parent,
                 args = { "items" : args['parts'] }
             )
-            self.parent["StateMachines"]["Parts"].append(struct)
-            self.parent.structs.append(struct)
+            self.parent.statemachines.parts[struct.name] = struct
+            self.parent.structs[struct.name] = struct
             # TODO arguments, attributes, ...
             self.var_out["parts"] = Variable(
                 name='parts', 
@@ -588,7 +594,7 @@ class Statemachine(FunctionBlock):
                 name = f'{name}Processes',
                 parent = self.parent,
                 args = {"items" : args['processes']})
-            self.parent["StateMachines"]["Processes"].append(struct)
+            self.parent.statemachines.processes[struct.name] = struct
             self.var_out["processes"] = Variable(
                 name='processes', 
                 parent=self,
@@ -806,3 +812,172 @@ add_global("LOGGER", GlobalVariable(name="LOGGER",
                                               "pBusyStatus" : {"type": "t_string"}
                                             }
                                     }))
+
+
+
+
+
+
+class Process(FunctionBlock):
+
+    def __init__(self, name, parent, args={}) -> None:
+        if "extends" in args:
+            super().__init__(name, parent, { "extends" : args["extends"] } )
+        else:
+            super().__init__(name, parent, { "extends" : "mtcs_common.BaseProcess" })
+        
+        check_args("Process", args,
+                   ["extends", "arguments", "variables", "variables_hidden", "references"])
+        
+        
+        if "variables" in args:
+            for var_name, var in args['variables'].items():
+                v = Variable(var_name, self, var)
+                self.var_in[var_name] = v
+        
+        if "references" in args:
+            for var_name, var in args['references'].items():
+                v = Variable(var_name, self, var)
+                if QUALIFIERS.OPC_UA_DEACTIVATE not in v.qualifiers:
+                    v.qualifiers.append(QUALIFIERS.OPC_UA_DEACTIVATE)
+                self.var_inout[var_name] = v
+
+                
+        # in case we have arguments, add a <ProcessName>Args Struct, containing the arguments!
+        if "arguments" in args:
+            struct = Struct(
+                name = f"{name}Args", 
+                parent = self.parent,
+                args = { "items": args['arguments'] })
+            self.parent.processes.args[struct.name] = struct
+            self.parent.structs[struct.name] = struct
+                
+        if not ("variables" in args or "arguments" in args):
+            
+            self.var_local["testVar"] = Variable(
+                "testVar", 
+                self, 
+                {
+                    "comment":  "At least 1 variable needed because subclass members of an empty class are not exposed by OPC UA (TwinCAT bug!)",
+                    "type": "t_bool",
+                    "qualifiers": [ QUALIFIERS.OPC_UA_DEACTIVATE ]
+                })
+            
+        # in case we have arguments, also add a 'set' and 'get' instance of this <ProcessName>Args struct
+        if "arguments" in args:
+            self.var_in["set"] = Variable(
+                "set",
+                self,
+                {
+                    "type": struct,
+                    "comment": "Arguments to be set, before writing do_request TRUE",
+                    "qualifiers": [ QUALIFIERS.OPC_UA_ACTIVATE ]
+                })
+            self.var_out["get"] = Variable(
+                "get",
+                self,
+                {
+                    "type": struct,
+                    "comment": "Arguments in use by the process, if do_request was accepted",
+                    "qualifiers": [ QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_R ]
+                })
+
+        # add a start(...) method
+        if "arguments" in args:
+            start = Method(
+                name = "start",
+                parent = self,
+                args = {
+                    "comment": "Start the process. This method does not check the enabledStatus, and should not be exposed via OPC UA!",
+                    "inputArgs": args["arguments"]
+                })
+        else:
+            start = Method(
+                name = "start",
+                parent = self,
+                args = {
+                    "comment": "Start the process. This method does not check the enabledStatus, and should not be exposed via OPC UA!"
+                })
+
+        self.methods["start"] = start
+        
+        # add implementation of the start method
+        start.implementation = []
+        if "arguments" in args:
+            for arg_name in args["arguments"]:
+                assignment = ASSIGN([
+                    self.var_out["get"].get_child(arg_name), 
+                    start.get_child(arg_name)])
+                assignment.resolve_children(self)
+                start.implementation.append(assignment)
+            start.implementation.append(
+                Call("setBusy", start, { "calls": self.get_child("statuses").get_child("busyStatus"), "assigns": [ ASSIGN([self.get_child("statuses").get_child("busyStatus").get_child("isBusy"), Bool("TRUE")]) ] }))
+            start.implementation.append(
+                Call("setGood", start, { "calls": self.get_child("statuses").get_child("healthStatus"), "assigns": [ ASSIGN([self.get_child("statuses").get_child("healthStatus").get_child("isGood"), Bool("TRUE")]) ] }))
+
+
+        # add a request(...) method
+        if "arguments" in args:
+            request = Method(
+                name = "request",
+                parent = self,
+                args = {
+                    "comment": "Request the start of this process",
+                    "inputArgs": args["arguments"],
+                    "returnType": "mtcs_common.RequestResults"
+                })
+        else:
+            request = Method(
+                name = "request",
+                parent = self,
+                args = {
+                    "comment": "Request the start of this process",
+                    "returnType": "mtcs_common.RequestResults"
+                })
+            
+        self.methods["request"] = request
+
+        
+        start_call = Call("call_start", request)
+        start_call.calls = start
+        if "arguments" in args:
+            for arg_name in args["arguments"]:
+                start_call.assignments.append(ASSIGN([start.get_child(arg_name, False),  request.get_child(arg_name, False)]))
+            
+        request.implementation = [
+            IfThen(
+                name = "ifthen", 
+                parent = request, 
+                if_ = self.children["statuses"].children["enabledStatus"].children["enabled"],
+                then_ = [
+                    start_call,
+                    ASSIGN([request, resolve("mtcs_common.RequestResults.ACCEPTED", self.parent)])
+                ],
+                else_ = [
+                    ASSIGN([request, resolve("mtcs_common.RequestResults.ACCEPTED", self.parent)])
+                ])
+        ]
+        
+        request_call = Call("call_request", request)
+        request_call.calls = request
+        if "arguments" in args:
+            for arg_name in args["arguments"]:
+                request_call.assignments.append(ASSIGN([request.get_child(arg_name, False),  self.var_in["set"].get_child(arg_name, False)]))
+        
+        self.implementation = [
+            IfThen(
+                name = "ifthen", 
+                parent = self, 
+                if_ = self.get_child("do_request"),
+                then_ = [
+                    start_call,
+                    ASSIGN([self.children["do_request"], Bool("FALSE")])
+                ]),
+            Call("callSuper", self, { "calls": PLC_DEREF(self.children["SUPER"]) })
+
+            
+        ]
+        
+
+
+            

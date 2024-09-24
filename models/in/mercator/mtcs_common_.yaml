@@ -738,9 +738,9 @@
             value : !MUL [newFractionValue, !DOUBLE 100 ]
             unit  : Units.PERCENT
 
-########################################################################################################################
-# BaseProcess
-########################################################################################################################
+  ########################################################################################################################
+  # BaseProcess
+  ########################################################################################################################
   !STATEMACHINE BaseProcess:
     variables_hidden:
         isEnabled           : { type: t_bool, comment: "Should the trigger be enabled?" }
@@ -755,4 +755,51 @@
     calls:
         enabledStatus:
             isEnabled: isEnabled
+
+
+  ########################################################################################################################
+  # BaseMcProcess
+  ########################################################################################################################
+  !STATEMACHINE BaseMcProcess:
+    extends: BaseProcess
+    variables:
+        errorId: { type: t_uint32, comment: "Error ID according to Beckhoff/PlcOpen Motion Control" }
+
+
+  ########################################################################################################################
+  # ProcessStep
+  ########################################################################################################################
+  !STATEMACHINE ProcessStep:
+    variables_hidden:
+        isEnabled       : { type: t_bool        , comment: "Is the step enabled?" }
+    references:
+        process         : { type: BaseProcess   , comment: "The process corresponding to the step", expand: false }
+    statuses:
+        enabledStatus   : { type: EnabledStatus , comment: "Is the process step enabled or not?"  }
+    calls:
+        enabledStatus:
+            isEnabled: isEnabled
+
+
+  ########################################################################################################################
+  # BaseXmlIOProcess
+  ########################################################################################################################
+  !STATEMACHINE BaseXmlDataSrvProcess:
+    extends: BaseProcess
+    variables:
+        errorId: { type: t_uint32, comment: "Error ID according to Beckhoff XML Data Server library" }
+
+  ########################################################################################################################
+  # Process
+  ########################################################################################################################
+  !PROCESS Process: # default process
+    extends: BaseProcess
+
+  ########################################################################################################################
+  # ChangeSetpointProcess
+  ########################################################################################################################
+  !PROCESS ChangeSetpointProcess:
+    extends: BaseProcess
+    arguments:
+        setpoint     : { type: t_double, comment: "New setpoint value" }
 

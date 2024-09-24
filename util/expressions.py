@@ -27,16 +27,29 @@ class OPERATORS:
     PLC_DEREF = Operator("PLC_DEREF", "^")
 
 
-class IfThen(Object):
-    def __init__(self) -> None:
-        pass
-
-
 class Expression(Object):
     def __init__(self, operator) -> None:
         super().__init__(None, None)
         self.operator = operator
     
+class IfThen(Object):
+    def __init__(self, name: str, parent: Object, if_: Expression, then_: list[Expression], else_: list[Expression] = None) -> None:
+        super().__init__(name, parent)
+        self.if_ = if_
+        self.then_ = then_
+        self.else_ = else_
+        self.register_child("if", if_)
+        # for i, expr in enumerate(then_):
+        #     self.register_child(f"then_{i}", expr)
+        # if else_ is not None:
+        #     for i, expr in enumerate(else_):
+        #         self.register_child(f"else_{i}", expr)
+        
+    # def resolve_children(self, context):
+    #     super().resolve_children(context)
+    #     self.if_ = self.children["if"]
+
+
 
 
 class UnaryOperation(Expression):
