@@ -1,4 +1,4 @@
-!IMPORT models/in/mercator/zeckhoff.yaml:
+!IMPORT models/in/mercator/beckhoff.yaml:
 
 #########################################################################################################################
 # Library definition
@@ -202,7 +202,7 @@
               comment: "TRUE if the subject is in Good health"
           hasWarning:
               type: t_bool
-              initial: !BOOL false
+              initial: !BOOL FALSE
               comment: "TRUE to add a warning to the Good health state"
       states:
           good:
@@ -1018,9 +1018,9 @@
         reset:
             isEnabled                   : !AND [ isEnabled, processes.reset.statuses.busyStatus.idle ]
         gearIn:
-            isEnabled                   : !AND [ isEnabled, processes.gearIn.statuses.busyStatus.idle,isGearingSupported ]
+            isEnabled                   : !AND [ isEnabled, processes.gearIn.statuses.busyStatus.idle, isGearingSupported ]
         gearOut:
-            isEnabled                   : !AND [ isEnabled, processes.gearOut.statuses.busyStatus.idle,isGearingSupported ]
+            isEnabled                   : !AND [ isEnabled, processes.gearOut.statuses.busyStatus.idle, isGearingSupported ]
         stop:
             isEnabled                   : !AND [ isEnabled, processes.stop.statuses.busyStatus.idle ]
         setPosition:
@@ -1046,3 +1046,1024 @@
         probeAbort:
             isEnabled                   : !AND [ isEnabled, statuses.busyStatus.idle ]
 
+
+
+  ########################################################################################################################
+  # AngularAxis
+  ########################################################################################################################
+  !STATEMACHINE AngularAxis:
+    extends: BaseAxis
+    variables_read_only:
+        actPos              : { type: AngularPosition       , comment: "Actual position of the axis" }
+        actVel              : { type: AngularVelocity       , comment: "Actual velocity of the axis" }
+    calls:
+        actPos:
+            newDegreesValue             : axis_ref.NcToPlc.ActPos
+        actVel:
+            newDegreesPerSecondValue    : axis_ref.NcToPlc.ActVelo
+
+  ########################################################################################################################
+  # LinearAxis
+  ########################################################################################################################
+  !STATEMACHINE LinearAxis:
+    extends: BaseAxis
+    variables_read_only:
+        actPos                              : { type: LinearPosition       , comment: "Actual position of the axis" }
+        actVel                              : { type: LinearVelocity       , comment: "Actual velocity of the axis" }
+    calls:
+        actPos:
+            newMillimetersValue             : axis_ref.NcToPlc.ActPos
+        actVel:
+            newMillimetersPerSecondValue    : axis_ref.NcToPlc.ActVelo
+
+
+
+  ########################################################################################################################
+  # SDOReadProcess
+  ########################################################################################################################
+  !PROCESS SDOReadProcess:
+    extends: BaseProcess
+    arguments:
+        index       : { type: t_uint16      , comment: 'SDO Index' }
+        subindex    : { type: t_uint8       , comment: 'SDO SubIndex' }
+        noOfBytes   : { type: t_uint32      , comment: 'Number of bytes to be read' }
+    variables:
+        value1Byte  : { type: t_uint8       , comment: "Value that has been read, if noOfBytes is 1" }
+        value2Bytes : { type: t_uint16      , comment: "Value that has been read, if noOfBytes is 2" }
+        value4Bytes : { type: t_uint32      , comment: "Value that has been read, if noOfBytes is 4" }
+        errorId     : { type: t_uint32      , comment: "Error ID according to Beckhoff" }
+
+  ########################################################################################################################
+  # SDOWriteProcess
+  ########################################################################################################################
+  !PROCESS SDOWriteProcess:
+    extends: BaseProcess
+    arguments:
+        index       : { type: t_uint16      , comment: 'SDO Index' }
+        subindex    : { type: t_uint8       , comment: 'SDO SubIndex' }
+        noOfBytes   : { type: t_uint32      , comment: 'Number of bytes to be written' }
+        value1Byte  : { type: t_uint8       , comment: "Value to be written if noOfBytes is 1" }
+        value2Bytes : { type: t_uint16      , comment: "Value to be written if noOfBytes is 2" }
+        value4Bytes : { type: t_uint32      , comment: "Value to be written if noOfBytes is 4" }
+    variables:
+        errorId     : { type: t_uint32      , comment: "Error ID according to Beckhoff" }
+
+
+  ########################################################################################################################
+  # FaulhaberDriveConfig
+  ########################################################################################################################
+  !CONFIG FaulhaberDriveConfig:
+    items:
+        sendAtInitialization                : { type: t_bool    , comment : "Send the complete config to the drive during initialization" }
+        CANopenBusNetId                     : { type: t_string  , comment : "The CANopen bus NetId, as configured via TwinCAT, e.g. '172.16.2.131.2.1'"    }
+        CANopenNodePort                     : { type: t_uint16  , comment : "The CANopen node port number, as configured via TwinCAT, e.g. 1005"    }
+        modesOfOperation                    : { type: t_uint8   , comment : "0x6060.0: Operating mode changeover" }
+        polarity                            : { type: t_uint8   , comment : "0x607E.0: Direction of rotation" }
+        maxProfileVelocity                  : { type: t_uint32  , comment : "0x607F.0: Maximum velocity, in rpm" }
+        negativeLimitSwitch                 : { type: t_uint8   , comment : "0x2310.1: Lower limit switch configuration" }
+        positiveLimitSwitch                 : { type: t_uint8   , comment : "0x2310.2: Upper limit switch configuration" }
+        homingSwitch                        : { type: t_uint8   , comment : "0x2310.3: Homing switch configuration" }
+        limitSwitchPolarity                 : { type: t_uint8   , comment : "0x2310.5: Limit switch positive edge" }
+        continuousCurrentLimit              : { type: t_uint16  , comment : "0x2333.1: Continuous current limit, in milliamps"    }
+        peakCurrentLimit                    : { type: t_uint16  , comment : "0x2333.2: Peak current limit, in milliamps"    }
+        velocityControlProportionalTerm     : { type: t_uint16  , comment : "0x2331.1: Proportional term (gain) of the velocity control mode"    }
+        velocityControlIntegralTerm         : { type: t_uint16  , comment : "0x2331.2: Integral term (gain) of the velocity control mode"    }
+
+
+  ########################################################################################################################
+  # FaulhaberDrive
+  ########################################################################################################################
+  !STATEMACHINE FaulhaberDrive:
+    variables_hidden:
+        isEnabled           : { type: t_bool                    , comment: "Is control enabled?" }
+        newMilliampsValue   : { type: t_int16                   , comment: "Current in milliamps, linked to PDO"   , address: "%I*" }
+    variables:
+        config              : { type: FaulhaberDriveConfig      , comment: "Faulhaber drive config" }
+    variables_read_only:
+        actualCurrent       : { type: Current                   , comment: "Actual current" }
+        averageCurrent      : { type: AverageCurrent            , comment: "Average current" }
+    processes:
+        write               : { type: SDOWriteProcess           , comment: "Write a number of bytes to the drive" }
+        read                : { type: SDOReadProcess            , comment: "Read a number of bytes from the drive" }
+        initialize          : { type: Process                   , comment: "Initialize the drive according to the config" }
+    statuses:
+        busyStatus          : { type: BusyStatus                , comment: "Is the NcAxis in a busy state?" }
+        healthStatus        : { type: HealthStatus              , comment: "Is the NcAxis in a healthy state?" }
+    calls:
+        busyStatus:
+            isBusy          : !OR [processes.write.statuses.busyStatus.busy,
+                                   processes.read.statuses.busyStatus.busy,
+                                   processes.initialize.statuses.busyStatus.busy]
+        healthStatus:
+            isGood          : !AND [processes.write.statuses.healthStatus.good,
+                                    processes.read.statuses.healthStatus.good,
+                                    processes.initialize.statuses.healthStatus.good]
+        actualCurrent:
+            newAmpsValue    : !DIV [newMilliampsValue, !DOUBLE 1000.0 ]
+        averageCurrent:
+            newAmpsValue    : !DIV [newMilliampsValue, !DOUBLE 1000.0 ]
+        read:
+            isEnabled       : !AND [isEnabled, statuses.busyStatus.idle]
+        write:
+            isEnabled       : !AND [isEnabled, statuses.busyStatus.idle]
+
+
+  ########################################################################################################################
+  # SoEReadProcess
+  ########################################################################################################################
+  !PROCESS SoEReadProcess:
+    extends: BaseProcess
+    arguments:
+        index           : { type: t_uint16      , comment: 'SDO Index' }
+        noOfBytes       : { type: t_uint32      , comment: 'Number of bytes to be read' }
+    variables:
+        value1Byte      : { type: t_uint8       , comment: "Value that has been read, if noOfBytes is 1" }
+        value2Bytes     : { type: t_uint16      , comment: "Value that has been read, if noOfBytes is 2" }
+        value4Bytes     : { type: t_uint32      , comment: "Value that has been read, if noOfBytes is 4" }
+        adsErrorId      : { type: t_uint16      , comment: "ADS error ID " }
+        sercosErrorId   : { type: t_uint16      , comment: "Sercos error ID " }
+
+  ########################################################################################################################
+  # SoEWriteProcess
+  ########################################################################################################################
+  !PROCESS SoEWriteProcess:
+    extends: BaseProcess
+    arguments:
+        index           : { type: t_uint16      , comment: 'SDO Index' }
+        noOfBytes       : { type: t_uint32      , comment: 'Number of bytes to be written' }
+        value1Byte      : { type: t_uint8       , comment: "Value to be written if noOfBytes is 1" }
+        value2Bytes     : { type: t_uint16      , comment: "Value to be written if noOfBytes is 2" }
+        value4Bytes     : { type: t_uint32      , comment: "Value to be written if noOfBytes is 4" }
+    variables:
+        adsErrorId      : { type: t_uint16      , comment: "ADS error ID " }
+        sercosErrorId   : { type: t_uint16      , comment: "Sercos error ID " }
+
+
+  ########################################################################################################################
+  # SoEResetProcess
+  ########################################################################################################################
+  !PROCESS SoEResetProcess:
+    extends: BaseProcess
+    variables:
+        adsErrorId      : { type: t_uint16      , comment: "ADS error ID " }
+        sercosErrorId   : { type: t_uint16      , comment: "Sercos error ID " }
+
+
+  ########################################################################################################################
+  # DriveOperatingModes
+  ########################################################################################################################
+  !ENUMERATION DriveOperatingModes:
+    items:
+        [   "OPERATING_MODE_NONE",
+            "OPERATING_MODE_TORQUE_CONTROL",
+            "OPERATING_MODE_VELOCITY_CONTROL",
+            "OPERATING_MODE_POSITION_CONTROL"   ]
+
+
+  ########################################################################################################################
+  # DriveBrakeStates
+  ########################################################################################################################
+  !ENUMERATION DriveBrakeStates:
+    items:
+        [   "BRAKE_AUTOMATIC",
+            "BRAKE_FORCE_LOCK",
+            "BRAKE_FORCE_UNLOCK"  ]
+
+  ########################################################################################################################
+  # SetBrakeProcess
+  ########################################################################################################################
+  !PROCESS SetBrakeProcess:
+    extends: BaseProcess
+    arguments:
+        newState  : { type: DriveBrakeStates, comment: "Requested brake state" }
+
+
+
+  ########################################################################################################################
+  # AX52XXDriveChannel
+  ########################################################################################################################
+  !STATEMACHINE AX52XXDriveChannel:
+    variables:
+        errorC1D                : { type: t_int16             , comment: "Class 1 Diagnostic (C1D" , address: '%I*' }
+        isEnabled               : { type: t_bool              , comment: "Is control enabled?" }
+        torqueFeedbackValue     : { type: t_int16             , comment: "Torque feedback, cyclically updated by the drive channel" , address: '%I*' }
+        torqueCommandValue      : { type: t_int16             , comment: "Torque command (only in case of torque control!)" , address: '%Q*' }
+        digitalInputs           : { type: t_int16             , comment: "Digital inputs (e.g. bit 0 = 1 if input 0 = high), cyclically updated by the drive channel", address: '%I*' }
+        digitalOutputs          : { type: t_int16             , comment: "Digital outputs (e.g. bit 0 = 1 if input 0 = high), cyclically updated by the drive channel", address: '%Q*' }
+        safetyOptionState       : { type: t_int16             , comment: "Safety option state (P-0-2002)" , address: '%I*' }
+        diagnosticNumber        : { type: t_uint32            , comment: "Diagnostic number" , address: '%I*' }
+    variables_read_only:
+        isInSafetate            : { type: t_bool              , comment: "True if the drive is in safe state" }
+        actualTorqueFeedback    : { type: Torque              , comment: "The actual torque feedback value (updated constantly!)" }
+        channelPeakCurrent      : { type: Current             , comment: "The configured channel peak current" }
+        channelRatedCurrent     : { type: Current             , comment: "The configured channel peak current" }
+        continuousStallTorque   : { type: Torque              , comment: "The motor continuous stall torque" }
+        continuousStallCurrent  : { type: Current             , comment: "The motor continuous stall current" }
+        torqueConstant          : { type: t_double            , comment: "The motor torque constant, in Nm/A" }
+        bipolarTorqueLimit      : { type: TorqueLimit         , comment: "The drive bipolar torque limit" }
+        positiveTorqueLimit     : { type: TorqueLimit         , comment: "The drive positive torque limit" }
+        negativeTorqueLimit     : { type: TorqueLimit         , comment: "The drive negative torque limit" }
+        operatingMode           : { type: DriveOperatingModes , comment: "The drive operating mode, as an ENUM value" }
+        operatingModeDescription: { type: t_string            , comment: "The drive operating mode, as a descriptive text" }
+        brakeState              : { type: DriveBrakeStates    , comment: "The drive brake state, as an ENUM value" }
+        brakeStateDescription   : { type: t_string            , comment: "The drive brake state, as a descriptive text" }
+        torqueCommand           : { type: TorqueLimit         , comment: "The torque command (only in case of torque control!)" }
+        safetyErrorAck          : { type: t_bool              , comment: "Error acknowledge of AX5805 safety card" , address: '%Q*' }
+    processes:
+        read                    : { type: SoEReadProcess      , comment: "Read a number of bytes from the drive" }
+        write                   : { type: SoEWriteProcess     , comment: "Write a number of bytes to the drive" }
+        update                  : { type: Process             , comment: "Update the actual values" }
+        reset                   : { type: SoEResetProcess     , comment: "Reset the drive channel" }
+        acknowledgeSafetyError  : { type: Process             , comment: "Acknowledge the safety card error state" }
+        setBrake                : { type: SetBrakeProcess     , comment: "Update the actual values" }
+    statuses:
+        busyStatus              : { type: BusyStatus          , comment: "Is the drive in a busy state?" }
+        healthStatus            : { type: HealthStatus        , comment: "Is the drive in a healthy state?" }
+    calls:
+        # variables
+        actualTorqueFeedback:
+            newNewtonmeterValue : !MUL [ !MUL [ !DIV [torqueFeedbackValue, !DOUBLE 1000.0 ], channelPeakCurrent.amps.value ], torqueConstant ]
+        torqueCommand:
+            newFractionValue    : !DIV [ torqueCommandValue, !DOUBLE 1000.0 ]
+            maxNewtonmeter      : !MUL [channelPeakCurrent.amps.value, torqueConstant]
+        # statuses
+        busyStatus:
+            isBusy          : !MTCS_SUMMARIZE_BUSY [processes.write,
+                                                    processes.read,
+                                                    processes.update,
+                                                    processes.reset,
+                                                    processes.acknowledgeSafetyError]
+        healthStatus:
+            isGood          : !MTCS_SUMMARIZE_GOOD [processes.write,
+                                                    processes.read,
+                                                    processes.update,
+                                                    processes.reset,
+                                                    processes.acknowledgeSafetyError]
+            hasWarning      : !MTCS_SUMMARIZE_WARN [processes.write,
+                                                    processes.read,
+                                                    processes.update,
+                                                    processes.reset,
+                                                    processes.acknowledgeSafetyError]
+        # processes
+        read:
+            isEnabled       : !AND [isEnabled, statuses.busyStatus.idle ]
+        write:
+            isEnabled       : !AND [isEnabled, statuses.busyStatus.idle ]
+        update:
+            isEnabled       : statuses.busyStatus.idle
+        reset:
+            isEnabled       : statuses.busyStatus.idle
+        setBrake:
+            isEnabled       : !AND [isEnabled, statuses.busyStatus.idle ]
+        acknowledgeSafetyError:
+            isEnabled       : !AND [isEnabled, processes.acknowledgeSafetyError.statuses.busyStatus.idle ]
+
+
+
+  ########################################################################################################################
+  # AX52XXDrive
+  ########################################################################################################################
+  !STATEMACHINE AX52XXDrive:
+    variables_hidden:
+        isEnabled           : { type: t_bool                    , comment: "Is control enabled?" }
+    statuses:
+        busyStatus          : { type: BusyStatus                , comment: "Is the drive in a busy state?" }
+        healthStatus        : { type: HealthStatus              , comment: "Is the drive in a healthy state?" }
+    parts:
+        channelA            : { type: AX52XXDriveChannel        , comment: "Channel A" }
+        channelB            : { type: AX52XXDriveChannel        , comment: "Channel B" }
+    calls:
+        channelA:
+            isEnabled       : isEnabled
+        channelB:
+            isEnabled       : isEnabled
+        busyStatus:
+            isBusy          : !MTCS_SUMMARIZE_WARN [ parts.channelA, parts.channelB ]
+        healthStatus:
+            isGood          : !MTCS_SUMMARIZE_GOOD [ parts.channelA, parts.channelB ]
+            hasWarning      : !MTCS_SUMMARIZE_WARN [ parts.channelA, parts.channelB ]
+
+
+  #########################################################################################################################
+  ## AX52XXDrive
+  #########################################################################################################################
+  #  !ENUM AX52XXDrive",
+  #    items:
+  #        [  "A",
+  #           "B"  ]
+
+  ########################################################################################################################
+  # SSIEncoder
+  ########################################################################################################################
+  !STATEMACHINE SSIEncoder:
+    variables_hidden:
+        counterValue    : { type: t_uint32                  , comment: "Counter value"                  , address: "%I*" }
+        status          : { type: t_uint16                  , comment: "Status"                         , address: "%I*" }
+    variables_read_only:
+        dataError       : { type: t_bool                    , comment: "Data error"                    , address: "%I*" }
+        frameError      : { type: t_bool                    , comment: "Frame error"                   , address: "%I*" }
+        powerFailure    : { type: t_bool                    , comment: "Power failure"                 , address: "%I*" }
+        syncError       : { type: t_bool                    , comment: "Sync error"                    , address: "%I*" }
+    statuses:
+        healthStatus    : { type: HealthStatus, comment: "Is the device in a healthy state?" }
+    calls:
+        healthStatus:
+            isGood      : !NOT [ !OR [ dataError, frameError, powerFailure, syncError ] ]
+
+  ########################################################################################################################
+# IncrementalEncoder
+  ########################################################################################################################
+  !STATEMACHINE IncrementalEncoder:
+    variables_hidden:
+        isEnabled           : { type: t_bool                    , comment: "Is control enabled?" }
+        counterValue        : { type: t_uint32                  , comment: "Actual counter value"       , address: "%I*" }
+        status              : { type: t_uint16                  , comment: "Status"                     , address: "%I*" }
+        setCounterValue     : { type: t_uint32                  , comment: "Counter value to be set"    , address: "%Q*" }
+        setCounter          : { type: t_bool                    , comment: "Counter value to be set"    , address: "%Q*" }
+        enableLatchC        : { type: t_bool                    , comment: "Enable latch C"             , address: "%Q*" }
+    variables_read_only:
+        latchCValid         : { type: t_bool                    , comment: "Bit 0: Latch C valid"  }
+        latchExternValid    : { type: t_bool                    , comment: "Bit 1: Latch extern valid"  }
+        setCounterDone      : { type: t_bool                    , comment: "Bit 2: Set counter done"  }
+        counterUnderflow    : { type: t_bool                    , comment: "Bit 3: Counter undeflow"  }
+        counterOverflow     : { type: t_bool                    , comment: "Bit 4: Counter overflow"  }
+        statusOfInputStatus : { type: t_bool                    , comment: "Bit 5: Status of input status"  }
+        openCircuit         : { type: t_bool                    , comment: "Bit 6: Open circuit"  }
+        extrapolationStall  : { type: t_bool                    , comment: "Bit 7: Extrapolation stall"  }
+        statusOfInputA      : { type: t_bool                    , comment: "Bit 8: Status of input A"  }
+        statusOfInputB      : { type: t_bool                    , comment: "Bit 9: Status of input B"  }
+        statusOfInputC      : { type: t_bool                    , comment: "Bit 10: Status of input C"  }
+        statusOfInputGate   : { type: t_bool                    , comment: "Bit 11: Status of input gate"  }
+        statusOfExternLatch : { type: t_bool                    , comment: "Bit 12: Status of external latch"  }
+        syncError           : { type: t_bool                    , comment: "Bit 13: Sync error"  }
+    statuses:
+        healthStatus        : { type: HealthStatus      , comment: "Is the device in a healthy state?" }
+        busyStatus          : { type: BusyStatus        , comment: "Is the device in a busy state?" }
+    processes:
+        enableCounterResetC : { type: Process           , comment: "Enable the counter reset on the C pulse" }
+        disableCounterResetC: { type: Process           , comment: "Disable the counter reset on the C pulse" }
+    calls:
+        healthStatus:
+            isGood          : !NOT [ !OR [ !NOT [ statusOfInputStatus ],
+                                           openCircuit,
+                                           extrapolationStall,
+                                           syncError ] ]
+        busyStatus:
+            isBusy          : !MTCS_SUMMARIZE_BUSY [ processes.enableCounterResetC, processes.disableCounterResetC ]
+        enableCounterResetC:
+            isEnabled       : isEnabled
+        disableCounterResetC:
+            isEnabled       : isEnabled
+
+
+  ########################################################################################################################
+  # EtherCatDevice
+  ########################################################################################################################
+  !STATEMACHINE EtherCatDevice:
+    variables:
+        id       : { type: t_string , comment: "Label according to the electric schemes" }
+        typeId   : { type: t_string , comment: "Manufacturer type, e.g. EL1008" }
+        wcState  : { type: t_bool   , comment: "0 = Data valid, 1 = Data invalid" , address: "%I*" }
+        infoData : { type: t_uint16 , comment: "EtherCAT state"                   , address: "%I*" }
+    statuses:
+        healthStatus : { type: HealthStatus, comment: "Is the device in a healthy state?" }
+    calls:
+        healthStatus:
+            isGood  : !AND [ !EQ [ wcState, !BOOL FALSE ], !EQ [ infoData, !UINT16 8 ] ]
+
+
+  ########################################################################################################################
+  # CANopenBus
+  ########################################################################################################################
+  !STATEMACHINE CANopenBus:
+    variables:
+        error          : { type: t_uint8  , comment: "Number of boxes with BoxState unequal to 0"             , address: "%I*" }
+        canState       : { type: t_uint16 , comment: "CAN state (See system manager for bit interpretation"   , address: "%I*" }
+        rxErrorCounter : { type: t_uint8  , comment: "RxError-counter of the CAN controller"                  , address: "%I*" }
+        txErrorCounter : { type: t_uint8  , comment: "TxError-counter of the CAN controller"                  , address: "%I*" }
+    statuses:
+        healthStatus : { type: HealthStatus, comment: "Is the device in a healthy state?" }
+    calls:
+        healthStatus:
+            isGood  : !EQ [ error, !UINT8 0 ]
+
+  ########################################################################################################################
+  # CurrentMeasurement
+  ########################################################################################################################
+  !STATEMACHINE CurrentMeasurement:
+    variables_hidden:
+        microAmpsValue  : { type: t_int32      , comment: "Measured current in microamps"   , address: "%I*" }
+        error           : { type: t_bool       , comment: "Error"                           , address: "%I*" }
+    variables_read_only:
+        current         : { type: Current      , comment: "The measured current" }
+    statuses:
+        healthStatus    : { type: HealthStatus , comment: "Is the measurement valid?" }
+    calls:
+        healthStatus:
+            isGood       : !NOT [ error ]
+        current:
+            newAmpsValue : !DIV [ microAmpsValue, !DOUBLE 1000000 ]
+
+  ########################################################################################################################
+  # VoltageMeasurement
+  ########################################################################################################################
+  !STATEMACHINE VoltageMeasurement:
+    variables_hidden:
+        rawValue        : { type: t_int16              , comment: "Measured raw value"                                        , address: "%I*" }
+        error           : { type: t_bool               , comment: "Error"                                                     , address: "%I*" }
+        conversionFactor: { type: t_double             , comment: "rawValue * conversionFactor = volt.value"   , initial: !DOUBLE 0.00030517578125 }
+    variables_read_only:
+        actual          : { type: Voltage              , comment: "Actual value" }
+        average         : { type: Voltage              , comment: "Moving average value" }
+        underrange      : { type: t_bool               , comment: "Underrange"                      , address: "%I*" }
+        overrange       : { type: t_bool               , comment: "Overrange"                       , address: "%I*" }
+    references:
+        config          : { type: MeasurementConfig    , comment: "Reference to the config (alarms in volts)" }
+    statuses:
+        enabledStatus   : { type: EnabledStatus        , comment: "Is the voltage being measured?" }
+        healthStatus    : { type: HealthStatus         , comment: "Is the measurement OK?" }
+        alarmStatus     : { type: HiHiLoLoAlarmStatus  , comment: "Alarm status"}
+    calls:
+        enabledStatus:
+            isEnabled    : config.enabled
+        alarmStatus:
+            superState   : statuses.enabledStatus.enabled
+            config       : config.alarms
+            value        : average.volt.value
+        healthStatus:
+            superState   : statuses.enabledStatus.enabled
+            isGood       : !NOT [ !OR [error,
+                                       underrange,
+                                       overrange,
+                                       statuses.alarmStatus.hiHi,
+                                       statuses.alarmStatus.loLo ] ]
+            hasWarning   : !OR [statuses.alarmStatus.hi,
+                                statuses.alarmStatus.lo]
+        actual:
+            newVoltValue : !SUM [ !MUL [rawValue, conversionFactor], config.offset]
+
+
+
+  ########################################################################################################################
+  # TemperatureMeasurement
+  ########################################################################################################################
+  !STATEMACHINE TemperatureMeasurement:
+    variables_hidden:
+        rawValue        : { type: t_int16              , comment: "Measured raw value"                                        , address: "%I*" }
+        error           : { type: t_bool               , comment: "Error"                                                     , address: "%I*" } #&#176;
+        conversionFactor: { type: t_double             , comment: "rawValue * conversionFactor = temperature.degrees.value"   , initial: !DOUBLE 0.01 }
+    variables_read_only:
+        actual          : { type: Temperature          , comment: "Actual value" }
+        average         : { type: Temperature          , comment: "Moving average value" }
+        underrange      : { type: t_bool               , comment: "Underrange"                      , address: "%I*" }
+        overrange       : { type: t_bool               , comment: "Overrange"                       , address: "%I*" }
+    references:
+        config          : { type: MeasurementConfig    , comment: "Reference to the config (alarms in degrees celsius)" }
+    statuses:
+        enabledStatus   : { type: EnabledStatus        , comment: "Is the temperature being measured?" }
+        healthStatus    : { type: HealthStatus         , comment: "Is the measurement OK?" }
+        alarmStatus     : { type: HiHiLoLoAlarmStatus  , comment: "Alarm status"}
+    calls:
+        enabledStatus:
+            isEnabled    : config.enabled
+        alarmStatus:
+            superState   : statuses.enabledStatus.enabled
+            config       : config.alarms
+            value        : average.celsius.value
+        healthStatus:
+            superState   : statuses.enabledStatus.enabled
+            isGood       : !NOT [ !OR [error,
+                                       underrange,
+                                       overrange,
+                                       statuses.alarmStatus.hiHi,
+                                       statuses.alarmStatus.loLo] ]
+            hasWarning   : !OR [statuses.alarmStatus.hi,
+                                statuses.alarmStatus.lo]
+        actual:
+            newCelsiusValue : !SUM [ !MUL [rawValue, conversionFactor], config.offset]
+
+
+  ########################################################################################################################
+  # PressureMeasurement
+  ########################################################################################################################
+
+  !STATEMACHINE PressureMeasurement:
+    variables_hidden:
+        rawValue        : { type: t_int16              , comment: "Measured raw value"                                       , address: "%I*" }
+        error           : { type: t_bool               , comment: "Error"                                                    , address: "%I*" }
+        conversionFactor: { type: t_double             , comment: "rawValue * conversionFactor = bar.value"                  , initial: !DOUBLE 1 }
+    variables_read_only:
+        actual          : { type: Pressure             , comment: "Actual value" }
+        average         : { type: Pressure             , comment: "Moving average value" }
+        underrange      : { type: t_bool               , comment: "Underrange"                      , address: "%I*" }
+        overrange       : { type: t_bool               , comment: "Overrange"                       , address: "%I*" }
+    references:
+        config          : { type: MeasurementConfig    , comment: "Reference to the config (alarms in bar)" }
+    statuses:
+        enabledStatus   : { type: EnabledStatus        , comment: "Is the pressure being measured?" }
+        healthStatus    : { type: HealthStatus         , comment: "Is the measurement OK?" }
+        alarmStatus     : { type: HiHiLoLoAlarmStatus  , comment: "Alarm status"}
+    calls:
+        enabledStatus:
+            isEnabled    : config.enabled
+        alarmStatus:
+            superState   : statuses.enabledStatus.enabled
+            config       : config.alarms
+            value        : average.bar.value
+        healthStatus:
+            superState   : statuses.enabledStatus.enabled
+            isGood       : !NOT [ !OR [error,
+                                       underrange,
+                                       overrange,
+                                       statuses.alarmStatus.hiHi,
+                                       statuses.alarmStatus.loLo ] ]
+            hasWarning   : !OR [statuses.alarmStatus.hi,
+                                statuses.alarmStatus.lo]
+        actual:
+            newBarValue  : !SUM [ !MUL [rawValue, conversionFactor], config.offset ]
+
+
+  ########################################################################################################################
+  # FrequencyMeasurement
+  ########################################################################################################################
+
+  !STATEMACHINE FrequencyMeasurement:
+    variables_hidden:
+        rawValue        : { type: t_int16              , comment: "Measured raw value"                                       , address: "%I*" }
+        error           : { type: t_bool               , comment: "Error"                                                    , address: "%I*" }
+        conversionFactor: { type: t_double             , comment: "rawValue * conversionFactor = hertz.value"                , initial: !DOUBLE 1 }
+    variables_read_only:
+        actual          : { type: Frequency    , comment: "Actual value" }
+        average         : { type: Frequency    , comment: "Moving average value" }
+        underrange      : { type: t_bool               , comment: "Underrange"                      , address: "%I*" }
+        overrange       : { type: t_bool               , comment: "Overrange"                       , address: "%I*" }
+    references:
+        config          : { type: MeasurementConfig    , comment: "Reference to the config (alarms in hertz)" }
+    statuses:
+        enabledStatus   : { type: EnabledStatus        , comment: "Is the frequency being measured?" }
+        healthStatus    : { type: HealthStatus         , comment: "Is the measurement OK?" }
+        alarmStatus     : { type: HiHiLoLoAlarmStatus  , comment: "Alarm status"}
+    calls:
+        enabledStatus:
+            isEnabled    : config.enabled
+        alarmStatus:
+            superState   : statuses.enabledStatus.enabled
+            config       : config.alarms
+            value        : average.hertz.value
+        healthStatus:
+            superState   : statuses.enabledStatus.enabled
+            isGood       : !NOT [ !OR [error,
+                                       underrange,
+                                       overrange,
+                                       statuses.alarmStatus.hiHi,
+                                       statuses.alarmStatus.loLo ] ]
+            hasWarning   : !OR [statuses.alarmStatus.hi,
+                                statuses.alarmStatus.lo]
+        actual:
+            newHertzValue: !SUM [ !MUL [rawValue, conversionFactor], config.offset]
+
+
+
+
+  ########################################################################################################################
+  # GForceMeasurement
+  ########################################################################################################################
+
+  !STATEMACHINE GForceMeasurement:
+    variables_hidden:
+        milliGValue     : { type: t_int16              , comment: "Measured raw milliG value (linked to I/O module)"         , address: "%I*" }
+        error           : { type: t_bool               , comment: "Error"                                                    , address: "%I*" }
+    variables_read_only:
+        actual          : { type: GForce       , comment: "Actual value" }
+        average         : { type: GForce       , comment: "Moving average value" }
+#    references:
+#        config          : { type: MeasurementConfig    , comment: "Reference to the config (alarms in milli g)" }
+    statuses:
+#        enabledStatus   : { type: EnabledStatus        , comment: "Is the frequency being measured?" }
+        healthStatus    : { type: HealthStatus         , comment: "Is the measurement OK?" }
+#        alarmStatus     : { type: HiHiLoLoAlarmStatus  , comment: "Alarm status"}
+    calls:
+#        enabledStatus:
+#            isEnabled    : config.enabled
+#        alarmStatus:
+#            superState   : statuses.enabledStatus.enabled
+#            config       : config.alarms
+#            value        : average.milliG.value
+#        healthStatus:
+#            superState   : statuses.enabledStatus.enabled
+#            isGood       : -> NOT( OR(error,
+#                                      statuses.alarmStatus.hiHi,
+#                                      statuses.alarmStatus.loLo))
+#            hasWarning   : !OR [statuses.alarmStatus.hi,
+#                                  statuses.alarmStatus.lo )
+        healthStatus:
+            isGood       : !NOT [ error ]
+        actual:
+            newMilliGValue: milliGValue
+
+
+  ########################################################################################################################
+  # RelativeHumidityMeasurement
+  ########################################################################################################################
+
+  !STATEMACHINE RelativeHumidityMeasurement:
+    variables_hidden:
+        rawValue        : { type: t_int16              , comment: "Measured raw value"                           , address: "%I*" }
+        error           : { type: t_bool               , comment: "Error"                                        , address: "%I*" }
+        conversionFactor: { type: t_double             , comment: "rawValue * conversionFactor = fraction.value", initial: !DOUBLE 0.000030518509475997 }
+                                                                    # double(1.0/(Math.pow(2,15)-1))}
+    variables_read_only:
+        actual          : { type: Fraction             , comment: "Actual value" }
+        average         : { type: Fraction             , comment: "Moving average value" }
+        underrange      : { type: t_bool               , comment: "Underrange"                      , address: "%I*" }
+        overrange       : { type: t_bool               , comment: "Overrange"                       , address: "%I*" }
+    references:
+        config          : { type: MeasurementConfig    , comment: "Reference to the config (alarms in percent)" }
+    statuses:
+        enabledStatus   : { type: EnabledStatus        , comment: "Is the relative humidity being measured?" }
+        healthStatus    : { type: HealthStatus         , comment: "Is the measurement OK?" }
+        alarmStatus     : { type: HiHiLoLoAlarmStatus  , comment: "Alarm status"}
+    calls:
+        enabledStatus:
+            isEnabled    : config.enabled
+        alarmStatus:
+            superState   : statuses.enabledStatus.enabled
+            config       : config.alarms
+            value        : average.percent.value
+        healthStatus:
+            superState   : statuses.enabledStatus.enabled
+            isGood       : !NOT [ !OR [ !AND [ error, !OR [underrange, overrange] ],
+                                        statuses.alarmStatus.hiHi,
+                                        statuses.alarmStatus.loLo ] ]
+            hasWarning   : !OR [ statuses.alarmStatus.hi,
+                                 statuses.alarmStatus.lo ]
+        actual:
+            newFractionValue : !SUM [ !MUL [ !MUL [ rawValue, conversionFactor ], config.gain ], config.offset ]
+
+
+
+
+
+
+  ########################################################################################################################
+  # ForceMeasurement
+  ########################################################################################################################
+  !STATEMACHINE ForceMeasurement:
+    variables_hidden:
+        rawValue        : { type: t_int32              , comment: "Measured raw value"                                       , address: "%I*" }
+        error           : { type: t_bool               , comment: "Error"                                                    , address: "%I*" }
+        underrange      : { type: t_bool               , comment: "Underrange"                                               , address: "%I*" }
+        overrange       : { type: t_bool               , comment: "Overrange"                                                , address: "%I*" }
+        conversionFactor: { type: t_double             , comment: "rawValue * conversionFactor = newton.value" , initial: !DOUBLE 1 }
+    variables_read_only:
+        average         : { type: Force                , comment: "Moving average value" }
+        actual          : { type: Force                , comment: "Actual value" }
+    references:
+        config          : { type: MeasurementConfig    , comment: "Reference to the config (alarms in Newton)" }
+    statuses:
+        enabledStatus   : { type: EnabledStatus        , comment: "Is the force being measured?" }
+        healthStatus    : { type: HealthStatus         , comment: "Is the measurement OK?" }
+        alarmStatus     : { type: HiHiLoLoAlarmStatus  , comment: "Alarm status"}
+    calls:
+        enabledStatus:
+            isEnabled    : config.enabled
+        alarmStatus:
+            superState   : statuses.enabledStatus.enabled
+            config       : config.alarms
+            value        : average.newton.value
+        healthStatus:
+            superState   : statuses.enabledStatus.enabled
+            isGood       : !NOT [ !OR [ error,
+                                        underrange,
+                                        overrange,
+                                        statuses.alarmStatus.hiHi,
+                                        statuses.alarmStatus.loLo ] ]
+            hasWarning   : !OR [statuses.alarmStatus.hi,
+                                statuses.alarmStatus.lo]
+        actual:
+            newNewtonValue: !SUM [ !MUL [ rawValue, conversionFactor], config.offset ]
+
+  ########################################################################################################################
+  # LinearPositionMeasurement16
+  ########################################################################################################################
+  !STATEMACHINE LinearPositionMeasurement16:
+    variables_hidden:
+        rawValue        : { type: t_int16              , comment: "Measured raw value"                                       , address: "%I*" }
+        error           : { type: t_bool               , comment: "Error"                                                    , address: "%I*" }
+        underrange      : { type: t_bool               , comment: "Underrange"                                               , address: "%I*" }
+        overrange       : { type: t_bool               , comment: "Overrange"                                                , address: "%I*" }
+        conversionFactor: { type: t_double             , comment: "rawValue * conversionFactor = millimeters.value"          , initial: !DOUBLE 0.000030518509475997 }
+            # double(1.0/(Math.pow(2,15)-1))
+    variables_read_only:
+        actual          : { type: LinearPosition, comment: "Actual value" }
+        average         : { type: LinearPosition, comment: "Moving average value" }
+    references:
+        config          : { type: MeasurementConfig    , comment: "Reference to the config (alarms in millimeters)" }
+    statuses:
+        enabledStatus   : { type: EnabledStatus        , comment: "Is the position being measured?" }
+        healthStatus    : { type: HealthStatus         , comment: "Is the measurement OK?" }
+        alarmStatus     : { type: HiHiLoLoAlarmStatus  , comment: "Alarm status"}
+    calls:
+        enabledStatus:
+            isEnabled    : config.enabled
+        alarmStatus:
+            superState   : statuses.enabledStatus.enabled
+            config       : config.alarms
+            value        : average.millimeters.value
+        healthStatus:
+            superState   : statuses.enabledStatus.enabled
+            isGood       : !NOT [ !OR [ error,
+                                        underrange,
+                                        overrange,
+                                        statuses.alarmStatus.hiHi,
+                                        statuses.alarmStatus.loLo ] ]
+            hasWarning   : !OR [ statuses.alarmStatus.hi,
+                                 statuses.alarmStatus.lo ]
+        actual:
+            newMillimetersValue: !SUM [ !MUL [ rawValue, conversionFactor ], config.offset ]
+
+  ########################################################################################################################
+  # LinearPositionMeasurementU32
+  ########################################################################################################################
+  !STATEMACHINE LinearPositionMeasurementU32:
+    variables_hidden:
+        rawValue        : { type: t_uint32             , comment: "Measured raw value"                                       , address: "%I*" }
+        error           : { type: t_bool               , comment: "Error"                                                    , address: "%I*" }
+        underrange      : { type: t_bool               , comment: "Underrange"                                               , address: "%I*" }
+        overrange       : { type: t_bool               , comment: "Overrange"                                                , address: "%I*" }
+        conversionFactor: { type: t_double             , comment: "rawValue * conversionFactor = millimeters.value"          , initial: !DOUBLE 0.0000000004656612875245797 }
+        # double(1.0/(Math.pow(2,31)-1)) }
+    variables_read_only:
+        actual          : { type: LinearPosition       , comment: "Actual value" }
+        average         : { type: LinearPosition       , comment: "Moving average value" }
+    references:
+        config          : { type: MeasurementConfig    , comment: "Reference to the config (alarms in millimeters)" }
+    statuses:
+        enabledStatus   : { type: EnabledStatus        , comment: "Is the position being measured?" }
+        healthStatus    : { type: HealthStatus         , comment: "Is the measurement OK?" }
+        alarmStatus     : { type: HiHiLoLoAlarmStatus  , comment: "Alarm status"}
+    calls:
+        enabledStatus:
+            isEnabled    : config.enabled
+        alarmStatus:
+            superState   : statuses.enabledStatus.enabled
+            config       : config.alarms
+            value        : average.millimeters.value
+        healthStatus:
+            superState   : statuses.enabledStatus.enabled
+            isGood       : !NOT [ !OR [ error,
+                                        underrange,
+                                        overrange,
+                                        statuses.alarmStatus.hiHi,
+                                        statuses.alarmStatus.loLo ] ]
+            hasWarning   : !OR [ statuses.alarmStatus.hi,
+                                 statuses.alarmStatus.lo ]
+        actual:
+            newMillimetersValue: !SUM [ !MUL [ rawValue, conversionFactor ], config.offset ]
+
+  ########################################################################################################################
+  # SimpleRelay
+  ########################################################################################################################
+  !STATEMACHINE SimpleRelay:
+    variables_hidden:
+        isEnabled       : { type: t_bool                , comment: "Is control enabled?" }
+    variables_read_only:
+        digitalOutput   : { type: t_bool                , comment: "Boolean, to bind to digital output"   , address: "%Q*" }
+    processes:
+        setEnabled      : { type: SetEnabledProcess     , comment: "Set the relay enabled or disabled" }
+    statuses:
+        busyStatus      : { type: BusyStatus            , comment: "Is the SimpleRelay in a busy state?" }
+    calls:
+        setEnabled:
+            isEnabled   : !AND [ isEnabled, processes.setEnabled.statuses.busyStatus.idle ]
+        busyStatus:
+            isBusy      : processes.setEnabled.statuses.busyStatus.busy
+
+
+
+  ########################################################################################################################
+  # ChangeOperatingStateProcess
+  ########################################################################################################################
+  !PROCESS ChangeOperatingStateProcess:
+    extends: BaseProcess
+    arguments:
+        state : { type: OperatingStates, comment: "New operating state (e.g. AUTO, MANUAL)" }
+
+
+
+  ########################################################################################################################
+  # ChangeOperatorStateProcess
+  ########################################################################################################################
+  !PROCESS ChangeOperatorStateProcess:
+    extends: BaseProcess
+    arguments:
+        state       : { type: OperatorStates    , comment: "New operator state (e.g. OBSERVER, TECH, ...)" }
+        password    : { type: t_string          , comment: "Password (only sometimes required, e.g. to go from OBSERVER to TECH)"  }
+
+
+
+  ########################################################################################################################
+  # ChangeOperatingModeStateProcess
+  ########################################################################################################################
+  !PROCESS ChangeOperatingModeStateProcess:
+    extends: BaseProcess
+    arguments:
+        state : { type: OperatingModeStates, comment: "New operating state (e.g. LOCAL, REMOTE)" }
+
+
+  ########################################################################################################################
+  # ReadXmlProcess
+  ########################################################################################################################
+  !PROCESS ReadXmlProcess:
+    extends: BaseXmlDataSrvProcess
+    arguments:
+        filePath : { type: t_string, comment: "Full path of the filename to read" }
+
+  ########################################################################################################################
+  # WriteXmlProcess
+  ########################################################################################################################
+  !PROCESS WriteXmlProcess:
+    extends: BaseXmlDataSrvProcess
+    arguments:
+        filePath : { type: t_string, comment: "Full path of the filename to write" }
+
+
+  ########################################################################################################################
+  # ActivateProcess
+  ########################################################################################################################
+  !PROCESS ActivateProcess:
+    extends: BaseProcess
+
+  ########################################################################################################################
+  # ConfigManager
+  ########################################################################################################################
+  !STATEMACHINE ConfigManager:
+    variables_hidden:
+        isEnabled       : { type: t_bool                        , comment: "Is control enabled?" }
+    variables:
+        filePath        : { type: t_string                      , comment: "Full path of the config filename" }
+    processes:
+        save            : { type: WriteXmlProcess       , comment: "Save the currently active config to disk" }
+        load            : { type: ReadXmlProcess        , comment: "Load the config from disk" }
+        activate        : { type: ActivateProcess       , comment: "Activate the loaded config" }
+    statuses:
+        busyStatus      : { type: BusyStatus            , comment: "Is the config manager in a busy state?" }
+        healthStatus    : { type: HealthStatus          , comment: "Is the config manager in a healthy state?" }
+    calls:
+        # statuses
+        busyStatus:
+            isBusy      : !OR [ processes.save.statuses.busyStatus.busy,
+                                processes.load.statuses.busyStatus.busy,
+                                processes.activate.statuses.busyStatus.busy ]
+        healthStatus:
+            isGood      : !MTCS_SUMMARIZE_GOOD [ processes.save, processes.load, processes.activate ]
+            hasWarning  : !MTCS_SUMMARIZE_WARN [ processes.save, processes.load, processes.activate ]
+        # processes
+        save:
+            isEnabled   : !AND [ isEnabled, statuses.busyStatus.idle ]
+        load:
+            isEnabled   : !AND [ isEnabled, statuses.busyStatus.idle ]
+        activate:
+            isEnabled   : !AND [ isEnabled, statuses.busyStatus.idle ]
+
+
+  ########################################################################################################################
+  # MTCSInstrumentConfig
+  ########################################################################################################################
+  !CONFIG InstrumentConfig:
+    items:
+        name:
+            type: t_string
+            comment: "Name of the instrument"
+        doInitialThermalFocus:
+            type: t_bool
+            comment: "Do a thermal focus when changing to this instrument"
+        changeM3:
+            type: t_bool
+            comment: "Change M3 to the focal station with the same name as the instrument"
+        moveKnownPosition:
+            type: t_bool
+            comment: "Move the axes to a known position (defined by the 'moveKnownPositionName' config entry) before turning off derotators"
+        moveKnownPositionName:
+            type: t_string
+            comment: "Name of the known position to move to before turning off derotators"
+        powerOnRoc:
+            type: t_bool
+            comment: "Turn on the Cassegrain derotator if needed"
+        powerOffRoc:
+            type: t_bool
+            comment: "Turn off the Cassegrain derotator if needed"
+        powerOnRon:
+            type: t_bool
+            comment: "Turn on the Nasmyth B derotator if needed"
+        powerOffRon:
+            type: t_bool
+            comment: "Turn off the Nasmyth B derotator if needed"
+        loadPointingModel:
+            type: t_bool
+            comment: "Load the pointing model with the same name as the instrument"
+        rocActive:
+            type: t_bool
+            comment: "True if the Cassegrain rotator is active (irrespective of its power status)."
+        ronActive:
+            type: t_bool
+            comment: "True if the Nasmyth rotator is active (irrespective of its power status)"
+
+
+
+
+
+  ########################################################################################################################
+  # ModbusRTUBusReadCoilProcess
+  ########################################################################################################################
+  !PROCESS ModbusRTUBusReadCoilProcess:
+    extends: BaseProcess
+    arguments:
+        unitID       : { type: t_uint8  , comment: "Modbus station address (1..247)"}
+        address      : { type: t_uint16 , comment: "Modbus data address"}
+    variables:
+        value        : { type: t_bool, comment: "Value of the coil" }
+        errorId      : { type: t_int16, comment: "Error Id. Modbus error code" }
+
+  ########################################################################################################################
+  # ModbusRTUBusWriteCoilProcess
+  ########################################################################################################################
+  !PROCESS ModbusRTUBusWriteCoilProcess:
+    extends: BaseProcess
+    arguments:
+        unitID       : { type: t_uint8  , comment: "Modbus station address (1..247)"}
+        address      : { type: t_uint16 , comment: "Modbus data address"}
+        value        : { type: t_bool   , comment: "Value to write on the coil" }
+    variables:
+        errorId      : { type: t_int16  , comment: "Error Id. Modbus error code" }
+
+  ########################################################################################################################
+  # ModbusRTUBusReadRegisterProcess
+  ########################################################################################################################
+  !PROCESS ModbusRTUBusReadRegisterProcess:
+    extends: BaseProcess
+    arguments:
+        unitID       : { type: t_uint8  , comment: "Modbus station address (1..247)"}
+        address      : { type: t_uint16 , comment: "Modbus data address"}
+    variables:
+        value        : { type: t_int16, comment: "Value of the register" }
+        errorId      : { type: t_int16, comment: "Error Id. Modbus error code" }
+
+  ########################################################################################################################
+  # ModbusRTUBusWriteRegisterProcess
+  ########################################################################################################################
+  !PROCESS ModbusRTUBusWriteRegisterProcess:
+    extends: BaseProcess
+    arguments:
+        unitID       : { type: t_uint8  , comment: "Modbus station address (1..247)"}
+        address      : { type: t_uint16 , comment: "Modbus data address"}
+        value        : { type: t_int16  , comment: "Value to write on the register" }
+    variables:
+        errorId      : { type: t_int16, comment: "Error Id. Modbus error code" }
+
+  ########################################################################################################################
+  # ModbusRTUBusDiagnosticsProcess
+  ########################################################################################################################
+  !PROCESS ModbusRTUBusDiagnosticsProcess:
+    extends: BaseProcess
+    arguments:
+        unitID       : { type: t_uint8  , comment: "Modbus station address (1..247)"}
+        subFunction  : { type: t_uint16 , comment: "Modbus subFunction code"}
+        subData      : { type: t_int16  , comment: "Modbus data for subFunction " }
+    variables:
+        value        : { type: t_int16, comment: "Value of the register" }
+        errorId      : { type: t_int16, comment: "Error Id. Modbus error code" }
+        
+  ########################################################################################################################
+  # ModbusRTUBus
+  ########################################################################################################################
+  !STATEMACHINE ModbusRTUBus:
+    variables_hidden:
+        isEnabled       : { type: t_bool , comment: "Is control enabled?" }
+    variables:
+        retries         : { type: t_int16   , initial: !INT16 3     ,  comment: "Number of retries for a succesfull process" }
+    processes:
+        readCoil       : { type: ModbusRTUBusReadCoilProcess        , comment: "Read coil" }
+        writeCoil      : { type: ModbusRTUBusWriteCoilProcess       , comment: "Write coil" }
+        readRegister   : { type: ModbusRTUBusReadRegisterProcess    , comment: "Read register" }
+        writeRegister  : { type: ModbusRTUBusWriteRegisterProcess   , comment: "Write register" } 
+        diagnostics    : { type: ModbusRTUBusDiagnosticsProcess     , comment: "Diagnostics" } 
+    statuses:
+        busyStatus      : { type: BusyStatus                        , comment: "Is the config manager in a busy state?" }
+    calls:
+        busyStatus:
+            isBusy      : !OR [ processes.readCoil.statuses.busyStatus.busy,
+                                processes.writeCoil.statuses.busyStatus.busy,
+                                processes.readRegister.statuses.busyStatus.busy,
+                                processes.writeRegister.statuses.busyStatus.busy,
+                                processes.diagnostics.statuses.busyStatus.busy ]     
+        readCoil:
+            isEnabled  : !AND [ isEnabled, statuses.busyStatus.idle ]
+        writeCoil:
+            isEnabled  : !AND [ isEnabled, statuses.busyStatus.idle ] 
+        readRegister:
+            isEnabled  : !AND [ isEnabled, statuses.busyStatus.idle ]
+        writeRegister:
+            isEnabled  : !AND [ isEnabled, statuses.busyStatus.idle ]
+        diagnostics:
+            isEnabled  : !AND [ isEnabled, statuses.busyStatus.idle ]

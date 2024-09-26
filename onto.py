@@ -46,6 +46,9 @@ def get_loader():
     loader.add_constructor('!NEG', mathematics.NEG_constructor)
     loader.add_constructor('!DOUBLE', expressions.Double_constructor)
     loader.add_constructor('!BOOL', expressions.Bool_constructor)
+    loader.add_constructor('!UINT8', expressions.UInt8_constructor)
+    loader.add_constructor('!INT16', expressions.Int16_constructor)
+    loader.add_constructor('!UINT16', expressions.UInt16_constructor)
     loader.add_constructor('!LIBRARY', factories.LIBRARY_constructor)
     loader.add_constructor('!ENUM', factories.ENUM_constructor)
     loader.add_constructor('!ENUMERATION', factories.ENUMERATION_constructor)
@@ -63,6 +66,10 @@ def get_loader():
     loader.add_constructor('!LT', expressions.LT_constructor)
     loader.add_constructor('!GE', expressions.GE_constructor)
     loader.add_constructor('!LE', expressions.LE_constructor)
+    loader.add_constructor('!MTCS_SUMMARIZE_BUSY', expressions.MTCS_SUMMARIZE_BUSY_constructor)
+    loader.add_constructor('!MTCS_SUMMARIZE_GOOD', expressions.MTCS_SUMMARIZE_GOOD_constructor)
+    loader.add_constructor('!MTCS_SUMMARIZE_WARN', expressions.MTCS_SUMMARIZE_WARN_constructor)
+    loader.add_constructor('!MTCS_SUMMARIZE_GOOD_OR_DISABLED', expressions.MTCS_SUMMARIZE_GOOD_OR_DISABLED_constructor)
     return loader
 
 

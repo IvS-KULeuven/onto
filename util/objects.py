@@ -61,8 +61,6 @@ class Object:
         
 
     def register_child(self, name, child):
-        if name == "left":
-            print(f" $$$$ {child}")
         self.children[name] = child
 
     def resolve_children(self, context):

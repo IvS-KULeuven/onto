@@ -52,8 +52,8 @@
         if isinstance(dest, GlobalVariable):
             return [dest]
 
-        if id(dest) == id(head):
-        #if dest.name == head.name:
+        #if id(dest) == id(head):
+        if dest.name == head.name:
             return []
 
         if dest.parent is None:
@@ -104,10 +104,10 @@
 
         raise EOFError( "Destination %s (%s) was not found as a subvariable of %s (%s)" %(dest.name, type(dest).__name__, head.name, type(head).__name__)
                         + "\n\n"
-                        + "Destination (child of parent " + dest_parent + "):\n"
+                        + "Destination " + dest.name + " (child of parent " + dest_parent + "):\n"
                         + pprint.pformat(dest.__dict__)
                         + "\n\n"
-                        + "Head:\n"
+                        + "Head " + head.name + ":\n"
                         + pprint.pformat(head.__dict__)
                         + "\n\n"
                         + str(all_heads))
@@ -142,7 +142,7 @@
     % for enum in lib.enums.children.values():
       ${xml_enum(enum, '      ')}
     % endfor
-    % for struct in lib.structs.children.values():
+    % for struct in lib.get_all_structs().values(): # lib.structs.children.values():
       ${xml_struct(struct, '      ')}
     % endfor
     </dataTypes>

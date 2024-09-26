@@ -196,6 +196,30 @@ def Double_constructor(loader, node):
     value = loader.construct_scalar(node)
     return Double(value)
 
+class UInt16(Primitive):
+    def __init__(self, value: str) -> None:
+        super().__init__(int(value))
+
+class Int16(Primitive):
+    def __init__(self, value: str) -> None:
+        super().__init__(int(value))
+
+def UInt16_constructor(loader, node):
+    value = loader.construct_scalar(node)
+    return UInt16(value)
+
+class UInt8(Primitive):
+    def __init__(self, value: str) -> None:
+        super().__init__(int(value))
+
+def UInt8_constructor(loader, node):
+    value = loader.construct_scalar(node)
+    return UInt8(value)
+
+def Int16_constructor(loader, node):
+    value = loader.construct_scalar(node)
+    return Int16(value)
+
 class Bool(Primitive):
     def __init__(self, value: str) -> None:
         if str(value).upper() == "TRUE":
@@ -209,3 +233,49 @@ class Bool(Primitive):
 def Bool_constructor(loader, node):
     value = loader.construct_scalar(node)
     return Bool(value)
+
+class MTCS_SUMMARIZE_BUSY(BinaryOperation):
+    def __init__(self, operands) -> None:
+        new_operands = []
+        for operand in operands:
+            new_operands.append(operand + ".statuses.busyStatus.busy")
+        super().__init__(operands, OPERATORS.OR)
+
+class MTCS_SUMMARIZE_GOOD(BinaryOperation):
+    def __init__(self, operands) -> None:
+        new_operands = []
+        for operand in operands:
+            new_operands.append(operand + ".statuses.healthStatus.isGood")
+        super().__init__(operands, OPERATORS.AND)
+
+class MTCS_SUMMARIZE_WARN(BinaryOperation):
+    def __init__(self, operands) -> None:
+        new_operands = []
+        for operand in operands:
+            new_operands.append(operand + ".statuses.healthStatus.hasWarning")
+        super().__init__(operands, OPERATORS.OR)
+
+class MTCS_SUMMARIZE_GOOD_OR_DISABLED(BinaryOperation):
+    def __init__(self, operands) -> None:
+        new_operands = []
+        for operand in operands:
+            new_operands.append(OR([operand + ".statuses.healthStatus.isGood", 
+                                     operand + ".statuses.enabledStatus.disabled"]))
+        super().__init__(operands, OPERATORS.AND)
+
+def MTCS_SUMMARIZE_BUSY_constructor(loader, node):
+    values = load_binary_sequence(loader, node)
+    return MTCS_SUMMARIZE_BUSY(values)
+
+def MTCS_SUMMARIZE_GOOD_constructor(loader, node):
+    values = load_binary_sequence(loader, node)
+    return MTCS_SUMMARIZE_GOOD(values)
+
+def MTCS_SUMMARIZE_WARN_constructor(loader, node):
+    values = load_binary_sequence(loader, node)
+    return MTCS_SUMMARIZE_WARN(values)
+
+def MTCS_SUMMARIZE_GOOD_OR_DISABLED_constructor(loader, node):
+    values = load_binary_sequence(loader, node)
+    return MTCS_SUMMARIZE_GOOD_OR_DISABLED(values)
+

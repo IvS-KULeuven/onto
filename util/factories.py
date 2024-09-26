@@ -79,6 +79,10 @@ class Namespace(Object):
     
     def __getitem__(self, name):
         return self.children[name]
+    
+    def items(self):
+        return self.children.items()
+
 
 GLOBAL_NS = Namespace("GLOBAL_NS", None)
 
@@ -136,7 +140,17 @@ class Library(Namespace):
                 self.processes[arg_k.name] = proc
                 self.functionblocks[arg_k.name] = proc
 
-
+    def get_all_structs(self):
+        ret = {}
+        for ns in [self.statemachines.parts, 
+                   self.statemachines.processes, 
+                   self.statemachines.statuses, 
+                   self.configs, 
+                   self.processes.args]:
+            for k, v in ns.items():
+                ret[k] = v
+        return ret
+        
 
 def check_args(name, args, allowed_args):
     for arg in args:
@@ -408,6 +422,18 @@ class FunctionBlock(Object):
         self.plc_symbol = None
         self.implementation = None
 
+        if "in" in args:
+            for var_name, var_args in args["in"].items():
+                self.var_in[var_name] = Variable(var_name, self, var_args)
+
+        if "out" in args:
+            for var_name, var_args in args["out"].items():
+                self.var_out[var_name] = Variable(var_name, self, var_args)
+
+        if "inout" in args:
+            for var_name, var_args in args["inout"].items():
+                self.var_inout[var_name] = Variable(var_name, self, var_args)
+
         if "extends" in args:
             self.extends = resolve(args["extends"], self)
             # if self.name == "SM_AverageCurrent":
@@ -594,8 +620,6 @@ class Statemachine(FunctionBlock):
 
         
         if "parts" in args:
-            for part_name in args['parts']:
-                self.partNames.append(part_name)
             struct = Struct(
                 name = f'{name}Parts',
                 parent = self.parent,
@@ -611,7 +635,7 @@ class Statemachine(FunctionBlock):
                     "comment": "Parts of the state machine",
                     "type": f'{name}Parts'})
             for part_name in args['parts']:
-                self.parts[part_name] = self.var_out["parts"].get_child(status_name)
+                self.parts[part_name] = self.var_out["parts"].get_child(part_name)
 
         # calls of members can be disabled e.g. in case a  
         # separte PLC program (at a faster cycle time) calls
@@ -636,15 +660,18 @@ class Statemachine(FunctionBlock):
                 self.processes[process_name] = self.var_out["processes"].get_child(process_name)
 
         if "processes" in args:
-            for process_name, process_args in args.processes.items():
-                self.processNames.append(process_name)
+            for process_name, process_args in args["processes"].items():
+                input_args = {}
+                for var_name, var in resolve(process_args["type"], context=self).request.var_in.items():
+                    input_args[var_name] = { "type": var.type }
+
                 m = Method(
                     name = process_name,
                     parent = self,
                     args = {
                         "comment": process_args["comment"],
                         "returnType": "RequestResults",
-                        "inputArgs": [ var.name for var in resolve(process_args["type"], context=self).request.var_in ]
+                        "inputArgs": input_args
                     })
                 
                 self.methods[process_name] = m
@@ -859,6 +886,7 @@ class Process(FunctionBlock):
         check_args("Process", args,
                    ["extends", "arguments", "variables", "variables_hidden", "references"])
         
+        self.request = None
         
         if "variables" in args:
             for var_name, var in args['variables'].items():
@@ -948,7 +976,7 @@ class Process(FunctionBlock):
 
         # add a request(...) method
         if "arguments" in args:
-            request = Method(
+            self.request = Method(
                 name = "request",
                 parent = self,
                 args = {
@@ -957,7 +985,7 @@ class Process(FunctionBlock):
                     "returnType": "mtcs_common.RequestResults"
                 })
         else:
-            request = Method(
+            self.request = Method(
                 name = "request",
                 parent = self,
                 args = {
@@ -965,34 +993,34 @@ class Process(FunctionBlock):
                     "returnType": "mtcs_common.RequestResults"
                 })
             
-        self.methods["request"] = request
+        self.methods["request"] = self.request
 
         
-        start_call = Call("call_start", request)
+        start_call = Call("call_start", self.request)
         start_call.calls = start
         if "arguments" in args:
             for arg_name in args["arguments"]:
-                start_call.assignments.append(ASSIGN([start.get_child(arg_name, False),  request.get_child(arg_name, False)]))
+                start_call.assignments.append(ASSIGN([start.get_child(arg_name, False),  self.request.get_child(arg_name, False)]))
             
-        request.implementation = [
+        self.request.implementation = [
             IfThen(
                 name = "ifthen", 
-                parent = request, 
+                parent = self.request, 
                 if_ = self.children["statuses"].children["enabledStatus"].children["enabled"],
                 then_ = [
                     start_call,
-                    ASSIGN([request, resolve("mtcs_common.RequestResults.ACCEPTED", self.parent)])
+                    ASSIGN([self.request, resolve("mtcs_common.RequestResults.ACCEPTED", self.parent)])
                 ],
                 else_ = [
-                    ASSIGN([request, resolve("mtcs_common.RequestResults.ACCEPTED", self.parent)])
+                    ASSIGN([self.request, resolve("mtcs_common.RequestResults.ACCEPTED", self.parent)])
                 ])
         ]
         
-        request_call = Call("call_request", request)
-        request_call.calls = request
+        request_call = Call("call_request", self.request)
+        request_call.calls = self.request
         if "arguments" in args:
             for arg_name in args["arguments"]:
-                request_call.assignments.append(ASSIGN([request.get_child(arg_name, False),  self.var_in["set"].get_child(arg_name, False)]))
+                request_call.assignments.append(ASSIGN([self.request.get_child(arg_name, False),  self.var_in["set"].get_child(arg_name, False)]))
         
         self.implementation = [
             IfThen(
