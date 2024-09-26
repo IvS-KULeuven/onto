@@ -1670,7 +1670,7 @@
     variables_hidden:
         rawValue        : { type: t_int16              , comment: "Measured raw value"                           , address: "%I*" }
         error           : { type: t_bool               , comment: "Error"                                        , address: "%I*" }
-        conversionFactor: { type: t_double             , comment: "rawValue * conversionFactor = fraction.value", initial: !DOUBLE 0.000030518509475997 }
+        conversionFactor: { type: t_double             , comment: "rawValue * conversionFactor = fraction.value", initial: !DOUBLE 3.051850947599719E-05 }
                                                                     # double(1.0/(Math.pow(2,15)-1))}
     variables_read_only:
         actual          : { type: Fraction             , comment: "Actual value" }
@@ -1716,8 +1716,8 @@
         overrange       : { type: t_bool               , comment: "Overrange"                                                , address: "%I*" }
         conversionFactor: { type: t_double             , comment: "rawValue * conversionFactor = newton.value" , initial: !DOUBLE 1 }
     variables_read_only:
-        average         : { type: Force                , comment: "Moving average value" }
         actual          : { type: Force                , comment: "Actual value" }
+        average         : { type: Force                , comment: "Moving average value" }
     references:
         config          : { type: MeasurementConfig    , comment: "Reference to the config (alarms in Newton)" }
     statuses:
@@ -1752,7 +1752,7 @@
         error           : { type: t_bool               , comment: "Error"                                                    , address: "%I*" }
         underrange      : { type: t_bool               , comment: "Underrange"                                               , address: "%I*" }
         overrange       : { type: t_bool               , comment: "Overrange"                                                , address: "%I*" }
-        conversionFactor: { type: t_double             , comment: "rawValue * conversionFactor = millimeters.value"          , initial: !DOUBLE 0.000030518509475997 }
+        conversionFactor: { type: t_double             , comment: "rawValue * conversionFactor = millimeters.value"          , initial: !DOUBLE 3.051850947599719E-05 }
             # double(1.0/(Math.pow(2,15)-1))
     variables_read_only:
         actual          : { type: LinearPosition, comment: "Actual value" }

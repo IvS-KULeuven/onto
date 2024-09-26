@@ -246,14 +246,14 @@ class MTCS_SUMMARIZE_GOOD(BinaryOperation):
         new_operands = []
         for operand in operands:
             new_operands.append(operand + ".statuses.healthStatus.isGood")
-        super().__init__(operands, OPERATORS.AND)
+        super().__init__(new_operands, OPERATORS.AND)
 
 class MTCS_SUMMARIZE_WARN(BinaryOperation):
     def __init__(self, operands) -> None:
         new_operands = []
         for operand in operands:
             new_operands.append(operand + ".statuses.healthStatus.hasWarning")
-        super().__init__(operands, OPERATORS.OR)
+        super().__init__(new_operands, OPERATORS.OR)
 
 class MTCS_SUMMARIZE_GOOD_OR_DISABLED(BinaryOperation):
     def __init__(self, operands) -> None:
@@ -261,7 +261,7 @@ class MTCS_SUMMARIZE_GOOD_OR_DISABLED(BinaryOperation):
         for operand in operands:
             new_operands.append(OR([operand + ".statuses.healthStatus.isGood", 
                                      operand + ".statuses.enabledStatus.disabled"]))
-        super().__init__(operands, OPERATORS.AND)
+        super().__init__(new_operands, OPERATORS.AND)
 
 def MTCS_SUMMARIZE_BUSY_constructor(loader, node):
     values = load_binary_sequence(loader, node)

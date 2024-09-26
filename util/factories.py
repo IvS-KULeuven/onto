@@ -150,7 +150,17 @@ class Library(Namespace):
             for k, v in ns.items():
                 ret[k] = v
         return ret
-        
+
+    def get_all_fbs(self):
+        ret = {}
+        for ns in [self.statuses, 
+                   self.statemachines, 
+                   self.processes]:
+            for k, v in ns.items():
+                if isinstance(v, FunctionBlock):
+                    ret[k] = v
+        return ret
+
 
 def check_args(name, args, allowed_args):
     for arg in args:
@@ -264,7 +274,7 @@ class Variable(Object):
         self.type = None
         self.expand = None
         self.initial = None
-        self.comment = None
+        self.comment = ""
         self.points_to_type = None
         self.attributes = None
         self.qualifiers = []
@@ -367,7 +377,7 @@ class Method(Object):
             ["inputArgs", "inOutArgs", "localArgs", "returnType", 
              "comment", "implementation"])
         
-        self.comment = None
+        self.comment = ""
         self.var_in = {}
         self.var_inout = {}
         self.var_local = {}
@@ -420,7 +430,7 @@ class FunctionBlock(Object):
         self.extends = None
         self.methods = {}
         self.plc_symbol = None
-        self.implementation = None
+        self.implementation = []
 
         if "in" in args:
             for var_name, var_args in args["in"].items():
@@ -1008,11 +1018,11 @@ class Process(FunctionBlock):
                 parent = self.request, 
                 if_ = self.children["statuses"].children["enabledStatus"].children["enabled"],
                 then_ = [
-                    start_call,
-                    ASSIGN([self.request, resolve("mtcs_common.RequestResults.ACCEPTED", self.parent)])
+                    ASSIGN([self.request, resolve("RequestResults.ACCEPTED", self.parent)]),
+                    start_call
                 ],
                 else_ = [
-                    ASSIGN([self.request, resolve("mtcs_common.RequestResults.ACCEPTED", self.parent)])
+                    ASSIGN([self.request, resolve("RequestResults.REJECTED", self.parent)])
                 ])
         ]
         

@@ -1,7 +1,7 @@
 <%namespace name="iec61131" file="_iec61131.mako"/>\
 <%! 
     import pprint
-    from util.expressions import IfThen, BinaryOperation, UnaryOperation, Primitive
+    from util.expressions import IfThen, BinaryOperation, UnaryOperation, Primitive, Bool
     from util.factories import Variable, Method, Call, EnumItem, FunctionBlock, GlobalVariable
     from xml.sax.saxutils import escape as sax_escape
 
@@ -147,7 +147,7 @@
     % endfor
     </dataTypes>
     <pous>
-    % for fb in lib.functionblocks.children.values():
+    % for fb in lib.get_all_fbs().values():
       ${xml_pou_functionBlock(fb, '      ')}
     % endfor
     </pous>
@@ -355,7 +355,11 @@ ${indent}END_IF\
 <%
     print(f" +++ render_value({node}, {scope})")
 %>\
+% if isinstance(node, Bool):
+${str(node.value).upper()}\
+% else:
 ${node.value}\
+% endif
 </%def>
 
 
