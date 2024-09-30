@@ -200,7 +200,7 @@ class Library(Namespace):
 def check_args(name, args, allowed_args):
     for arg in args:
         if arg not in allowed_args:
-            raise Exception(f"Enum {name} contains illegal argument '{arg}' (allowed: {allowed_args})")
+            raise Exception(f"{name} contains illegal argument '{arg}' (allowed: {allowed_args})")
 
 
 class Enum(Object):
@@ -303,11 +303,13 @@ class Variable(Object):
                     "pointsToType", "attributes", "qualifiers", "arguments",
                     "address", "copyFrom"])
         
+        self.raw_args = args
+        
         if 'type' in args and 'pointsToType' in args:
             raise Exception(f"Variable {name} contains BOTH 'type' and 'pointsToType', this is not allowed!")
         
         self.type = None
-        self.expand = None
+        self.expand = True
         self.initial = None
         self.comment = ""
         self.points_to_type = None
@@ -316,27 +318,39 @@ class Variable(Object):
         self.arguments = None
         self.address = None
         self.copyFrom = None
-
-        if 'type' in args:
-            self.type = resolve(args['type'], self)
-            for child_name, child in self.type.children.items():
-                if hasattr(child, 'type'):
-                    if child.type is not None:
-                        self.register_child(child_name, Variable(child_name, self, { "type": child.type  }))
-                    elif isinstance(child, Method):
-                        method_args = {}
-                        method_args["inputArgs"] = {}
-                        method_args["inOutArgs"] = {}
-                        for var_name, var in child.var_in.items():
-                            method_args["inputArgs"][var_name] = {}
-                        for var_name, var in child.var_inout.items():
-                            method_args["inOutArgs"][var_name] = {}
-                        if child.return_type is not None:
-                            method_args["returnType"] = child.return_type
-                        self.register_child(child_name, Method(child_name, self, method_args))
+        self.methods = {}
 
         if 'expand' in args:
             self.expand = args['expand']
+
+        if 'type' in args:
+            self.type = resolve(args['type'], self)
+
+            if self.expand:
+                for child_name, child in self.type.children.items():
+                    if hasattr(child, 'type'):
+                        if child.type is not None:
+                            self.register_child(child_name, Variable(child_name, self, { "type": child.type  }))
+                        elif isinstance(child, Method):
+                            method_args = {}
+                            method_args["inputArgs"] = {}
+                            method_args["inOutArgs"] = {}
+                            for var_name, var in child.var_in.items():
+                                method_args["inputArgs"][var_name] = {}
+                            for var_name, var in child.var_inout.items():
+                                method_args["inOutArgs"][var_name] = {}
+                            if child.return_type is not None:
+                                method_args["returnType"] = child.return_type
+                            self.register_child(child_name, Method(child_name, self, method_args))
+                        # elif hasattr(child, 'attributes'):
+                        #     if child.attributes is not None:
+                        #         v = Variable(child_name, self, {} )
+                        #         v.attributes = {}
+                        #         self.register_child(child_name, v)
+                        elif hasattr(child, 'raw_args'):
+                            if 'attributes' in child.raw_args:
+                                self.register_child(child_name, Variable(child_name, self, child.raw_args))
+
         if 'initial' in args:
             self.initial = args['initial']
         if 'comment' in args:
@@ -346,7 +360,14 @@ class Variable(Object):
         if 'attributes' in args:
             self.attributes = {}
             for attribute_k, attribute_v in args['attributes'].items():
-                self.attributes[attribute_k] = Variable(attribute_k, self, attribute_v)
+                try:
+                    self.attributes[attribute_k] = Variable(attribute_k, self, attribute_v)
+                except:
+                    print("8888888888888")
+                    print(attribute_k)
+                    import pprint
+                    pprint.pprint(attribute_v.__dict__)
+                    raise
         if 'qualifiers' in args:
             for qualifier in args['qualifiers']:
                 # TODO: resolve?
@@ -387,7 +408,7 @@ class Struct(Object):
         self.plc_symbol = None
         for arg in args:
             #if arg not in ["containedBy", "typeOf", "items", "comment", "label"]:
-            if arg not in ["items", "comment"]:
+            if arg not in ["items", "comment", "typeOf"]:
                 raise Exception(f"Struct {name} contains illegal argument '{arg}'")
         
         if 'comment' in args:
@@ -398,6 +419,13 @@ class Struct(Object):
             for item_k, item_v in args['items'].items():
                 self.items[item_k] = Variable(item_k, self, item_v)
 
+        if 'typeOf' in args:
+            typeOfList = args['typeOf']
+            if not isinstance(args['typeOf'], list):
+                typeOfList = [ typeOfList ]
+            for typeOf in typeOfList:
+                subject = resolve(typeOf, self)
+                subject.type = self
 
 
 # TODO: convert to Object ????
@@ -483,6 +511,14 @@ class FunctionBlock(Object):
             self.render = args["render"]
         else:
             self.render = True
+        
+        if 'typeOf' in args:
+            typeOfList = args['typeOf']
+            if not isinstance(args['typeOf'], list):
+                typeOfList = [ typeOfList ]
+            for typeOf in typeOfList:
+                subject = resolve(typeOf, self)
+                subject.type = self
 
         if "in" in args:
             for var_name, var_args in args["in"].items():
@@ -523,8 +559,16 @@ class Status(FunctionBlock):
     
     def __init__(self, name, parent, args={}) -> None:
         super().__init__(name, parent)
-        check_args("Status", args, ["variables", "states", "render"])
+        check_args("Status", args, ["typeOf", "variables", "states", "render"])
 
+        if 'typeOf' in args:
+            typeOfList = args['typeOf']
+            if not isinstance(args['typeOf'], list):
+                typeOfList = [ typeOfList ]
+            for typeOf in typeOfList:
+                subject = resolve(typeOf, self)
+                subject.type = self
+        
         self.variables = {}
         self.states = {}
 
@@ -599,7 +643,7 @@ class Statemachine(FunctionBlock):
                    ["variables", "variables_hidden", "variables_read_only",
                     "statuses", "parts", "local", "methods", "calls",
                     "disabled_calls", "updates", "references", "extends",
-                    "processes", "constraints", "render"])
+                    "processes", "constraints", "render", "typeOf"])
         
         self.variables = {}
         self.variables_hidden = {}
@@ -705,7 +749,18 @@ class Statemachine(FunctionBlock):
                     "comment": "Parts of the state machine",
                     "type": f'{name}Parts'})
             for part_name in args['parts']:
-                self.parts[part_name] = self.var_out["parts"].get_child(part_name)
+                try:
+                    self.parts[part_name] = self.var_out["parts"].get_child(part_name)
+                except Exception as e:
+                    print("=========")
+                    import pprint
+                    pprint.pprint(self.var_out["parts"].__dict__)
+                    print("=========")
+                    pprint.pprint(struct.__dict__)
+                    print("=========")
+                    pprint.pprint(struct.items["io"].__dict__)
+                    print("=========")
+                    raise
 
         # calls of members can be disabled e.g. in case a  
         # separte PLC program (at a faster cycle time) calls
@@ -740,7 +795,7 @@ class Statemachine(FunctionBlock):
                     parent = self,
                     args = {
                         "comment": process_args["comment"],
-                        "returnType": "RequestResults",
+                        "returnType": "mtcs_common.RequestResults",
                         "inputArgs": input_args
                     })
                 
@@ -896,10 +951,17 @@ class Statemachine(FunctionBlock):
             self.methods["_log"] = m
 
         # finally, also add the main state machine (to be implemented by the user):
-        self.parent.register_child(
-            name, 
-            FunctionBlock(name, self.parent, { "extends": f"SM_{name}", "render": False }))
+        main_sm = FunctionBlock(name, self.parent, { "extends": f"SM_{name}", "render": False })
+        self.parent.register_child(name, main_sm)
 
+        if 'typeOf' in args:
+            typeOfList = args['typeOf']
+            if not isinstance(args['typeOf'], list):
+                typeOfList = [ typeOfList ]
+            for typeOf in typeOfList:
+                subject = resolve(typeOf, self)
+                subject.type = main_sm
+        
 
 
 
@@ -1059,11 +1121,11 @@ class Process(FunctionBlock):
                 parent = self.request, 
                 if_ = self.children["statuses"].children["enabledStatus"].children["enabled"],
                 then_ = [
-                    ASSIGN([self.request, resolve("RequestResults.ACCEPTED", self.parent)]),
+                    ASSIGN([self.request, resolve("mtcs_common.RequestResults.ACCEPTED", self.parent)]),
                     start_call
                 ],
                 else_ = [
-                    ASSIGN([self.request, resolve("RequestResults.REJECTED", self.parent)])
+                    ASSIGN([self.request, resolve("mtcs_common.RequestResults.REJECTED", self.parent)])
                 ])
         ]
         
