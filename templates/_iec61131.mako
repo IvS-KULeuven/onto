@@ -49,11 +49,16 @@
 
     def getPathToSubVariable(dest, head):
 
+        #if dest.name == "request" and head.name == "moveAbsolute":
+        #    raise Exception(f"!BLA {dest.parent.name} {type(dest.parent)}")
+
         if isinstance(dest, GlobalVariable):
             return [dest]
 
-        #if id(dest) == id(head):
-        if dest.name == head.name:
+        # if id(dest) == id(head):
+        # if dest.name == head.name:
+        #if dest is head:
+        if dest.name == head.name and type(dest) == type(head):
             return []
 
         if dest.parent is None:
@@ -102,12 +107,15 @@
         else:
             dest_parent = ''
 
-        raise EOFError( "Destination %s (%s) was not found as a subvariable of %s (%s)" %(dest.name, type(dest).__name__, head.name, type(head).__name__)
+        raise EOFError( "Destination %s (%s) (ID %x) was not found as a subvariable of %s (%s)" %(dest.name, type(dest).__name__, id(dest), head.name, type(head).__name__)
                         + "\n\n"
-                        + "Destination " + dest.name + " (child of parent " + dest_parent + "):\n"
+                        + "Destination " + dest.name + " (child of parent " + dest_parent + ") ID=" + ("%x" % id(dest)) +  " :\n"
                         + pprint.pformat(dest.__dict__)
                         + "\n\n"
-                        + "Head " + head.name + ":\n"
+                        + "Destination parent:\n"
+                        + pprint.pformat(dest.parent.__dict__)
+                        + "\n\n"
+                        + "Head " + head.name + (" ID=%x " % id(head)) + ":\n"
                         + pprint.pformat(head.__dict__)
                         + "\n\n"
                         + str(all_heads))
@@ -423,6 +431,8 @@ ${node.left.name} := ${layoutExpression(node.right, scope=scope)}\
 <%def name="layoutCall(node, scope, indent='', more='    ')">\
 <%
     print(f"+++ layoutCall(node={node.name}, scope={[item.name for item in scope]}) START")
+    #if node.calls.parent is not None:
+    #    scope = [node.calls.parent] + scope
 %>\
 % if isinstance(node.calls, UnaryOperation):
 ${layoutUnaryOperation(node.calls, scope, indent=indent)}\

@@ -120,25 +120,25 @@ class Library(Namespace):
             elif isinstance(arg_k, STATEMACHINE):
                 sm = Statemachine(arg_k.name, self, arg_v)
                 self.statemachines[arg_k.name] = sm
-                self.functionblocks[arg_k.name] = sm
+                #self.functionblocks[arg_k.name] = sm
             elif isinstance(arg_k, STATUS):
                 sts = Status(arg_k.name, self, arg_v) 
                 self.statuses[arg_k.name] = sts
-                self.functionblocks[arg_k.name] = sts
+                #self.functionblocks[arg_k.name] = sts
             elif isinstance(arg_k, FB):
                 fb = FunctionBlock(arg_k.name, self, arg_v) 
                 self.functionblocks[arg_k.name] = fb
             elif isinstance(arg_k, CONFIG):
                 cfg = Config(arg_k.name, self, arg_v) 
                 self.configs[arg_k.name] = cfg
-                self.structs[arg_k.name] = cfg
+                #self.structs[arg_k.name] = cfg
             elif isinstance(arg_k, STRUCT):
                 struct = Struct(arg_k.name, self, arg_v) 
                 self.structs[arg_k.name] = struct
             elif isinstance(arg_k, PROCESS):
                 proc = Process(arg_k.name, self, arg_v) 
                 self.processes[arg_k.name] = proc
-                self.functionblocks[arg_k.name] = proc
+                #self.functionblocks[arg_k.name] = proc
 
     def get_all_structs(self):
         ret = {}
@@ -288,6 +288,18 @@ class Variable(Object):
                 if hasattr(child, 'type'):
                     if child.type is not None:
                         self.register_child(child_name, Variable(child_name, self, { "type": child.type  }))
+                    elif isinstance(child, Method):
+                        method_args = {}
+                        method_args["inputArgs"] = {}
+                        method_args["inOutArgs"] = {}
+                        for var_name, var in child.var_in.items():
+                            method_args["inputArgs"][var_name] = {}
+                        for var_name, var in child.var_inout.items():
+                            method_args["inOutArgs"][var_name] = {}
+                        if child.return_type is not None:
+                            method_args["returnType"] = child.return_type
+                        self.register_child(child_name, Method(child_name, self, method_args))
+
         if 'expand' in args:
             self.expand = args['expand']
         if 'initial' in args:
@@ -686,30 +698,17 @@ class Statemachine(FunctionBlock):
                 
                 self.methods[process_name] = m
 
-                # c = Call(f"call_{process_name}", self)
-                # c.calls = m.get_child("request")
-                # c.assignments = []
-                # for k, v in call.items():
-                #     # k should be a child of the callee (c.calls)!
-                #     assignment = ASSIGN([c.calls.get_child(k, recursive=False), v])
-                #     assignment.resolve_children(self)
-                #     c.assignments.append(assignment)
+                c = Call(f"call_{process_name}", self.processes[process_name])
+                c.calls = self.processes[process_name].get_child("request")
+                c.assignments = []
+                for k, v in input_args.items():
+                    assignment = ASSIGN([c.calls.get_child(k, recursive=False), m.get_child(k, recursive=False)])
+                    assignment.resolve_children(self)
+                    c.assignments.append(assignment)
 
-                # m.implementation = [
-                #     ASSIGN([m, c])
-                # ]
-
-                    # # add the implementation of the method
-                    # self[name].ADD HAS IMPLEMENTATION(
-                    #     [
-                    #         ASSIGN(
-                    #             self[name],
-                    #             CALL(
-                    #                     calls: self.processes[name].request,
-                    #                     assigns: __BUILD__( ( __PAIR__(v._name, v) for v in PATHS(self[name], HAS_VAR_IN) ) ) ) "callRequest"
-                    #         )
-                    #     ]
-                    # ) "implementation"
+                m.implementation = [
+                    ASSIGN([m, c])
+                ]
 
         # add the local variables
         if "local" in args:
