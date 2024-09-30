@@ -1,7 +1,7 @@
 <%namespace name="iec61131" file="_iec61131.mako"/>\
 <%! 
     import pprint
-    from util.expressions import IfThen, BinaryOperation, UnaryOperation, Primitive, Bool
+    from util.expressions import IfThen, BinaryOperation, UnaryOperation, Primitive, Bool, String
     from util.factories import Variable, Method, Call, EnumItem, FunctionBlock, GlobalVariable
     from xml.sax.saxutils import escape as sax_escape
 
@@ -55,10 +55,11 @@
         if isinstance(dest, GlobalVariable):
             return [dest]
 
-        # if id(dest) == id(head):
-        # if dest.name == head.name:
-        #if dest is head:
-        if dest.name == head.name and type(dest) == type(head):
+        # below is a hack-ish way to determine if dest and type are the same object
+        # We cannot compare the ids (id(<obj>)), nor say "if dest is head" because of some intricacies of
+        # cpython object management
+        # So we have to compare some attributes to determine weather or not the 2 objects are the same
+        if dest.name == head.name and type(dest) == type(head) and dest.parent.name == head.parent.name:
             return []
 
         if dest.parent is None:
@@ -365,6 +366,8 @@ ${indent}END_IF\
 %>\
 % if isinstance(node, Bool):
 ${str(node.value).upper()}\
+% elif isinstance(node, String):
+${escape("'" + str(node.value) + "'")}\
 % else:
 ${node.value}\
 % endif

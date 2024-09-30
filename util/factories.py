@@ -760,46 +760,6 @@ class Statemachine(FunctionBlock):
             self.implementation.append(c)
         
 
-        # # call the explicitly called variables
-        # if "calls" in args:
-        #     for call_name, call in args['calls'].items():
-        #         c = Call(f"call_var_{call_name}", self)
-        #         c.calls = resolve(call_name, self)
-        #         c.assignments = []
-        #         for k, v in call.items():
-        #             # k should be a child of the callee (c.calls)!
-        #             assignment = ASSIGN([c.calls.get_child(k, recursive=False), v])
-        #             assignment.resolve_children(self)
-        #             c.assignments.append(assignment)
-
-        #         if self.implementation is None:
-        #             self.implementation = []
-
-        #         self.implementation.append(c)
-        
-        # # call the parts
-
-        # # call the statuses 
-        # for status_name, status in self.statuses.items():
-        #     c = Call(f"call_status_{status_name}", self)
-        #     c.calls = resolve(status_name, self)
-        #     c.assignments = []
-        #     for k, v in status.items():
-        #         # k should be a child of the callee (c.calls)!
-        #         assignment = ASSIGN([c.calls.get_child(k, recursive=False), v])
-        #         assignment.resolve_children(self)
-        #         c.assignments.append(assignment)
-
-        #     if self.implementation is None:
-        #         self.implementation = []
-
-        #     self.implementation.append(c)
-
-
-
-        # # call the processes
-
-
         if self.extends is not None:
             if self.implementation is None:
                 self.implementation = []
@@ -837,6 +797,41 @@ class Statemachine(FunctionBlock):
                 ASSIGN([get_global("LOGGER").get_child("buffer"), m.get_child("buffer")]),
                 ASSIGN([get_global("LOGGER").get_child("subBuffer"), m.get_child("subBuffer")])
             ]
+
+            for part_name, part in self.parts.items():
+                if not "_log" in part.children:
+                    part.methods["_log"] = \
+                        Method("_log", part, {
+                           "inputArgs" : { "name": { "type": "t_string" } },
+                           "inOutArgs" : { "buffer" : { "type": "LogBuffer" } },
+                           "returnType": "t_bool" })
+                    
+                part_call = Call(f"call_{part_name}", self)
+                part_call.calls = part.children["_log"]
+                part_call.assignments = [
+                    ASSIGN([part_call.calls.get_child("name"), String(part_name)]),
+                    ASSIGN([part_call.calls.get_child("buffer"), m.var_local["subBuffer"]]),
+                ]
+
+                m.implementation.append(part_call)
+
+            for process_name, process in self.processes.items():
+                if not "_log" in process.children:
+                    process.methods["_log"] = \
+                        Method("_log", process, {
+                           "inputArgs" : { "name": { "type": "t_string" } },
+                           "inOutArgs" : { "buffer" : { "type": "LogBuffer" } },
+                           "returnType": "t_bool" })
+                    
+                process_call = Call(f"call_{process_name}", self)
+                process_call.calls = process.children["_log"]
+                process_call.assignments = [
+                    ASSIGN([process_call.calls.get_child("name"), String(f"processes.{process_name}")]),
+                    ASSIGN([process_call.calls.get_child("buffer"), m.var_local["subBuffer"]]),
+                ]
+
+                m.implementation.append(process_call)
+                    
 
             if "healthStatus" in self.statuses:
                     c.assignments.append(  
@@ -977,10 +972,10 @@ class Process(FunctionBlock):
                     start.get_child(arg_name)])
                 assignment.resolve_children(self)
                 start.implementation.append(assignment)
-            start.implementation.append(
-                Call("setBusy", start, { "calls": self.get_child("statuses").get_child("busyStatus"), "assigns": [ ASSIGN([self.get_child("statuses").get_child("busyStatus").get_child("isBusy"), Bool("TRUE")]) ] }))
-            start.implementation.append(
-                Call("setGood", start, { "calls": self.get_child("statuses").get_child("healthStatus"), "assigns": [ ASSIGN([self.get_child("statuses").get_child("healthStatus").get_child("isGood"), Bool("TRUE")]) ] }))
+        start.implementation.append(
+            Call("setBusy", start, { "calls": self.get_child("statuses").get_child("busyStatus"), "assigns": [ ASSIGN([self.get_child("statuses").get_child("busyStatus").get_child("isBusy"), Bool("TRUE")]) ] }))
+        start.implementation.append(
+            Call("setGood", start, { "calls": self.get_child("statuses").get_child("healthStatus"), "assigns": [ ASSIGN([self.get_child("statuses").get_child("healthStatus").get_child("isGood"), Bool("TRUE")]) ] }))
 
 
         # add a request(...) method
@@ -1037,7 +1032,7 @@ class Process(FunctionBlock):
                 parent = self, 
                 if_ = self.get_child("do_request"),
                 then_ = [
-                    start_call,
+                    ASSIGN([self.get_child("do_request_result"), request_call]),
                     ASSIGN([self.children["do_request"], Bool("FALSE")])
                 ]),
             Call("callSuper", self, { "calls": PLC_DEREF(self.children["SUPER"]) })

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
-  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2024-09-30T08:57:34.408829" />
-  <contentHeader name="mtcs_common" modificationDateTime="2024-09-30T08:57:34.408829">
+  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2024-09-30T10:15:38.880176" />
+  <contentHeader name="mtcs_common" modificationDateTime="2024-09-30T10:15:38.880176">
     <coordinateInfo>
       <fbd>
         <scaling x="1" y="1" />
@@ -8300,7 +8300,70 @@ processes.probeAbort( isEnabled := isEnabled AND statuses.busyStatus.idle );
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.processes.moveAbsolute._log(
+    name := &#39;processes.moveAbsolute&#39;,
+    buffer := subBuffer);
+THIS^.processes.moveRelative._log(
+    name := &#39;processes.moveRelative&#39;,
+    buffer := subBuffer);
+THIS^.processes.moveVelocity._log(
+    name := &#39;processes.moveVelocity&#39;,
+    buffer := subBuffer);
+THIS^.processes.reset._log(
+    name := &#39;processes.reset&#39;,
+    buffer := subBuffer);
+THIS^.processes.stop._log(
+    name := &#39;processes.stop&#39;,
+    buffer := subBuffer);
+THIS^.processes.stopParametrized._log(
+    name := &#39;processes.stopParametrized&#39;,
+    buffer := subBuffer);
+THIS^.processes.power._log(
+    name := &#39;processes.power&#39;,
+    buffer := subBuffer);
+THIS^.processes.gearIn._log(
+    name := &#39;processes.gearIn&#39;,
+    buffer := subBuffer);
+THIS^.processes.gearOut._log(
+    name := &#39;processes.gearOut&#39;,
+    buffer := subBuffer);
+THIS^.processes.initialize._log(
+    name := &#39;processes.initialize&#39;,
+    buffer := subBuffer);
+THIS^.processes.setPosition._log(
+    name := &#39;processes.setPosition&#39;,
+    buffer := subBuffer);
+THIS^.processes.enableExtSetGen._log(
+    name := &#39;processes.enableExtSetGen&#39;,
+    buffer := subBuffer);
+THIS^.processes.disableExtSetGen._log(
+    name := &#39;processes.disableExtSetGen&#39;,
+    buffer := subBuffer);
+THIS^.processes.forceCalibration._log(
+    name := &#39;processes.forceCalibration&#39;,
+    buffer := subBuffer);
+THIS^.processes.resetCalibration._log(
+    name := &#39;processes.resetCalibration&#39;,
+    buffer := subBuffer);
+THIS^.processes.readParameter._log(
+    name := &#39;processes.readParameter&#39;,
+    buffer := subBuffer);
+THIS^.processes.readBoolParameter._log(
+    name := &#39;processes.readBoolParameter&#39;,
+    buffer := subBuffer);
+THIS^.processes.writeParameter._log(
+    name := &#39;processes.writeParameter&#39;,
+    buffer := subBuffer);
+THIS^.processes.writeBoolParameter._log(
+    name := &#39;processes.writeBoolParameter&#39;,
+    buffer := subBuffer);
+THIS^.processes.probeStart._log(
+    name := &#39;processes.probeStart&#39;,
+    buffer := subBuffer);
+THIS^.processes.probeAbort._log(
+    name := &#39;processes.probeAbort&#39;,
+    buffer := subBuffer);
+LOGGER(
     name := name,
     actualStatus := THIS^.actualStatus,
     previousStatus := THIS^.previousStatus,
@@ -8830,7 +8893,16 @@ processes.initialize();
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.processes.write._log(
+    name := &#39;processes.write&#39;,
+    buffer := subBuffer);
+THIS^.processes.read._log(
+    name := &#39;processes.read&#39;,
+    buffer := subBuffer);
+THIS^.processes.initialize._log(
+    name := &#39;processes.initialize&#39;,
+    buffer := subBuffer);
+LOGGER(
     name := name,
     actualStatus := THIS^.actualStatus,
     previousStatus := THIS^.previousStatus,
@@ -9248,7 +9320,7 @@ processes.initialize();
 torqueCommand(
     newFractionValue := torqueCommandValue / 1000.0,
     maxNewtonmeter := channelPeakCurrent.amps.value * torqueConstant);
-statuses.busyStatus( isBusy := processes.write OR (processes.read OR (processes.update OR (processes.reset OR processes.acknowledgeSafetyError))) );
+statuses.busyStatus( isBusy := processes.write.statuses.busyStatus.busy OR (processes.read.statuses.busyStatus.busy OR (processes.update.statuses.busyStatus.busy OR (processes.reset.statuses.busyStatus.busy OR processes.acknowledgeSafetyError.statuses.busyStatus.busy))) );
 statuses.healthStatus(
     isGood := processes.write.statuses.healthStatus.isGood AND (processes.read.statuses.healthStatus.isGood AND (processes.update.statuses.healthStatus.isGood AND (processes.reset.statuses.healthStatus.isGood AND processes.acknowledgeSafetyError.statuses.healthStatus.isGood))),
     hasWarning := processes.write.statuses.healthStatus.hasWarning OR (processes.read.statuses.healthStatus.hasWarning OR (processes.update.statuses.healthStatus.hasWarning OR (processes.reset.statuses.healthStatus.hasWarning OR processes.acknowledgeSafetyError.statuses.healthStatus.hasWarning))));
@@ -9591,7 +9663,25 @@ processes.setBrake( isEnabled := isEnabled AND statuses.busyStatus.idle );
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.processes.read._log(
+    name := &#39;processes.read&#39;,
+    buffer := subBuffer);
+THIS^.processes.write._log(
+    name := &#39;processes.write&#39;,
+    buffer := subBuffer);
+THIS^.processes.update._log(
+    name := &#39;processes.update&#39;,
+    buffer := subBuffer);
+THIS^.processes.reset._log(
+    name := &#39;processes.reset&#39;,
+    buffer := subBuffer);
+THIS^.processes.acknowledgeSafetyError._log(
+    name := &#39;processes.acknowledgeSafetyError&#39;,
+    buffer := subBuffer);
+THIS^.processes.setBrake._log(
+    name := &#39;processes.setBrake&#39;,
+    buffer := subBuffer);
+LOGGER(
     name := name,
     actualStatus := THIS^.actualStatus,
     previousStatus := THIS^.previousStatus,
@@ -9750,7 +9840,13 @@ statuses.healthStatus(
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.parts.channelA._log(
+    name := &#39;channelA&#39;,
+    buffer := subBuffer);
+THIS^.parts.channelB._log(
+    name := &#39;channelB&#39;,
+    buffer := subBuffer);
+LOGGER(
     name := name,
     actualStatus := THIS^.actualStatus,
     previousStatus := THIS^.previousStatus,
@@ -10313,7 +10409,7 @@ statuses.healthStatus(
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">statuses.healthStatus( isGood := NOT((NOT(statusOfInputStatus)) OR (openCircuit OR (extrapolationStall OR syncError))) );
-statuses.busyStatus( isBusy := processes.enableCounterResetC OR processes.disableCounterResetC );
+statuses.busyStatus( isBusy := processes.enableCounterResetC.statuses.busyStatus.busy OR processes.disableCounterResetC.statuses.busyStatus.busy );
 processes.enableCounterResetC( isEnabled := isEnabled );
 processes.disableCounterResetC( isEnabled := isEnabled );
 </xhtml>
@@ -10434,7 +10530,13 @@ processes.disableCounterResetC( isEnabled := isEnabled );
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.processes.enableCounterResetC._log(
+    name := &#39;processes.enableCounterResetC&#39;,
+    buffer := subBuffer);
+THIS^.processes.disableCounterResetC._log(
+    name := &#39;processes.disableCounterResetC&#39;,
+    buffer := subBuffer);
+LOGGER(
     name := name,
     actualStatus := THIS^.actualStatus,
     previousStatus := THIS^.previousStatus,
@@ -13325,7 +13427,10 @@ processes.setEnabled( isEnabled := isEnabled AND processes.setEnabled.statuses.b
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.processes.setEnabled._log(
+    name := &#39;processes.setEnabled&#39;,
+    buffer := subBuffer);
+LOGGER(
     name := name,
     actualStatus := THIS^.actualStatus,
     previousStatus := THIS^.previousStatus,
@@ -13606,7 +13711,16 @@ processes.activate( isEnabled := isEnabled AND statuses.busyStatus.idle );
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.processes.save._log(
+    name := &#39;processes.save&#39;,
+    buffer := subBuffer);
+THIS^.processes.load._log(
+    name := &#39;processes.load&#39;,
+    buffer := subBuffer);
+THIS^.processes.activate._log(
+    name := &#39;processes.activate&#39;,
+    buffer := subBuffer);
+LOGGER(
     name := name,
     actualStatus := THIS^.actualStatus,
     previousStatus := THIS^.previousStatus,
@@ -14089,7 +14203,22 @@ processes.diagnostics( isEnabled := isEnabled AND statuses.busyStatus.idle );
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.processes.readCoil._log(
+    name := &#39;processes.readCoil&#39;,
+    buffer := subBuffer);
+THIS^.processes.writeCoil._log(
+    name := &#39;processes.writeCoil&#39;,
+    buffer := subBuffer);
+THIS^.processes.readRegister._log(
+    name := &#39;processes.readRegister&#39;,
+    buffer := subBuffer);
+THIS^.processes.writeRegister._log(
+    name := &#39;processes.writeRegister&#39;,
+    buffer := subBuffer);
+THIS^.processes.diagnostics._log(
+    name := &#39;processes.diagnostics&#39;,
+    buffer := subBuffer);
+LOGGER(
     name := name,
     actualStatus := THIS^.actualStatus,
     previousStatus := THIS^.previousStatus,
@@ -14137,7 +14266,7 @@ processes.diagnostics( isEnabled := isEnabled AND statuses.busyStatus.idle );
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
-    start();
+    do_request_result := request();
     do_request := FALSE;
 END_IF;
 SUPER^();
@@ -14166,7 +14295,9 @@ SUPER^();
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.statuses.busyStatus( isBusy := TRUE );
+THIS^.statuses.healthStatus( isGood := TRUE );
+</xhtml>
                 </ST>
               </body>
             </Method>
@@ -14240,7 +14371,7 @@ END_IF;
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
-    start();
+    do_request_result := request();
     do_request := FALSE;
 END_IF;
 SUPER^();
@@ -14269,7 +14400,9 @@ SUPER^();
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.statuses.busyStatus( isBusy := TRUE );
+THIS^.statuses.healthStatus( isGood := TRUE );
+</xhtml>
                 </ST>
               </body>
             </Method>
@@ -14357,7 +14490,7 @@ END_IF;
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
-    start( setpoint := request.setpoint );
+    do_request_result := request( setpoint := set.setpoint );
     do_request := FALSE;
 END_IF;
 SUPER^();
@@ -14501,7 +14634,7 @@ END_IF;
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
-    start( parameter := request.parameter );
+    do_request_result := request( parameter := set.parameter );
     do_request := FALSE;
 END_IF;
 SUPER^();
@@ -14645,9 +14778,9 @@ END_IF;
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
-    start(
-        position := request.position,
-        maxVelocity := request.maxVelocity);
+    do_request_result := request(
+    position := set.position,
+    maxVelocity := set.maxVelocity);
     do_request := FALSE;
 END_IF;
 SUPER^();
@@ -14818,9 +14951,9 @@ END_IF;
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
-    start(
-        distance := request.distance,
-        maxVelocity := request.maxVelocity);
+    do_request_result := request(
+    distance := set.distance,
+    maxVelocity := set.maxVelocity);
     do_request := FALSE;
 END_IF;
 SUPER^();
@@ -14991,7 +15124,7 @@ END_IF;
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
-    start( enable := request.enable );
+    do_request_result := request( enable := set.enable );
     do_request := FALSE;
 END_IF;
 SUPER^();
@@ -15135,7 +15268,7 @@ END_IF;
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
-    start( value := request.value );
+    do_request_result := request( value := set.value );
     do_request := FALSE;
 END_IF;
 SUPER^();
@@ -15279,9 +15412,9 @@ END_IF;
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
-    start(
-        deceleration := request.deceleration,
-        jerk := request.jerk);
+    do_request_result := request(
+    deceleration := set.deceleration,
+    jerk := set.jerk);
     do_request := FALSE;
 END_IF;
 SUPER^();
@@ -15452,7 +15585,7 @@ END_IF;
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
-    start( value := request.value );
+    do_request_result := request( value := set.value );
     do_request := FALSE;
 END_IF;
 SUPER^();
@@ -15596,7 +15729,7 @@ END_IF;
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
-    start( enabled := request.enabled );
+    do_request_result := request( enabled := set.enabled );
     do_request := FALSE;
 END_IF;
 SUPER^();
@@ -15740,9 +15873,9 @@ END_IF;
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
-    start(
-        parameterNumber := request.parameterNumber,
-        value := request.value);
+    do_request_result := request(
+    parameterNumber := set.parameterNumber,
+    value := set.value);
     do_request := FALSE;
 END_IF;
 SUPER^();
@@ -15925,7 +16058,7 @@ END_IF;
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
-    start( parameterNumber := request.parameterNumber );
+    do_request_result := request( parameterNumber := set.parameterNumber );
     do_request := FALSE;
 END_IF;
 SUPER^();
@@ -16069,9 +16202,9 @@ END_IF;
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
-    start(
-        parameterNumber := request.parameterNumber,
-        value := request.value);
+    do_request_result := request(
+    parameterNumber := set.parameterNumber,
+    value := set.value);
     do_request := FALSE;
 END_IF;
 SUPER^();
@@ -16254,7 +16387,7 @@ END_IF;
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
-    start( parameterNumber := request.parameterNumber );
+    do_request_result := request( parameterNumber := set.parameterNumber );
     do_request := FALSE;
 END_IF;
 SUPER^();
@@ -16410,9 +16543,9 @@ END_IF;
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
-    start(
-        risingEdge := request.risingEdge,
-        timeout := request.timeout);
+    do_request_result := request(
+    risingEdge := set.risingEdge,
+    timeout := set.timeout);
     do_request := FALSE;
 END_IF;
 SUPER^();
@@ -16631,10 +16764,10 @@ END_IF;
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
-    start(
-        index := request.index,
-        subindex := request.subindex,
-        noOfBytes := request.noOfBytes);
+    do_request_result := request(
+    index := set.index,
+    subindex := set.subindex,
+    noOfBytes := set.noOfBytes);
     do_request := FALSE;
 END_IF;
 SUPER^();
@@ -16843,13 +16976,13 @@ END_IF;
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
-    start(
-        index := request.index,
-        subindex := request.subindex,
-        noOfBytes := request.noOfBytes,
-        value1Byte := request.value1Byte,
-        value2Bytes := request.value2Bytes,
-        value4Bytes := request.value4Bytes);
+    do_request_result := request(
+    index := set.index,
+    subindex := set.subindex,
+    noOfBytes := set.noOfBytes,
+    value1Byte := set.value1Byte,
+    value2Bytes := set.value2Bytes,
+    value4Bytes := set.value4Bytes);
     do_request := FALSE;
 END_IF;
 SUPER^();
@@ -17184,9 +17317,9 @@ END_IF;
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
-    start(
-        index := request.index,
-        noOfBytes := request.noOfBytes);
+    do_request_result := request(
+    index := set.index,
+    noOfBytes := set.noOfBytes);
     do_request := FALSE;
 END_IF;
 SUPER^();
@@ -17381,12 +17514,12 @@ END_IF;
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
-    start(
-        index := request.index,
-        noOfBytes := request.noOfBytes,
-        value1Byte := request.value1Byte,
-        value2Bytes := request.value2Bytes,
-        value4Bytes := request.value4Bytes);
+    do_request_result := request(
+    index := set.index,
+    noOfBytes := set.noOfBytes,
+    value1Byte := set.value1Byte,
+    value2Bytes := set.value2Bytes,
+    value4Bytes := set.value4Bytes);
     do_request := FALSE;
 END_IF;
 SUPER^();
@@ -17632,7 +17765,7 @@ END_IF;
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
-    start();
+    do_request_result := request();
     do_request := FALSE;
 END_IF;
 SUPER^();
@@ -17661,7 +17794,9 @@ SUPER^();
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.statuses.busyStatus( isBusy := TRUE );
+THIS^.statuses.healthStatus( isGood := TRUE );
+</xhtml>
                 </ST>
               </body>
             </Method>
@@ -17749,7 +17884,7 @@ END_IF;
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
-    start( newState := request.newState );
+    do_request_result := request( newState := set.newState );
     do_request := FALSE;
 END_IF;
 SUPER^();
@@ -17893,7 +18028,7 @@ END_IF;
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
-    start( state := request.state );
+    do_request_result := request( state := set.state );
     do_request := FALSE;
 END_IF;
 SUPER^();
@@ -18037,9 +18172,9 @@ END_IF;
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
-    start(
-        state := request.state,
-        password := request.password);
+    do_request_result := request(
+    state := set.state,
+    password := set.password);
     do_request := FALSE;
 END_IF;
 SUPER^();
@@ -18210,7 +18345,7 @@ END_IF;
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
-    start( state := request.state );
+    do_request_result := request( state := set.state );
     do_request := FALSE;
 END_IF;
 SUPER^();
@@ -18354,7 +18489,7 @@ END_IF;
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
-    start( filePath := request.filePath );
+    do_request_result := request( filePath := set.filePath );
     do_request := FALSE;
 END_IF;
 SUPER^();
@@ -18498,7 +18633,7 @@ END_IF;
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
-    start( filePath := request.filePath );
+    do_request_result := request( filePath := set.filePath );
     do_request := FALSE;
 END_IF;
 SUPER^();
@@ -18628,7 +18763,7 @@ END_IF;
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
-    start();
+    do_request_result := request();
     do_request := FALSE;
 END_IF;
 SUPER^();
@@ -18657,7 +18792,9 @@ SUPER^();
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.statuses.busyStatus( isBusy := TRUE );
+THIS^.statuses.healthStatus( isGood := TRUE );
+</xhtml>
                 </ST>
               </body>
             </Method>
@@ -18769,9 +18906,9 @@ END_IF;
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
-    start(
-        unitID := request.unitID,
-        address := request.address);
+    do_request_result := request(
+    unitID := set.unitID,
+    address := set.address);
     do_request := FALSE;
 END_IF;
 SUPER^();
@@ -18954,10 +19091,10 @@ END_IF;
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
-    start(
-        unitID := request.unitID,
-        address := request.address,
-        value := request.value);
+    do_request_result := request(
+    unitID := set.unitID,
+    address := set.address,
+    value := set.value);
     do_request := FALSE;
 END_IF;
 SUPER^();
@@ -19178,9 +19315,9 @@ END_IF;
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
-    start(
-        unitID := request.unitID,
-        address := request.address);
+    do_request_result := request(
+    unitID := set.unitID,
+    address := set.address);
     do_request := FALSE;
 END_IF;
 SUPER^();
@@ -19363,10 +19500,10 @@ END_IF;
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
-    start(
-        unitID := request.unitID,
-        address := request.address,
-        value := request.value);
+    do_request_result := request(
+    unitID := set.unitID,
+    address := set.address,
+    value := set.value);
     do_request := FALSE;
 END_IF;
 SUPER^();
@@ -19587,10 +19724,10 @@ END_IF;
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
-    start(
-        unitID := request.unitID,
-        subFunction := request.subFunction,
-        subData := request.subData);
+    do_request_result := request(
+    unitID := set.unitID,
+    subFunction := set.subFunction,
+    subData := set.subData);
     do_request := FALSE;
 END_IF;
 SUPER^();

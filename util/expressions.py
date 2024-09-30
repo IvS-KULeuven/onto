@@ -220,6 +220,14 @@ def Int16_constructor(loader, node):
     value = loader.construct_scalar(node)
     return Int16(value)
 
+class String(Primitive):
+    def __init__(self, value: str) -> None:
+        super().__init__(str(value))
+
+def String_constructor(loader, node):
+    value = loader.construct_scalar(node)
+    return String(value)
+
 class Bool(Primitive):
     def __init__(self, value: str) -> None:
         if str(value).upper() == "TRUE":
@@ -239,7 +247,7 @@ class MTCS_SUMMARIZE_BUSY(BinaryOperation):
         new_operands = []
         for operand in operands:
             new_operands.append(operand + ".statuses.busyStatus.busy")
-        super().__init__(operands, OPERATORS.OR)
+        super().__init__(new_operands, OPERATORS.OR)
 
 class MTCS_SUMMARIZE_GOOD(BinaryOperation):
     def __init__(self, operands) -> None:

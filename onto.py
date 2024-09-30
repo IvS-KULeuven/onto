@@ -49,6 +49,7 @@ def get_loader():
     loader.add_constructor('!UINT8', expressions.UInt8_constructor)
     loader.add_constructor('!INT16', expressions.Int16_constructor)
     loader.add_constructor('!UINT16', expressions.UInt16_constructor)
+    loader.add_constructor('!STRING', expressions.String_constructor)
     loader.add_constructor('!LIBRARY', factories.LIBRARY_constructor)
     loader.add_constructor('!ENUM', factories.ENUM_constructor)
     loader.add_constructor('!ENUMERATION', factories.ENUMERATION_constructor)
