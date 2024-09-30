@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
-  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2024-09-30T10:15:38.880176" />
-  <contentHeader name="mtcs_common" modificationDateTime="2024-09-30T10:15:38.880176">
+  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2024-09-30T12:01:19.694926" />
+  <contentHeader name="mtcs_common" modificationDateTime="2024-09-30T12:01:19.694926">
     <coordinateInfo>
       <fbd>
         <scaling x="1" y="1" />
@@ -19884,6 +19884,507 @@ END_IF;
   <addData>
     <data name="http://www.3s-software.com/plcopenxml/projectstructure" handleUnknown="discard">
       <ProjectStructure>
+        <Folder Name="mtcs_common">
+          <Folder Name="Enums">
+            <Object Name="InitializationStates">
+            </Object>
+            <Object Name="OperatorStates">
+            </Object>
+            <Object Name="OperatingStates">
+            </Object>
+            <Object Name="OperatingModeStates">
+            </Object>
+            <Object Name="LimitSwitches">
+            </Object>
+            <Object Name="Units">
+            </Object>
+            <Object Name="RequestResults">
+            </Object>
+            <Object Name="DriveOperatingModes">
+            </Object>
+            <Object Name="DriveBrakeStates">
+            </Object>
+          </Folder>
+          <Folder Name="Statuses">
+            <Object Name="ApertureStatus">
+            </Object>
+            <Object Name="BusyStatus">
+            </Object>
+            <Object Name="StartedStatus">
+            </Object>
+            <Object Name="EnabledStatus">
+            </Object>
+            <Object Name="PoweredStatus">
+            </Object>
+            <Object Name="HealthStatus">
+            </Object>
+            <Object Name="InitializationStatus">
+            </Object>
+            <Object Name="MotionStatus">
+            </Object>
+            <Object Name="HiHiLoLoAlarmStatus">
+            </Object>
+            <Object Name="OpeningStatus">
+            </Object>
+            <Object Name="OperatorStatus">
+            </Object>
+            <Object Name="OperatingStatus">
+            </Object>
+            <Object Name="OperatingModeStatus">
+            </Object>
+            <Object Name="ActivityStatus">
+            </Object>
+          </Folder>
+          <Folder Name="StateMachines">
+            <Folder Name="Parts">
+              <Object Name="AX52XXDriveParts">
+              </Object>
+            </Folder>
+            <Folder Name="Processes">
+              <Object Name="BaseAxisProcesses">
+              </Object>
+              <Object Name="FaulhaberDriveProcesses">
+              </Object>
+              <Object Name="AX52XXDriveChannelProcesses">
+              </Object>
+              <Object Name="IncrementalEncoderProcesses">
+              </Object>
+              <Object Name="SimpleRelayProcesses">
+              </Object>
+              <Object Name="ConfigManagerProcesses">
+              </Object>
+              <Object Name="ModbusRTUBusProcesses">
+              </Object>
+            </Folder>
+            <Folder Name="Statuses">
+              <Object Name="BaseProcessStatuses">
+              </Object>
+              <Object Name="ProcessStepStatuses">
+              </Object>
+              <Object Name="BaseAxisStatuses">
+              </Object>
+              <Object Name="FaulhaberDriveStatuses">
+              </Object>
+              <Object Name="AX52XXDriveChannelStatuses">
+              </Object>
+              <Object Name="AX52XXDriveStatuses">
+              </Object>
+              <Object Name="SSIEncoderStatuses">
+              </Object>
+              <Object Name="IncrementalEncoderStatuses">
+              </Object>
+              <Object Name="EtherCatDeviceStatuses">
+              </Object>
+              <Object Name="CANopenBusStatuses">
+              </Object>
+              <Object Name="CurrentMeasurementStatuses">
+              </Object>
+              <Object Name="VoltageMeasurementStatuses">
+              </Object>
+              <Object Name="TemperatureMeasurementStatuses">
+              </Object>
+              <Object Name="PressureMeasurementStatuses">
+              </Object>
+              <Object Name="FrequencyMeasurementStatuses">
+              </Object>
+              <Object Name="GForceMeasurementStatuses">
+              </Object>
+              <Object Name="RelativeHumidityMeasurementStatuses">
+              </Object>
+              <Object Name="ForceMeasurementStatuses">
+              </Object>
+              <Object Name="LinearPositionMeasurement16Statuses">
+              </Object>
+              <Object Name="LinearPositionMeasurementU32Statuses">
+              </Object>
+              <Object Name="SimpleRelayStatuses">
+              </Object>
+              <Object Name="ConfigManagerStatuses">
+              </Object>
+              <Object Name="ModbusRTUBusStatuses">
+              </Object>
+            </Folder>
+            <Object Name="SM_QuantityValue">
+              <Object Name="_log" />
+            </Object>
+            <Object Name="SM_AngularPosition">
+              <Object Name="_log" />
+            </Object>
+            <Object Name="SM_LinearPosition">
+              <Object Name="_log" />
+            </Object>
+            <Object Name="SM_AngularVelocity">
+              <Object Name="_log" />
+            </Object>
+            <Object Name="SM_AngularAcceleration">
+              <Object Name="_log" />
+            </Object>
+            <Object Name="SM_LinearVelocity">
+              <Object Name="_log" />
+            </Object>
+            <Object Name="SM_Voltage">
+              <Object Name="_log" />
+            </Object>
+            <Object Name="SM_GForce">
+              <Object Name="_log" />
+            </Object>
+            <Object Name="SM_Current">
+              <Object Name="_log" />
+            </Object>
+            <Object Name="SM_Torque">
+              <Object Name="_log" />
+            </Object>
+            <Object Name="SM_TorqueLimit">
+              <Object Name="_log" />
+            </Object>
+            <Object Name="SM_AverageCurrent">
+            </Object>
+            <Object Name="SM_Duration">
+              <Object Name="_log" />
+            </Object>
+            <Object Name="SM_Temperature">
+              <Object Name="_log" />
+            </Object>
+            <Object Name="SM_Pressure">
+              <Object Name="_log" />
+            </Object>
+            <Object Name="SM_Frequency">
+              <Object Name="_log" />
+            </Object>
+            <Object Name="SM_Force">
+              <Object Name="_log" />
+            </Object>
+            <Object Name="SM_Fraction">
+              <Object Name="_log" />
+            </Object>
+            <Object Name="SM_BaseProcess">
+              <Object Name="_log" />
+            </Object>
+            <Object Name="SM_BaseMcProcess">
+            </Object>
+            <Object Name="SM_ProcessStep">
+              <Object Name="_log" />
+            </Object>
+            <Object Name="SM_BaseXmlDataSrvProcess">
+            </Object>
+            <Object Name="SM_BaseAxis">
+              <Object Name="moveAbsolute" />
+              <Object Name="moveRelative" />
+              <Object Name="moveVelocity" />
+              <Object Name="reset" />
+              <Object Name="stop" />
+              <Object Name="stopParametrized" />
+              <Object Name="power" />
+              <Object Name="gearIn" />
+              <Object Name="gearOut" />
+              <Object Name="initialize" />
+              <Object Name="setPosition" />
+              <Object Name="enableExtSetGen" />
+              <Object Name="disableExtSetGen" />
+              <Object Name="forceCalibration" />
+              <Object Name="resetCalibration" />
+              <Object Name="readParameter" />
+              <Object Name="readBoolParameter" />
+              <Object Name="writeParameter" />
+              <Object Name="writeBoolParameter" />
+              <Object Name="probeStart" />
+              <Object Name="probeAbort" />
+              <Object Name="_log" />
+            </Object>
+            <Object Name="SM_AngularAxis">
+            </Object>
+            <Object Name="SM_LinearAxis">
+            </Object>
+            <Object Name="SM_FaulhaberDrive">
+              <Object Name="write" />
+              <Object Name="read" />
+              <Object Name="initialize" />
+              <Object Name="_log" />
+            </Object>
+            <Object Name="SM_AX52XXDriveChannel">
+              <Object Name="read" />
+              <Object Name="write" />
+              <Object Name="update" />
+              <Object Name="reset" />
+              <Object Name="acknowledgeSafetyError" />
+              <Object Name="setBrake" />
+              <Object Name="_log" />
+            </Object>
+            <Object Name="SM_AX52XXDrive">
+              <Object Name="_log" />
+            </Object>
+            <Object Name="SM_SSIEncoder">
+              <Object Name="_log" />
+            </Object>
+            <Object Name="SM_IncrementalEncoder">
+              <Object Name="enableCounterResetC" />
+              <Object Name="disableCounterResetC" />
+              <Object Name="_log" />
+            </Object>
+            <Object Name="SM_EtherCatDevice">
+              <Object Name="_log" />
+            </Object>
+            <Object Name="SM_CANopenBus">
+              <Object Name="_log" />
+            </Object>
+            <Object Name="SM_CurrentMeasurement">
+              <Object Name="_log" />
+            </Object>
+            <Object Name="SM_VoltageMeasurement">
+              <Object Name="_log" />
+            </Object>
+            <Object Name="SM_TemperatureMeasurement">
+              <Object Name="_log" />
+            </Object>
+            <Object Name="SM_PressureMeasurement">
+              <Object Name="_log" />
+            </Object>
+            <Object Name="SM_FrequencyMeasurement">
+              <Object Name="_log" />
+            </Object>
+            <Object Name="SM_GForceMeasurement">
+              <Object Name="_log" />
+            </Object>
+            <Object Name="SM_RelativeHumidityMeasurement">
+              <Object Name="_log" />
+            </Object>
+            <Object Name="SM_ForceMeasurement">
+              <Object Name="_log" />
+            </Object>
+            <Object Name="SM_LinearPositionMeasurement16">
+              <Object Name="_log" />
+            </Object>
+            <Object Name="SM_LinearPositionMeasurementU32">
+              <Object Name="_log" />
+            </Object>
+            <Object Name="SM_SimpleRelay">
+              <Object Name="setEnabled" />
+              <Object Name="_log" />
+            </Object>
+            <Object Name="SM_ConfigManager">
+              <Object Name="save" />
+              <Object Name="load" />
+              <Object Name="activate" />
+              <Object Name="_log" />
+            </Object>
+            <Object Name="SM_ModbusRTUBus">
+              <Object Name="readCoil" />
+              <Object Name="writeCoil" />
+              <Object Name="readRegister" />
+              <Object Name="writeRegister" />
+              <Object Name="diagnostics" />
+              <Object Name="_log" />
+            </Object>
+          </Folder>
+          <Folder Name="Configs">
+            <Object Name="HiHiLoLoAlarmConfig">
+            </Object>
+            <Object Name="MeasurementConfig">
+            </Object>
+            <Object Name="FaulhaberDriveConfig">
+            </Object>
+            <Object Name="InstrumentConfig">
+            </Object>
+          </Folder>
+          <Folder Name="Structs">
+          </Folder>
+          <Folder Name="Processes">
+            <Folder Name="Args">
+              <Object Name="ChangeSetpointProcessArgs">
+              </Object>
+              <Object Name="ChangeParameterProcessArgs">
+              </Object>
+              <Object Name="McMoveAbsoluteProcessArgs">
+              </Object>
+              <Object Name="McMoveRelativeProcessArgs">
+              </Object>
+              <Object Name="McPowerProcessArgs">
+              </Object>
+              <Object Name="McSetPositionProcessArgs">
+              </Object>
+              <Object Name="McStopProcessArgs">
+              </Object>
+              <Object Name="McMoveVelocityProcessArgs">
+              </Object>
+              <Object Name="SetEnabledProcessArgs">
+              </Object>
+              <Object Name="McWriteParameterArgs">
+              </Object>
+              <Object Name="McReadParameterArgs">
+              </Object>
+              <Object Name="McWriteBoolParameterArgs">
+              </Object>
+              <Object Name="McReadBoolParameterArgs">
+              </Object>
+              <Object Name="McProbeArgs">
+              </Object>
+              <Object Name="SDOReadProcessArgs">
+              </Object>
+              <Object Name="SDOWriteProcessArgs">
+              </Object>
+              <Object Name="SoEReadProcessArgs">
+              </Object>
+              <Object Name="SoEWriteProcessArgs">
+              </Object>
+              <Object Name="SetBrakeProcessArgs">
+              </Object>
+              <Object Name="ChangeOperatingStateProcessArgs">
+              </Object>
+              <Object Name="ChangeOperatorStateProcessArgs">
+              </Object>
+              <Object Name="ChangeOperatingModeStateProcessArgs">
+              </Object>
+              <Object Name="ReadXmlProcessArgs">
+              </Object>
+              <Object Name="WriteXmlProcessArgs">
+              </Object>
+              <Object Name="ModbusRTUBusReadCoilProcessArgs">
+              </Object>
+              <Object Name="ModbusRTUBusWriteCoilProcessArgs">
+              </Object>
+              <Object Name="ModbusRTUBusReadRegisterProcessArgs">
+              </Object>
+              <Object Name="ModbusRTUBusWriteRegisterProcessArgs">
+              </Object>
+              <Object Name="ModbusRTUBusDiagnosticsProcessArgs">
+              </Object>
+            </Folder>
+            <Object Name="Process">
+              <Object Name="start" />
+              <Object Name="request" />
+            </Object>
+            <Object Name="McProcess">
+              <Object Name="start" />
+              <Object Name="request" />
+            </Object>
+            <Object Name="ChangeSetpointProcess">
+              <Object Name="start" />
+              <Object Name="request" />
+            </Object>
+            <Object Name="ChangeParameterProcess">
+              <Object Name="start" />
+              <Object Name="request" />
+            </Object>
+            <Object Name="McMoveAbsoluteProcess">
+              <Object Name="start" />
+              <Object Name="request" />
+            </Object>
+            <Object Name="McMoveRelativeProcess">
+              <Object Name="start" />
+              <Object Name="request" />
+            </Object>
+            <Object Name="McPowerProcess">
+              <Object Name="start" />
+              <Object Name="request" />
+            </Object>
+            <Object Name="McSetPositionProcess">
+              <Object Name="start" />
+              <Object Name="request" />
+            </Object>
+            <Object Name="McStopProcess">
+              <Object Name="start" />
+              <Object Name="request" />
+            </Object>
+            <Object Name="McMoveVelocityProcess">
+              <Object Name="start" />
+              <Object Name="request" />
+            </Object>
+            <Object Name="SetEnabledProcess">
+              <Object Name="start" />
+              <Object Name="request" />
+            </Object>
+            <Object Name="McWriteParameter">
+              <Object Name="start" />
+              <Object Name="request" />
+            </Object>
+            <Object Name="McReadParameter">
+              <Object Name="start" />
+              <Object Name="request" />
+            </Object>
+            <Object Name="McWriteBoolParameter">
+              <Object Name="start" />
+              <Object Name="request" />
+            </Object>
+            <Object Name="McReadBoolParameter">
+              <Object Name="start" />
+              <Object Name="request" />
+            </Object>
+            <Object Name="McProbe">
+              <Object Name="start" />
+              <Object Name="request" />
+            </Object>
+            <Object Name="SDOReadProcess">
+              <Object Name="start" />
+              <Object Name="request" />
+            </Object>
+            <Object Name="SDOWriteProcess">
+              <Object Name="start" />
+              <Object Name="request" />
+            </Object>
+            <Object Name="SoEReadProcess">
+              <Object Name="start" />
+              <Object Name="request" />
+            </Object>
+            <Object Name="SoEWriteProcess">
+              <Object Name="start" />
+              <Object Name="request" />
+            </Object>
+            <Object Name="SoEResetProcess">
+              <Object Name="start" />
+              <Object Name="request" />
+            </Object>
+            <Object Name="SetBrakeProcess">
+              <Object Name="start" />
+              <Object Name="request" />
+            </Object>
+            <Object Name="ChangeOperatingStateProcess">
+              <Object Name="start" />
+              <Object Name="request" />
+            </Object>
+            <Object Name="ChangeOperatorStateProcess">
+              <Object Name="start" />
+              <Object Name="request" />
+            </Object>
+            <Object Name="ChangeOperatingModeStateProcess">
+              <Object Name="start" />
+              <Object Name="request" />
+            </Object>
+            <Object Name="ReadXmlProcess">
+              <Object Name="start" />
+              <Object Name="request" />
+            </Object>
+            <Object Name="WriteXmlProcess">
+              <Object Name="start" />
+              <Object Name="request" />
+            </Object>
+            <Object Name="ActivateProcess">
+              <Object Name="start" />
+              <Object Name="request" />
+            </Object>
+            <Object Name="ModbusRTUBusReadCoilProcess">
+              <Object Name="start" />
+              <Object Name="request" />
+            </Object>
+            <Object Name="ModbusRTUBusWriteCoilProcess">
+              <Object Name="start" />
+              <Object Name="request" />
+            </Object>
+            <Object Name="ModbusRTUBusReadRegisterProcess">
+              <Object Name="start" />
+              <Object Name="request" />
+            </Object>
+            <Object Name="ModbusRTUBusWriteRegisterProcess">
+              <Object Name="start" />
+              <Object Name="request" />
+            </Object>
+            <Object Name="ModbusRTUBusDiagnosticsProcess">
+              <Object Name="start" />
+              <Object Name="request" />
+            </Object>
+          </Folder>
+          <Folder Name="Functionblocks">
+          </Folder>
+        </Folder>
       </ProjectStructure>
     </data>
   </addData>

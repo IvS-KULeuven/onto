@@ -82,6 +82,38 @@ class Namespace(Object):
     
     def items(self):
         return self.children.items()
+    
+    def get_namespaces(self, recursive: bool, namespaces: list):
+        for child in self.children.values():
+            if isinstance(child, Namespace):
+                if recursive:
+                    child.get_namespaces(recursive, namespaces)
+                namespaces.append(child)
+    
+    def get_enums(self, recursive: bool, enums: list):
+        for child in self.children.values():
+            if isinstance(child, Namespace) and recursive:
+                child.get_enums(recursive, enums)
+            elif isinstance(child, Enum):
+                if child not in enums:
+                    enums.append(child)
+    
+    def get_fbs(self, recursive: bool, fbs: list):
+        for child in self.children.values():
+            if isinstance(child, Namespace) and recursive:
+                child.get_fbs(recursive, fbs)
+            elif isinstance(child, FunctionBlock):
+                if child not in fbs:
+                    fbs.append(child)
+    
+    def get_structs(self, recursive: bool, structs: list):
+        for child in self.children.values():
+            if isinstance(child, Namespace) and recursive:
+                child.get_structs(recursive, structs)
+            elif isinstance(child, Struct):
+                if child not in structs:
+                    structs.append(child)
+    
 
 
 GLOBAL_NS = Namespace("GLOBAL_NS", None)
@@ -89,29 +121,27 @@ GLOBAL_NS = Namespace("GLOBAL_NS", None)
 class StatemachinesNamespace(Namespace):
     def __init__(self, name, parent):
         super().__init__(name, parent)
-        self.parts = Namespace("parts", self)
-        self.processes = Namespace("processes", self)
-        self.statuses = Namespace("statuses", self)
+        self.parts = Namespace("Parts", self)
+        self.processes = Namespace("Processes", self)
+        self.statuses = Namespace("Statuses", self)
 
 class ProcessesNamespace(Namespace):
     def __init__(self, name, parent):
         super().__init__(name, parent)
-        self.args = Namespace("args", self)
+        self.args = Namespace("Args", self)
 
 class Library(Namespace):
     def __init__(self, name, args):
         super().__init__(name, GLOBAL_NS)  # a library has no parent!
 
         # define the sub-namespaces
-        self.enums = Namespace("enums", self)
-        self.statuses = Namespace("statuses", self)
-        self.statemachines = StatemachinesNamespace("statemachines", self)
-        self.configs = Namespace("configs", self)
-        self.structs = Namespace("structs", self)
-        self.processes = ProcessesNamespace("processes", self)
-
-        # new:        
-        self.functionblocks = Namespace("functionblocks", self)
+        self.enums = Namespace("Enums", self)
+        self.statuses = Namespace("Statuses", self)
+        self.statemachines = StatemachinesNamespace("StateMachines", self)
+        self.configs = Namespace("Configs", self)
+        self.structs = Namespace("Structs", self)
+        self.processes = ProcessesNamespace("Processes", self)   
+        self.functionblocks = Namespace("Functionblocks", self)
 
         # add the items
         for arg_k, arg_v in args.items():
@@ -120,11 +150,9 @@ class Library(Namespace):
             elif isinstance(arg_k, STATEMACHINE):
                 sm = Statemachine(arg_k.name, self, arg_v)
                 self.statemachines[arg_k.name] = sm
-                #self.functionblocks[arg_k.name] = sm
             elif isinstance(arg_k, STATUS):
                 sts = Status(arg_k.name, self, arg_v) 
                 self.statuses[arg_k.name] = sts
-                #self.functionblocks[arg_k.name] = sts
             elif isinstance(arg_k, FB):
                 fb = FunctionBlock(arg_k.name, self, arg_v) 
                 self.functionblocks[arg_k.name] = fb
@@ -138,28 +166,35 @@ class Library(Namespace):
             elif isinstance(arg_k, PROCESS):
                 proc = Process(arg_k.name, self, arg_v) 
                 self.processes[arg_k.name] = proc
-                #self.functionblocks[arg_k.name] = proc
 
-    def get_all_structs(self):
-        ret = {}
-        for ns in [self.statemachines.parts, 
-                   self.statemachines.processes, 
-                   self.statemachines.statuses, 
-                   self.configs, 
-                   self.processes.args]:
-            for k, v in ns.items():
-                ret[k] = v
-        return ret
+    # def get_structs(self, recursive):
+    #     ret = {}
+    #     if recursive:
+    #         namespaces = [
+    #             self.statemachines.parts, 
+    #             self.statemachines.processes, 
+    #             self.statemachines.statuses, 
+    #             self.configs, 
+    #             self.processes.args]
+    #     else:
+    #         namespaces = [
+    #             self.configs
+    #         ]
 
-    def get_all_fbs(self):
-        ret = {}
-        for ns in [self.statuses, 
-                   self.statemachines, 
-                   self.processes]:
-            for k, v in ns.items():
-                if isinstance(v, FunctionBlock):
-                    ret[k] = v
-        return ret
+    #     for ns in namespaces:
+    #         for k, v in ns.items():
+    #             ret[k] = v
+    #     return ret
+
+    # def get_fbs(self, recursive):
+    #     ret = {}
+    #     for ns in [self.statuses, 
+    #                self.statemachines, 
+    #                self.processes]:
+    #         for k, v in ns.items():
+    #             if isinstance(v, FunctionBlock):
+    #                 ret[k] = v
+    #     return ret
 
 
 def check_args(name, args, allowed_args):
@@ -432,7 +467,7 @@ class FunctionBlock(Object):
     def __init__(self, name, parent, args={}) -> None:
         super().__init__(name, parent)
         check_args("FunctionBlock", args, 
-                   ["typeOf", "extends", "comment", "in", "out", "inout"])
+                   ["typeOf", "extends", "comment", "in", "out", "inout", "render"])
         
         self.var_in = {}
         self.var_out = {}
@@ -443,6 +478,11 @@ class FunctionBlock(Object):
         self.methods = {}
         self.plc_symbol = None
         self.implementation = []
+
+        if "render" in args:
+            self.render = args["render"]
+        else:
+            self.render = True
 
         if "in" in args:
             for var_name, var_args in args["in"].items():
@@ -483,11 +523,16 @@ class Status(FunctionBlock):
     
     def __init__(self, name, parent, args={}) -> None:
         super().__init__(name, parent)
-        check_args("Status", args, ["variables", "states"])
+        check_args("Status", args, ["variables", "states", "render"])
 
         self.variables = {}
         self.states = {}
 
+        if "render" in args:
+            self.render = args["render"]
+        else:
+            self.render = True
+        
         self.var_in["superState"] = Variable(
             "superState", 
             self, 
@@ -554,7 +599,7 @@ class Statemachine(FunctionBlock):
                    ["variables", "variables_hidden", "variables_read_only",
                     "statuses", "parts", "local", "methods", "calls",
                     "disabled_calls", "updates", "references", "extends",
-                    "processes", "constraints"])
+                    "processes", "constraints", "render"])
         
         self.variables = {}
         self.variables_hidden = {}
@@ -564,6 +609,11 @@ class Statemachine(FunctionBlock):
         self.methods = {}
         self.processes = {}
 
+        if "render" in args:
+            self.render = args["render"]
+        else:
+            self.render = True
+        
         self.vars = {}
 
         # self.statusNames = []
@@ -629,7 +679,6 @@ class Statemachine(FunctionBlock):
                 args = { "items": args['statuses'] }
             )
             self.parent.statemachines.statuses[struct.name] = struct
-            self.parent.structs[struct.name] = struct
             self.var_out["statuses"] = Variable(
                 name='statuses', 
                 parent=self,
@@ -648,7 +697,6 @@ class Statemachine(FunctionBlock):
                 args = { "items" : args['parts'] }
             )
             self.parent.statemachines.parts[struct.name] = struct
-            self.parent.structs[struct.name] = struct
             # TODO arguments, attributes, ...
             self.var_out["parts"] = Variable(
                 name='parts', 
@@ -850,7 +898,7 @@ class Statemachine(FunctionBlock):
         # finally, also add the main state machine (to be implemented by the user):
         self.parent.register_child(
             name, 
-            FunctionBlock(name, self.parent, { "extends": f"SM_{name}" }))
+            FunctionBlock(name, self.parent, { "extends": f"SM_{name}", "render": False }))
 
 
 
@@ -912,7 +960,6 @@ class Process(FunctionBlock):
                 parent = self.parent,
                 args = { "items": args['arguments'] })
             self.parent.processes.args[struct.name] = struct
-            self.parent.structs[struct.name] = struct
                 
         if not ("variables" in args or "arguments" in args):
             

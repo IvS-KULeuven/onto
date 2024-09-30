@@ -148,16 +148,26 @@
   </contentHeader>
   <types>
     <dataTypes>
-    % for enum in lib.enums.children.values():
+<% 
+    enums = []
+    fbs = []
+    structs = []
+    lib.get_enums(recursive=True, enums=enums) 
+    lib.get_fbs(recursive=True, fbs=fbs) 
+    lib.get_structs(recursive=True, structs=structs) 
+%>\
+    % for enum in enums:
       ${xml_enum(enum, '      ')}
     % endfor
-    % for struct in lib.get_all_structs().values(): # lib.structs.children.values():
+    % for struct in structs:
       ${xml_struct(struct, '      ')}
     % endfor
     </dataTypes>
     <pous>
-    % for fb in lib.get_all_fbs().values():
+    % for fb in fbs:
+      % if fb.render:
       ${xml_pou_functionBlock(fb, '      ')}
+      % endif
     % endfor
     </pous>
   </types>
@@ -167,14 +177,54 @@
   <addData>
     <data name="http://www.3s-software.com/plcopenxml/projectstructure" handleUnknown="discard">
       <ProjectStructure>
-        ## ${xml_folder(node, '        ')}
+        ${xml_folder(lib, [], '        ')}
       </ProjectStructure>
     </data>
   </addData>
 </project>\
 </%def>
 
+<%def name="xml_folder(node, already_rendered, indent='')">\
+<%
+    namespaces = []
+    fbs = []
+    structs = []
+    enums = []
+    node.get_namespaces(recursive=False, namespaces=namespaces)
+    node.get_enums(recursive=False, enums=enums)
+    node.get_fbs(recursive=False, fbs=fbs)
+    node.get_structs(recursive=False, structs=structs)
+    types = []
+    for fb in fbs:
+        if fb.render:
+            types.append(fb)
+    types += structs + enums
+%>\
+<Folder Name="${node.name}">
+  % for namespace in namespaces:
+    % if namespace not in already_rendered:
+${indent}  ${xml_folder(namespace, already_rendered, indent+'  ')}
+<% already_rendered.append(namespace) %>\
+    % endif
+  % endfor
+  % for type in types:
+    % if type not in already_rendered:
+${indent}  ${xml_object(type, indent+'  ')}
+<% already_rendered.append(type) %>\
+    % endif
+  % endfor
+${indent}</Folder>\
+</%def>
 
+<%def name="xml_object(node, indent='')">\
+<Object Name="${node.name}">
+    % if isinstance(node, FunctionBlock):
+        % for method in node.methods.values():
+${indent}  <Object Name="${method.name}" />
+        % endfor
+    % endif
+${indent}</Object>\
+</%def>
 
 <%def name="xml_enum(enum, indent='')">\
 <dataType name="${enum.name}">
