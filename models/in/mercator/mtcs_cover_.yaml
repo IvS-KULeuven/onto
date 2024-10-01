@@ -1,0 +1,613 @@
+##########################################################################
+#                                                                        #
+# Model of the cover software.                                           #
+#                                                                        #
+##########################################################################
+
+!IMPORT models/in/mercator/mtcs_common_.yaml:
+
+
+##########################################################################
+# Define the containing PLC library
+##########################################################################
+
+!LIBRARY mtcs_cover:
+
+
+  ##########################################################################
+  # CoverApertureProcedureStates
+  ##########################################################################
+
+  !ENUMERATION CoverApertureProcedureStates:
+    comment: "The disjoint states of the opening and closing procedure"
+    items:
+      [ "IDLE",
+        "ABORTED",
+        "PREPARE_PROCESS",
+        "ENABLING_RELAYS",
+        "ENABLING_MOTORS",
+        "ENABLING_MAGNETS",
+        "DISABLING_RELAYS",
+        "DISABLING_MOTORS",
+        "DISABLING_MAGNETS",
+        "OPENING_TOP_PANELS",
+        "OPENING_BOTH_PANELS",
+        "CLOSING_BOTTOM_PANELS",
+        "CLOSING_BOTH_PANELS",
+        "ERROR",
+        "RESETTING",
+        "ABORTING"
+      ]
+
+
+  ##########################################################################
+  # CoverConfig
+  ###########################################################################
+
+  !CONFIG CoverConfig:
+    items:
+      top   : { comment: "The config of the top panel set" }
+      bottom  : { comment: "The config of the bottom panel set" }
+      openingVelocity:
+        comment: "The opening velocity of the panels in degrees per second (always positive!)"
+        type:  t_double
+        initial: !DOUBLE 20.0
+      closingVelocity:
+        comment: "The closing velocity of the panels in degrees per second (always positive!)"
+        type:  t_double
+        initial: !DOUBLE 20.0
+      magnetRemanentTime:
+        comment: "How many seconds should be waited after disabling a magnet, before a panel may move?"
+        type:  t_double
+        initial: !DOUBLE 3.0
+      targetDistanceBetweenPanelSets:
+        comment: "The minimum distance in degrees between both panelsets"
+        type:  t_double
+      minDistanceBetweenPanelSets:
+        comment: "The minimum distance in degrees between both panelsets"
+        type:  t_double
+      unsafeRangeMinElevation:
+        comment: "The minimum elevation of the unsafe range"
+        type:  t_double
+      unsafeRangeMinAzimuth:
+        comment: "The minimum azimuth of the unsafe range"
+        type:  t_double
+      unsafeRangeMaxAzimuth:
+        comment: "The maximum azimuth of the unsafe range"
+        type:  t_double
+
+
+  ########################################################################################################################
+  # Cover
+  ########################################################################################################################
+
+  !STATEMACHINE Cover:
+    variables:
+      editableConfig          : { type: CoverConfig                       , comment: "Editable configuration of the cover" }
+    references:
+      operatorStatus          : { type: mtcs_common.OperatorStatus }
+      aziPos                  : { type: mtcs_common.AngularPosition       , comment: "Actual azimuth position of the telescope"}
+      elePos                  : { type: mtcs_common.AngularPosition       , comment: "Actual elevation position of the telescope"}
+    variables_read_only:
+      config                  : { type: CoverConfig                       , comment: "Active configuration of the cover" }
+      currentMeasurement      : { type: mtcs_common.CurrentMeasurement    , comment: "The current measurement of the selected panels" }
+      safeToOpenOrClose       : { type: t_bool                            , comment: "True if safe to open or close!" }
+    parts:
+      top:
+        comment               : "TOP panels"
+        arguments:
+          initializationStatus: { type: mtcs_common.InitializationStatus      , expand: false }
+          operatingStatus     : { type: mtcs_common.OperatingStatus           , expand: false }
+          operatorStatus      : { type: mtcs_common.OperatorStatus            , expand: false }
+        attributes:
+          config              : {}
+          coverConfig         : { type: CoverConfig               , expand: false  }
+          statuses:
+            attributes:
+              apertureStatus  : { type: mtcs_common.ApertureStatus }
+              healthStatus    : { type: mtcs_common.HealthStatus }
+              busyStatus      : { type: mtcs_common.BusyStatus }
+      bottom:
+        comment               : "BOTTOM panels"
+        arguments:
+          initializationStatus: { type: mtcs_common.InitializationStatus      , expand: false }
+          operatingStatus     : { type: mtcs_common.OperatingStatus           , expand: false }
+          operatorStatus      : { type: mtcs_common.OperatorStatus            , expand: false }
+        attributes:
+          config              : {}
+          coverConfig         : { type: CoverConfig               , expand: false }
+          statuses:
+            attributes:
+              apertureStatus  : { type: mtcs_common.ApertureStatus }
+              healthStatus    : { type: mtcs_common.HealthStatus }
+              busyStatus      : { type: mtcs_common.BusyStatus }
+      io:
+        comment               : "I/O modules"
+        attributes:
+          statuses:
+            attributes:
+              healthStatus    : { type: mtcs_common.HealthStatus }
+      apertureProcedure:
+        comment               : "The closing/opening/... procedure"
+        arguments:
+          top                 : {}
+          bottom              : {}
+          coverConfig         : {}
+        attributes:
+          state               : {}
+          statuses:
+            attributes:
+              healthStatus    : { type: mtcs_common.HealthStatus }
+              busyStatus      : { type: mtcs_common.BusyStatus }
+      configManager:
+        comment               : "The config manager (to load/save/activate configuration data)"
+        type                  : mtcs_common.ConfigManager
+    statuses:
+      initializationStatus    : { type: mtcs_common.InitializationStatus }
+      apertureStatus          : { type: mtcs_common.ApertureStatus }
+      healthStatus            : { type: mtcs_common.HealthStatus }
+      busyStatus              : { type: mtcs_common.BusyStatus }
+      operatingStatus         : { type: mtcs_common.OperatingStatus }
+    processes:
+      initialize              : { type: mtcs_common.Process             , comment: "Start initializing" }
+      lock                    : { type: mtcs_common.Process             , comment: "Lock the cover" }
+      unlock                  : { type: mtcs_common.Process             , comment: "Unlock the cover" }
+      reset                   : { type: mtcs_common.Process             , comment: "Reset any errors" }
+      changeOperatingState    : { type: mtcs_common.ChangeOperatingStateProcess   , comment: "Change the operating state (e.g. AUTO, MANUAL, ...)" }
+      open                    : { type: mtcs_common.Process             , comment: "Start opening the cover (only enabled in AUTO mode!)" }
+      close                   : { type: mtcs_common.Process             , comment: "Start closing the cover (only enabled in AUTO mode!)" }
+      forceOpen               : { type: mtcs_common.Process             , comment: "Start opening the cover EVEN IF WE'RE IN THE UNSAFE REGION" }
+      forceClose              : { type: mtcs_common.Process             , comment: "Start closing the cover EVEN IF WE'RE IN THE UNSAFE REGION" }
+      abort                   : { type: mtcs_common.Process             , comment: "Abort opening/closing the cover (only enabled in AUTO mode!)" }
+    calls:
+      currentMeasurement:
+        {} # just update
+      initialize:
+        isEnabled       : !OR [ statuses.initializationStatus.shutdown,
+                                statuses.initializationStatus.initializingFailed,
+                                statuses.initializationStatus.initialized ]
+      lock:
+        isEnabled       : !AND [ operatorStatus.tech, statuses.initializationStatus.initialized ]
+      unlock:
+        isEnabled       : !AND [ operatorStatus.tech, statuses.initializationStatus.locked ]
+      changeOperatingState:
+        isEnabled       : !AND [ statuses.busyStatus.idle, statuses.initializationStatus.initialized ]
+      forceOpen:
+        isEnabled       : !AND [ !OR [ statuses.busyStatus.idle,
+                                       !AND [ statuses.busyStatus.busy,
+                                              !EQ [parts.apertureProcedure.state, CoverApertureProcedureStates.CLOSING_BOTH_PANELS ] 
+                                       ] 
+                                 ],
+                                 statuses.initializationStatus.initialized,
+                                 statuses.operatingStatus.auto,
+                                 !NOT [ statuses.apertureStatus.open ] ]
+      forceClose:
+        isEnabled       : !AND [ !OR [ statuses.busyStatus.idle,
+                                       !AND [ statuses.busyStatus.busy,
+                                              !EQ [ parts.apertureProcedure.state, CoverApertureProcedureStates.OPENING_BOTH_PANELS ]
+                                       ]
+                                 ],
+                                 statuses.initializationStatus.initialized,
+                                 statuses.operatingStatus.auto,
+                                 !NOT [ statuses.apertureStatus.closed ] ]
+      open:
+        isEnabled       : !AND [ processes.forceOpen.statuses.enabledStatus.enabled, safeToOpenOrClose ]
+      close:
+        isEnabled       : !AND [ processes.forceClose.statuses.enabledStatus.enabled, safeToOpenOrClose ]
+      abort:
+        isEnabled       : parts.apertureProcedure.statuses.busyStatus.busy
+      reset:
+        isEnabled       : !AND [ !NOT [ !OR [ statuses.initializationStatus.shutdown, statuses.initializationStatus.locked ] ],
+                                 !EQ [ parts.apertureProcedure.state, CoverApertureProcedureStates.ERROR ] ]
+      top:
+        initializationStatus  : statuses.initializationStatus
+        operatorStatus        : operatorStatus
+        operatingStatus       : statuses.operatingStatus
+        config                : config.top
+        coverConfig           : config
+      bottom:
+        initializationStatus  : statuses.initializationStatus
+        operatorStatus        : operatorStatus
+        operatingStatus       : statuses.operatingStatus
+        config                : config.bottom
+        coverConfig           : config
+      apertureProcedure:
+        top                   : parts.top
+        bottom                : parts.bottom
+        coverConfig           : config
+      operatingStatus:
+        superState            : statuses.initializationStatus.initialized
+      apertureStatus:
+        isOpen                : !AND [ parts.top.statuses.apertureStatus.open,   parts.bottom.statuses.apertureStatus.open ]
+        isClosed              : !AND [ parts.top.statuses.apertureStatus.closed, parts.bottom.statuses.apertureStatus.closed ]
+      healthStatus:
+        isGood                : !MTCS_SUMMARIZE_GOOD [ parts.top, parts.bottom, parts.apertureProcedure, parts.io ]
+        hasWarning            : !OR [  !MTCS_SUMMARIZE_WARN [ parts.top, parts.bottom, parts.apertureProcedure, parts.io ],
+                                       !AND [ statuses.busyStatus.idle, !NOT [ !OR [ statuses.apertureStatus.open, statuses.apertureStatus.closed ] ] ] ]
+      busyStatus:
+        isBusy                : !OR [ parts.top.statuses.busyStatus.busy,
+                                      parts.bottom.statuses.busyStatus.busy,
+                                      parts.apertureProcedure.statuses.busyStatus.busy ]
+      configManager:
+        isEnabled             : !AND [ operatorStatus.tech, statuses.initializationStatus.initialized ]
+
+
+  # ########################################################################################################################
+  # # CoverApertureProcedure
+  # ########################################################################################################################
+
+  !STATEMACHINE CoverApertureProcedure:
+    typeOf: [ CoverParts.apertureProcedure ]
+    variables_hidden:
+      state         : { type: CoverApertureProcedureStates  , comment: "New state, to be set by the manual implementation" , expand: false }
+    variables_read_only:
+      opening       : { type: t_bool                , comment: "Is the procedure busy with opening?" }
+      closing       : { type: t_bool                , comment: "Is the procedure busy with closing?" }
+      distance      : { type: mtcs_common.AngularPosition       , comment: "The closest distance between the top and bottom panels" , expand: false }
+    references:
+      top         : {}
+      bottom        : {}
+      coverConfig     : { type: CoverConfig, expand: false }
+    statuses:
+      busyStatus      : { type: mtcs_common.BusyStatus          , comment: "Is the CoverApertureProcedure in a busy state?" }
+      healthStatus    : { type: mtcs_common.HealthStatus        , comment: "Is the CoverApertureProcedure in a healthy state?" }
+    calls:
+      processStatus:
+        state       : state
+      busyStatus:
+        isBusy      : !NOT [ !OR [ !EQ [ state, CoverApertureProcedureStates.IDLE ],
+                        !EQ [ state, CoverApertureProcedureStates.ABORTED ],
+                        !EQ [ state, CoverApertureProcedureStates.ERROR   ] ] ]
+      healthStatus:
+        isGood      : !NOT [ !EQ [ state, CoverApertureProcedureStates.ERROR ] ]
+        hasWarning  : !EQ [ state, CoverApertureProcedureStates.ABORTED ]
+
+
+  ########################################################################################################################
+  # CoverPanelSetConfig
+  ########################################################################################################################
+
+  !CONFIG CoverPanelSetConfig:
+    typeOf: [ CoverParts.top.config, CoverParts.bottom.config, 
+              CoverConfig.top, CoverConfig.bottom ]
+    items:
+      p1        : { comment: "The config of the first panel of this set" }
+      p2        : { comment: "The config of the second panel of this set" }
+      p3        : { comment: "The config of the third panel of this set" }
+      p4        : { comment: "The config of the fourth panel of this set" }
+      name      : { type: t_string  , comment: "The name of the panel set" }
+
+
+  ########################################################################################################################
+  # CoverPanelSet
+  ########################################################################################################################
+
+  !STATEMACHINE CoverPanelSet:
+    typeOf            : [ CoverParts.top, CoverParts.bottom,
+                          CoverApertureProcedure.top, CoverApertureProcedure.bottom ]
+    references:
+      initializationStatus  : { type: mtcs_common.InitializationStatus }
+      operatorStatus        : { type: mtcs_common.OperatorStatus }
+      operatingStatus       : { type: mtcs_common.OperatingStatus }
+      config                : { type: CoverPanelSetConfig }
+      coverConfig           : { type: CoverConfig }
+    parts:
+      p1:
+        comment: "Panel 1"
+        arguments:
+          initializationStatus  : { type: mtcs_common.InitializationStatus  , expand: false }
+          operatorStatus        : { type: mtcs_common.OperatorStatus        , expand: false }
+          operatingStatus       : { type: mtcs_common.OperatingStatus       , expand: false }
+          config                : {}
+          coverConfig           : { type: CoverConfig           , expand: false  }
+        attributes:
+          statuses:
+            attributes:
+              apertureStatus    : { type: mtcs_common.ApertureStatus }
+              healthStatus      : { type: mtcs_common.HealthStatus }
+              busyStatus        : { type: mtcs_common.BusyStatus }
+      p2:
+        comment: "Panel 2"
+        arguments:
+          initializationStatus  : { type: mtcs_common.InitializationStatus  , expand: false }
+          operatorStatus        : { type: mtcs_common.OperatorStatus        , expand: false }
+          operatingStatus       : { type: mtcs_common.OperatingStatus       , expand: false }
+          config                : {}
+          coverConfig           : { type: CoverConfig           , expand: false }
+        attributes:
+          statuses:
+            attributes:
+              apertureStatus    : { type: mtcs_common.ApertureStatus }
+              healthStatus      : { type: mtcs_common.HealthStatus }
+              busyStatus        : { type: mtcs_common.BusyStatus }
+      p3:
+        comment: "Panel 3"
+        arguments:
+          initializationStatus  : { type: mtcs_common.InitializationStatus  , expand: false }
+          operatorStatus        : { type: mtcs_common.OperatorStatus        , expand: false }
+          operatingStatus       : { type: mtcs_common.OperatingStatus       , expand: false }
+          config                : {}
+          coverConfig           : { type: CoverConfig           , expand: false }
+        attributes:
+          statuses:
+            attributes:
+              apertureStatus    : { type: mtcs_common.ApertureStatus }
+              healthStatus      : { type: mtcs_common.HealthStatus }
+              busyStatus        : { type: mtcs_common.BusyStatus }
+      p4:
+        comment: "Panel 4"
+        arguments:
+          initializationStatus  : { type: mtcs_common.InitializationStatus  , expand: false }
+          operatorStatus        : { type: mtcs_common.OperatorStatus        , expand: false }
+          operatingStatus       : { type: mtcs_common.OperatingStatus       , expand: false }
+          config                : {}
+          coverConfig           : { type: CoverConfig           , expand: false }
+        attributes:
+          statuses:
+            attributes:
+              apertureStatus    : { type: mtcs_common.ApertureStatus }
+              healthStatus      : { type: mtcs_common.HealthStatus }
+              busyStatus        : { type: mtcs_common.BusyStatus }
+      magnetsRelay:
+        comment: "Relay for the magnets of this panelset"
+        type: mtcs_common.SimpleRelay
+    statuses:
+      apertureStatus    : { type: mtcs_common.ApertureStatus }
+      healthStatus      : { type: mtcs_common.HealthStatus }
+      busyStatus        : { type: mtcs_common.BusyStatus }
+    processes:
+      reset             : { type: mtcs_common.Process, comment: "Reset any errors" }
+    calls:
+      reset:
+        isEnabled       : initializationStatus.initialized
+      p1:
+        initializationStatus  : initializationStatus
+        operatorStatus        : operatorStatus
+        operatingStatus       : operatingStatus
+        config                : config.p1
+        coverConfig           : coverConfig
+      p2:
+        initializationStatus  : initializationStatus
+        operatorStatus        : operatorStatus
+        operatingStatus       : operatingStatus
+        config                : config.p2
+        coverConfig           : coverConfig
+      p3:
+        initializationStatus  : initializationStatus
+        operatorStatus        : operatorStatus
+        operatingStatus       : operatingStatus
+        config                : config.p3
+        coverConfig           : coverConfig
+      p4:
+        initializationStatus  : initializationStatus
+        operatorStatus        : operatorStatus
+        operatingStatus       : operatingStatus
+        config                : config.p4
+        coverConfig           : coverConfig
+      magnetsRelay:
+        isEnabled             : !AND [  initializationStatus.initialized, operatingStatus.manual ] # observers are allowed
+      apertureStatus:
+        isOpen        : !AND [ parts.p1.statuses.apertureStatus.open,
+                               parts.p2.statuses.apertureStatus.open,
+                               parts.p3.statuses.apertureStatus.open,
+                               parts.p4.statuses.apertureStatus.open ]
+        isClosed      : !AND [ parts.p1.statuses.apertureStatus.closed,
+                               parts.p2.statuses.apertureStatus.closed,
+                               parts.p3.statuses.apertureStatus.closed,
+                               parts.p4.statuses.apertureStatus.closed ]
+      healthStatus:
+        isGood        : !MTCS_SUMMARIZE_GOOD [ parts.p1, parts.p2, parts.p3, parts.p4 ]
+        hasWarning    : !MTCS_SUMMARIZE_WARN [ parts.p1, parts.p2, parts.p3, parts.p4 ]
+      busyStatus:
+        isBusy        : !OR [ parts.p1.statuses.busyStatus.busy,
+                              parts.p2.statuses.busyStatus.busy,
+                              parts.p3.statuses.busyStatus.busy,
+                              parts.p4.statuses.busyStatus.busy ]
+
+
+  ##########################################################################
+  # CoverPanelConfig
+  ##########################################################################
+
+  !CONFIG CoverPanelConfig:
+    typeOf: [ CoverPanelSetConfig.p1, CoverPanelSetConfig.p2, CoverPanelSetConfig.p3, CoverPanelSetConfig.p4 ]
+    items:
+      closedPosition:
+        type: t_double
+        comment: "The closed position of the panel in degrees"
+      openPosition:
+        type: t_double
+        comment: "The open position of the panel in degrees"
+      openTolerance:
+        type: t_double
+        comment: "The tolerance for opening, in degrees"
+      closedTolerance:
+        type: t_double
+        comment: "The tolerance for closing, in degrees"
+      standstillTolerance:
+        type: t_double
+        comment: "Tolerance in degrees per second: if smaller than ABS(this value), then the cover panel is considered to be standing still"
+      name:
+        type: t_string
+        comment: "The name of the panel"
+      offset:
+        type: t_double
+        comment: "The offset of the panel w.r.t. north"
+
+
+  ##########################################################################
+  # CoverPanel
+  ##########################################################################
+
+  !STATEMACHINE CoverPanel:
+    typeOf: [ CoverPanelSetParts.p1,
+              CoverPanelSetParts.p2,
+              CoverPanelSetParts.p3,
+              CoverPanelSetParts.p4,
+              CoverPanelSet.parts.p1,
+              CoverPanelSet.parts.p2,
+              CoverPanelSet.parts.p3,
+              CoverPanelSet.parts.p4 ]
+    references:
+      initializationStatus:
+          type: mtcs_common.InitializationStatus
+          comment: "INITIALIZED or INITIALIZING or ..."
+      operatorStatus:
+          type: mtcs_common.OperatorStatus
+          comment: "TECH or OBSERVER or ..."
+      operatingStatus:
+          type: mtcs_common.OperatingStatus
+          comment: "MANUAL or AUTO or NONE"
+      config:
+          type: CoverPanelConfig
+          comment: "Configuration of the panel"
+      coverConfig:
+          type: CoverConfig
+          comment: "Configuration of the cover"
+          expand: false
+    variables:
+      encoderErrorSignal:
+          type: t_bool
+          comment: 'Externally read error signal'
+          address: "%I*"
+    parts:
+      axis:
+          type: mtcs_common.AngularAxis
+          comment: "NC Axis"
+      motorRelay:
+          type: mtcs_common.SimpleRelay
+          comment: "Relay for the motor"
+    statuses:
+      busyStatus:
+          type: mtcs_common.BusyStatus
+          comment: "Is the panel in a busy state?"
+      apertureStatus:
+          type: mtcs_common.ApertureStatus
+          comment: "Is the panel open or closed?"
+      healthStatus:
+          type: mtcs_common.HealthStatus
+          comment: "Is the panel in a healthy state?"
+      openingStatus:
+          type: mtcs_common.OpeningStatus
+          comment: "Is the panel opening or closing or standing still?"
+    processes:
+      startOpening:
+          type: mtcs_common.Process
+          comment: "Start opening the panel"
+      startClosing:
+          type: mtcs_common.Process
+          comment: "Start closing the panel"
+    calls:
+      axis:
+        isEnabled: !AND [ operatorStatus.tech,
+                          operatingStatus.manual,
+                          initializationStatus.initialized ]
+        standstillTolerance : config.standstillTolerance
+      motorRelay:
+        isEnabled: parts.axis.isEnabled # same as for axis
+      busyStatus:
+        isBusy: !OR [ parts.axis.statuses.busyStatus.busy,
+                      parts.motorRelay.statuses.busyStatus.busy ]
+      healthStatus:
+        isGood: !AND [ parts.axis.statuses.healthStatus.isGood,
+                       !NOT [ encoderErrorSignal ] ]
+        hasWarning: parts.axis.statuses.healthStatus.hasWarning
+      apertureStatus:
+        isOpen        : !LT [ !ABS [ !SUB [ config.openPosition,   parts.axis.actPos.degrees.value ] ], config.openTolerance ]
+        isClosed      : !LT [ !ABS [ !SUB [ config.closedPosition, parts.axis.actPos.degrees.value ] ], config.closedTolerance ]
+      openingStatus:
+        isOpening     : parts.axis.statuses.motionStatus.backward
+        isClosing     : parts.axis.statuses.motionStatus.forward
+      startOpening:
+        isEnabled     : !AND [ operatorStatus.tech,
+                               operatingStatus.manual,
+                               initializationStatus.initialized ]
+      startClosing:
+        isEnabled     : !AND [ operatorStatus.tech,
+                               operatingStatus.manual,
+                               initializationStatus.initialized ]
+
+
+  ########################################################################################################################
+  # CoverIO
+  ########################################################################################################################
+
+  !STATEMACHINE CoverIO:
+    typeOf        : [ CoverParts.io ]
+    statuses:
+      healthStatus  : { type: mtcs_common.HealthStatus   , comment: "Is the I/O in a healthy state?"  }
+    parts:
+      coupler     : { type: mtcs_common.EtherCatDevice , comment: "Coupler" }
+      slot1       : { type: mtcs_common.EtherCatDevice , comment: "Slot 1" }
+      slot2       : { type: mtcs_common.EtherCatDevice , comment: "Slot 2" }
+      slot3       : { type: mtcs_common.EtherCatDevice , comment: "Slot 3" }
+      slot4       : { type: mtcs_common.EtherCatDevice , comment: "Slot 4" }
+      slot5       : { type: mtcs_common.EtherCatDevice , comment: "Slot 5" }
+      slot6       : { type: mtcs_common.EtherCatDevice , comment: "Slot 6" }
+      slot7       : { type: mtcs_common.EtherCatDevice , comment: "Slot 7" }
+      slot8       : { type: mtcs_common.EtherCatDevice , comment: "Slot 8" }
+      slot9       : { type: mtcs_common.EtherCatDevice , comment: "Slot 9" }
+      slot10      : { type: mtcs_common.EtherCatDevice , comment: "Slot 10" }
+      slot11      : { type: mtcs_common.EtherCatDevice , comment: "Slot 11" }
+      slot12      : { type: mtcs_common.EtherCatDevice , comment: "Slot 12" }
+      slot13      : { type: mtcs_common.EtherCatDevice , comment: "Slot 13" }
+    calls:
+      coupler:
+        id      : !STRING 110A1
+        typeId  : !STRING EK1101
+      slot1:
+        id      : !STRING 115A1
+        typeId  : !STRING EL2008
+      slot2:
+        id      : !STRING 116A1
+        typeId  : !STRING EL4008
+      slot3:
+        id      : !STRING 117A1
+        typeId  : !STRING EL1088
+      slot4:
+        id      : !STRING 118A1
+        typeId  : !STRING EL5002
+      slot5:
+        id      : !STRING 118A5
+        typeId  : !STRING EL5002
+      slot6:
+        id      : !STRING 119A1
+        typeId  : !STRING EL5002
+      slot7:
+        id      : !STRING 119A5
+        typeId  : !STRING EL5002
+      slot8:
+        id      : !STRING 111A1
+        typeId  : !STRING EL2622
+      slot9:
+        id      : !STRING 111A5
+        typeId  : !STRING EL2622
+      slot10:
+        id      : !STRING 112A1
+        typeId  : !STRING EL2622
+      slot11:
+        id      : !STRING 112A5
+        typeId  : !STRING EL2622
+      slot12:
+        id      : !STRING 113A1
+        typeId  : !STRING EL2622
+      slot13:
+        id      : !STRING 114A1
+        typeId  : !STRING EL3681
+      healthStatus:
+        isGood   : !MTCS_SUMMARIZE_GOOD [
+                            parts.coupler,
+                            parts.slot1,
+                            parts.slot2,
+                            parts.slot3,
+                            parts.slot4,
+                            parts.slot5,
+                            parts.slot6,
+                            parts.slot7,
+                            parts.slot8,
+                            parts.slot9,
+                            parts.slot10,
+                            parts.slot11,
+                            parts.slot12,
+                            parts.slot13 ]
+

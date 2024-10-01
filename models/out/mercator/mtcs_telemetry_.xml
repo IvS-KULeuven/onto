@@ -1,0 +1,3270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project xmlns="http://www.plcopen.org/xml/tc6_0200">
+  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2024-10-01T22:53:32.010142" />
+  <contentHeader name="mtcs_telemetry" modificationDateTime="2024-10-01T22:53:32.010142">
+    <coordinateInfo>
+      <fbd>
+        <scaling x="1" y="1" />
+      </fbd>
+      <ld>
+        <scaling x="1" y="1" />
+      </ld>
+      <sfc>
+        <scaling x="1" y="1" />
+      </sfc>
+    </coordinateInfo>
+    <addData>
+      <data name="http://www.3s-software.com/plcopenxml/projectinformation" handleUnknown="implementation">
+        <ProjectInformation />
+      </data>
+    </addData>
+  </contentHeader>
+  <types>
+    <dataTypes>
+      <dataType name="TelemetryParts">
+        <baseType>
+          <struct>
+            <variable name="temperatures">
+              <type><derived name="TelemetryTemperatures" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">All temperature measurements</xhtml>
+              </documentation>
+            </variable>
+            <variable name="relativeHumidities">
+              <type><derived name="TelemetryRelativeHumidities" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">All relative humidity measurements</xhtml>
+              </documentation>
+            </variable>
+            <variable name="dewpoints">
+              <type><derived name="TelemetryDewpoints" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">All calculated dewpoints</xhtml>
+              </documentation>
+            </variable>
+            <variable name="accelerometers">
+              <type><derived name="TelemetryAccelerometers" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Feedback from the accelerometers (vibrations + angles)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="io">
+              <type><derived name="TelemetryIO" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">I/O modules</xhtml>
+              </documentation>
+            </variable>
+            <variable name="flatfieldLeds">
+              <type><derived name="TelemetryFlatfieldLeds" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">I/O modules</xhtml>
+              </documentation>
+            </variable>
+            <variable name="configManager">
+              <type><derived name="ConfigManager" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The config manager (to load/save/activate configuration data)</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="TelemetryFlatfieldLedsParts">
+        <baseType>
+          <struct>
+            <variable name="output1">
+              <type><derived name="SimpleRelay" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Output 1</xhtml>
+              </documentation>
+            </variable>
+            <variable name="output2">
+              <type><derived name="SimpleRelay" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Output 2</xhtml>
+              </documentation>
+            </variable>
+            <variable name="output3">
+              <type><derived name="SimpleRelay" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Output 3</xhtml>
+              </documentation>
+            </variable>
+            <variable name="output4">
+              <type><derived name="SimpleRelay" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Output 4</xhtml>
+              </documentation>
+            </variable>
+            <variable name="output5">
+              <type><derived name="SimpleRelay" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Output 5</xhtml>
+              </documentation>
+            </variable>
+            <variable name="output6">
+              <type><derived name="SimpleRelay" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Output 6</xhtml>
+              </documentation>
+            </variable>
+            <variable name="output7">
+              <type><derived name="SimpleRelay" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Output 7</xhtml>
+              </documentation>
+            </variable>
+            <variable name="output8">
+              <type><derived name="SimpleRelay" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Output 8</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="TelemetryIOParts">
+        <baseType>
+          <struct>
+            <variable name="coupler">
+              <type><derived name="EtherCatDevice" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Coupler</xhtml>
+              </documentation>
+            </variable>
+            <variable name="slot5">
+              <type><derived name="EtherCatDevice" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Slot 5</xhtml>
+              </documentation>
+            </variable>
+            <variable name="slot6">
+              <type><derived name="EtherCatDevice" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Slot 6</xhtml>
+              </documentation>
+            </variable>
+            <variable name="slot7">
+              <type><derived name="EtherCatDevice" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Slot 7</xhtml>
+              </documentation>
+            </variable>
+            <variable name="slot8">
+              <type><derived name="EtherCatDevice" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Slot 8</xhtml>
+              </documentation>
+            </variable>
+            <variable name="slot9">
+              <type><derived name="EtherCatDevice" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Slot 9</xhtml>
+              </documentation>
+            </variable>
+            <variable name="slot10">
+              <type><derived name="EtherCatDevice" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Slot 10</xhtml>
+              </documentation>
+            </variable>
+            <variable name="slot11">
+              <type><derived name="EtherCatDevice" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Slot 11</xhtml>
+              </documentation>
+            </variable>
+            <variable name="slot12">
+              <type><derived name="EtherCatDevice" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Slot 12</xhtml>
+              </documentation>
+            </variable>
+            <variable name="slot13">
+              <type><derived name="EtherCatDevice" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Slot 13</xhtml>
+              </documentation>
+            </variable>
+            <variable name="tubeAccelerometers">
+              <type><derived name="EtherCatDevice" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Tube accelerometers</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="TelemetryProcesses">
+        <baseType>
+          <struct>
+            <variable name="initialize">
+              <type><derived name="Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Start initializing</xhtml>
+              </documentation>
+            </variable>
+            <variable name="lock">
+              <type><derived name="Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Lock the system</xhtml>
+              </documentation>
+            </variable>
+            <variable name="unlock">
+              <type><derived name="Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Unlock the system</xhtml>
+              </documentation>
+            </variable>
+            <variable name="changeOperatingState">
+              <type><derived name="ChangeOperatingStateProcess" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Change the operating state (e.g. AUTO, MANUAL, ...)</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="TelemetryTemperaturesStatuses">
+        <baseType>
+          <struct>
+            <variable name="healthStatus">
+              <type><derived name="HealthStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Are all temperatures in a healthy state?</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="TelemetryRelativeHumiditiesStatuses">
+        <baseType>
+          <struct>
+            <variable name="healthStatus">
+              <type><derived name="HealthStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Are all relative humidities in a healthy state?</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="TelemetryDewpointStatuses">
+        <baseType>
+          <struct>
+            <variable name="enabledStatus">
+              <type><derived name="EnabledStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Is the dewpoint being calculated?</xhtml>
+              </documentation>
+            </variable>
+            <variable name="healthStatus">
+              <type><derived name="HealthStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Is the depoint OK?</xhtml>
+              </documentation>
+            </variable>
+            <variable name="alarmStatus">
+              <type><derived name="HiHiLoLoAlarmStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Alarm status</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="TelemetryDewpointsStatuses">
+        <baseType>
+          <struct>
+            <variable name="healthStatus">
+              <type><derived name="HealthStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Are all dewpoints in a healthy state?</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="TelemetryAccelerometerStatuses">
+        <baseType>
+          <struct>
+            <variable name="xEnabledStatus">
+              <type><derived name="EnabledStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Is the X angle being measured?</xhtml>
+              </documentation>
+            </variable>
+            <variable name="yEnabledStatus">
+              <type><derived name="EnabledStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Is the Y angle being measured?</xhtml>
+              </documentation>
+            </variable>
+            <variable name="xHealthStatus">
+              <type><derived name="HealthStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Is the X angle measurement OK?</xhtml>
+              </documentation>
+            </variable>
+            <variable name="yHealthStatus">
+              <type><derived name="HealthStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Is the Y angle measurement OK?</xhtml>
+              </documentation>
+            </variable>
+            <variable name="xAlarmStatus">
+              <type><derived name="HiHiLoLoAlarmStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Alarm status of the X angle</xhtml>
+              </documentation>
+            </variable>
+            <variable name="yAlarmStatus">
+              <type><derived name="HiHiLoLoAlarmStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Alarm status of the Y angle</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="TelemetryAccelerometersStatuses">
+        <baseType>
+          <struct>
+            <variable name="healthStatus">
+              <type><derived name="HealthStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Are all accelerometers in a healthy state?</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="TelemetryStatuses">
+        <baseType>
+          <struct>
+            <variable name="initializationStatus">
+              <type><derived name="InitializationStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="healthStatus">
+              <type><derived name="HealthStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="busyStatus">
+              <type><derived name="BusyStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="operatingStatus">
+              <type><derived name="OperatingStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="TelemetryFlatfieldLedsStatuses">
+        <baseType>
+          <struct>
+            <variable name="busyStatus">
+              <type><derived name="BusyStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="TelemetryIOStatuses">
+        <baseType>
+          <struct>
+            <variable name="healthStatus">
+              <type><derived name="HealthStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Is the I/O in a healthy state?</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="TelemetryTemperaturesConfig">
+        <baseType>
+          <struct>
+            <variable name="m1">
+              <type><derived name="MeasurementConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Temperature of M1</xhtml>
+              </documentation>
+            </variable>
+            <variable name="mirrorCell">
+              <type><derived name="MeasurementConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Temperature of the mirror cell</xhtml>
+              </documentation>
+            </variable>
+            <variable name="m2">
+              <type><derived name="MeasurementConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Temperature of M2</xhtml>
+              </documentation>
+            </variable>
+            <variable name="m2Electronics">
+              <type><derived name="MeasurementConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Temperature of the M2 electricity</xhtml>
+              </documentation>
+            </variable>
+            <variable name="topTube">
+              <type><derived name="MeasurementConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Temperature of the top of the tube</xhtml>
+              </documentation>
+            </variable>
+            <variable name="centreTube">
+              <type><derived name="MeasurementConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Temperature of the centre of the tube</xhtml>
+              </documentation>
+            </variable>
+            <variable name="fork">
+              <type><derived name="MeasurementConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Temperature of the fork</xhtml>
+              </documentation>
+            </variable>
+            <variable name="nasmythAir">
+              <type><derived name="MeasurementConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Temperature of the air inside the Nasmyth focal station</xhtml>
+              </documentation>
+            </variable>
+            <variable name="rem">
+              <type><derived name="MeasurementConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Temperature inside the REM cabinet</xhtml>
+              </documentation>
+            </variable>
+            <variable name="rpm">
+              <type><derived name="MeasurementConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Temperature inside the RPM cabinet</xhtml>
+              </documentation>
+            </variable>
+            <variable name="hermesTelescopeAdapter">
+              <type><derived name="MeasurementConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Temperature inside the HERMES telescope adapter</xhtml>
+              </documentation>
+            </variable>
+            <variable name="topAir">
+              <type><derived name="MeasurementConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Temperature of the air at the top of the tube</xhtml>
+              </documentation>
+            </variable>
+            <variable name="insideTube">
+              <type><derived name="MeasurementConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Temperature of the air inside the tube</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="TelemetryRelativeHumiditiesConfig">
+        <baseType>
+          <struct>
+            <variable name="topAir">
+              <type><derived name="MeasurementConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Relative humidity of the air at the top of the tube</xhtml>
+              </documentation>
+            </variable>
+            <variable name="insideTube">
+              <type><derived name="MeasurementConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Relative humidity of the air inside the tube</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="TelemetryDewpointsConfig">
+        <baseType>
+          <struct>
+            <variable name="topAir">
+              <type><derived name="MeasurementConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Dewpoint of the air at the top of the tube</xhtml>
+              </documentation>
+            </variable>
+            <variable name="insideTube">
+              <type><derived name="MeasurementConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Dewpoint of the air inside the tube</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="TelemetryAccelerometerConfig">
+        <baseType>
+          <struct>
+            <variable name="x">
+              <type><derived name="MeasurementConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">X angle</xhtml>
+              </documentation>
+            </variable>
+            <variable name="y">
+              <type><derived name="MeasurementConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">X angle</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="TelemetryAccelerometersConfig">
+        <baseType>
+          <struct>
+            <variable name="tube">
+              <type><derived name="TelemetryAccelerometerConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Accelerometer box at the tube</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="TelemetryConfig">
+        <baseType>
+          <struct>
+            <variable name="temperatures">
+              <type><derived name="TelemetryTemperaturesConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">All temperatures</xhtml>
+              </documentation>
+            </variable>
+            <variable name="relativeHumidities">
+              <type><derived name="TelemetryRelativeHumiditiesConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">All relative humidities</xhtml>
+              </documentation>
+            </variable>
+            <variable name="dewpoints">
+              <type><derived name="TelemetryDewpointsConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">All dewpoints</xhtml>
+              </documentation>
+            </variable>
+            <variable name="accelerometers">
+              <type><derived name="TelemetryAccelerometersConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">All accelerometers</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+    </dataTypes>
+    <pous>
+      <pou name="SM_TelemetryTemperatures" pouType="functionBlock">
+        <interface>
+          <inputVars>
+          </inputVars>
+          <outputVars>
+            <variable name="actualStatus">
+              <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Current status description</xhtml>
+              </documentation>
+            </variable>
+            <variable name="previousStatus">
+              <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Previous status description</xhtml>
+              </documentation>
+            </variable>
+            <variable name="m1">
+              <type><derived name="TemperatureMeasurement" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Temperature of M1</xhtml>
+              </documentation>
+            </variable>
+            <variable name="mirrorCell">
+              <type><derived name="TemperatureMeasurement" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Temperature of the mirror cell</xhtml>
+              </documentation>
+            </variable>
+            <variable name="m2">
+              <type><derived name="TemperatureMeasurement" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Temperature of M2</xhtml>
+              </documentation>
+            </variable>
+            <variable name="m2Electronics">
+              <type><derived name="TemperatureMeasurement" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Temperature of the M2 electricity</xhtml>
+              </documentation>
+            </variable>
+            <variable name="topTube">
+              <type><derived name="TemperatureMeasurement" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Temperature of the top of the tube</xhtml>
+              </documentation>
+            </variable>
+            <variable name="centreTube">
+              <type><derived name="TemperatureMeasurement" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Temperature of the centre of the tube</xhtml>
+              </documentation>
+            </variable>
+            <variable name="fork">
+              <type><derived name="TemperatureMeasurement" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Temperature of the fork</xhtml>
+              </documentation>
+            </variable>
+            <variable name="nasmythAir">
+              <type><derived name="TemperatureMeasurement" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Temperature of the air inside the Nasmyth focal station</xhtml>
+              </documentation>
+            </variable>
+            <variable name="rem">
+              <type><derived name="TemperatureMeasurement" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Temperature inside the REM cabinet</xhtml>
+              </documentation>
+            </variable>
+            <variable name="rpm">
+              <type><derived name="TemperatureMeasurement" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Temperature inside the RPM cabinet</xhtml>
+              </documentation>
+            </variable>
+            <variable name="hermesTelescopeAdapter">
+              <type><derived name="TemperatureMeasurement" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Temperature inside the HERMES telescope adapter</xhtml>
+              </documentation>
+            </variable>
+            <variable name="topAir">
+              <type><derived name="TemperatureMeasurement" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Temperature of the air at the top of the tube</xhtml>
+              </documentation>
+            </variable>
+            <variable name="insideTube">
+              <type><derived name="TemperatureMeasurement" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Temperature of the air inside the tube</xhtml>
+              </documentation>
+            </variable>
+            <variable name="statuses">
+              <type><derived name="TelemetryTemperaturesStatuses" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Statuses of the state machine</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <inOutVars>
+            <variable name="config">
+              <type><derived name="TelemetryTemperaturesConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Configuration of the temperatures</xhtml>
+              </documentation>
+            </variable>
+          </inOutVars>
+          <localVars>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">m1( config := config.m1 );
+mirrorCell( config := config.mirrorCell );
+m2( config := config.m2 );
+m2Electronics( config := config.m2Electronics );
+topTube( config := config.topTube );
+centreTube( config := config.centreTube );
+fork( config := config.fork );
+nasmythAir( config := config.nasmythAir );
+rem( config := config.rem );
+rpm( config := config.rpm );
+hermesTelescopeAdapter( config := config.hermesTelescopeAdapter );
+topAir( config := config.topAir );
+insideTube( config := config.insideTube );
+statuses.healthStatus(
+    isGood := (m1.statuses.healthStatus.isGood OR m1.statuses.enabledStatus.disabled) AND ((mirrorCell.statuses.healthStatus.isGood OR mirrorCell.statuses.enabledStatus.disabled) AND ((m2.statuses.healthStatus.isGood OR m2.statuses.enabledStatus.disabled) AND ((m2Electronics.statuses.healthStatus.isGood OR m2Electronics.statuses.enabledStatus.disabled) AND ((topTube.statuses.healthStatus.isGood OR topTube.statuses.enabledStatus.disabled) AND ((centreTube.statuses.healthStatus.isGood OR centreTube.statuses.enabledStatus.disabled) AND ((fork.statuses.healthStatus.isGood OR fork.statuses.enabledStatus.disabled) AND ((nasmythAir.statuses.healthStatus.isGood OR nasmythAir.statuses.enabledStatus.disabled) AND ((rem.statuses.healthStatus.isGood OR rem.statuses.enabledStatus.disabled) AND ((rpm.statuses.healthStatus.isGood OR rpm.statuses.enabledStatus.disabled) AND ((hermesTelescopeAdapter.statuses.healthStatus.isGood OR hermesTelescopeAdapter.statuses.enabledStatus.disabled) AND ((topAir.statuses.healthStatus.isGood OR topAir.statuses.enabledStatus.disabled) AND (insideTube.statuses.healthStatus.isGood OR insideTube.statuses.enabledStatus.disabled)))))))))))),
+    hasWarning := m1.statuses.healthStatus.hasWarning OR (mirrorCell.statuses.healthStatus.hasWarning OR (m2.statuses.healthStatus.hasWarning OR (m2Electronics.statuses.healthStatus.hasWarning OR (topTube.statuses.healthStatus.hasWarning OR (centreTube.statuses.healthStatus.hasWarning OR (fork.statuses.healthStatus.hasWarning OR (nasmythAir.statuses.healthStatus.hasWarning OR (rem.statuses.healthStatus.hasWarning OR (rpm.statuses.healthStatus.hasWarning OR (hermesTelescopeAdapter.statuses.healthStatus.hasWarning OR (topAir.statuses.healthStatus.hasWarning OR insideTube.statuses.healthStatus.hasWarning))))))))))));
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_log">
+              <interface>
+                <returnType><BOOL /></returnType>
+                <inputVars>
+                  <variable name="name">
+                    <type><string /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="buffer">
+                    <type><derived name="LogBuffer" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                  <variable name="subBuffer">
+                    <type><derived name="LogBuffer" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
+                    </documentation>
+                  </variable>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
+    name := name,
+    actualStatus := THIS^.actualStatus,
+    previousStatus := THIS^.previousStatus,
+    buffer := buffer,
+    subBuffer := subBuffer,
+    pHealthStatus := ADR(THIS^.statuses.healthStatus));
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+        </addData>
+      </pou>
+      <pou name="SM_TelemetryRelativeHumidities" pouType="functionBlock">
+        <interface>
+          <inputVars>
+          </inputVars>
+          <outputVars>
+            <variable name="actualStatus">
+              <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Current status description</xhtml>
+              </documentation>
+            </variable>
+            <variable name="previousStatus">
+              <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Previous status description</xhtml>
+              </documentation>
+            </variable>
+            <variable name="topAir">
+              <type><derived name="RelativeHumidityMeasurement" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Relative humidity of the air at the top of the tube</xhtml>
+              </documentation>
+            </variable>
+            <variable name="insideTube">
+              <type><derived name="RelativeHumidityMeasurement" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Relative humidity of the air inside the tube</xhtml>
+              </documentation>
+            </variable>
+            <variable name="statuses">
+              <type><derived name="TelemetryRelativeHumiditiesStatuses" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Statuses of the state machine</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <inOutVars>
+            <variable name="config">
+              <type><derived name="TelemetryRelativeHumiditiesConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Configuration of the relative humidities</xhtml>
+              </documentation>
+            </variable>
+          </inOutVars>
+          <localVars>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">topAir( config := config.topAir );
+insideTube( config := config.insideTube );
+statuses.healthStatus(
+    isGood := (topAir.statuses.healthStatus.isGood OR topAir.statuses.enabledStatus.disabled) AND (insideTube.statuses.healthStatus.isGood OR insideTube.statuses.enabledStatus.disabled),
+    hasWarning := topAir.statuses.healthStatus.hasWarning OR insideTube.statuses.healthStatus.hasWarning);
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_log">
+              <interface>
+                <returnType><BOOL /></returnType>
+                <inputVars>
+                  <variable name="name">
+                    <type><string /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="buffer">
+                    <type><derived name="LogBuffer" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                  <variable name="subBuffer">
+                    <type><derived name="LogBuffer" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
+                    </documentation>
+                  </variable>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
+    name := name,
+    actualStatus := THIS^.actualStatus,
+    previousStatus := THIS^.previousStatus,
+    buffer := buffer,
+    subBuffer := subBuffer,
+    pHealthStatus := ADR(THIS^.statuses.healthStatus));
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+        </addData>
+      </pou>
+      <pou name="SM_TelemetryDewpoint" pouType="functionBlock">
+        <interface>
+          <inputVars>
+          </inputVars>
+          <outputVars>
+            <variable name="actualStatus">
+              <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Current status description</xhtml>
+              </documentation>
+            </variable>
+            <variable name="previousStatus">
+              <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Previous status description</xhtml>
+              </documentation>
+            </variable>
+            <variable name="actual">
+              <type><derived name="Temperature" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Actual dewpoint temperature</xhtml>
+              </documentation>
+            </variable>
+            <variable name="average">
+              <type><derived name="Temperature" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Average dewpoint temperature</xhtml>
+              </documentation>
+            </variable>
+            <variable name="statuses">
+              <type><derived name="TelemetryDewpointStatuses" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Statuses of the state machine</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <inOutVars>
+            <variable name="config">
+              <type><derived name="MeasurementConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Configuration</xhtml>
+              </documentation>
+            </variable>
+            <variable name="temperature">
+              <type><derived name="TemperatureMeasurement" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Temperature to be taken into account</xhtml>
+              </documentation>
+            </variable>
+            <variable name="relativeHumidity">
+              <type><derived name="RelativeHumidityMeasurement" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Relative humidity to be taken into account</xhtml>
+              </documentation>
+            </variable>
+          </inOutVars>
+          <localVars>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">statuses.enabledStatus( isEnabled := config.enabled );
+statuses.healthStatus(
+    superState := statuses.enabledStatus.enabled,
+    isGood := NOT(temperature.error OR (relativeHumidity.statuses.healthStatus.bad OR (statuses.alarmStatus.hiHi OR statuses.alarmStatus.loLo))),
+    hasWarning := statuses.alarmStatus.hi OR statuses.alarmStatus.lo);
+statuses.alarmStatus(
+    superState := statuses.enabledStatus.enabled,
+    config := config.alarms,
+    value := average.celsius.value);
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_log">
+              <interface>
+                <returnType><BOOL /></returnType>
+                <inputVars>
+                  <variable name="name">
+                    <type><string /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="buffer">
+                    <type><derived name="LogBuffer" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                  <variable name="subBuffer">
+                    <type><derived name="LogBuffer" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
+                    </documentation>
+                  </variable>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
+    name := name,
+    actualStatus := THIS^.actualStatus,
+    previousStatus := THIS^.previousStatus,
+    buffer := buffer,
+    subBuffer := subBuffer,
+    pHealthStatus := ADR(THIS^.statuses.healthStatus));
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+        </addData>
+      </pou>
+      <pou name="SM_TelemetryDewpoints" pouType="functionBlock">
+        <interface>
+          <inputVars>
+          </inputVars>
+          <outputVars>
+            <variable name="actualStatus">
+              <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Current status description</xhtml>
+              </documentation>
+            </variable>
+            <variable name="previousStatus">
+              <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Previous status description</xhtml>
+              </documentation>
+            </variable>
+            <variable name="topAir">
+              <type><derived name="TelemetryDewpoint" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Dewpoint of the air at the top of the tube</xhtml>
+              </documentation>
+            </variable>
+            <variable name="insideTube">
+              <type><derived name="TelemetryDewpoint" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Dewpoint of the air inside the tube</xhtml>
+              </documentation>
+            </variable>
+            <variable name="statuses">
+              <type><derived name="TelemetryDewpointsStatuses" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Statuses of the state machine</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <inOutVars>
+            <variable name="config">
+              <type><derived name="TelemetryDewpointsConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Configuration of the dewpoints</xhtml>
+              </documentation>
+            </variable>
+            <variable name="temperatures">
+              <type><derived name="TelemetryTemperatures" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Measured temperatures</xhtml>
+              </documentation>
+            </variable>
+            <variable name="relativeHumidities">
+              <type><derived name="TelemetryRelativeHumidities" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Measured relative humidities</xhtml>
+              </documentation>
+            </variable>
+          </inOutVars>
+          <localVars>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">topAir(
+    config := config.topAir,
+    temperature := temperatures.topAir,
+    relativeHumidity := relativeHumidities.topAir);
+insideTube(
+    config := config.insideTube,
+    temperature := temperatures.insideTube,
+    relativeHumidity := relativeHumidities.insideTube);
+statuses.healthStatus(
+    isGood := (topAir.statuses.healthStatus.isGood OR topAir.statuses.enabledStatus.disabled) AND (insideTube.statuses.healthStatus.isGood OR insideTube.statuses.enabledStatus.disabled),
+    hasWarning := topAir.statuses.healthStatus.hasWarning OR insideTube.statuses.healthStatus.hasWarning);
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_log">
+              <interface>
+                <returnType><BOOL /></returnType>
+                <inputVars>
+                  <variable name="name">
+                    <type><string /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="buffer">
+                    <type><derived name="LogBuffer" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                  <variable name="subBuffer">
+                    <type><derived name="LogBuffer" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
+                    </documentation>
+                  </variable>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
+    name := name,
+    actualStatus := THIS^.actualStatus,
+    previousStatus := THIS^.previousStatus,
+    buffer := buffer,
+    subBuffer := subBuffer,
+    pHealthStatus := ADR(THIS^.statuses.healthStatus));
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+        </addData>
+      </pou>
+      <pou name="SM_TelemetryAccelerometer" pouType="functionBlock">
+        <interface>
+          <inputVars>
+          </inputVars>
+          <outputVars>
+            <variable name="actualStatus">
+              <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Current status description</xhtml>
+              </documentation>
+            </variable>
+            <variable name="previousStatus">
+              <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Previous status description</xhtml>
+              </documentation>
+            </variable>
+            <variable name="X1plus">
+              <type><derived name="GForceMeasurement" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">+X1 (channel 1 of EP1816-3008)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="Y1plus">
+              <type><derived name="GForceMeasurement" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">+Y1 (channel 2 of EP1816-3008)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="Z1minus">
+              <type><derived name="GForceMeasurement" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">-Z1 (channel 3 of EP1816-3008)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="Y2plus">
+              <type><derived name="GForceMeasurement" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">+Y2 (channel 4 of EP1816-3008)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="X2minus">
+              <type><derived name="GForceMeasurement" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">-X2 (channel 5 of EP1816-3008)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="Z2minus">
+              <type><derived name="GForceMeasurement" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">-Z2 (channel 6 of EP1816-3008)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="actualXAngle">
+              <type><derived name="AngularPosition" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Actual X angle</xhtml>
+              </documentation>
+            </variable>
+            <variable name="actualYAngle">
+              <type><derived name="AngularPosition" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Actual Y angle</xhtml>
+              </documentation>
+            </variable>
+            <variable name="averageXAngle">
+              <type><derived name="AngularPosition" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Average X angle</xhtml>
+              </documentation>
+            </variable>
+            <variable name="averageYAngle">
+              <type><derived name="AngularPosition" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Average Y angle</xhtml>
+              </documentation>
+            </variable>
+            <variable name="statuses">
+              <type><derived name="TelemetryAccelerometerStatuses" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Statuses of the state machine</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <inOutVars>
+            <variable name="xConfig">
+              <type><derived name="MeasurementConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Reference to the config of the X angle (alarms in degrees)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="yConfig">
+              <type><derived name="MeasurementConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Reference to the config of the Y angle (alarms in degrees)</xhtml>
+              </documentation>
+            </variable>
+          </inOutVars>
+          <localVars>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">statuses.xEnabledStatus( isEnabled := xConfig.enabled );
+statuses.yEnabledStatus( isEnabled := yConfig.enabled );
+statuses.xHealthStatus(
+    superState := statuses.xEnabledStatus.enabled,
+    isGood := NOT(statuses.xAlarmStatus.hiHi OR statuses.xAlarmStatus.loLo),
+    hasWarning := statuses.xAlarmStatus.hi OR statuses.xAlarmStatus.lo);
+statuses.yHealthStatus(
+    superState := statuses.yEnabledStatus.enabled,
+    isGood := NOT(statuses.yAlarmStatus.hiHi OR statuses.yAlarmStatus.loLo),
+    hasWarning := statuses.yAlarmStatus.hi OR statuses.yAlarmStatus.lo);
+statuses.xAlarmStatus(
+    superState := statuses.xEnabledStatus.enabled,
+    config := xConfig.alarms,
+    value := averageXAngle.degrees.value);
+statuses.yAlarmStatus(
+    superState := statuses.yEnabledStatus.enabled,
+    config := yConfig.alarms,
+    value := averageYAngle.degrees.value);
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_log">
+              <interface>
+                <returnType><BOOL /></returnType>
+                <inputVars>
+                  <variable name="name">
+                    <type><string /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="buffer">
+                    <type><derived name="LogBuffer" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                  <variable name="subBuffer">
+                    <type><derived name="LogBuffer" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
+                    </documentation>
+                  </variable>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
+    name := name,
+    actualStatus := THIS^.actualStatus,
+    previousStatus := THIS^.previousStatus,
+    buffer := buffer,
+    subBuffer := subBuffer);
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+        </addData>
+      </pou>
+      <pou name="SM_TelemetryAccelerometers" pouType="functionBlock">
+        <interface>
+          <inputVars>
+          </inputVars>
+          <outputVars>
+            <variable name="actualStatus">
+              <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Current status description</xhtml>
+              </documentation>
+            </variable>
+            <variable name="previousStatus">
+              <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Previous status description</xhtml>
+              </documentation>
+            </variable>
+            <variable name="tube">
+              <type><derived name="TelemetryAccelerometer" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Accelerometer box at the tube</xhtml>
+              </documentation>
+            </variable>
+            <variable name="statuses">
+              <type><derived name="TelemetryAccelerometersStatuses" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Statuses of the state machine</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <inOutVars>
+            <variable name="config">
+              <type><derived name="TelemetryAccelerometersConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Configuration of the accelerometers</xhtml>
+              </documentation>
+            </variable>
+          </inOutVars>
+          <localVars>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">tube(
+    xConfig := config.tube.x,
+    yConfig := config.tube.y);
+statuses.healthStatus(
+    isGood := tube.statuses.xHealthStatus.isGood AND tube.statuses.yHealthStatus.isGood,
+    hasWarning := tube.statuses.xHealthStatus.hasWarning OR tube.statuses.yHealthStatus.hasWarning);
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_log">
+              <interface>
+                <returnType><BOOL /></returnType>
+                <inputVars>
+                  <variable name="name">
+                    <type><string /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="buffer">
+                    <type><derived name="LogBuffer" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                  <variable name="subBuffer">
+                    <type><derived name="LogBuffer" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
+                    </documentation>
+                  </variable>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
+    name := name,
+    actualStatus := THIS^.actualStatus,
+    previousStatus := THIS^.previousStatus,
+    buffer := buffer,
+    subBuffer := subBuffer,
+    pHealthStatus := ADR(THIS^.statuses.healthStatus));
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+        </addData>
+      </pou>
+      <pou name="SM_Telemetry" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="editableConfig">
+              <type><derived name="TelemetryConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Editable configuration of the Telemetry subsystem</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="actualStatus">
+              <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Current status description</xhtml>
+              </documentation>
+            </variable>
+            <variable name="previousStatus">
+              <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Previous status description</xhtml>
+              </documentation>
+            </variable>
+            <variable name="config">
+              <type><derived name="TelemetryConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Active configuration of the Telemetry subsystem</xhtml>
+              </documentation>
+            </variable>
+            <variable name="statuses">
+              <type><derived name="TelemetryStatuses" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Statuses of the state machine</xhtml>
+              </documentation>
+            </variable>
+            <variable name="parts">
+              <type><derived name="TelemetryParts" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Parts of the state machine</xhtml>
+              </documentation>
+            </variable>
+            <variable name="processes">
+              <type><derived name="TelemetryProcesses" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Processes of the state machine</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <inOutVars>
+            <variable name="operatorStatus">
+              <type><derived name="OperatorStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Shared operator status</xhtml>
+              </documentation>
+            </variable>
+          </inOutVars>
+          <localVars>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">parts.temperatures( config := config.temperatures );
+parts.relativeHumidities( config := config.relativeHumidities );
+parts.dewpoints(
+    config := config.dewpoints,
+    temperatures := parts.temperatures,
+    relativeHumidities := parts.relativeHumidities);
+parts.accelerometers( config := config.accelerometers );
+parts.io();
+parts.flatfieldLeds( isEnabled := statuses.initializationStatus.initialized AND statuses.operatingStatus.manual );
+parts.configManager( isEnabled := operatorStatus.tech );
+statuses.initializationStatus();
+statuses.healthStatus(
+    isGood := parts.temperatures.statuses.healthStatus.isGood AND (parts.relativeHumidities.statuses.healthStatus.isGood AND (parts.dewpoints.statuses.healthStatus.isGood AND (parts.accelerometers.statuses.healthStatus.isGood AND (parts.io.statuses.healthStatus.isGood AND parts.configManager.statuses.healthStatus.isGood)))),
+    hasWarning := parts.temperatures.statuses.healthStatus.hasWarning OR (parts.relativeHumidities.statuses.healthStatus.hasWarning OR (parts.dewpoints.statuses.healthStatus.hasWarning OR (parts.accelerometers.statuses.healthStatus.hasWarning OR (parts.io.statuses.healthStatus.hasWarning OR parts.configManager.statuses.healthStatus.hasWarning)))));
+statuses.busyStatus( isBusy := statuses.initializationStatus.initializing OR (parts.flatfieldLeds.statuses.busyStatus.busy OR parts.configManager.statuses.busyStatus.busy) );
+statuses.operatingStatus( superState := statuses.initializationStatus.initialized );
+processes.initialize( isEnabled := statuses.initializationStatus.shutdown OR (statuses.initializationStatus.initializingFailed OR statuses.initializationStatus.initialized) );
+processes.lock( isEnabled := operatorStatus.tech AND statuses.initializationStatus.initialized );
+processes.unlock( isEnabled := operatorStatus.tech AND statuses.initializationStatus.locked );
+processes.changeOperatingState( isEnabled := statuses.busyStatus.idle AND statuses.initializationStatus.initialized );
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="initialize">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">initialize := THIS^.processes.initialize.request();
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="lock">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">lock := THIS^.processes.lock.request();
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="unlock">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">unlock := THIS^.processes.unlock.request();
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="changeOperatingState">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                  <variable name="state">
+                    <type><derived name="OperatingStates" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">changeOperatingState := THIS^.processes.changeOperatingState.request( state := state );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_log">
+              <interface>
+                <returnType><BOOL /></returnType>
+                <inputVars>
+                  <variable name="name">
+                    <type><string /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="buffer">
+                    <type><derived name="LogBuffer" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                  <variable name="subBuffer">
+                    <type><derived name="LogBuffer" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
+                    </documentation>
+                  </variable>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.parts.temperatures._log(
+    name := &#39;temperatures&#39;,
+    buffer := subBuffer);
+THIS^.parts.relativeHumidities._log(
+    name := &#39;relativeHumidities&#39;,
+    buffer := subBuffer);
+THIS^.parts.dewpoints._log(
+    name := &#39;dewpoints&#39;,
+    buffer := subBuffer);
+THIS^.parts.accelerometers._log(
+    name := &#39;accelerometers&#39;,
+    buffer := subBuffer);
+THIS^.parts.io._log(
+    name := &#39;io&#39;,
+    buffer := subBuffer);
+THIS^.parts.flatfieldLeds._log(
+    name := &#39;flatfieldLeds&#39;,
+    buffer := subBuffer);
+THIS^.parts.configManager._log(
+    name := &#39;configManager&#39;,
+    buffer := subBuffer);
+THIS^.processes.initialize._log(
+    name := &#39;processes.initialize&#39;,
+    buffer := subBuffer);
+THIS^.processes.lock._log(
+    name := &#39;processes.lock&#39;,
+    buffer := subBuffer);
+THIS^.processes.unlock._log(
+    name := &#39;processes.unlock&#39;,
+    buffer := subBuffer);
+THIS^.processes.changeOperatingState._log(
+    name := &#39;processes.changeOperatingState&#39;,
+    buffer := subBuffer);
+LOGGER(
+    name := name,
+    actualStatus := THIS^.actualStatus,
+    previousStatus := THIS^.previousStatus,
+    buffer := buffer,
+    subBuffer := subBuffer,
+    pHealthStatus := ADR(THIS^.statuses.healthStatus),
+    pBusyStatus := ADR(THIS^.statuses.busyStatus));
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+        </addData>
+      </pou>
+      <pou name="SM_TelemetryFlatfieldLeds" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="isEnabled">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Is control enabled?</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="actualStatus">
+              <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Current status description</xhtml>
+              </documentation>
+            </variable>
+            <variable name="previousStatus">
+              <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Previous status description</xhtml>
+              </documentation>
+            </variable>
+            <variable name="statuses">
+              <type><derived name="TelemetryFlatfieldLedsStatuses" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Statuses of the state machine</xhtml>
+              </documentation>
+            </variable>
+            <variable name="parts">
+              <type><derived name="TelemetryFlatfieldLedsParts" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Parts of the state machine</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <inOutVars>
+          </inOutVars>
+          <localVars>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">parts.output1( isEnabled := isEnabled );
+parts.output2( isEnabled := isEnabled );
+parts.output3( isEnabled := isEnabled );
+parts.output4( isEnabled := isEnabled );
+parts.output5( isEnabled := isEnabled );
+parts.output6( isEnabled := isEnabled );
+parts.output7( isEnabled := isEnabled );
+parts.output8( isEnabled := isEnabled );
+statuses.busyStatus( isBusy := parts.output1.statuses.busyStatus.busy OR (parts.output2.statuses.busyStatus.busy OR (parts.output3.statuses.busyStatus.busy OR (parts.output4.statuses.busyStatus.busy OR (parts.output5.statuses.busyStatus.busy OR (parts.output6.statuses.busyStatus.busy OR (parts.output7.statuses.busyStatus.busy OR parts.output8.statuses.busyStatus.busy)))))) );
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_log">
+              <interface>
+                <returnType><BOOL /></returnType>
+                <inputVars>
+                  <variable name="name">
+                    <type><string /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="buffer">
+                    <type><derived name="LogBuffer" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                  <variable name="subBuffer">
+                    <type><derived name="LogBuffer" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
+                    </documentation>
+                  </variable>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.parts.output1._log(
+    name := &#39;output1&#39;,
+    buffer := subBuffer);
+THIS^.parts.output2._log(
+    name := &#39;output2&#39;,
+    buffer := subBuffer);
+THIS^.parts.output3._log(
+    name := &#39;output3&#39;,
+    buffer := subBuffer);
+THIS^.parts.output4._log(
+    name := &#39;output4&#39;,
+    buffer := subBuffer);
+THIS^.parts.output5._log(
+    name := &#39;output5&#39;,
+    buffer := subBuffer);
+THIS^.parts.output6._log(
+    name := &#39;output6&#39;,
+    buffer := subBuffer);
+THIS^.parts.output7._log(
+    name := &#39;output7&#39;,
+    buffer := subBuffer);
+THIS^.parts.output8._log(
+    name := &#39;output8&#39;,
+    buffer := subBuffer);
+LOGGER(
+    name := name,
+    actualStatus := THIS^.actualStatus,
+    previousStatus := THIS^.previousStatus,
+    buffer := buffer,
+    subBuffer := subBuffer,
+    pBusyStatus := ADR(THIS^.statuses.busyStatus));
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+        </addData>
+      </pou>
+      <pou name="SM_TelemetryIO" pouType="functionBlock">
+        <interface>
+          <inputVars>
+          </inputVars>
+          <outputVars>
+            <variable name="actualStatus">
+              <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Current status description</xhtml>
+              </documentation>
+            </variable>
+            <variable name="previousStatus">
+              <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Previous status description</xhtml>
+              </documentation>
+            </variable>
+            <variable name="statuses">
+              <type><derived name="TelemetryIOStatuses" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Statuses of the state machine</xhtml>
+              </documentation>
+            </variable>
+            <variable name="parts">
+              <type><derived name="TelemetryIOParts" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Parts of the state machine</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <inOutVars>
+          </inOutVars>
+          <localVars>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">parts.coupler(
+    id := &#39;COUPLER&#39;,
+    typeId := &#39;EK1100&#39;);
+parts.slot5(
+    id := &#39;113A1&#39;,
+    typeId := &#39;EL3202-0010&#39;);
+parts.slot6(
+    id := &#39;114A1&#39;,
+    typeId := &#39;EL3202-0010&#39;);
+parts.slot7(
+    id := &#39;115A1&#39;,
+    typeId := &#39;EL3202-0010&#39;);
+parts.slot8(
+    id := &#39;116A1&#39;,
+    typeId := &#39;EL3202-0010&#39;);
+parts.slot9(
+    id := &#39;117A1&#39;,
+    typeId := &#39;EL3202-0010&#39;);
+parts.slot10(
+    id := &#39;118A1&#39;,
+    typeId := &#39;EL3202-0010&#39;);
+parts.slot11(
+    id := &#39;119A1&#39;,
+    typeId := &#39;EL3202-0010&#39;);
+parts.slot12(
+    id := &#39;120A1&#39;,
+    typeId := &#39;EL3024&#39;);
+parts.slot13(
+    id := &#39;121A1&#39;,
+    typeId := &#39;EL2008&#39;);
+parts.tubeAccelerometers(
+    id := &#39;ACCTUB&#39;,
+    typeId := &#39;EP1816-3008&#39;);
+statuses.healthStatus( isGood := parts.coupler.statuses.healthStatus.isGood AND (parts.slot5.statuses.healthStatus.isGood AND (parts.slot6.statuses.healthStatus.isGood AND (parts.slot7.statuses.healthStatus.isGood AND (parts.slot8.statuses.healthStatus.isGood AND (parts.slot9.statuses.healthStatus.isGood AND (parts.slot10.statuses.healthStatus.isGood AND (parts.slot11.statuses.healthStatus.isGood AND (parts.slot12.statuses.healthStatus.isGood AND (parts.slot13.statuses.healthStatus.isGood AND parts.tubeAccelerometers.statuses.healthStatus.isGood))))))))) );
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_log">
+              <interface>
+                <returnType><BOOL /></returnType>
+                <inputVars>
+                  <variable name="name">
+                    <type><string /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="buffer">
+                    <type><derived name="LogBuffer" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                  <variable name="subBuffer">
+                    <type><derived name="LogBuffer" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
+                    </documentation>
+                  </variable>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.parts.coupler._log(
+    name := &#39;coupler&#39;,
+    buffer := subBuffer);
+THIS^.parts.slot5._log(
+    name := &#39;slot5&#39;,
+    buffer := subBuffer);
+THIS^.parts.slot6._log(
+    name := &#39;slot6&#39;,
+    buffer := subBuffer);
+THIS^.parts.slot7._log(
+    name := &#39;slot7&#39;,
+    buffer := subBuffer);
+THIS^.parts.slot8._log(
+    name := &#39;slot8&#39;,
+    buffer := subBuffer);
+THIS^.parts.slot9._log(
+    name := &#39;slot9&#39;,
+    buffer := subBuffer);
+THIS^.parts.slot10._log(
+    name := &#39;slot10&#39;,
+    buffer := subBuffer);
+THIS^.parts.slot11._log(
+    name := &#39;slot11&#39;,
+    buffer := subBuffer);
+THIS^.parts.slot12._log(
+    name := &#39;slot12&#39;,
+    buffer := subBuffer);
+THIS^.parts.slot13._log(
+    name := &#39;slot13&#39;,
+    buffer := subBuffer);
+THIS^.parts.tubeAccelerometers._log(
+    name := &#39;tubeAccelerometers&#39;,
+    buffer := subBuffer);
+LOGGER(
+    name := name,
+    actualStatus := THIS^.actualStatus,
+    previousStatus := THIS^.previousStatus,
+    buffer := buffer,
+    subBuffer := subBuffer,
+    pHealthStatus := ADR(THIS^.statuses.healthStatus));
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+        </addData>
+      </pou>
+    </pous>
+  </types>
+  <instances>
+    <configurations />
+  </instances>
+  <addData>
+    <data name="http://www.3s-software.com/plcopenxml/projectstructure" handleUnknown="discard">
+      <ProjectStructure>
+        <Folder Name="mtcs_telemetry">
+          <Folder Name="Enums">
+          </Folder>
+          <Folder Name="Statuses">
+          </Folder>
+          <Folder Name="StateMachines">
+            <Folder Name="Parts">
+              <Object Name="TelemetryParts">
+              </Object>
+              <Object Name="TelemetryFlatfieldLedsParts">
+              </Object>
+              <Object Name="TelemetryIOParts">
+              </Object>
+            </Folder>
+            <Folder Name="Processes">
+              <Object Name="TelemetryProcesses">
+              </Object>
+            </Folder>
+            <Folder Name="Statuses">
+              <Object Name="TelemetryTemperaturesStatuses">
+              </Object>
+              <Object Name="TelemetryRelativeHumiditiesStatuses">
+              </Object>
+              <Object Name="TelemetryDewpointStatuses">
+              </Object>
+              <Object Name="TelemetryDewpointsStatuses">
+              </Object>
+              <Object Name="TelemetryAccelerometerStatuses">
+              </Object>
+              <Object Name="TelemetryAccelerometersStatuses">
+              </Object>
+              <Object Name="TelemetryStatuses">
+              </Object>
+              <Object Name="TelemetryFlatfieldLedsStatuses">
+              </Object>
+              <Object Name="TelemetryIOStatuses">
+              </Object>
+            </Folder>
+            <Object Name="SM_TelemetryTemperatures">
+              <Object Name="_log" />
+            </Object>
+            <Object Name="SM_TelemetryRelativeHumidities">
+              <Object Name="_log" />
+            </Object>
+            <Object Name="SM_TelemetryDewpoint">
+              <Object Name="_log" />
+            </Object>
+            <Object Name="SM_TelemetryDewpoints">
+              <Object Name="_log" />
+            </Object>
+            <Object Name="SM_TelemetryAccelerometer">
+              <Object Name="_log" />
+            </Object>
+            <Object Name="SM_TelemetryAccelerometers">
+              <Object Name="_log" />
+            </Object>
+            <Object Name="SM_Telemetry">
+              <Object Name="initialize" />
+              <Object Name="lock" />
+              <Object Name="unlock" />
+              <Object Name="changeOperatingState" />
+              <Object Name="_log" />
+            </Object>
+            <Object Name="SM_TelemetryFlatfieldLeds">
+              <Object Name="_log" />
+            </Object>
+            <Object Name="SM_TelemetryIO">
+              <Object Name="_log" />
+            </Object>
+          </Folder>
+          <Folder Name="Configs">
+            <Object Name="TelemetryTemperaturesConfig">
+            </Object>
+            <Object Name="TelemetryRelativeHumiditiesConfig">
+            </Object>
+            <Object Name="TelemetryDewpointsConfig">
+            </Object>
+            <Object Name="TelemetryAccelerometerConfig">
+            </Object>
+            <Object Name="TelemetryAccelerometersConfig">
+            </Object>
+            <Object Name="TelemetryConfig">
+            </Object>
+          </Folder>
+          <Folder Name="Structs">
+          </Folder>
+          <Folder Name="Processes">
+            <Folder Name="Args">
+            </Folder>
+          </Folder>
+          <Folder Name="Functionblocks">
+          </Folder>
+        </Folder>
+      </ProjectStructure>
+    </data>
+  </addData>
+</project>

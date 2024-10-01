@@ -348,8 +348,13 @@ class Variable(Object):
                         #         v.attributes = {}
                         #         self.register_child(child_name, v)
                         elif hasattr(child, 'raw_args'):
+                            child_args = {}
                             if 'attributes' in child.raw_args:
-                                self.register_child(child_name, Variable(child_name, self, child.raw_args))
+                                child_args['attributes'] = child.raw_args['attributes']
+                            if 'arguments' in child.raw_args:
+                                child_args['arguments'] = child.raw_args['arguments']
+
+                            self.register_child(child_name, Variable(child_name, self, child_args))
 
         if 'initial' in args:
             self.initial = args['initial']
@@ -360,14 +365,7 @@ class Variable(Object):
         if 'attributes' in args:
             self.attributes = {}
             for attribute_k, attribute_v in args['attributes'].items():
-                try:
                     self.attributes[attribute_k] = Variable(attribute_k, self, attribute_v)
-                except:
-                    print("8888888888888")
-                    print(attribute_k)
-                    import pprint
-                    pprint.pprint(attribute_v.__dict__)
-                    raise
         if 'qualifiers' in args:
             for qualifier in args['qualifiers']:
                 # TODO: resolve?

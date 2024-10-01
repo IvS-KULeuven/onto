@@ -1,0 +1,642 @@
+########################################################################################################################
+#                                                                                                                      #
+# Model of the M1 software.                                                                                            #
+#                                                                                                                      #
+########################################################################################################################
+
+IMPORT! models/in/mercator/mtcs_common_.yaml:
+
+
+##########################################################################
+# Define the containing PLC library
+##########################################################################
+
+!LIBRARY mtcs_safety:
+
+
+  ########################################################################################################################
+  # SafetyDomeAccessAlertConfig
+  ########################################################################################################################
+  
+  !CONFIG SafetyDomeAccessAlertConfig:
+      items:
+          pattern       : { type: t_uint32, comment: "Bit pattern, for which bit=high means alert active, bit=low means alert off" }
+          patternLength : { type: t_uint8 , comment: "Number of bits of the bitPattern to use (between 1 and 32)" }
+          bitLength     : { type: t_uint16, comment: "Sound length of 1 bit, in milliseconds" }
+          totalTime     : { type: t_uint16, comment: "The time, in number of milliseconds, during which the pattern is repeated. 0 means repeat forever." }
+  
+
+  ########################################################################################################################
+  # SafetyDomeAccessConfig
+  ########################################################################################################################
+  
+  !CONFIG SafetyDomeAccessConfig:
+      items:
+          disabled                       : { type: t_bool                       , comment: "True if the dome access control system should be disabled permanently." }
+          bypassTimeAfterPassword        : { type: t_double                     , comment: "Time until during which the doors sensors are being bypassed after entering the password, in seconds" }
+          bypassingSound                 : { type: SafetyDomeAccessAlertConfig  , comment: "Sound to play when the doors sensors are being bypassed" }
+          bypassedPermanentlyVisual      : { type: SafetyDomeAccessAlertConfig  , comment: "LED pattern to play when the doors sensors are now bypassed permanently" }
+          doorsOpenedWhenEnteringSound   : { type: SafetyDomeAccessAlertConfig  , comment: "Sound to play when a door is being opened for the first time (i.e. when a person is entering)" }
+          doorsOpenedWhenLeavingSound    : { type: SafetyDomeAccessAlertConfig  , comment: "Sound to play when a door is being opened for the 2nd or 3rd or ... time (i.e. when a person is leaving)"  }
+          leavingWhenDoorsClosedSound    : { type: SafetyDomeAccessAlertConfig  , comment: "Sound to play when the personHasLeftButton is pressed when the doors are closed" }
+          leavingWhenDoosOpenedSound     : { type: SafetyDomeAccessAlertConfig  , comment: "Sound to play when the personHasLeftButton is pressed when the doors are still open" }
+          doorsOpenedVisual              : { type: SafetyDomeAccessAlertConfig  , comment: "LED pattern to play when the doors were opened without bypass (i.e. without password)" }
+  
+  
+  ########################################################################################################################
+  # SafetyConfig
+  ########################################################################################################################
+  
+  !CONFIG SafetyConfig:
+      items:
+          domeAccess : { type: SafetyDomeAccessConfig, comment: "Some configuration values of the Dome Access" }
+  
+  
+  ########################################################################################################################
+  # Safety
+  ########################################################################################################################
+  
+  !STATEMACHINE Safety:
+      variables:
+          editableConfig                  : { type: SafetyConfig                , comment: "Editable configuration of the Safety subsystem" }
+      references:
+          operatorStatus                  : { type: mtcs_common.OperatorStatus  , comment: "Shared operator status"}
+          activityStatus                  : { type: mtcs_common.ActivityStatus  , comment: "Shared activity status"}
+      variables_read_only:
+          config                          : { type: SafetyConfig                , comment: "Active configuration of the Safety subsystem" }
+      parts:
+          hydraulics:
+              comment                     : "Hydraulics safety"
+              arguments:
+                  operatorStatus          : {}
+                  activityStatus          : {}
+              attributes:
+                  statuses:
+                      attributes:
+                          healthStatus    : { type: mtcs_common.HealthStatus }
+                          busyStatus      : { type: mtcs_common.BusyStatus }
+          emergencyStops:
+              comment                     : "Emergency stops"
+              attributes:
+                  statuses:
+                      attributes:
+                          healthStatus    : { type: mtcs_common.HealthStatus }
+                          busyStatus      : { type: mtcs_common.BusyStatus }
+          domeAccess:
+              comment                     : "Dome access"
+              arguments:
+                  operatorStatus          : {}
+                  activityStatus          : {}
+                  config                  : {}
+              attributes:
+                  statuses:
+                      attributes:
+                          healthStatus    : { type: mtcs_common.HealthStatus }
+                          busyStatus      : { type: mtcs_common.BusyStatus }
+          motionBlocking:
+              comment                     : "Motion blocking"
+              arguments:
+                  activityStatus          : {}
+                  hydraulics              : {}
+                  emergencyStops          : {}
+                  domeAccess              : {}
+              attributes:
+                  statuses:
+                      attributes:
+                          healthStatus    : { type: mtcs_common.HealthStatus }
+                          busyStatus      : { type: mtcs_common.BusyStatus }
+          domeShutter:
+              comment                     : "Dome Shutter"
+              arguments:
+                  activityStatus          : {}
+                  emergencyStops          : {}
+              attributes:
+                  statuses:
+                      attributes:
+                          healthStatus    : { type: mtcs_common.HealthStatus }
+                          busyStatus      : { type: mtcs_common.BusyStatus }
+  
+          io:
+              comment                     : "I/O modules"
+              attributes:
+                  statuses:
+                      attributes:
+                          healthStatus    : { type: mtcs_common.HealthStatus }
+          configManager:
+              comment                     : "The config manager (to load/save/activate configuration data)"
+              type                        : mtcs_common.ConfigManager
+      statuses:
+          initializationStatus            : { type: mtcs_common.InitializationStatus }
+          healthStatus                    : { type: mtcs_common.HealthStatus }
+          busyStatus                      : { type: mtcs_common.BusyStatus }
+          operatingStatus                 : { type: mtcs_common.OperatingStatus }
+          communicationHealthStatus       : { type: mtcs_common.HealthStatus }
+          functionBlockHealthStatus       : { type: mtcs_common.HealthStatus }
+          outputHealthStatus              : { type: mtcs_common.HealthStatus }
+      processes:
+          initialize                      : { type: mtcs_common.Process                       , comment: "Start initializing" }
+          lock                            : { type: mtcs_common.Process                       , comment: "Lock the system" }
+          unlock                          : { type: mtcs_common.Process                       , comment: "Unlock the system" }
+          changeOperatingState            : { type: mtcs_common.ChangeOperatingStateProcess   , comment: "Change the operating state (e.g. AUTO, MANUAL, ...)" }
+      calls:
+          initialize:
+              isEnabled                   : !OR [ statuses.initializationStatus.shutdown,
+                                                  statuses.initializationStatus.initializingFailed,
+                                                  statuses.initializationStatus.initialized ]
+          lock:
+              isEnabled                   : !AND [ operatorStatus.tech, statuses.initializationStatus.initialized ]
+          unlock:
+              isEnabled                   : !AND [ operatorStatus.tech, statuses.initializationStatus.locked ]
+          changeOperatingState:
+              isEnabled                   : !BOOL FALSE
+                                            # there is no MANUAL mode #!AND [ statuses.busyStatus.idle, statuses.initializationStatus.initialized)
+          operatingStatus:
+              superState                  : statuses.initializationStatus.initialized
+          healthStatus:
+              isGood                      : !MTCS_SUMMARIZE_GOOD [ parts.io,
+                                                                   parts.hydraulics,
+                                                                   parts.emergencyStops,
+                                                                   parts.domeAccess,
+                                                                   parts.motionBlocking,
+                                                                   parts.domeShutter ]
+              hasWarning                  : !MTCS_SUMMARIZE_WARN [ parts.io,
+                                                                   parts.hydraulics,
+                                                                   parts.emergencyStops,
+                                                                   parts.domeAccess,
+                                                                   parts.motionBlocking,
+                                                                   parts.domeShutter ]
+          busyStatus:
+              isBusy                      : !OR [ statuses.initializationStatus.initializing,
+                                                  parts.emergencyStops.statuses.busyStatus.busy,
+                                                  parts.domeAccess.statuses.busyStatus.busy,
+                                                  parts.hydraulics.statuses.busyStatus.busy,
+                                                  parts.domeShutter.statuses.busyStatus.busy,
+                                                  parts.motionBlocking.statuses.busyStatus.busy ]
+          configManager:
+              isEnabled                   : operatorStatus.tech
+          hydraulics:
+              operatorStatus              : operatorStatus
+              activityStatus              : activityStatus
+          domeAccess:
+              operatorStatus              : operatorStatus
+              activityStatus              : activityStatus
+              config                      : config.domeAccess
+          motionBlocking:
+              activityStatus              : activityStatus
+              hydraulics                  : parts.hydraulics
+              emergencyStops              : parts.emergencyStops
+              domeAccess                  : parts.domeAccess
+          domeShutter:
+              activityStatus              : activityStatus
+              emergencyStops              : parts.emergencyStops
+  
+  ########################################################################################################################
+  # SafetyIO
+  ########################################################################################################################
+  
+  !STATEMACHINE SafetyIO:
+      typeOf              : [ SafetyParts.io ]
+      statuses:
+          healthStatus    : { type: mtcs_common.HealthStatus   , comment: "Is the I/O in a healthy state?"  }
+      parts:
+          domeAccess:
+              comment     : "DA: Dome access I/O"
+              attributes:
+                  statuses:
+                      attributes:
+                          healthStatus    : { type: mtcs_common.HealthStatus }
+          hydraulicsAndSafety:
+              comment     : "HS: Hydraulics and Safety I/O"
+              attributes:
+                  statuses:
+                      attributes:
+                          healthStatus    : { type: mtcs_common.HealthStatus }
+      calls:
+          healthStatus:
+              isGood      : !MTCS_SUMMARIZE_GOOD [ parts.hydraulicsAndSafety, parts.domeAccess ]
+              hasWarning  : !MTCS_SUMMARIZE_WARN [ parts.hydraulicsAndSafety, parts.domeAccess ]
+  
+  
+  
+  ########################################################################################################################
+  # SafetyHydraulicsAndSafetyIO
+  ########################################################################################################################
+  
+  !STATEMACHINE SafetyHydraulicsAndSafetyIO:
+      typeOf              : [ SafetyIOParts.hydraulicsAndSafety ]
+      statuses:
+          healthStatus    : { type: mtcs_common.HealthStatus   , comment: "Is the I/O in a healthy state?"  }
+      parts:
+          COU             : { type: mtcs_common.EtherCatDevice , comment: "HS:COU (EK1101)" }
+          DO1             : { type: mtcs_common.EtherCatDevice , comment: "HS:DO1 (EL2008)" }
+          SI1             : { type: mtcs_common.EtherCatDevice , comment: "HS:SI1 (EL1904)" }
+          SI2             : { type: mtcs_common.EtherCatDevice , comment: "HS:SI2 (EL1904)" }
+          SI3             : { type: mtcs_common.EtherCatDevice , comment: "HS:SI3 (EL1904)" }
+          SI4             : { type: mtcs_common.EtherCatDevice , comment: "HS:SI4 (EL1904)" }
+          SL              : { type: mtcs_common.EtherCatDevice , comment: "HS:SL (EL6900)" }
+          SO1             : { type: mtcs_common.EtherCatDevice , comment: "HS:SO1 (EL2904)" }
+          AI1             : { type: mtcs_common.EtherCatDevice , comment: "HS:AI1 (EL3102)" }
+          AI2             : { type: mtcs_common.EtherCatDevice , comment: "HS:AI2 (EL3152)" }
+          RTD1            : { type: mtcs_common.EtherCatDevice , comment: "HS:RTD1 (EL3202-0010)" }
+          PWR1            : { type: mtcs_common.EtherCatDevice , comment: "HS:PWR1 (EL9410)" }
+          AO1             : { type: mtcs_common.EtherCatDevice , comment: "HS:AO1 (EL4132)" }
+      calls:
+          COU:
+              id          : !STRING "HS:COU"
+              typeId      : !STRING "EK1101"
+          DO1:
+              id          : !STRING "HS:DI1"
+              typeId      : !STRING "EL2008"
+          SI1:
+              id          : !STRING "HS:SI1"
+              typeId      : !STRING "EL1904"
+          SI2:
+              id          : !STRING "HS:SI2"
+              typeId      : !STRING "EL1904"
+          SI3:
+              id          : !STRING "HS:SI3"
+              typeId      : !STRING "EL1904"
+          SI4:
+              id          : !STRING "HS:SI3"
+              typeId      : !STRING "EL1904"
+          SL:
+              id          : !STRING "HS:SL"
+              typeId      : !STRING "EL6900"
+          SO1:
+              id          : !STRING "HS:SO1"
+              typeId      : !STRING "EL2904"
+          AI1:
+              id          : !STRING "HS:AI1"
+              typeId      : !STRING "EL3102"
+          AI2:
+              id          : !STRING "HS:AI2"
+              typeId      : !STRING "EL3152"
+          RTD1:
+              id          : !STRING "HS:RTD1"
+              typeId      : !STRING "EL3202-0010"
+          PWR1:
+              id          : !STRING "HS:PWR1"
+              typeId      : !STRING "EL9410"
+          AO1:
+              id          : !STRING "HS:AO1"
+              typeId      : !STRING "EL4132"
+          healthStatus:
+              isGood      : !MTCS_SUMMARIZE_GOOD [ parts.COU,
+                                                   parts.DO1,
+                                                   parts.SI1,
+                                                   parts.SI2,
+                                                   parts.SI3,
+                                                   parts.SI4,
+                                                   parts.SL,
+                                                   parts.SO1,
+                                                   parts.AI1,
+                                                   parts.AI2,
+                                                   parts.RTD1,
+                                                   parts.PWR1,
+                                                   parts.AO1 ]
+              hasWarning  : !MTCS_SUMMARIZE_WARN [ parts.COU,
+                                                   parts.DO1,
+                                                   parts.SI1,
+                                                   parts.SI2,
+                                                   parts.SI3,
+                                                   parts.SI4,
+                                                   parts.SL,
+                                                   parts.SO1,
+                                                   parts.AI1,
+                                                   parts.AI2,
+                                                   parts.RTD1,
+                                                   parts.PWR1,
+                                                   parts.AO1 ]
+  
+  ########################################################################################################################
+  # SafetyDomeAccessIO
+  ########################################################################################################################
+  
+  !STATEMACHINE SafetyDomeAccessIO:
+      typeOf              : [ SafetyIOParts.domeAccess ]
+      statuses:
+          healthStatus    : { type: mtcs_common.HealthStatus   , comment: "Is the I/O in a healthy state?"  }
+      parts:
+          COU             : { type: mtcs_common.EtherCatDevice , comment: "DA:COU (EK1101)" }
+          DI1             : { type: mtcs_common.EtherCatDevice , comment: "DA:DI1 (EL1008)" }
+          DI2             : { type: mtcs_common.EtherCatDevice , comment: "DA:DI2 (EL1008)" }
+          DO1             : { type: mtcs_common.EtherCatDevice , comment: "DA:DO1 (EL2008)" }
+          SI1             : { type: mtcs_common.EtherCatDevice , comment: "DA:SI1 (EL1904)" }
+          RE1             : { type: mtcs_common.EtherCatDevice , comment: "DA:RE1 (EL2622)" }
+          RE2             : { type: mtcs_common.EtherCatDevice , comment: "DA:RE2 (EL2622)" }
+      calls:
+          COU:
+              id          : !STRING "DA:COU"
+              typeId      : !STRING "EK1101"
+          DI1:
+              id          : !STRING "DA:DI1"
+              typeId      : !STRING "EL1008"
+          DI2:
+              id          : !STRING "DA:DI2"
+              typeId      : !STRING "EL1008"
+          DO1:
+              id          : !STRING "DA:DO1"
+              typeId      : !STRING "EL2008"
+          SI1:
+              id          : !STRING "DA:SI1"
+              typeId      : !STRING "EL1904"
+          RE1:
+              id          : !STRING "DA:RE1"
+              typeId      : !STRING "EL2622"
+          RE2:
+              id          : !STRING "DA:RE2"
+              typeId      : !STRING "EL2622"
+          healthStatus:
+              isGood      : !MTCS_SUMMARIZE_GOOD [ parts.COU,
+                                                   parts.DI1,
+                                                   parts.DI2,
+                                                   parts.DO1,
+                                                   parts.SI1,
+                                                   parts.RE1,
+                                                   parts.RE2 ]
+              hasWarning  : !MTCS_SUMMARIZE_WARN [ parts.COU,
+                                                   parts.DI1,
+                                                   parts.DI2,
+                                                   parts.DO1,
+                                                   parts.SI1,
+                                                   parts.RE1,
+                                                   parts.RE2 ]
+  
+  ###################################################################################################
+  # SafetyHydraulics
+  ###################################################################################################
+  
+  !STATEMACHINE SafetyHydraulics:
+      typeOf                      : [ SafetyParts.hydraulics ]
+      references:
+          operatorStatus          : { type: mtcs_common.OperatorStatus      , comment: "Shared operator status"}
+          activityStatus          : { type: mtcs_common.ActivityStatus      , comment: "Shared activity status"}
+      variables:
+          # group variables
+          groupComError           : { type: t_bool, address: "%I*"        , comment: "TwinSAFE group communication error"}
+          groupFbError            : { type: t_bool, address: "%I*"        , comment: "TwinSAFE group function block error"}
+          groupOutError           : { type: t_bool, address: "%I*"        , comment: "TwinSAFE group output error"}
+          # pumps powered
+          pumpsPowered            : { type: t_bool, address: "%I*"        , comment: "TRUE if the pumps are powered"}
+          # return filter
+          returnFilterOverpressure: { type: t_bool, address: "%I*"        , comment: "TRUE if the oil return filter has an overpressure"}
+          # pumps min. frequency (QMin)
+          pumpsMinFrequency       : { type: t_bool, address: "%I*"        , comment: "TRUE if the pumps run at a minimum frequency (frequency > QMin)" }
+          # pumps startup errors
+          pumpsFrequencyNotRising : { type: t_bool, address: "%I*"        , comment: "TRUE if the frequency of the pumps is not rising after a startup command" }
+          pressureNotRising       : { type: t_bool, address: "%I*"        , comment: "TRUE if the pressure is not rising after the frequency is rising" }
+          # underpressure sensors
+          top1NoUnderpressure     : { type: t_bool, address: "%I*"        , comment: "TRUE if there is no underpressure for Top pipe 1" }
+          top2NoUnderpressure     : { type: t_bool, address: "%I*"        , comment: "TRUE if there is no underpressure for Top pipe 2" }
+          top3NoUnderpressure     : { type: t_bool, address: "%I*"        , comment: "TRUE if there is no underpressure for Top pipe 3" }
+          top4NoUnderpressure     : { type: t_bool, address: "%I*"        , comment: "TRUE if there is no underpressure for Top pipe 4" }
+          bottom5NoUnderpressure  : { type: t_bool, address: "%I*"        , comment: "TRUE if there is no underpressure for Bottom pipe 5" }
+          bottom6NoUnderpressure  : { type: t_bool, address: "%I*"        , comment: "TRUE if there is no underpressure for Bottom pipe 6" }
+          bottom7NoUnderpressure  : { type: t_bool, address: "%I*"        , comment: "TRUE if there is no underpressure for Bottom pipe 7" }
+          bottom8NoUnderpressure  : { type: t_bool, address: "%I*"        , comment: "TRUE if there is no underpressure for Bottom pipe 8" }
+          # overpressure sensors
+          topNoOverpressure       : { type: t_bool, address: "%I*"        , comment: "TRUE if there is no overpressure for the Top pipes" }
+          bottomNoOverpressure    : { type: t_bool, address: "%I*"        , comment: "TRUE if there is no overpressure for the Bottom pipes" }
+          # trips
+          topTripOK               : { type: t_bool, address: "%I*"        , comment: "TRUE if there is no TRIP error for the top drive" }
+          bottomTripOK            : { type: t_bool, address: "%I*"        , comment: "TRUE if there is no overpressure for the botton drive" }
+          # calculated values
+          noUnderpressure         : { type: t_bool, address: "%I*"        , comment: "TRUE if there is no underpressure for all 8 pipes" }
+          noUnderpressureNoDelay  : { type: t_bool, address: "%I*"        , comment: "TRUE if there is no underpressure for all 8 pipes (even momentarily, without delay)" }
+          underpressureError      : { type: t_bool, address: "%I*"        , comment: "TRUE if there is an underpressure problem (e.g. when the pumps are running and there is an underpressure)" }
+          noOverpressure          : { type: t_bool, address: "%I*"        , comment: "TRUE if there is no overpressure for all 8 pipes" }
+          # task status
+          pumpsStartingUp         : { type: t_bool, address: "%I*"        , comment: "TRUE if the pumps are restarting" }
+          pumpsStopped            : { type: t_bool, address: "%I*"        , comment: "TRUE if the pumps are stopped" }
+          pumpsRunning            : { type: t_bool, address: "%I*"        , comment: "TRUE if the pumps are running" }
+          # pumps release
+          pumpsRelease            : { type: t_bool, address: "%I*"        , comment: "TRUE if the pumps are released (RFR 'ReglerFreigabe' high)" }
+          # summary
+          allOK                   : { type: t_bool, address: "%I*"        , comment: "TRUE if the hydraulics are OK" }
+      variables_read_only:
+          restartPumpsOutput      : { type: t_bool, address: "%Q*"        , comment: "Output to restart the pumps"}
+          resetErrorsOutput       : { type: t_bool, address: "%Q*"        , comment: "Output to reset the errors"}
+          errorAcknowledge        : { type: t_bool, address: "%Q*"        , comment: "Output to restart the TwinSAFE group"}
+      statuses:
+          healthStatus            : { type: mtcs_common.HealthStatus        , comment: "Is the safety in a healthy state? Good=RUN, Bad=safe stopped"  }
+          busyStatus              : { type: mtcs_common.BusyStatus          , comment: "Is the safety busy?"  }
+      processes:
+          startupPumps            : { type: mtcs_common.Process             , comment: "Start up the pumps (this will first trigger a reset() command!)" }
+          reset                   : { type: mtcs_common.Process             , comment: "Reset the errors (including the programmed ones and the TwinSAFE group ones)" }
+      calls:
+          healthStatus:
+              isGood              : !AND [  allOK, !NOT [ !OR [  groupComError, groupFbError, groupOutError ] ] ]
+  #            hasWarning          : !AND [  pumpsRunning, !OR [ activityStatus.awake, activityStatus.sleeping ] ]
+          busyStatus:
+              isBusy              : !OR [  processes.startupPumps.statuses.busyStatus.busy, processes.reset.statuses.busyStatus.busy ]
+          startupPumps:
+              isEnabled           : !AND [ !NOT [ !OR [ pumpsStartingUp, processes.startupPumps.statuses.busyStatus.busy ] ], operatorStatus.tech ]
+          reset:
+              isEnabled           : !NOT [ processes.reset.statuses.busyStatus.busy ]
+  
+  
+  ########################################################################################################################
+  # SafetyEmergencyStops
+  ########################################################################################################################
+  
+  !STATEMACHINE SafetyEmergencyStops:
+      typeOf                      : [ SafetyParts.emergencyStops ]
+      variables:
+          # group variables
+          groupComError           : { type: t_bool, address: "%I*"        , comment: "TwinSAFE group communication error"}
+          groupFbError            : { type: t_bool, address: "%I*"        , comment: "TwinSAFE group function block error"}
+          groupOutError           : { type: t_bool, address: "%I*"        , comment: "TwinSAFE group output error"}
+          # summary
+          allOK                   : { type: t_bool, address: "%I*"        , comment: "TRUE if the emergency stops are OK" }
+          discrepancyError        : { type: t_bool, address: "%I*"        , comment: "TRUE if there is a discrepancy time error between two contacts of an emergency stop" }
+          # individual stops
+          dome1NO                 : { type: t_bool, address: "%I*"        , comment: "TRUE if the make contact (NO) is conducting --> button is pushed!" }
+          dome1NC                 : { type: t_bool, address: "%I*"        , comment: "TRUE if the break contact (NC) is conducting --> button is not pushed" }
+          dome2NO                 : { type: t_bool, address: "%I*"        , comment: "TRUE if the make contact (NO) is conducting --> button is pushed!" }
+          dome2NC                 : { type: t_bool, address: "%I*"        , comment: "TRUE if the break contact (NC) is conducting --> button is not pushed" }
+          firstFloorNO            : { type: t_bool, address: "%I*"        , comment: "TRUE if the make contact (NO) is conducting --> button is pushed!" }
+          firstFloorNC            : { type: t_bool, address: "%I*"        , comment: "TRUE if the break contact (NC) is conducting --> button is not pushed" }
+          controlRoomNO           : { type: t_bool, address: "%I*"        , comment: "TRUE if the make contact (NO) is conducting --> button is pushed!" }
+          controlRoomNC           : { type: t_bool, address: "%I*"        , comment: "TRUE if the break contact (NC) is conducting --> button is not pushed" }
+          domeAccessNO            : { type: t_bool, address: "%I*"        , comment: "TRUE if the make contact (NO) is conducting --> button is pushed!" }
+          domeAccessNC            : { type: t_bool, address: "%I*"        , comment: "TRUE if the break contact (NC) is conducting --> button is not pushed" }
+      variables_read_only:
+          restartOutput           : { type: t_bool, address: "%Q*"        , comment: "Output to restart the emergency buttons"}
+          errorAcknowledge        : { type: t_bool, address: "%Q*"        , comment: "Output to restart the TwinSAFE group"}
+      statuses:
+          healthStatus            : { type: mtcs_common.HealthStatus        , comment: "Are the emergency stops in a healthy state? Good=RUN, Bad=safe stopped"  }
+          busyStatus              : { type: mtcs_common.BusyStatus          , comment: "Is the safety busy?"  }
+      processes:
+          reset                   : { type: mtcs_common.Process             , comment: "Reset the errors (including the programmed ones and the TwinSAFE group ones)" }
+      calls:
+          busyStatus:
+              isBusy              : processes.reset.statuses.busyStatus.busy
+          healthStatus:
+              isGood              : !AND [  allOK, !NOT [ !OR [  groupComError, groupFbError, groupOutError, discrepancyError ] ] ]
+          reset:
+              isEnabled            : !NOT [ processes.reset.statuses.busyStatus.busy ]
+  
+  
+  ########################################################################################################################
+  # SafetyDomeAccess
+  ########################################################################################################################
+  
+  !STATEMACHINE SafetyDomeAccess:
+      typeOf                      : [ SafetyParts.domeAccess ]
+      references:
+          operatorStatus          : { type: mtcs_common.OperatorStatus      , comment: "Shared operator status"}
+          activityStatus          : { type: mtcs_common.ActivityStatus      , comment: "Shared activity status"}
+          config                  : { type: SafetyDomeAccessConfig, comment: "The dome access config" }
+      variables:
+          # group variables
+          groupComError           : { type: t_bool, address: "%I*"        , comment: "TwinSAFE group communication error"}
+          groupFbError            : { type: t_bool, address: "%I*"        , comment: "TwinSAFE group function block error"}
+          groupOutError           : { type: t_bool, address: "%I*"        , comment: "TwinSAFE group output error"}
+          # keypad inputs
+          keypadKey1              : { type: t_bool, address: "%I*"        , comment: "TRUE if keypad key 1 is being pressed"}
+          keypadKey2              : { type: t_bool, address: "%I*"        , comment: "TRUE if keypad key 2 is being pressed"}
+          keypadKey3              : { type: t_bool, address: "%I*"        , comment: "TRUE if keypad key 3 is being pressed"}
+          keypadKey4              : { type: t_bool, address: "%I*"        , comment: "TRUE if keypad key 4 is being pressed"}
+          keypadKey5              : { type: t_bool, address: "%I*"        , comment: "TRUE if keypad key 5 is being pressed"}
+          keypadKey6              : { type: t_bool, address: "%I*"        , comment: "TRUE if keypad key 6 is being pressed"}
+          keypadKey7              : { type: t_bool, address: "%I*"        , comment: "TRUE if keypad key 7 is being pressed"}
+          keypadKey8              : { type: t_bool, address: "%I*"        , comment: "TRUE if keypad key 8 is being pressed"}
+          keypadKey9              : { type: t_bool, address: "%I*"        , comment: "TRUE if keypad key 9 is being pressed"}
+          keypadKeyStar           : { type: t_bool, address: "%I*"        , comment: "TRUE if keypad key * is being pressed"}
+          # other inputs
+          door1Closed             : { type: t_bool, address: "%I*"        , comment: "TRUE if door 1 is closed"}
+          door2Closed             : { type: t_bool, address: "%I*"        , comment: "TRUE if door 2 is closed"}
+          personHasLeftButtonPressed : { type: t_bool, address: "%I*"        , comment: "TRUE if the unblock button is being pressed"}
+          returnButtonPressed     : { type: t_bool, address: "%I*"        , comment: "TRUE if the return button is being pressed"}
+          safeAccess              : { type: t_bool, address: "%I*"        , comment: "TRUE if the safety still allows motion (e.g. also during the first seconds that a person has entered"}
+      variables_read_only:
+          errorAcknowledge        : { type: t_bool, address: "%Q*"        , comment: "Output to restart the TwinSAFE group"}
+          personHasEntered        : { type: t_bool, address: "%Q*"        , comment: "TRUE if the doors were opened without bypass/password" }
+          enteredLedOn            : { type: t_bool, address: "%Q*"        , comment: "TRUE if the yellow led should be on" }
+          movingLedOn             : { type: t_bool, address: "%Q*"        , comment: "TRUE if the red led should be on" }
+          awakeLedOn              : { type: t_bool, address: "%Q*"        , comment: "TRUE if the yellow led should be on" }
+          sleepingLedOn           : { type: t_bool, address: "%Q*"        , comment: "TRUE if the orange led should be on" }
+          buzzerSounding          : { type: t_bool, address: "%Q*"        , comment: "TRUE if the green is being sounded" }
+          sensorsBeingBypassed    : { type: t_bool                        , comment: "TRUE if the sensors are currently being bypassed" }
+          sensorsBypassedPermanently : { type: t_bool                     , comment: "TRUE if the sensors are being bypassed permanently" }
+      parts:
+          lampsRelay1             : { type: mtcs_common.SimpleRelay         , comment: "Lamps relay 1" }
+          lampsRelay2             : { type: mtcs_common.SimpleRelay         , comment: "Lamps relay 2" }
+          lampsRelay3             : { type: mtcs_common.SimpleRelay         , comment: "Lamps relay 3" }
+          lampsRelay4             : { type: mtcs_common.SimpleRelay         , comment: "Lamps relay 4" }
+      statuses:
+          healthStatus            : { type: mtcs_common.HealthStatus        , comment: "Are the emergency stops in a healthy state? Good=RUN, Bad=safe stopped"  }
+          busyStatus              : { type: mtcs_common.BusyStatus          , comment: "Is the safety busy?"  }
+      processes:
+          reset                   : { type: mtcs_common.Process             , comment: "Reset the errors (including the programmed ones and the TwinSAFE group ones)" }
+          personHasLeft           : { type: mtcs_common.Process             , comment: "Unblock the telescope (if possible, i.e. if no E-Stops are active etc.)" }
+          bypass                  : { type: mtcs_common.Process             , comment: "Bypass the doors sensors for the number of seconds defined in the config" }
+          bypassPermanently       : { type: mtcs_common.Process             , comment: "Bypass the doors sensors permanently (until re-initialization)" }
+          stopBypassing           : { type: mtcs_common.Process             , comment: "Stop bypassing the doors sensors" }
+      calls:
+          busyStatus:
+              isBusy              : !OR [  processes.reset.statuses.busyStatus.busy,
+                                           processes.personHasLeft.statuses.busyStatus.busy,
+                                           processes.bypass.statuses.busyStatus.busy,
+                                           processes.bypassPermanently.statuses.busyStatus.busy,
+                                           processes.stopBypassing.statuses.busyStatus.busy ]
+          healthStatus:
+              isGood              : !NOT [ !OR [  groupComError, groupFbError, groupOutError ] ]
+              hasWarning          : !OR [  personHasEntered, sensorsBypassedPermanently ]
+          reset:
+              isEnabled           : statuses.busyStatus.idle
+          personHasLeft:
+              isEnabled           : !AND [  statuses.busyStatus.idle, operatorStatus.tech ]
+          bypass:
+              isEnabled           : !AND [  statuses.busyStatus.idle, operatorStatus.tech, !NOT [ sensorsBeingBypassed ] ]
+          bypassPermanently:
+              isEnabled           : !AND [  statuses.busyStatus.idle, operatorStatus.tech, !NOT [ sensorsBypassedPermanently ] ]
+          stopBypassing:
+              isEnabled           : !AND [  statuses.busyStatus.idle, operatorStatus.tech, !OR [ sensorsBeingBypassed, sensorsBypassedPermanently ] ]
+          lampsRelay1:
+              isEnabled           : operatorStatus.tech
+          lampsRelay2:
+              isEnabled           : operatorStatus.tech
+          lampsRelay3:
+              isEnabled           : operatorStatus.tech
+          lampsRelay4:
+              isEnabled           : operatorStatus.tech
+  
+  
+  
+  ########################################################################################################################
+  # SafetyMotionBlocking
+  ########################################################################################################################
+  
+  !STATEMACHINE SafetyMotionBlocking:
+      typeOf                      : [ SafetyParts.motionBlocking ]
+      variables:
+          # group variables
+          groupComError               : { type: t_bool, address: "%I*"        , comment: "TwinSAFE group communication error"}
+          groupFbError                : { type: t_bool, address: "%I*"        , comment: "TwinSAFE group function block error"}
+          groupOutError               : { type: t_bool, address: "%I*"        , comment: "TwinSAFE group output error"}
+          telescopeAzimuthReleaseOK   : { type: t_bool, address: "%I*"        , comment: "TRUE if the telescope azimuth axis is released" }
+          telescopeElevationReleaseOK : { type: t_bool, address: "%I*"        , comment: "TRUE if the telescope elevation axis is released" }
+          telescopeRotationReleaseOK  : { type: t_bool, address: "%I*"        , comment: "TRUE if the telescope rotation axes are released" }
+          domeRotationReleaseOK       : { type: t_bool, address: "%I*"        , comment: "TRUE if the dome rotation axis is released" }
+          motionAllowed               : { type: t_bool, address: "%I*"        , comment: "TRUE if motion is allowed"}
+      references:
+          activityStatus              : { type: mtcs_common.ActivityStatus      , comment: "Shared activity status"}
+          hydraulics                  : { type: SafetyHydraulics      , expand: false }
+          emergencyStops              : { type: SafetyEmergencyStops  , expand: false }
+          domeAccess                  : { type: SafetyDomeAccess      , expand: false }
+      variables_read_only:
+          errorAcknowledge            : { type: t_bool, address: "%Q*"        , comment: "Output to restart the TwinSAFE group"}
+      statuses:
+          busyStatus                  : { type: mtcs_common.BusyStatus          , comment: "Is the safety busy?"  }
+          healthStatus                : { type: mtcs_common.HealthStatus        , comment: "Is everything unblocked? Good=unblocked, Bad=safe stopped"  }
+      processes:
+          reset                   : { type: mtcs_common.Process             , comment: "Reset the errors (including the programmed ones and the TwinSAFE group ones)" }
+      calls:
+          busyStatus:
+              isBusy              : processes.reset.statuses.busyStatus.busy
+          healthStatus:
+              isGood              : !NOT [ !OR [  groupComError, groupFbError, groupOutError ] ]
+              hasWarning          : !AND [  !OR [ activityStatus.awake, activityStatus.moving ], 
+                                            !NOT [ !AND [ telescopeAzimuthReleaseOK, telescopeElevationReleaseOK, telescopeRotationReleaseOK, domeRotationReleaseOK ] ] ]
+          reset:
+              isEnabled           : !NOT [ processes.reset.statuses.busyStatus.busy ]
+  
+  
+  ########################################################################################################################
+  # SafetyDomeShutter
+  ########################################################################################################################
+  
+  !STATEMACHINE SafetyDomeShutter:
+      typeOf                      : [ SafetyParts.domeShutter ]
+      variables:
+          # group variables
+          groupComError               : { type: t_bool, address: "%I*"        , comment: "TwinSAFE group communication error"}
+          groupFbError                : { type: t_bool, address: "%I*"        , comment: "TwinSAFE group function block error"}
+          groupOutError               : { type: t_bool, address: "%I*"        , comment: "TwinSAFE group output error"}
+          shutterAllowed              : { type: t_bool, address: "%I*"        , comment: "TRUE if dome shutter is allowed"}
+          lowerOpenSafeOutput         : { type: t_bool, address: "%I*"        , comment: "Safety open lower shutter command"}
+          lowerCloseSafeOutput        : { type: t_bool, address: "%I*"        , comment: "Safety close lower shutter command"}
+          upperOpenSafeOutput         : { type: t_bool, address: "%I*"        , comment: "Safety open upper shutter command"}
+          upperCloseSafeOutput        : { type: t_bool, address: "%I*"        , comment: "Safety close upper shutter command"}
+          pumpOnSafeOutput            : { type: t_bool, address: "%I*"        , comment: "Safety pump on command"}
+      references:
+          activityStatus              : { type: mtcs_common.ActivityStatus      , comment: "Shared activity status"}
+          emergencyStops              : { type: SafetyEmergencyStops  , expand: false }
+      variables_read_only:
+          errorAcknowledge            : { type: t_bool, address: "%Q*"        , comment: "Output to restart the TwinSAFE group"}
+      statuses:
+          busyStatus                  : { type: mtcs_common.BusyStatus          , comment: "Is the safety busy?"  }
+          healthStatus                : { type: mtcs_common.HealthStatus        , comment: "Is everything unblocked? Good=unblocked, Bad=safe stopped"  }
+      processes:
+          reset                       : { type: mtcs_common.Process             , comment: "Reset the errors (including the programmed ones and the TwinSAFE group ones)" }
+      calls:
+          busyStatus:
+              isBusy              : processes.reset.statuses.busyStatus.busy
+          healthStatus:
+              isGood              : !NOT [ !OR [  groupComError, groupFbError, groupOutError ] ]
+          reset:
+              isEnabled           : !NOT [ processes.reset.statuses.busyStatus.busy ]
+  
+  
+  

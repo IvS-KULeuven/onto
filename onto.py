@@ -93,23 +93,24 @@ def render(input_file: Path, template_fps: list[Path]) -> str:
         except ImportNeeded as e:
             render(Path(e.name), template_fps)
             render(input_file, template_fps)
-
-        print(model)
-
-        for template_fp in template_fps:
-            template = Template(filename=str(template_fp), 
-                                lookup=TemplateLookup(directories=""))
-            output = template.render(M=model)
             
-            filepath_key = str(input_fp).replace('.yaml', '').replace(str(inputdir_fp), '')
+        if len(model) > 0: # TODO: find out why sometimes the yaml load returns empty models
+            print(f"Model: {model} from file: {file}")
 
-            output_fp = Path(args.OUTPUTDIR) \
-                        / Path('./' + str(template_fp)[len('templates/'):-len('.mako')] \
-                            .replace('{filepath}', filepath_key))
+            for template_fp in template_fps:
+                template = Template(filename=str(template_fp), 
+                                    lookup=TemplateLookup(directories=""))
+                output = template.render(M=model)
+                
+                filepath_key = str(input_fp).replace('.yaml', '').replace(str(inputdir_fp), '')
 
-            output_fp.parent.mkdir(parents=True, exist_ok=True)
-            LOG("  Writing output file '%s'" %output_fp)
-            output_fp.write_text(output, newline='\n')
+                output_fp = Path(args.OUTPUTDIR) \
+                            / Path('./' + str(template_fp)[len('templates/'):-len('.mako')] \
+                                .replace('{filepath}', filepath_key))
+
+                output_fp.parent.mkdir(parents=True, exist_ok=True)
+                LOG("  Writing output file '%s'" %output_fp)
+                output_fp.write_text(output, newline='\n')
 
 
 # a function that returns the script description as a string

@@ -190,7 +190,11 @@ class Primitive(Object):
 
 class Double(Primitive):
     def __init__(self, value: str) -> None:
-        super().__init__(float(value))
+        try:
+            v = float(value)
+        except:
+            v = float(eval(value))
+        super().__init__(v)
 
 def Double_constructor(loader, node):
     value = loader.construct_scalar(node)
@@ -198,11 +202,19 @@ def Double_constructor(loader, node):
 
 class UInt16(Primitive):
     def __init__(self, value: str) -> None:
-        super().__init__(int(value))
+        try:
+            v = int(value)
+        except:
+            v = eval(value)
+        super().__init__(v)
 
 class Int16(Primitive):
     def __init__(self, value: str) -> None:
-        super().__init__(int(value))
+        try:
+            v = int(value)
+        except:
+            v = eval(value)
+        super().__init__(v)
 
 def UInt16_constructor(loader, node):
     value = loader.construct_scalar(node)
@@ -210,7 +222,11 @@ def UInt16_constructor(loader, node):
 
 class UInt8(Primitive):
     def __init__(self, value: str) -> None:
-        super().__init__(int(value))
+        try:
+            v = int(value)
+        except:
+            v = eval(value)
+        super().__init__(v)
 
 def UInt8_constructor(loader, node):
     value = loader.construct_scalar(node)

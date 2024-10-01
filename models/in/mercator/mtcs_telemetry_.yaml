@@ -1,0 +1,618 @@
+########################################################################################################################
+#                                                                                                                      #
+# Model of the telemetry software.                                                                                     #
+#                                                                                                                      #
+########################################################################################################################
+
+
+!IMPORT models/in/mercator/mtcs_common_.yaml:
+
+
+##########################################################################
+# Define the containing PLC library
+##########################################################################
+
+!LIBRARY mtcs_telemetry:
+
+
+  ########################################################################################################################
+  # TelemetryTemperaturesConfig
+  ########################################################################################################################
+  
+  !CONFIG TelemetryTemperaturesConfig:
+      items:
+          m1:
+              type: mtcs_common.MeasurementConfig
+              comment: "Temperature of M1"
+              expand: false
+          mirrorCell:
+              type: mtcs_common.MeasurementConfig
+              comment: "Temperature of the mirror cell"
+              expand: false
+          m2:
+              type: mtcs_common.MeasurementConfig
+              comment: "Temperature of M2"
+              expand: false
+          m2Electronics:
+              type: mtcs_common.MeasurementConfig
+              comment: "Temperature of the M2 electricity"
+              expand: false
+          topTube:
+              type: mtcs_common.MeasurementConfig
+              comment: "Temperature of the top of the tube"
+              expand: false
+          centreTube:
+              type: mtcs_common.MeasurementConfig
+              comment: "Temperature of the centre of the tube"
+              expand: false
+          fork:
+              type: mtcs_common.MeasurementConfig
+              comment: "Temperature of the fork"
+              expand: false
+          nasmythAir:
+              type: mtcs_common.MeasurementConfig
+              comment: "Temperature of the air inside the Nasmyth focal station"
+              expand: false
+          rem:
+              type: mtcs_common.MeasurementConfig
+              comment: "Temperature inside the REM cabinet"
+              expand: false
+          rpm:
+              type: mtcs_common.MeasurementConfig
+              comment: "Temperature inside the RPM cabinet"
+              expand: false
+          hermesTelescopeAdapter:
+              type: mtcs_common.MeasurementConfig
+              comment: "Temperature inside the HERMES telescope adapter"
+              expand: false
+          topAir:
+              type: mtcs_common.MeasurementConfig
+              comment: "Temperature of the air at the top of the tube"
+              expand: false
+          insideTube:
+              type: mtcs_common.MeasurementConfig
+              comment: "Temperature of the air inside the tube"
+              expand: false
+  
+  
+  ########################################################################################################################
+  # TelemetryRelativeHumiditiesConfig
+  ########################################################################################################################
+  
+  !CONFIG TelemetryRelativeHumiditiesConfig:
+      items:
+          topAir:
+              type: mtcs_common.MeasurementConfig
+              comment: "Relative humidity of the air at the top of the tube"
+              expand: false
+          insideTube:
+              type: mtcs_common.MeasurementConfig
+              comment: "Relative humidity of the air inside the tube"
+              expand: false
+  
+  
+  ########################################################################################################################
+  # TelemetryDewpointsConfig
+  ########################################################################################################################
+  
+  !CONFIG TelemetryDewpointsConfig:
+      items:
+          topAir:
+              type: mtcs_common.MeasurementConfig
+              comment: "Dewpoint of the air at the top of the tube"
+              expand: false
+          insideTube:
+              type: mtcs_common.MeasurementConfig
+              comment: "Dewpoint of the air inside the tube"
+              expand: false
+  
+  
+  ########################################################################################################################
+  # TelemetryAccelerometerConfig
+  ########################################################################################################################
+  
+  !CONFIG TelemetryAccelerometerConfig:
+      items:
+          x:
+              type: mtcs_common.MeasurementConfig
+              comment: "X angle"
+              expand: false
+          y:
+              type: mtcs_common.MeasurementConfig
+              comment: "X angle"
+              expand: false
+  
+  
+  ########################################################################################################################
+  # TelemetryAccelerometersConfig
+  ########################################################################################################################
+  
+  !CONFIG TelemetryAccelerometersConfig:
+      items:
+          tube:
+              type: TelemetryAccelerometerConfig
+              comment: "Accelerometer box at the tube"
+  
+  
+  ########################################################################################################################
+  # TelemetryConfig
+  ########################################################################################################################
+  
+  !CONFIG TelemetryConfig:
+      items:
+          temperatures:
+              type: TelemetryTemperaturesConfig
+              comment: "All temperatures"
+              expand: false
+          relativeHumidities:
+              type: TelemetryRelativeHumiditiesConfig
+              comment: "All relative humidities"
+              expand: false
+          dewpoints:
+              type: TelemetryDewpointsConfig
+              comment: "All dewpoints"
+              expand: false
+          accelerometers:
+              type: TelemetryAccelerometersConfig
+              comment: "All accelerometers"
+  
+  
+  ########################################################################################################################
+  # TelemetryTemperatures
+  ########################################################################################################################
+  
+  !STATEMACHINE TelemetryTemperatures:
+      references:
+          config : { type: TelemetryTemperaturesConfig, comment: "Configuration of the temperatures"}
+      variables_read_only:
+          m1:
+              type: mtcs_common.TemperatureMeasurement
+              comment: "Temperature of M1"
+          mirrorCell:
+              type: mtcs_common.TemperatureMeasurement
+              comment: "Temperature of the mirror cell"
+          m2:
+              type: mtcs_common.TemperatureMeasurement
+              comment: "Temperature of M2"
+          m2Electronics:
+              type: mtcs_common.TemperatureMeasurement
+              comment: "Temperature of the M2 electricity"
+          topTube:
+              type: mtcs_common.TemperatureMeasurement
+              comment: "Temperature of the top of the tube"
+          centreTube:
+              type: mtcs_common.TemperatureMeasurement
+              comment: "Temperature of the centre of the tube"
+          fork:
+              type: mtcs_common.TemperatureMeasurement
+              comment: "Temperature of the fork"
+          nasmythAir:
+              type: mtcs_common.TemperatureMeasurement
+              comment: "Temperature of the air inside the Nasmyth focal station"
+          rem:
+              type: mtcs_common.TemperatureMeasurement
+              comment: "Temperature inside the REM cabinet"
+          rpm:
+              type: mtcs_common.TemperatureMeasurement
+              comment: "Temperature inside the RPM cabinet"
+          hermesTelescopeAdapter:
+              type: mtcs_common.TemperatureMeasurement
+              comment: "Temperature inside the HERMES telescope adapter"
+          topAir:
+              type: mtcs_common.TemperatureMeasurement
+              comment: "Temperature of the air at the top of the tube"
+          insideTube:
+              type: mtcs_common.TemperatureMeasurement
+              comment: "Temperature of the air inside the tube"
+      statuses:
+          healthStatus    : { type: mtcs_common.HealthStatus          , comment: "Are all temperatures in a healthy state?" }
+      calls:
+          healthStatus:
+              isGood      : !MTCS_SUMMARIZE_GOOD_OR_DISABLED [
+                                                   m1, mirrorCell, m2, m2Electronics, topTube, centreTube,
+                                                   fork, nasmythAir, rem, rpm, hermesTelescopeAdapter,
+                                                   topAir, insideTube ]
+              hasWarning  : !MTCS_SUMMARIZE_WARN [ m1, mirrorCell, m2, m2Electronics, topTube, centreTube,
+                                                   fork, nasmythAir, rem, rpm, hermesTelescopeAdapter,
+                                                   topAir, insideTube ]
+          m1:
+              config: config.m1
+          mirrorCell:
+              config: config.mirrorCell
+          m2:
+              config: config.m2
+          m2Electronics:
+              config: config.m2Electronics
+          topTube:
+              config: config.topTube
+          centreTube:
+              config: config.centreTube
+          fork:
+              config: config.fork
+          nasmythAir:
+              config: config.nasmythAir
+          rem:
+              config: config.rem
+          rpm:
+              config: config.rpm
+          hermesTelescopeAdapter:
+              config: config.hermesTelescopeAdapter
+          topAir:
+              config: config.topAir
+          insideTube:
+              config: config.insideTube
+  
+  
+  ########################################################################################################################
+  # TelemetryRelativeHumidities
+  ########################################################################################################################
+  
+  !STATEMACHINE TelemetryRelativeHumidities:
+      references:
+          config:
+            type: TelemetryRelativeHumiditiesConfig
+            comment: "Configuration of the relative humidities"
+      variables_read_only:
+          topAir:
+              type: mtcs_common.RelativeHumidityMeasurement
+              comment: "Relative humidity of the air at the top of the tube"
+          insideTube:
+              type: mtcs_common.RelativeHumidityMeasurement
+              comment: "Relative humidity of the air inside the tube"
+      statuses:
+          healthStatus    : { type: mtcs_common.HealthStatus          , comment: "Are all relative humidities in a healthy state?" }
+      calls:
+          healthStatus:
+              isGood      : !MTCS_SUMMARIZE_GOOD_OR_DISABLED [ topAir, insideTube ]
+              hasWarning  : !MTCS_SUMMARIZE_WARN [ topAir, insideTube ]
+          topAir:
+              config: config.topAir
+          insideTube:
+              config: config.insideTube
+  
+  
+  ########################################################################################################################
+  # TelemetryDewpoint
+  ########################################################################################################################
+  
+  !STATEMACHINE TelemetryDewpoint:
+      references:
+          config          : { type: mtcs_common.MeasurementConfig           , comment: "Configuration" }
+          temperature     : { type: mtcs_common.TemperatureMeasurement      , comment: "Temperature to be taken into account" }
+          relativeHumidity: { type: mtcs_common.RelativeHumidityMeasurement , comment: "Relative humidity to be taken into account" }
+      variables_read_only:
+          actual          : { type: mtcs_common.Temperature         , comment: "Actual dewpoint temperature"            }
+          average         : { type: mtcs_common.Temperature         , comment: "Average dewpoint temperature"           }
+      statuses:
+          enabledStatus   : { type: mtcs_common.EnabledStatus       , comment: "Is the dewpoint being calculated?" }
+          healthStatus    : { type: mtcs_common.HealthStatus        , comment: "Is the depoint OK?" }
+          alarmStatus     : { type: mtcs_common.HiHiLoLoAlarmStatus , comment: "Alarm status"}
+      calls:
+          # variables are not explicitely called here, they're updated by custom written logic of the superclass
+          # statuses
+          enabledStatus:
+              isEnabled       : config.enabled
+          alarmStatus:
+              superState      : statuses.enabledStatus.enabled
+              config          : config.alarms
+              value           : average.celsius.value
+          healthStatus:
+              superState      : statuses.enabledStatus.enabled
+              isGood          : !NOT [ !OR [ temperature.error,
+                                             relativeHumidity.statuses.healthStatus.bad,
+                                             statuses.alarmStatus.hiHi,
+                                             statuses.alarmStatus.loLo ] ]
+              hasWarning      : !OR [ statuses.alarmStatus.hi,
+                                      statuses.alarmStatus.lo ]
+  
+  
+  ########################################################################################################################
+  # TelemetryDewpoints
+  ########################################################################################################################
+  
+  !STATEMACHINE TelemetryDewpoints:
+      references:
+          config                  : { type: TelemetryDewpointsConfig      , comment: "Configuration of the dewpoints"}
+          temperatures            : { type: TelemetryTemperatures         , comment: "Measured temperatures"}
+          relativeHumidities      : { type: TelemetryRelativeHumidities   , comment: "Measured relative humidities"}
+      variables_read_only:
+          topAir                  : { type: TelemetryDewpoint             , comment: "Dewpoint of the air at the top of the tube" }
+          insideTube              : { type: TelemetryDewpoint             , comment: "Dewpoint of the air inside the tube" }
+      statuses:
+          healthStatus            : { type: mtcs_common.HealthStatus                , comment: "Are all dewpoints in a healthy state?" }
+      calls:
+          healthStatus:
+              isGood              : !MTCS_SUMMARIZE_GOOD_OR_DISABLED [ topAir, insideTube ]
+              hasWarning          : !MTCS_SUMMARIZE_WARN [ topAir, insideTube ]
+          topAir:
+              config              : config.topAir
+              temperature         : temperatures.topAir
+              relativeHumidity    : relativeHumidities.topAir
+          insideTube:
+              config              : config.insideTube
+              temperature         : temperatures.insideTube
+              relativeHumidity    : relativeHumidities.insideTube
+  
+  ########################################################################################################################
+  # TelemetryAccelerometer
+  ########################################################################################################################
+  
+  !STATEMACHINE TelemetryAccelerometer:
+      variables_read_only:
+          X1plus          : { type: mtcs_common.GForceMeasurement       , comment: "+X1 (channel 1 of EP1816-3008)" , expand: true}
+          Y1plus          : { type: mtcs_common.GForceMeasurement       , comment: "+Y1 (channel 2 of EP1816-3008)" , expand: true }
+          Z1minus         : { type: mtcs_common.GForceMeasurement       , comment: "-Z1 (channel 3 of EP1816-3008)" , expand: true }
+          Y2plus          : { type: mtcs_common.GForceMeasurement       , comment: "+Y2 (channel 4 of EP1816-3008)" , expand: true }
+          X2minus         : { type: mtcs_common.GForceMeasurement       , comment: "-X2 (channel 5 of EP1816-3008)" , expand: true }
+          Z2minus         : { type: mtcs_common.GForceMeasurement       , comment: "-Z2 (channel 6 of EP1816-3008)" , expand: true }
+          actualXAngle    : { type: mtcs_common.AngularPosition         , comment: "Actual X angle" , expand: true }
+          actualYAngle    : { type: mtcs_common.AngularPosition         , comment: "Actual Y angle" , expand: true }
+          averageXAngle   : { type: mtcs_common.AngularPosition         , comment: "Average X angle" }
+          averageYAngle   : { type: mtcs_common.AngularPosition         , comment: "Average Y angle" }
+      references:
+          xConfig         : { type: mtcs_common.MeasurementConfig       , comment: "Reference to the config of the X angle (alarms in degrees)" }
+          yConfig         : { type: mtcs_common.MeasurementConfig       , comment: "Reference to the config of the Y angle (alarms in degrees)" }
+      statuses:
+          xEnabledStatus  : { type: mtcs_common.EnabledStatus           , comment: "Is the X angle being measured?" }
+          yEnabledStatus  : { type: mtcs_common.EnabledStatus           , comment: "Is the Y angle being measured?" }
+          xHealthStatus   : { type: mtcs_common.HealthStatus            , comment: "Is the X angle measurement OK?" }
+          yHealthStatus   : { type: mtcs_common.HealthStatus            , comment: "Is the Y angle measurement OK?" }
+          xAlarmStatus    : { type: mtcs_common.HiHiLoLoAlarmStatus     , comment: "Alarm status of the X angle"}
+          yAlarmStatus    : { type: mtcs_common.HiHiLoLoAlarmStatus     , comment: "Alarm status of the Y angle"}
+      calls:
+          xEnabledStatus:
+              isEnabled    : xConfig.enabled
+          yEnabledStatus:
+              isEnabled    : yConfig.enabled
+          xAlarmStatus:
+              superState   : statuses.xEnabledStatus.enabled
+              config       : xConfig.alarms
+              value        : averageXAngle.degrees.value
+          yAlarmStatus:
+              superState   : statuses.yEnabledStatus.enabled
+              config       : yConfig.alarms
+              value        : averageYAngle.degrees.value
+          xHealthStatus:
+              superState   : statuses.xEnabledStatus.enabled
+              isGood       : !NOT [ !OR [ statuses.xAlarmStatus.hiHi,
+                                          statuses.xAlarmStatus.loLo ] ]
+              hasWarning   : !OR [ statuses.xAlarmStatus.hi,
+                                   statuses.xAlarmStatus.lo ]
+          yHealthStatus:
+              superState   : statuses.yEnabledStatus.enabled
+              isGood       : !NOT [ !OR [ statuses.yAlarmStatus.hiHi,
+                                          statuses.yAlarmStatus.loLo ] ]
+              hasWarning   : !OR [ statuses.yAlarmStatus.hi,
+                                   statuses.yAlarmStatus.lo ]
+  
+  ########################################################################################################################
+  # TelemetryAccelerometers
+  ########################################################################################################################
+  
+  !STATEMACHINE TelemetryAccelerometers:
+      references:
+          config                  : { type: TelemetryAccelerometersConfig , comment: "Configuration of the accelerometers"}
+      variables_read_only:
+          tube                    : { type: TelemetryAccelerometer        , comment: "Accelerometer box at the tube" }
+      statuses:
+          healthStatus            : { type: mtcs_common.HealthStatus      , comment: "Are all accelerometers in a healthy state?" }
+      calls:
+          healthStatus:
+              isGood              : !AND [ tube.statuses.xHealthStatus.isGood, tube.statuses.yHealthStatus.isGood ]
+              hasWarning          : !OR [ tube.statuses.xHealthStatus.hasWarning, tube.statuses.yHealthStatus.hasWarning ]
+          tube:
+              xConfig              : config.tube.x
+              yConfig              : config.tube.y
+  
+  ########################################################################################################################
+  # Telemetry
+  ########################################################################################################################
+  
+  !STATEMACHINE Telemetry:
+      variables:
+          editableConfig                  : { type: TelemetryConfig                 , comment: "Editable configuration of the Telemetry subsystem" }
+      references:
+          operatorStatus                  : { type: mtcs_common.OperatorStatus      , comment: "Shared operator status"}
+      variables_read_only:
+          config                          : { type: TelemetryConfig                 , comment: "Active configuration of the Telemetry subsystem" }
+      parts:
+          temperatures:
+              comment                     : "All temperature measurements"
+              type                        : TelemetryTemperatures
+          relativeHumidities:
+              comment                     : "All relative humidity measurements"
+              type                        : TelemetryRelativeHumidities
+          dewpoints:
+              comment                     : "All calculated dewpoints"
+              type                        : TelemetryDewpoints
+          accelerometers:
+              comment                     : "Feedback from the accelerometers (vibrations + angles)"
+              type                        : TelemetryAccelerometers
+          io:
+              comment                     : "I/O modules"
+              attributes:
+                  statuses:
+                      attributes:
+                          healthStatus    : { type: mtcs_common.HealthStatus }
+          flatfieldLeds:
+              comment                     : "I/O modules"
+              attributes:
+                  isEnabled               : { type: t_bool }
+                  statuses:
+                      attributes:
+                          busyStatus      : { type: mtcs_common.BusyStatus }
+          configManager:
+              comment                     : "The config manager (to load/save/activate configuration data)"
+              type                        : mtcs_common.ConfigManager
+      statuses:
+          initializationStatus            : { type: mtcs_common.InitializationStatus }
+          healthStatus                    : { type: mtcs_common.HealthStatus }
+          busyStatus                      : { type: mtcs_common.BusyStatus }
+          operatingStatus                 : { type: mtcs_common.OperatingStatus }
+      processes:
+          initialize                      : { type: mtcs_common.Process                       , comment: "Start initializing" }
+          lock                            : { type: mtcs_common.Process                       , comment: "Lock the system" }
+          unlock                          : { type: mtcs_common.Process                       , comment: "Unlock the system" }
+          changeOperatingState            : { type: mtcs_common.ChangeOperatingStateProcess   , comment: "Change the operating state (e.g. AUTO, MANUAL, ...)" }
+      calls:
+          initialize:
+              isEnabled                   : !OR [ statuses.initializationStatus.shutdown,
+                                                  statuses.initializationStatus.initializingFailed,
+                                                  statuses.initializationStatus.initialized ]
+          lock:
+              isEnabled                   : !AND [ operatorStatus.tech, statuses.initializationStatus.initialized ]
+          unlock:
+              isEnabled                   : !AND [ operatorStatus.tech, statuses.initializationStatus.locked ]
+          changeOperatingState:
+              isEnabled                   : !AND [ statuses.busyStatus.idle, statuses.initializationStatus.initialized ]
+          operatingStatus:
+              superState                  : statuses.initializationStatus.initialized
+          healthStatus:
+              isGood              : !MTCS_SUMMARIZE_GOOD [ parts.temperatures,
+                                                           parts.relativeHumidities,
+                                                           parts.dewpoints,
+                                                           parts.accelerometers,
+                                                           parts.io,
+                                                           parts.configManager ]
+              hasWarning          : !MTCS_SUMMARIZE_WARN [ parts.temperatures,
+                                                           parts.relativeHumidities,
+                                                           parts.dewpoints,
+                                                           parts.accelerometers,
+                                                           parts.io,
+                                                           parts.configManager ]
+          busyStatus:
+              isBusy              : !OR [ statuses.initializationStatus.initializing,
+                                          parts.flatfieldLeds.statuses.busyStatus.busy,
+                                          parts.configManager.statuses.busyStatus.busy ]
+          configManager:
+              isEnabled           : operatorStatus.tech
+          temperatures:
+              config              : config.temperatures
+          relativeHumidities:
+              config              : config.relativeHumidities
+          dewpoints:
+              config              : config.dewpoints
+              temperatures        : parts.temperatures
+              relativeHumidities  : parts.relativeHumidities
+          accelerometers:
+              config              : config.accelerometers
+          flatfieldLeds:
+              isEnabled           : !AND [ statuses.initializationStatus.initialized, statuses.operatingStatus.manual ]
+  
+  
+  ########################################################################################################################
+  # TelemetryFlatfieldLeds
+  ########################################################################################################################
+  
+  !STATEMACHINE TelemetryFlatfieldLeds:
+      typeOf              : [ TelemetryParts.flatfieldLeds ]
+      variables_hidden:
+          isEnabled       : { type: t_bool             , comment: "Is control enabled?" }
+      parts:
+          output1     : { type: mtcs_common.SimpleRelay, comment: "Output 1" }
+          output2     : { type: mtcs_common.SimpleRelay, comment: "Output 2" }
+          output3     : { type: mtcs_common.SimpleRelay, comment: "Output 3" }
+          output4     : { type: mtcs_common.SimpleRelay, comment: "Output 4" }
+          output5     : { type: mtcs_common.SimpleRelay, comment: "Output 5" }
+          output6     : { type: mtcs_common.SimpleRelay, comment: "Output 6" }
+          output7     : { type: mtcs_common.SimpleRelay, comment: "Output 7" }
+          output8     : { type: mtcs_common.SimpleRelay, comment: "Output 8" }
+      statuses:
+          busyStatus  : { type: mtcs_common.BusyStatus }
+      calls:
+          output1:
+              isEnabled : isEnabled
+          output2:
+              isEnabled : isEnabled
+          output3:
+              isEnabled : isEnabled
+          output4:
+              isEnabled : isEnabled
+          output5:
+              isEnabled : isEnabled
+          output6:
+              isEnabled : isEnabled
+          output7:
+              isEnabled : isEnabled
+          output8:
+              isEnabled : isEnabled
+          busyStatus:
+              isBusy  : !OR [  parts.output1.statuses.busyStatus.busy,
+                               parts.output2.statuses.busyStatus.busy,
+                               parts.output3.statuses.busyStatus.busy,
+                               parts.output4.statuses.busyStatus.busy,
+                               parts.output5.statuses.busyStatus.busy,
+                               parts.output6.statuses.busyStatus.busy,
+                               parts.output7.statuses.busyStatus.busy,
+                               parts.output8.statuses.busyStatus.busy ]
+  
+  
+  
+  ########################################################################################################################
+  # TelemetryIO
+  ########################################################################################################################
+  
+  !STATEMACHINE TelemetryIO:
+      typeOf              : [ TelemetryParts.io ]
+      statuses:
+          healthStatus    : { type: mtcs_common.HealthStatus   , comment: "Is the I/O in a healthy state?"  }
+      parts:
+          coupler         : { type: mtcs_common.EtherCatDevice , comment: "Coupler" }
+          slot5           : { type: mtcs_common.EtherCatDevice , comment: "Slot 5" }
+          slot6           : { type: mtcs_common.EtherCatDevice , comment: "Slot 6" }
+          slot7           : { type: mtcs_common.EtherCatDevice , comment: "Slot 7" }
+          slot8           : { type: mtcs_common.EtherCatDevice , comment: "Slot 8" }
+          slot9           : { type: mtcs_common.EtherCatDevice , comment: "Slot 9" }
+          slot10          : { type: mtcs_common.EtherCatDevice , comment: "Slot 10" }
+          slot11          : { type: mtcs_common.EtherCatDevice , comment: "Slot 11" }
+          slot12          : { type: mtcs_common.EtherCatDevice , comment: "Slot 12" }
+          slot13          : { type: mtcs_common.EtherCatDevice , comment: "Slot 13" }
+          tubeAccelerometers: { type: mtcs_common.EtherCatDevice , comment: "Tube accelerometers" }
+      calls:
+          coupler:
+              id          : !STRING "COUPLER"
+              typeId      : !STRING "EK1100"
+          slot5:
+              id          : !STRING "113A1"
+              typeId      : !STRING "EL3202-0010"
+          slot6:
+              id          : !STRING "114A1"
+              typeId      : !STRING "EL3202-0010"
+          slot7:
+              id          : !STRING "115A1"
+              typeId      : !STRING "EL3202-0010"
+          slot8:
+              id          : !STRING "116A1"
+              typeId      : !STRING "EL3202-0010"
+          slot9:
+              id          : !STRING "117A1"
+              typeId      : !STRING "EL3202-0010"
+          slot10:
+              id          : !STRING "118A1"
+              typeId      : !STRING "EL3202-0010"
+          slot11:
+              id          : !STRING "119A1"
+              typeId      : !STRING "EL3202-0010"
+          slot12:
+              id          : !STRING "120A1"
+              typeId      : !STRING "EL3024"
+          slot13:
+              id          : !STRING "121A1"
+              typeId      : !STRING "EL2008"
+          tubeAccelerometers:
+              id          : !STRING "ACCTUB"
+              typeId      : !STRING "EP1816-3008"
+          healthStatus:
+              isGood      : !MTCS_SUMMARIZE_GOOD [ parts.coupler,
+                                                   parts.slot5,
+                                                   parts.slot6,
+                                                   parts.slot7,
+                                                   parts.slot8,
+                                                   parts.slot9,
+                                                   parts.slot10,
+                                                   parts.slot11,
+                                                   parts.slot12,
+                                                   parts.slot13,
+                                                   parts.tubeAccelerometers ]
+  
+  
