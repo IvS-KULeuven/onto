@@ -539,7 +539,7 @@ ${node.operator.plc_symbol}(${layoutExpression(node.operand, scope)})\
 % endif
 ${indent}  ${xml_type(node)}
         % if node.initial is not None:
-${indent}  <initialValue><simpleValue value="${str(node.initial.value).upper()}" /></initialValue>
+${indent}  <initialValue><simpleValue value="${escape(str(node.initial.value).upper())}" /></initialValue>
         % endif
         % if node.qualifiers is not None:
 ${indent}  <addData>

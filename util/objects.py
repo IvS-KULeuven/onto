@@ -13,30 +13,22 @@ def get_global(name):
 def resolve(subject, context):
     print(f"Resolving {subject}, context {context}")
     if isinstance(subject, str):
-        print(" .. resolving string")
         obj = None
         parts = subject.split('.')
         if len(parts) > 1:
             return resolve( subject[len(f"{parts[0]}."):], resolve(parts[0], context) )
 
         if context is not None:
-            print(" .. getting child")
             try:
-                obj = context.get_child(subject)
+                return context.get_child(subject)
             except:
-                obj = None
-            print(f"DONE {obj}")
+                pass
     
-        if obj is None:
-            global OBJECTS
-            if subject in OBJECTS:
-                obj = OBJECTS[subject]
+        global OBJECTS
+        if subject in OBJECTS:
+            return OBJECTS[subject]
         
-        if obj is not None:
-            print(f"Returning {obj}")
-            return obj
-        else:
-            raise KeyError(f"Subject '{subject}' was not declared before!")
+        raise KeyError(f"Subject '{subject}' was not declared before!")
     
     elif isinstance(subject, Object):
         subject.resolve_children(context)
