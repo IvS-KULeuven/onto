@@ -1,0 +1,885 @@
+########################################################################################################################
+#                                                                                                                      #
+# Model of the M3 software.                                                                                            #
+#                                                                                                                      #
+########################################################################################################################
+
+
+!IMPORT models/in/mercator/mtcs_common.yaml:
+!IMPORT models/in/mercator/mtcs_telemetry.yaml:
+!IMPORT models/in/mercator/mtcs_m1.yaml:
+!IMPORT models/in/mercator/mtcs_m3.yaml:
+
+
+########################################################################################################################
+# Define the containing PLC library
+########################################################################################################################
+
+!LIBRARY mtcs_m2:
+  
+  ########################################################################################################################
+  # M2Axes
+  ########################################################################################################################
+  
+  !ENUMERATION M2Axes:
+      items:
+          [   "X",
+              "Y",
+              "Z",
+              "TILTX",
+              "TILTY" ]
+  
+  
+  ########################################################################################################################
+  # M2Config
+  ########################################################################################################################
+  
+  !CONFIG M2Config:
+      items:
+          x     : { comment: "The config of the X axis" }
+          y     : { comment: "The config of the Y axis" }
+          z     : { comment: "The config of the Z axis" }
+          tiltX : { comment: "The config of the tiltX axis" }
+          tiltY : { comment: "The config of the tiltY axis" }
+          thermalFocus:
+              comment: "The thermal focus coefficients for all focal stations"
+          waitAfterPowerOn:
+              comment: "Time (in seconds) to wait after the field electricity of M2 have been powered on"
+              type:    t_double
+          waitAfterPowerOff:
+              comment: "Time (in seconds) to wait after the field electricity of M2 have been powered off"
+              type:    t_double
+          powerOffTimeout:
+              comment: "If no new command is sent to M2 within this time (in seconds) after completion of the last command, M2 will be powered off automatically"
+              type:    t_double
+          fixedXPosition:
+              comment: "The fixed X position in mm"
+              type:    t_double
+          fixedXPositionTolerance:
+              comment: "If the X position is within fixedXPosition +/- this tolerance, there's no need to adjust it"
+              type:    t_double
+          fixedYPosition:
+              comment: "The fixed Y position in mm"
+              type:    t_double
+          fixedYPositionTolerance:
+              comment: "If the Y position is within fixedYPosition +/- this tolerance, there's no need to adjust it"
+              type:    t_double
+          fixedTiltXPosition:
+              comment: "The fixed TiltX position in mm"
+              type:    t_double
+          fixedTiltXPositionTolerance:
+              comment: "If the TiltX position is within fixedTiltXPosition +/- this tolerance, there's no need to adjust it"
+              type:    t_double
+          fixedTiltYPosition:
+              comment: "The fixed TiltY position in mm"
+              type:    t_double
+          fixedTiltYPositionTolerance:
+              comment: "If the TiltY position is within fixedTiltYPosition +/- this tolerance, there's no need to adjust it"
+              type:    t_double
+          verifyFixedPositinsOnThermalFocus:
+              comment: "Each time a theremal focus is done, verify the fixed positions (and adjust them if they fall out of the tolerance)"
+              type:    t_bool
+  
+  
+  ########################################################################################################################
+  # M2ThermalFocusConfig
+  ########################################################################################################################
+  
+  !CONFIG M2ThermalFocusStationConfig:
+      items:
+          offset                  : { type: t_double, comment: "focus = offset + topCoefficient*topTemperature + centreCoefficient*centreTemperature + mirrorCellCoefficient*mirrorCellTemperature" }
+          topCoefficient          : { type: t_double, comment: "focus = offset + topCoefficient*topTemperature + centreCoefficient*centreTemperature + mirrorCellCoefficient*mirrorCellTemperature" }
+          centreCoefficient       : { type: t_double, comment: "focus = offset + topCoefficient*topTemperature + centreCoefficient*centreTemperature + mirrorCellCoefficient*mirrorCellTemperature" }
+          mirrorCellCoefficient   : { type: t_double, comment: "focus = offset + topCoefficient*topTemperature + centreCoefficient*centreTemperature + mirrorCellCoefficient*mirrorCellTemperature" }
+  
+  
+  ########################################################################################################################
+  # M2ThermalFocusConfig
+  ########################################################################################################################
+  
+  !CONFIG M2ThermalFocusConfig:
+      typeOf: M2Config.thermalFocus
+      items:
+          cassegrain : { type: M2ThermalFocusStationConfig, comment: "Cassegrain thermal focus config"}
+          nasmythA   : { type: M2ThermalFocusStationConfig, comment: "Nasmyth A thermal focus config"}
+          nasmythB   : { type: M2ThermalFocusStationConfig, comment: "Nasmyth B thermal focus config"}
+          nasmythC   : { type: M2ThermalFocusStationConfig, comment: "Nasmyth C thermal focus config"}
+          nasmythD   : { type: M2ThermalFocusStationConfig, comment: "Nasmyth D thermal focus config"}
+          other0     : { type: M2ThermalFocusStationConfig, comment: "Other 0 thermal focus config"}
+          other1     : { type: M2ThermalFocusStationConfig, comment: "Other 1 thermal focus config"}
+          other2     : { type: M2ThermalFocusStationConfig, comment: "Other 2 thermal focus config"}
+          other3     : { type: M2ThermalFocusStationConfig, comment: "Other 3 thermal focus config"}
+          other4     : { type: M2ThermalFocusStationConfig, comment: "Other 4 thermal focus config"}
+  
+  
+  ########################################################################################################################
+  # M2SelectAxisProcess
+  ########################################################################################################################
+  !PROCESS M2SelectAxisProcess:
+      extends: mtcs_common.BaseProcess
+      arguments:
+          axis  : { type: M2Axes, comment: "The axis to select" }
+  
+  
+  ########################################################################################################################
+  # M2MoveProcess
+  ########################################################################################################################
+  !PROCESS M2MoveProcess:
+      extends: mtcs_common.BaseProcess
+      arguments:
+          axis     : { type: M2Axes   , comment: "The axis to move" }
+          position : { type: t_double , comment: "Move to a certain position in millimeters" }
+  
+  
+  ########################################################################################################################
+  # M2MoveStepsProcess
+  ########################################################################################################################
+  
+  !PROCESS M2MoveStepsProcess:
+      extends: mtcs_common.BaseProcess
+      arguments:
+          axis  : { type: M2Axes     , comment: "The axis to move" }
+          steps : { type: t_uint32   , comment: "Move a certain number of steps" }
+          cw    : { type: t_bool     , comment: "True if the axis should be moved in CW (negative) direction"}
+          fast  : { type: t_bool     , comment: "True if the axis should be moved fast (only used in case of Z-axis!)" }
+  
+  
+  ########################################################################################################################
+  # M2DoThermalFocusForStationPosition
+  ########################################################################################################################
+  !PROCESS M2DoThermalFocusForStationPosition:
+      extends: mtcs_common.BaseProcess
+      arguments:
+          station : { type: mtcs_m3.M3PositionIDs, comment: "The station numerical ID for which the thermal focus should be executed" }
+  
+  
+  ########################################################################################################################
+  # M2DoThermalFocusForStationName
+  ########################################################################################################################
+  !PROCESS M2DoThermalFocusForStationName:
+      extends: mtcs_common.BaseProcess
+      arguments:
+          station : { type: t_string, comment: "The configured station name, for which the thermal focus should be executed" }
+  
+  
+  ########################################################################################################################
+  # M2
+  ########################################################################################################################
+  
+  !STATEMACHINE M2:
+      variables:
+          editableConfig                  : { type: M2Config                              , comment: "Editable configuration of the M2 subsystem" }
+      references:
+          operatorStatus                  : { type: mtcs_common.OperatorStatus            , comment: "Shared operator status" }
+          io                              : { type: mtcs_m1.M1M2IO                        , comment: "Shared I/O with M1" }
+          actualFocalStation              : { type: mtcs_m3.M3PositionIDs                 , comment: "Actual M3 focal station, needed for thermal focus" }
+          m3KnownPositionsConfig          : { type: mtcs_m3.M3KnownPositionsConfig        , comment: "Config of M3 with all info (e.g. names) of focal stations" }
+          temperatures                    : { type: mtcs_telemetry.TelemetryTemperatures  , comment: "Telemetry temperatures"}
+      variables_read_only:
+          config                          : { type: M2Config                              , comment: "Active configuration of the M2 subsystem" }
+          selectedAxis                    : { type: M2Axes                                , comment: "The axis which is currently selected by the multiplexer" }
+          selectedAxisName                : { type: t_string                              , comment: "The name of the axis which is currently selected by the multiplexer" }
+          powerOffTimer                   : { type: t_double                              , comment: "Number of seconds before the power of the M2 field electricity will be powered off automatically"}
+          thermalFocusCassegrain          : { type: mtcs_common.LinearPosition            , comment: "Thermal focus position for cassegrain" }
+          thermalFocusNasmythA            : { type: mtcs_common.LinearPosition            , comment: "Thermal focus position for nasmyth A" }
+          thermalFocusNasmythB            : { type: mtcs_common.LinearPosition            , comment: "Thermal focus position for nasmyth B" }
+          thermalFocusNasmythC            : { type: mtcs_common.LinearPosition            , comment: "Thermal focus position for nasmyth C" }
+          thermalFocusNasmythD            : { type: mtcs_common.LinearPosition            , comment: "Thermal focus position for nasmyth D" }
+          thermalFocusActualFocalStation  : { type: mtcs_common.LinearPosition            , comment: "Thermal focus position for nasmyth D" }
+      parts:
+          powerRelay:
+              comment                     : "Relay to power on/off the power of the M2 field electricity"
+              type                        : mtcs_common.SimpleRelay
+          heater:
+              comment                     : "Digital output to power on/off the heater of M2"
+              type                        : mtcs_common.SimpleRelay
+          x:
+              comment                     : "The X axis"
+              arguments:
+                  powered                 : {}
+                  config                  : {}
+                  axisConfig              : {}
+              attributes:
+                  statuses:
+                      attributes:
+                          healthStatus    : { type: mtcs_common.HealthStatus }
+          y:
+              comment                     : "The Y axis"
+              arguments:
+                  powered                 : {}
+                  config                  : {}
+                  axisConfig              : {}
+              attributes:
+                  statuses:
+                      attributes:
+                          healthStatus    : { type: mtcs_common.HealthStatus }
+          z:
+              comment                     : "The Z axis"
+              arguments:
+                  powered                 : {}
+                  config                  : {}
+                  axisConfig              : {}
+                  isEnabled               : { type: t_bool }
+              attributes:
+                  statuses:
+                      attributes:
+                          healthStatus    : { type: mtcs_common.HealthStatus }
+          tiltX:
+              comment                     : "The TiltX axis"
+              arguments:
+                  powered                 : {}
+                  config                  : {}
+                  axisConfig              : {}
+              attributes:
+                  statuses:
+                      attributes:
+                          healthStatus    : { type: mtcs_common.HealthStatus }
+          tiltY:
+              comment                     : "The TiltY axis"
+              arguments:
+                  powered                 : {}
+                  config                  : {}
+                  axisConfig              : {}
+              attributes:
+                  statuses:
+                      attributes:
+                          healthStatus    : { type: mtcs_common.HealthStatus }
+          multiplexer:
+              comment                     : "The multiplexer inputs and outputs"
+              arguments:
+                  isEnabled               : { type: t_bool }
+                  powered                 : {}
+              attributes:
+                  statuses:
+                      attributes:
+                          healthStatus    : { type: mtcs_common.HealthStatus }
+                          busyStatus      : { type: mtcs_common.BusyStatus }
+          configManager:
+              comment                     : "The config manager (to load/save/activate configuration data)"
+              type                        : mtcs_common.ConfigManager
+          moveStepsProcedure:
+              comment                     : "The move steps procedure"
+              arguments:
+                  powerOn                 : {}
+                  x                       : {}
+                  y                       : {}
+                  z                       : {}
+                  tiltX                   : {}
+                  tiltY                   : {}
+                  multiplexer             : {}
+                  config                  : {}
+              attributes:
+                  statuses:
+                      attributes:
+                          healthStatus    : { type: mtcs_common.HealthStatus }
+                          busyStatus      : { type: mtcs_common.BusyStatus   }
+          movePositionProcedure:
+              comment                     : "The move to a certain position procedure"
+              arguments:
+                  powerOn                 : {}
+                  x                       : {}
+                  y                       : {}
+                  z                       : {}
+                  tiltX                   : {}
+                  tiltY                   : {}
+                  multiplexer             : {}
+                  moveStepsProcedure      : {}
+                  config                  : {}
+              attributes:
+                  statuses:
+                      attributes:
+                          healthStatus    : { type: mtcs_common.HealthStatus }
+                          busyStatus      : { type: mtcs_common.BusyStatus   }
+      statuses:
+          initializationStatus            : { type: mtcs_common.InitializationStatus }
+          poweredStatus                   : { type: mtcs_common.PoweredStatus }
+          healthStatus                    : { type: mtcs_common.HealthStatus }
+          busyStatus                      : { type: mtcs_common.BusyStatus }
+          operatingStatus                 : { type: mtcs_common.OperatingStatus }
+      processes:
+          initialize                      : { type: mtcs_common.Process                     , comment: "Start initializing" }
+          lock                            : { type: mtcs_common.Process                     , comment: "Lock the system" }
+          unlock                          : { type: mtcs_common.Process                     , comment: "Unlock the system" }
+          changeOperatingState            : { type: mtcs_common.ChangeOperatingStateProcess , comment: "Change the operating state (e.g. AUTO, MANUAL, ...)" }
+          moveAbsolute                    : { type: M2MoveProcess                           , comment: "Move the position of one axis in an absolute way" }
+          moveRelative                    : { type: M2MoveProcess                           , comment: "Move the position of one axis relative to the current position" }
+          moveSteps                       : { type: M2MoveStepsProcess                      , comment: "Move the position of one axis by providing a number of steps (i.e. motor pulses)" }
+          doThermalFocus                  : { type: mtcs_common.Process                     , comment: "Do a thermal focus for the currently active focus" }
+          doThermalFocusForStationName    : { type: M2DoThermalFocusForStationName          , comment: "Do a thermal focus for a specified focal station (based on the configured name of the station)" }
+          doThermalFocusForStationPosition: { type: M2DoThermalFocusForStationPosition      , comment: "Do a thermal focus for a specified focal station (based on the station numerical ID)" }
+          verifyFixedPositions            : { type: mtcs_common.Process                     , comment: "Verify (and adjust if necessary) the fixed positions of X, Y, TiltX, and TiltY" }
+          powerOn                         : { type: mtcs_common.Process                     , comment: "Power on the M2 electricity" }
+          powerOff                        : { type: mtcs_common.Process                     , comment: "Power off the M2 electricity" }
+          abort                           : { type: mtcs_common.Process                     , comment: "Abort the move procedure" }
+      calls:
+          # processes
+          initialize:
+              isEnabled                   : !OR [ statuses.initializationStatus.shutdown,
+                                                  statuses.initializationStatus.initializingFailed,
+                                                  statuses.initializationStatus.initialized ]
+          lock:
+              isEnabled                   : !AND [ operatorStatus.tech, statuses.initializationStatus.initialized ]
+          unlock:
+              isEnabled                   : !AND [ operatorStatus.tech, statuses.initializationStatus.locked ]
+          changeOperatingState:
+              isEnabled                   : !AND [ statuses.busyStatus.idle, statuses.initializationStatus.initialized, operatorStatus.tech ]
+          moveAbsolute:
+              isEnabled                   : !AND [ statuses.initializationStatus.initialized, statuses.busyStatus.idle ]
+          moveRelative:
+              isEnabled                   : processes.moveAbsolute.isEnabled
+          moveSteps:
+              isEnabled                   : !AND [ statuses.initializationStatus.initialized, operatorStatus.tech ]
+          doThermalFocus:
+              isEnabled                   : !AND [ processes.moveAbsolute.isEnabled, !NOT [ !EQ [ actualFocalStation, mtcs_m3.M3PositionIDs.UNKNOWN ] ] ]
+          doThermalFocusForStationPosition:
+              isEnabled                   : processes.moveAbsolute.isEnabled
+          verifyFixedPositions:
+              isEnabled                   : processes.moveAbsolute.isEnabled
+          doThermalFocusForStationName:
+              isEnabled                   : processes.moveAbsolute.isEnabled
+          abort:
+              isEnabled                   : !OR [ parts.moveStepsProcedure.statuses.busyStatus.busy,
+                                                  parts.movePositionProcedure.statuses.busyStatus.busy ]
+          powerOn:
+              isEnabled                   : !AND [ statuses.busyStatus.idle, statuses.initializationStatus.initialized ]
+          powerOff:
+              isEnabled                   : !AND [ statuses.busyStatus.idle, statuses.initializationStatus.initialized ]
+          # statuses
+          healthStatus:
+              isGood                      : !AND [
+                                                  !OR [
+                                                      !MTCS_SUMMARIZE_GOOD [
+                                                              parts.x,
+                                                              parts.y,
+                                                              parts.z,
+                                                              parts.tiltX,
+                                                              parts.tiltY,
+                                                              parts.multiplexer
+                                                      ],
+                                                      statuses.poweredStatus.disabled
+                                                  ],
+                                                  !MTCS_SUMMARIZE_GOOD [ io, temperatures, parts.configManager ]
+                                            ]
+              hasWarning                  : !OR [
+                                                  !AND [
+                                                      !MTCS_SUMMARIZE_WARN [
+                                                              parts.x,
+                                                              parts.y,
+                                                              parts.z,
+                                                              parts.tiltX,
+                                                              parts.tiltY,
+                                                              parts.multiplexer
+                                                      ],
+                                                      statuses.poweredStatus.enabled
+                                                  ],
+                                                  !MTCS_SUMMARIZE_WARN [ io, temperatures, parts.configManager ]
+                                            ] 
+          busyStatus:
+              isBusy                      : !OR [ statuses.initializationStatus.initializing,
+                                                  parts.multiplexer.statuses.busyStatus.busy,
+                                                  parts.configManager.statuses.busyStatus.busy,
+                                                  processes.abort.statuses.busyStatus.busy,
+                                                  processes.powerOn.statuses.busyStatus.busy,
+                                                  processes.powerOff.statuses.busyStatus.busy,
+                                                  processes.doThermalFocus.statuses.busyStatus.busy,
+                                                  processes.doThermalFocusForStationName.statuses.busyStatus.busy,
+                                                  processes.doThermalFocusForStationPosition.statuses.busyStatus.busy,
+                                                  processes.verifyFixedPositions.statuses.busyStatus.busy,
+                                                  processes.moveSteps.statuses.busyStatus.busy,
+                                                  processes.moveAbsolute.statuses.busyStatus.busy,
+                                                  processes.moveRelative.statuses.busyStatus.busy ]
+          operatingStatus:
+              superState                  : statuses.initializationStatus.initialized
+          poweredStatus:
+              isEnabled                   : !AND [ parts.powerRelay.digitalOutput,
+                                                   processes.powerOn.statuses.busyStatus.idle,
+                                                   processes.powerOff.statuses.busyStatus.idle ]
+          # parts
+          x:
+              powered                     : statuses.poweredStatus.enabled
+              config                      : config
+              axisConfig                  : config.x
+          y:
+              powered                     : statuses.poweredStatus.enabled
+              config                      : config
+              axisConfig                  : config.y
+          z:
+              powered                     : statuses.poweredStatus.enabled
+              config                      : config
+              axisConfig                  : config.z
+              isEnabled                   : operatorStatus.tech
+          tiltX:
+              powered                     : statuses.poweredStatus.enabled
+              config                      : config
+              axisConfig                  : config.tiltX
+          tiltY:
+              powered                     : statuses.poweredStatus.enabled
+              config                      : config
+              axisConfig                  : config.tiltY
+          multiplexer:
+              isEnabled                   : operatorStatus.tech
+              powered                     : statuses.poweredStatus.enabled
+          powerRelay:
+              isEnabled                   : operatorStatus.tech
+          heater:
+              isEnabled                   : operatorStatus.tech
+          configManager:
+              isEnabled                   : operatorStatus.tech
+          moveStepsProcedure:
+              powerOn                     : processes.powerOn
+              x                           : parts.x
+              y                           : parts.y
+              z                           : parts.z
+              tiltX                       : parts.tiltX
+              tiltY                       : parts.tiltY
+              multiplexer                 : parts.multiplexer
+              config                      : config
+          movePositionProcedure:
+              powerOn                     : processes.powerOn
+              x                           : parts.x
+              y                           : parts.y
+              z                           : parts.z
+              tiltX                       : parts.tiltX
+              tiltY                       : parts.tiltY
+              multiplexer                 : parts.multiplexer
+              moveStepsProcedure          : parts.moveStepsProcedure
+              config                      : config
+  
+  
+  ########################################################################################################################
+  # M2AxisGeneralConfig
+  ########################################################################################################################
+  
+  !CONFIG M2AxisGeneralConfig:
+      items:
+          measurement:
+              comment: "Configure the position measurement"
+              type:    mtcs_common.MeasurementConfig
+          stoppingSteps:
+              comment: "The number of steps to be expected between the time at which the PLC realizes that the brake release signal must be set, and the time that the axis is fully stopped (for Z axis: at low speed)"
+              type:    t_uint32
+          finalSenseCW:
+              comment: "TRUE if the motor final sense must be ClockWise (- motion on the screw), FALSE if the motor final sense must be CounterClockWise (+ motion on the screw) (for Z axis: at low speed)"
+              type:    t_bool
+          closePosition:
+              comment: "The number of steps between the Close position (C) and final position (F)"
+              type:    t_uint32
+          antiBacklashPosition:
+              comment: "The number of steps between the Anti-backlash position (A) and final position (F)"
+              type:    t_uint32
+          waitAfterMove:
+              comment: "Time (in seconds) to wait after the axis has been moved"
+              type:    t_double
+          timeout:
+              comment: "Timeout for a movement, in seconds (for Z-axis: at low speed)"
+              type:    t_double
+          verifyPositionOnInitialization:
+              comment: "Verify the fixed positions (and adjust them if they fall out of the tolerance) during the Initialization procedure"
+              type:    t_bool
+  
+  
+  ########################################################################################################################
+  # M2PotentiometerConfig
+  ########################################################################################################################
+  
+  !CONFIG M2ZAxisConfig:
+      typeOf: [ M2Config.z ]
+      items:
+          general:
+              comment: "Settings which are general for all axes"
+              type: M2AxisGeneralConfig
+          highSpeedStoppingSteps:
+              comment: "The number of steps to be expected between the time at which the PLC realizes that the brake release signal must be set, and the time that the axis is fully stopped at high speed"
+              type:    t_uint32
+          highSpeedTimeout:
+              comment: "Timeout for a fast movement of the Z axis (in seconds)"
+              type:    t_double
+  
+  
+  ########################################################################################################################
+  # M2PotentiometerAxisConfig
+  ########################################################################################################################
+  
+  !CONFIG M2PotentiometerAxisConfig:
+      typeOf: [ M2Config.x, M2Config.y, M2Config.tiltX, M2Config.tiltY ]
+      items:
+          general:
+              comment: "Settings which are general for all axes"
+              type: M2AxisGeneralConfig
+          voltageCorrectionFactor:
+              comment: "Position = voltage * correctionFactor * voltageToPosition"
+              type: t_double
+  
+  
+  ########################################################################################################################
+  # M2ConstantsZ
+  ########################################################################################################################
+  
+  !CONFIG M2ConstantsZ:
+      comment: "Some mechanical constants for the Z axis"
+      items:
+          MOT_TO_RED_RATIO    : { type: t_double , initial: !DOUBLE 134   , comment: "Motor reduction ratio" }
+          RED_TO_SCREW_RATIO  : { type: t_double , initial: !DOUBLE 2     , comment: "Transmission ratio between the motor reduction and the screw" }
+          SCREW_TO_ENC_RATIO  : { type: t_double , initial: !DOUBLE 1     , comment: "Transmission ratio between the encoder and the screw" }
+          MIN_POSITION        : { type: t_double , initial: !DOUBLE 0     , comment: "Minimum position of the axis, in micrometer" }
+          MAX_POSITION        : { type: t_double , initial: !DOUBLE 50000 , comment: "Maximum position of the axis, in micrometer" }
+          SCREW_PITCH         : { type: t_double , initial: !DOUBLE 2000  , comment: "Screw pitch, in micrometer" }
+          FEEDBACK_RESOLUTION : { type: t_double , initial: !DOUBLE 32    , comment: "Motor feedback resolution (pulses per revolution of the motor rotor)" }
+  
+  
+  ########################################################################################################################
+  # M2ConstantsX, M2ConstantsY, M2ConstantsTiltX, M2ConstantsTiltY
+  ########################################################################################################################
+
+  !CONFIG M2ConstantsX:
+      comment: "Some mechanical constants for the X axis"
+      items:
+          MOT_TO_RED_RATIO            : { type: t_double , initial: !DOUBLE 415  , comment: "Motor reduction ratio" }
+          RED_TO_SCREW_RATIO          : { type: t_double , initial: !DOUBLE 2    , comment: "Transmission ratio between the motor reduction and the screw" }
+          SCREW_TO_POT_RATIO          : { type: t_double , initial: !DOUBLE 0.5  , comment: "Transmission ratio between the potentiometer and the screw" }
+          MIN_POSITION                : { type: t_double , initial: !DOUBLE 400  , comment: "Minimum position of the axis, in micrometer" }
+          MAX_POSITION                : { type: t_double , initial: !DOUBLE 4700 , comment: "Maximum position of the axis, in micrometer" }
+          SCREW_PITCH                 : { type: t_double , initial: !DOUBLE 1000 , comment: "Screw pitch, in micrometer" }
+          FEEDBACK_RESOLUTION         : { type: t_double , initial: !DOUBLE 3    , comment: "Motor feedback resolution (pulses per revolution of the motor rotor)" }
+          POTENTIOMETER_REVOLUTIONS   : { type: t_double , initial: !DOUBLE 10   , comment: "Max number of revolutions of the potentiometer" }
+
+  !CONFIG M2ConstantsY:
+      comment: "Some mechanical constants for the Y axis"
+      items:
+          MOT_TO_RED_RATIO            : { type: t_double , initial: !DOUBLE 415  , comment: "Motor reduction ratio" }
+          RED_TO_SCREW_RATIO          : { type: t_double , initial: !DOUBLE 2    , comment: "Transmission ratio between the motor reduction and the screw" }
+          SCREW_TO_POT_RATIO          : { type: t_double , initial: !DOUBLE 0.5  , comment: "Transmission ratio between the potentiometer and the screw" }
+          MIN_POSITION                : { type: t_double , initial: !DOUBLE 400  , comment: "Minimum position of the axis, in micrometer" }
+          MAX_POSITION                : { type: t_double , initial: !DOUBLE 4700 , comment: "Maximum position of the axis, in micrometer" }
+          SCREW_PITCH                 : { type: t_double , initial: !DOUBLE 1000 , comment: "Screw pitch, in micrometer" }
+          FEEDBACK_RESOLUTION         : { type: t_double , initial: !DOUBLE 3    , comment: "Motor feedback resolution (pulses per revolution of the motor rotor)" }
+          POTENTIOMETER_REVOLUTIONS   : { type: t_double , initial: !DOUBLE 10   , comment: "Max number of revolutions of the potentiometer" }
+
+  !CONFIG M2ConstantsTiltX:
+      comment: "Some mechanical constants for the TiltX axis"
+      items:
+          MOT_TO_RED_RATIO            : { type: t_double , initial: !DOUBLE 1526 , comment: "Motor reduction ratio" }
+          RED_TO_SCREW_RATIO          : { type: t_double , initial: !DOUBLE 2    , comment: "Transmission ratio between the motor reduction and the screw" }
+          SCREW_TO_POT_RATIO          : { type: t_double , initial: !DOUBLE 0.5  , comment: "Transmission ratio between the potentiometer and the screw" }
+          MIN_POSITION                : { type: t_double , initial: !DOUBLE 260  , comment: "Minimum position of the axis, in micrometer" }
+          MAX_POSITION                : { type: t_double , initial: !DOUBLE 1200 , comment: "Maximum position of the axis, in micrometer" }
+          SCREW_PITCH                 : { type: t_double , initial: !DOUBLE 1000 , comment: "Screw pitch, in micrometer" }
+          FEEDBACK_RESOLUTION         : { type: t_double , initial: !DOUBLE 3    , comment: "Motor feedback resolution (pulses per revolution of the motor rotor)" }
+          POTENTIOMETER_REVOLUTIONS   : { type: t_double , initial: !DOUBLE 3    , comment: "Max number of revolutions of the potentiometer" }
+
+  !CONFIG M2ConstantsTiltY:
+      comment: "Some mechanical constants for the TiltX axis"
+      items:
+          MOT_TO_RED_RATIO            : { type: t_double , initial: !DOUBLE 1526 , comment: "Motor reduction ratio" }
+          RED_TO_SCREW_RATIO          : { type: t_double , initial: !DOUBLE 2    , comment: "Transmission ratio between the motor reduction and the screw" }
+          SCREW_TO_POT_RATIO          : { type: t_double , initial: !DOUBLE 0.5  , comment: "Transmission ratio between the potentiometer and the screw" }
+          MIN_POSITION                : { type: t_double , initial: !DOUBLE 180  , comment: "Minimum position of the axis, in micrometer" }
+          MAX_POSITION                : { type: t_double , initial: !DOUBLE 1200 , comment: "Maximum position of the axis, in micrometer" }
+          SCREW_PITCH                 : { type: t_double , initial: !DOUBLE 1000 , comment: "Screw pitch, in micrometer" }
+          FEEDBACK_RESOLUTION         : { type: t_double , initial: !DOUBLE 3    , comment: "Motor feedback resolution (pulses per revolution of the motor rotor)" }
+          POTENTIOMETER_REVOLUTIONS   : { type: t_double , initial: !DOUBLE 3    , comment: "Max number of revolutions of the potentiometer" }
+
+  
+  ########################################################################################################################
+  # M2Multiplexer
+  ########################################################################################################################
+  
+  !STATEMACHINE M2Multiplexer:
+      typeOf: M2Parts.multiplexer
+      variables:
+          noFault         : { type: t_bool                  , address: "%I*"  , comment: "FALSE if the drive selected by the multiplexer is in faulty state, TRUE if it is in a healthy state"}
+          isEnabled       : { type: t_bool                                    , comment: "TRUE if the multiplexer is enabled, FALSE if not"}
+          powered         : { type: t_bool                                                    , comment: "TRUE if the axis is powered" }
+      parts:
+          A               : { type: mtcs_common.SimpleRelay                     , comment: "Output A of the multiplexer corresponding with the selected axis" }
+          B               : { type: mtcs_common.SimpleRelay                     , comment: "Output B of the multiplexer corresponding with the selected axis" }
+          C               : { type: mtcs_common.SimpleRelay                     , comment: "Output C of the multiplexer corresponding with the selected axis" }
+          driveEnable     : { type: mtcs_common.SimpleRelay                     , comment: "Enabled (TRUE) if the drive selected by the multiplexer must be enabled, Disabled (FALSE) if it must be disabled" }
+          CW              : { type: mtcs_common.SimpleRelay                     , comment: "Enabled (TRUE) if the motor selected by the multiplexer will run in CW direction (- motion on the screw), Disabled (FALSE) if it will run in CCW direction (+ motion on the screw)" }
+          release         : { type: mtcs_common.SimpleRelay                     , comment: "Disabled (FALSE) if the motor selected by the multiplexer must be braking, Enabled (TRUE) if it must be released" }
+      processes:
+          selectAxis      : { type: M2SelectAxisProcess               , comment: "Select an axis" }
+      statuses:
+          healthStatus    : { type: mtcs_common.HealthStatus                    , comment: "Is the selected drive healthy?"}
+          busyStatus      : { type: mtcs_common.BusyStatus                      , comment: "Is the selected drive busy?"}
+      calls:
+          A:
+              isEnabled   : isEnabled
+          B:
+              isEnabled   : isEnabled
+          C:
+              isEnabled   : isEnabled
+          driveEnable:
+              isEnabled   : isEnabled
+          CW:
+              isEnabled   : isEnabled
+          release:
+              isEnabled   : isEnabled
+          selectAxis:
+              isEnabled   : isEnabled
+          healthStatus:
+              isGood      : !AND [ !OR [ noFault, !NOT [ powered ] ],
+                                    processes.selectAxis.statuses.healthStatus.good ]
+          busyStatus:
+              isBusy      : !OR [ parts.A.statuses.busyStatus.busy,
+                                   parts.B.statuses.busyStatus.busy,
+                                   parts.C.statuses.busyStatus.busy,
+                                   parts.driveEnable.statuses.busyStatus.busy,
+                                   parts.CW.statuses.busyStatus.busy,
+                                   parts.release.statuses.busyStatus.busy ]
+  
+  
+  ########################################################################################################################
+  # M2XAxis, M2YAxis, M2TiltXAxis, M2TiltYAxis
+  ########################################################################################################################
+  
+  !STATEMACHINE M2XAxis:
+      typeOf: M2Parts.x
+      references:
+          config                  : { type: M2Config                          , expand: false , comment: "The general M2 config" }
+          axisConfig              : { type: M2PotentiometerAxisConfig                         , comment: "The config particular for this axis" }
+      variables:
+          position                : { type: mtcs_common.LinearPositionMeasurement16     , comment: "Actual position of the axis" }
+          backlashLifted          : { type: t_bool                                      , comment: "TRUE if the backlash was previously lifted" }
+          powered                 : { type: t_bool                                      , comment: "TRUE if the axis is powered" }
+      variables_read_only:
+          constants               : { type: M2ConstantsX                                , comment: "Some constants particular for this axis" }
+      statuses:
+          healthStatus            : { type: mtcs_common.HealthStatus                    , comment: "Is the axis healthy?"}
+      calls:
+          position:
+              config              : axisConfig.general.measurement
+              conversionFactor    : !DIV [
+                                         !MUL [
+                                                  constants.POTENTIOMETER_REVOLUTIONS,
+                                                  !MUL [ constants.SCREW_TO_POT_RATIO,
+                                                         constants.SCREW_PITCH ]
+                                          ],
+                                          !MUL [
+                                                  !DOUBLE "2**15",
+                                                  !DOUBLE 1000
+                                          ]
+                                    ]
+          healthStatus:
+              isGood              : position.statuses.healthStatus.isGood
+              hasWarning          : position.statuses.healthStatus.hasWarning
+
+  !STATEMACHINE M2YAxis:
+      typeOf: M2Parts.y
+      references:
+          config                  : { type: M2Config                          , expand: false , comment: "The general M2 config" }
+          axisConfig              : { type: M2PotentiometerAxisConfig                         , comment: "The config particular for this axis" }
+      variables:
+          position                : { type: mtcs_common.LinearPositionMeasurement16     , comment: "Actual position of the axis" }
+          backlashLifted          : { type: t_bool                                      , comment: "TRUE if the backlash was previously lifted" }
+          powered                 : { type: t_bool                                      , comment: "TRUE if the axis is powered" }
+      variables_read_only:
+          constants               : { type: M2ConstantsY                                , comment: "Some constants particular for this axis" }
+      statuses:
+          healthStatus            : { type: mtcs_common.HealthStatus                    , comment: "Is the axis healthy?"}
+      calls:
+          position:
+              config              : axisConfig.general.measurement
+              conversionFactor    : !DIV [
+                                         !MUL [
+                                                  constants.POTENTIOMETER_REVOLUTIONS,
+                                                  !MUL [ constants.SCREW_TO_POT_RATIO,
+                                                         constants.SCREW_PITCH ]
+                                          ],
+                                          !MUL [
+                                                  !DOUBLE "2**15",
+                                                  !DOUBLE 1000
+                                          ]
+                                    ]
+          healthStatus:
+              isGood              : position.statuses.healthStatus.isGood
+              hasWarning          : position.statuses.healthStatus.hasWarning
+
+  !STATEMACHINE M2TiltXAxis:
+      typeOf: M2Parts.tiltX
+      references:
+          config                  : { type: M2Config                          , expand: false , comment: "The general M2 config" }
+          axisConfig              : { type: M2PotentiometerAxisConfig                         , comment: "The config particular for this axis" }
+      variables:
+          position                : { type: mtcs_common.LinearPositionMeasurement16     , comment: "Actual position of the axis" }
+          backlashLifted          : { type: t_bool                                      , comment: "TRUE if the backlash was previously lifted" }
+          powered                 : { type: t_bool                                      , comment: "TRUE if the axis is powered" }
+      variables_read_only:
+          constants               : { type: M2ConstantsTiltX                            , comment: "Some constants particular for this axis" }
+      statuses:
+          healthStatus            : { type: mtcs_common.HealthStatus                    , comment: "Is the axis healthy?"}
+      calls:
+          position:
+              config              : axisConfig.general.measurement
+              conversionFactor    : !DIV [
+                                         !MUL [
+                                                  constants.POTENTIOMETER_REVOLUTIONS,
+                                                  !MUL [ constants.SCREW_TO_POT_RATIO,
+                                                         constants.SCREW_PITCH ]
+                                          ],
+                                          !MUL [
+                                                  !DOUBLE "2**15",
+                                                  !DOUBLE 1000
+                                          ]
+                                    ]
+          healthStatus:
+              isGood              : position.statuses.healthStatus.isGood
+              hasWarning          : position.statuses.healthStatus.hasWarning
+
+  !STATEMACHINE M2TiltYAxis:
+      typeOf: M2Parts.tiltY
+      references:
+          config                  : { type: M2Config                          , expand: false , comment: "The general M2 config" }
+          axisConfig              : { type: M2PotentiometerAxisConfig                         , comment: "The config particular for this axis" }
+      variables:
+          position                : { type: mtcs_common.LinearPositionMeasurement16     , comment: "Actual position of the axis" }
+          backlashLifted          : { type: t_bool                                      , comment: "TRUE if the backlash was previously lifted" }
+          powered                 : { type: t_bool                                      , comment: "TRUE if the axis is powered" }
+      variables_read_only:
+          constants               : { type: M2ConstantsTiltY                            , comment: "Some constants particular for this axis" }
+      statuses:
+          healthStatus            : { type: mtcs_common.HealthStatus                    , comment: "Is the axis healthy?"}
+      calls:
+          position:
+              config              : axisConfig.general.measurement
+              conversionFactor    : !DIV [
+                                         !MUL [
+                                                  constants.POTENTIOMETER_REVOLUTIONS,
+                                                  !MUL [ constants.SCREW_TO_POT_RATIO,
+                                                         constants.SCREW_PITCH ]
+                                          ],
+                                          !MUL [
+                                                  !DOUBLE "2**15",
+                                                  !DOUBLE 1000
+                                          ]
+                                    ]
+          healthStatus:
+              isGood              : position.statuses.healthStatus.isGood
+              hasWarning          : position.statuses.healthStatus.hasWarning
+  
+  
+  ########################################################################################################################
+  # M2ZAxis
+  ########################################################################################################################
+  
+  !STATEMACHINE M2ZAxis:
+      typeOf: M2Parts.z
+      references:
+          config                : { type: M2Config          , expand: false         , comment: "The general M2 config" }
+          axisConfig            : { type: M2ZAxisConfig                             , comment: "The config particular for this axis" }
+      variables:
+          position              : { type: mtcs_common.LinearPositionMeasurementU32  , comment: "Actual position of the axis" }
+          backlashLifted        : { type: t_bool                                    , comment: "TRUE if the backlash was previously lifted" }
+          powered               : { type: t_bool                                    , comment: "TRUE if the axis is powered" }
+          isEnabled             : { type: t_bool                                    , comment: "TRUE if the Z axis control is enabled, FALSE if not"}
+      variables_read_only:
+          constants             : { type: M2ConstantsZ                              , comment: "Some constants particular for this axis" }
+      parts:
+          highSpeed             : { type: mtcs_common.SimpleRelay                   , comment: "Enabled (TRUE) to enable the high-speed motion of the Z axis, Disabled (FALSE) to leave it low-speed" }
+          encoder               : { type: mtcs_common.SSIEncoder                    , comment: "The SSI encoder of the Z axis" }
+      statuses:
+          healthStatus          : { type: mtcs_common.HealthStatus                  , comment: "Is the axis healthy?"}
+      calls:
+          highSpeed:
+              isEnabled         : isEnabled
+          position:
+              rawValue          : parts.encoder.counterValue
+              error             : !OR [ parts.encoder.dataError, 
+                                        parts.encoder.frameError, 
+                                        parts.encoder.powerFailure, 
+                                        parts.encoder.syncError ]
+              config            : axisConfig.general.measurement
+              conversionFactor  : !DIV [
+                                          !MUL [
+                                                  constants.SCREW_TO_ENC_RATIO,
+                                                  constants.SCREW_PITCH
+                                          ],
+                                          !MUL [
+                                                  !DOUBLE "2**13", # encoder resolution = 13 bits / rev
+                                                  !DOUBLE 1000     # micrometer_per_millimeter
+                                          ]
+                                    ]
+          healthStatus:
+              isGood             : !MTCS_SUMMARIZE_GOOD [ position, parts.encoder ]
+              hasWarning         : !MTCS_SUMMARIZE_WARN [ position, parts.encoder ]
+  
+  
+  ########################################################################################################################
+  # M3GotoProcedureStates
+  ########################################################################################################################
+  
+  !ENUMERATION M2MoveProcedureStates:
+      items:
+          [   "IDLE",
+              "ABORTED",
+              "PREPARE_PROCESS",
+              "MOVING",
+              "MOVING_TO_ANTI_BACKLASH_POSITION",
+              "MOVING_CLOSE_TO_FINAL_POSITION",
+              "MOVING_TO_FINAL_POSITION",
+              "ERROR",
+              "ABORTING"   ]
+  
+  ########################################################################################################################
+  # M2MoveStepsProcedure
+  ########################################################################################################################
+  
+  !STATEMACHINE M2MoveStepsProcedure:
+      typeOf: [ M2Parts.moveStepsProcedure ]
+      variables:
+          state               : { type: M2MoveProcedureStates                 , comment: "New state, to be set by the manual implementation" }
+          actualCounterValue  : { type: t_uint32            , address: '%I*'  , comment: "Actual counter value" }
+          stepsRemaining      : { type: t_uint32                              , comment: "Number of steps remaining"}
+      references:
+          powerOn             : { type: mtcs_common.Process     , expand: false }
+          x                   : { type: M2XAxis                 , expand: false }
+          y                   : { type: M2YAxis                 , expand: false }
+          z                   : { type: M2ZAxis                 , expand: false }
+          tiltX               : { type: M2TiltXAxis             , expand: false }
+          tiltY               : { type: M2TiltYAxis             , expand: false }
+          multiplexer         : { type: M2Multiplexer           , expand: false }
+          config              : { type: M2Config                , expand: false }
+      statuses:
+          busyStatus          : { type: mtcs_common.BusyStatus                 , comment: "Is the M2MoveStepsProcedure in a busy state?" }
+          healthStatus        : { type: mtcs_common.HealthStatus               , comment: "Is the M2MoveStepsProcedure in a healthy state?" }
+      calls:
+          busyStatus:
+              isBusy          : !NOT [ !OR [ !EQ [ state, M2MoveProcedureStates.IDLE ],
+                                             !EQ [ state, M2MoveProcedureStates.ABORTED ],
+                                             !EQ [ state, M2MoveProcedureStates.ERROR ] ] ]
+          healthStatus:
+              isGood          : !NOT [ !EQ [ state, M2MoveProcedureStates.ERROR ] ]
+              hasWarning      : !EQ [ state, M2MoveProcedureStates.ABORTED ]
+  
+  
+  ########################################################################################################################
+  # M2MovePositionProcedure
+  ########################################################################################################################
+  
+  !STATEMACHINE M2MovePositionProcedure:
+      typeOf: [ M2Parts.movePositionProcedure ]
+      variables:
+          state               : { type: M2MoveProcedureStates , comment: "New state, to be set by the manual implementation" }
+      references:
+          powerOn             : { type: mtcs_common.Process   , expand: false }
+          x                   : { type: M2XAxis               , expand: false }
+          y                   : { type: M2YAxis               , expand: false }
+          z                   : { type: M2ZAxis               , expand: false }
+          tiltX               : { type: M2TiltXAxis           , expand: false }
+          tiltY               : { type: M2TiltYAxis           , expand: false }
+          multiplexer         : { type: M2Multiplexer         , expand: false }
+          moveStepsProcedure  : { type: M2MoveStepsProcedure  , expand: false }
+          config              : { type: M2Config              , expand: false }
+      statuses:
+          busyStatus          : { type: mtcs_common.BusyStatus                  , comment: "Is the M2MoveAbsoluteProcedure in a busy state?" }
+          healthStatus        : { type: mtcs_common.HealthStatus                , comment: "Is the M2MoveAbsoluteProcedure in a healthy state?" }
+      calls:
+          busyStatus:
+              isBusy          : !NOT [ !OR [ !EQ [ state, M2MoveProcedureStates.IDLE ],
+                                             !EQ [ state, M2MoveProcedureStates.ABORTED ],
+                                             !EQ [ state, M2MoveProcedureStates.ERROR ] ] ]
+          healthStatus:
+              isGood          : !NOT [ !EQ [ state, M2MoveProcedureStates.ERROR ] ]
+              hasWarning      : !EQ [ state, M2MoveProcedureStates.ABORTED ]
+  
+  

@@ -1,0 +1,2036 @@
+########################################################################################################################
+#                                                                                                                      #
+# Model of the Axes software.                                                                                            #
+#                                                                                                                      #
+########################################################################################################################
+
+
+!IMPORT models/in/mercator/mtcs_common.yaml:
+!IMPORT models/in/mercator/mtcs_tmc.yaml:
+!IMPORT models/in/mercator/mtcs_services.yaml:
+!IMPORT models/in/mercator/mtcs_safety.yaml:
+
+
+########################################################################################################################
+# Define the containing PLC library
+########################################################################################################################
+
+!LIBRARY mtcs_axes:
+  
+  
+  ########################################################################################################################
+  # AxesIds
+  ########################################################################################################################
+  
+  !ENUMERATION AxesIds:
+      items:
+          [   "AZI",
+              "ABL",
+              "ELE",
+              "ROC",
+              "RON" ]
+  
+  
+  
+  ########################################################################################################################
+  # AxesLocationConfig
+  ########################################################################################################################
+  
+  !CONFIG AxesLocationConfig:
+      items:
+          longitude:
+              type: t_double
+              comment: "Observatory location: longitude [degrees, positive = E, negative = W]"
+          latitude:
+              type: t_double
+              comment: "Observatory location: latitude [degrees, positive = N, negative = S]"
+          height:
+              type: t_float
+              comment: "Observatory location: height above sea-level [m]"
+          polarMotionX:
+              type: t_float
+              comment: "Earth polar motion x in degrees"
+          polarMotionY:
+              type: t_float
+              comment: "Earth polar motion y in degrees"
+          nutationDx:
+              type: t_float
+              comment: "Nutation adjustment dX in degrees"
+          nutationDy:
+              type: t_float
+              comment: "Nutation adjustment dY in degrees"
+  
+  ########################################################################################################################
+  # AxesLocalConditionsConfig
+  ########################################################################################################################
+  
+  !CONFIG AxesLocalConditionsConfig:
+      items:
+          useTemperatureFromSensors:
+              type: t_bool
+              comment: "True if the temperature from the sensors should be used, false to use the temperature from the config"
+          configuredTemperature:
+              type: t_float
+              comment: "Local temperature in degrees, fixed by config"
+          configuredPressure:
+              type: t_float
+              comment: "Local temperature in hectoPascal = millibar, fixed by config"
+          useRelativeHumidityFromSensors:
+              type: t_bool
+              comment: "True if the temperature from the sensors should be used, false to use the temperature from the config"
+          configuredRelativeHumidity:
+              type: t_float
+              comment: "Local relative humidity as a fraction (0...1), fixed by config"
+          configuredObservingWavelength:
+              type: t_float
+              comment: "Observing wavelength in microns, fixed by config"
+          troposphericLapseRate:
+              type: t_float
+              comment: "Tropospheric lapse rate in K/m"
+  
+  
+  ########################################################################################################################
+  # AxesAzimuthConfig
+  ########################################################################################################################
+  
+  !CONFIG AxesAzimuthConfig:
+      items:
+          absoluteEncoderOffset       : { type: t_double, comment: "Offset in degrees, of the absolute encoder, w.r.t. zero" }
+          absoluteEncoderInvert       : { type: t_bool  , comment: "TRUE to invert the counting direction of the absolute encoder" }
+          lidasInvert                 : { type: t_bool  , comment: "TRUE to invert the counting direction of the LIDAs" }
+          moveOutOfLimitSwitchDistance: { type: t_double, comment: "How many degrees should the moveOutOfLimitSwitch process try to move?" }
+          positiveLimitSwitchInput    : { type: t_int8  , comment: "Which input (0-7) represents the positive limit switch?" }
+          negativeLimitSwitchInput    : { type: t_int8  , comment: "Which input (0-7) represents the negative limit switch?" }
+          minPositionLimitVirtualAxis : { type: t_double, comment: "Limit the minimum position of the virtual axis to this value in degrees" }
+          maxPositionLimitVirtualAxis : { type: t_double, comment: "Limit the maximum position of the virtual axis to this value in degrees" }
+          minPositionLimitPhysicalAxis: { type: t_double, comment: "Limit the minimum position of the physical axis to this value in degrees" }
+          maxPositionLimitPhysicalAxis: { type: t_double, comment: "Limit the maximum position of the physical axis to this value in degrees" }
+          velocityLimit               : { type: t_double, comment: "Limit the velocity of the axis to this value in degrees/sec" }
+          accelerationLimit           : { type: t_double, comment: "Limit the acceleration (or deceleration) of the axis to this value in degrees/sec^2" }
+          minPositionSetpoint         : { type: t_double, comment: "The minimum position setpoint of the axis in degrees (should be a bit before the minPositionLimit)" }
+          maxPositionSetpoint         : { type: t_double, comment: "The maximum position setpoint of the axis in degrees (should be a bit before the maxPositionLimit)" }
+          maxVelocitySetpoint         : { type: t_double, comment: "The maximum velocity setpoint of the axis in degrees/sec" }
+          maxAccelerationSetpoint     : { type: t_double, comment: "The maximum acceleration setpoint of the axis in degrees/sec^2" }
+          slipLimit                   : { type: t_double, comment: "If the difference between the LIDA-encoder and motor-encoder positions is above this value in degrees, then we have detected slip"}
+          ablMaxTorqueRiseSpeed       : { type: t_double, comment: "The ABL torque can rise maximum ... Nm/s on the telescope axis (always >0)" }
+          ablMaxTorqueFallSpeed       : { type: t_double, comment: "The ABL torque can fall maximum ... Nm/s on the telescope axis (always >0)" }
+          ablMaxTorque                : { type: t_double, comment: "The maximum ABL torque in Nm/s on the telescope axis (always >0)" }
+          ablMinTorque                : { type: t_double, comment: "The minimum ABL torque in Nm/s on the telescope axis (always >0)" }
+          ablZeroAccTorque            : { type: t_double, comment: "The ABL torque when the axis is not accelerating or decelerating (always >0)" }
+          ablTorqueOutputOverride     : { type: t_double, comment: "Scale the ABL output torque by this fraction value (only for testing purposes, must be 1 normally!)"}
+          ablPositiveTorque           : { type: t_bool  , comment: "True if a positive torque must be applied, false if a negative torque must be applied" }
+          aziAndAblSameDirection      : { type: t_bool  , comment: "True if the AZI and ABL axes rotate in the same direction?" }
+          homingHomePosition          : { type: t_double, comment: "The position of the homing mark (in degrees), with respect to the absolute zero"}
+          homingStartAbsEncPosition   : { type: t_double, comment: "Absolute encoder position where the homing should go to first, in degrees"}
+          homingGotoStartVelocity     : { type: t_double, comment: "Velocity when going to the start position, in degrees/sec"}
+          homingVelocity              : { type: t_double, comment: "Velocity to search for the homing mark, in degrees/sec"}
+          homingRange                 : { type: t_double, comment: "Maximum distance to be covered while searching for the homing mark, in degrees"}
+          quickStopDeceleration       : { type: t_double, comment: "Quick stop deceleration, in degrees/sec2"}
+          quickStopJerk               : { type: t_double, comment: "Quick stop jerk, in degrees/sec3"}
+  
+  ########################################################################################################################
+  # AxesElevationConfig
+  ########################################################################################################################
+  
+  !CONFIG AxesElevationConfig:
+      items:
+          absoluteEncoderOffset       : { type: t_double, comment: "Offset in degrees, of the absolute encoder, w.r.t. zero" }
+          absoluteEncoderInvert       : { type: t_bool  , comment: "TRUE to invert the counting direction" }
+          lidasInvert                 : { type: t_bool  , comment: "TRUE to invert the counting direction of the LIDAs" }
+          moveOutOfLimitSwitchDistance: { type: t_double, comment: "How many degrees should the moveOutOfLimitSwitch process try to move?" }
+          positiveLimitSwitchInput    : { type: t_int8  , comment: "Which input (0-7) represents the positive limit switch?" }
+          negativeLimitSwitchInput    : { type: t_int8  , comment: "Which input (0-7) represents the negative limit switch?" }
+          minPositionLimitVirtualAxis : { type: t_double, comment: "Limit the minimum position of the axis to this value in degrees, of the virtual axis" }
+          maxPositionLimitVirtualAxis : { type: t_double, comment: "Limit the maximum position of the axis to this value in degrees, of the virtual axis" }
+          minPositionLimitPhysicalAxis: { type: t_double, comment: "Limit the minimum position of the axis to this value in degrees, of the physical axis" }
+          maxPositionLimitPhysicalAxis: { type: t_double, comment: "Limit the maximum position of the axis to this value in degrees, of the physical axis" }
+          velocityLimit               : { type: t_double, comment: "Limit the velocity of the axis to this value in degrees/sec" }
+          accelerationLimit           : { type: t_double, comment: "Limit the acceleration (or deceleration) of the axis to this value in degrees/sec^2" }
+          minPositionSetpoint         : { type: t_double, comment: "The minimum position setpoint of the axis in degrees" }
+          maxPositionSetpoint         : { type: t_double, comment: "The maximum position setpoint of the axis in degrees" }
+          maxVelocitySetpoint         : { type: t_double, comment: "The maximum velocity setpoint of the axis in degrees/sec" }
+          maxAccelerationSetpoint     : { type: t_double, comment: "The maximum acceleration setpoint of the axis in degrees/sec^2" }
+          slipLimit                   : { type: t_double, comment: "If the difference between the LIDA-encoder and motor-encoder positions is above this value in degrees, then we have detected slip" }
+          homingHomePosition          : { type: t_double, comment: "The position of the homing mark (in degrees), with respect to the absolute zero"}
+          homingStartAbsEncPosition   : { type: t_double, comment: "Absolute encoder position where the homing should go to first, in degrees"}
+          homingGotoStartVelocity     : { type: t_double, comment: "Velocity when going to the start position, in degrees/sec"}
+          homingVelocity              : { type: t_double, comment: "Velocity to search for the homing mark, in degrees/sec"}
+          homingRange                 : { type: t_double, comment: "Maximum distance to be covered while searching for the homing mark, in degrees"}
+          quickStopDeceleration       : { type: t_double, comment: "Quick stop deceleration, in degrees/sec2"}
+          quickStopJerk               : { type: t_double, comment: "Quick stop jerk, in degrees/sec3"}
+  
+  ########################################################################################################################
+  # AxesRotationConfig
+  ########################################################################################################################
+  
+  !CONFIG AxesRotationConfig:
+      items:
+          motorEncoderOffset          : { type: t_double, comment: "Offset in degrees, of the absolute motor encoder, w.r.t. zero" }
+          moveOutOfLimitSwitchDistance: { type: t_double, comment: "How many degrees should the moveOutOfLimitSwitch process try to move?" }
+          positiveLimitSwitchInput    : { type: t_int8  , comment: "Which input (0-7) represents the positive limit switch?" }
+          negativeLimitSwitchInput    : { type: t_int8  , comment: "Which input (0-7) represents the negative limit switch?" }
+          minPositionLimitVirtualAxis : { type: t_double, comment: "Limit the minimum position of the axis to this value in degrees, of the virtual axis" }
+          maxPositionLimitVirtualAxis : { type: t_double, comment: "Limit the maximum position of the axis to this value in degrees, of the virtual axis" }
+          minPositionLimitPhysicalAxis: { type: t_double, comment: "Limit the minimum position of the axis to this value in degrees, of the physical axis" }
+          maxPositionLimitPhysicalAxis: { type: t_double, comment: "Limit the maximum position of the axis to this value in degrees, of the physical axis" }
+          velocityLimit               : { type: t_double, comment: "Limit the velocity of the axis to this value in degrees/sec" }
+          accelerationLimit           : { type: t_double, comment: "Limit the acceleration (or deceleration) of the axis to this value in degrees/sec^2" }
+          minPositionSetpoint         : { type: t_double, comment: "The minimum position setpoint of the axis in degrees" }
+          maxPositionSetpoint         : { type: t_double, comment: "The maximum position setpoint of the axis in degrees" }
+          maxVelocitySetpoint         : { type: t_double, comment: "The maximum velocity setpoint of the axis in degrees/sec" }
+          maxAccelerationSetpoint     : { type: t_double, comment: "The maximum acceleration setpoint of the axis in degrees/sec^2" }
+          quickStopDeceleration       : { type: t_double, comment: "Quick stop deceleration, in degrees/sec2"}
+          quickStopJerk               : { type: t_double, comment: "Quick stop jerk, in degrees/sec3"}
+  
+  
+  ########################################################################################################################
+  # AxesKnownPositionConfig
+  ########################################################################################################################
+  !CONFIG AxesKnownPositionConfig:
+      items:
+          name:
+              type: t_string
+              comment: "The name of the position (e.g. 'PARK')"
+          allowObserver:
+              type: t_bool
+              comment: "Can an observer switch to this position?"
+          azi:
+              type: t_double
+              comment: "Azimuth in degrees"
+          ele:
+              type: t_double
+              comment: "Elevation in degrees"
+          roc:
+              type: t_double
+              comment: "Cassegrain rotation in degrees"
+          ron:
+              type: t_double
+              comment: "Nasmyth B rotation in degrees"
+          doAzi:
+              type: t_bool
+              comment: "Change the azimuth axis to the 'azi' position"
+          doEle:
+              type: t_bool
+              comment: "Change the elevation axis to the 'ele' position"
+          doRoc:
+              type: t_bool
+              comment: "Change the cassegrain rotation axis to the 'roc' position"
+          doRon:
+              type: t_bool
+              comment: "Change the nasmyth rotation axis to the 'ron' position"
+  
+  
+  ########################################################################################################################
+  # AxesKnownPositionsConfig
+  ########################################################################################################################
+  !CONFIG AxesKnownPositionsConfig:
+      items:
+          position0     : { type: AxesKnownPositionConfig, comment : "Known position 0"   , expand: false }
+          position1     : { type: AxesKnownPositionConfig, comment : "Known position 1"   , expand: false }
+          position2     : { type: AxesKnownPositionConfig, comment : "Known position 2"   , expand: false }
+          position3     : { type: AxesKnownPositionConfig, comment : "Known position 3"   , expand: false }
+          position4     : { type: AxesKnownPositionConfig, comment : "Known position 4"   , expand: false }
+          position5     : { type: AxesKnownPositionConfig, comment : "Known position 5"   , expand: false }
+          position6     : { type: AxesKnownPositionConfig, comment : "Known position 6"   , expand: false }
+          position7     : { type: AxesKnownPositionConfig, comment : "Known position 7"   , expand: false }
+          position8     : { type: AxesKnownPositionConfig, comment : "Known position 8"   , expand: false }
+          position9     : { type: AxesKnownPositionConfig, comment : "Known position 9"   , expand: false }
+          position10    : { type: AxesKnownPositionConfig, comment : "Known position 10"  , expand: false }
+          position11    : { type: AxesKnownPositionConfig, comment : "Known position 11"  , expand: false }
+          position12    : { type: AxesKnownPositionConfig, comment : "Known position 12"  , expand: false }
+          position13    : { type: AxesKnownPositionConfig, comment : "Known position 13"  , expand: false }
+          position14    : { type: AxesKnownPositionConfig, comment : "Known position 14"  , expand: false }
+          position15    : { type: AxesKnownPositionConfig, comment : "Known position 15"  , expand: false }
+          position16    : { type: AxesKnownPositionConfig, comment : "Known position 16"  , expand: false }
+          position17    : { type: AxesKnownPositionConfig, comment : "Known position 17"  , expand: false }
+          position18    : { type: AxesKnownPositionConfig, comment : "Known position 18"  , expand: false }
+          position19    : { type: AxesKnownPositionConfig, comment : "Known position 19"  , expand: false }
+  
+  
+  ########################################################################################################################
+  # AxesConfig
+  ########################################################################################################################
+  
+  !CONFIG AxesConfig:
+      items:
+          location                    : { type: AxesLocationConfig        , comment: "Location of the observatory", expand: false }
+          localConditions             : { type: AxesLocalConditionsConfig , comment: "Location of the observatory", expand: false }
+          knownPositions              : { type: AxesKnownPositionsConfig  , comment: "Known (predefined) positions (e.g. could be Park, Cover, Park winter, Mirror washing, ...)", expand: false }
+          azi                         : { type: AxesAzimuthConfig         , comment: "Azimuth axis", expand: false }
+          ele                         : { type: AxesElevationConfig       , comment: "Elevation axis", expand: false }
+          roc                         : { type: AxesRotationConfig        , comment: "Cassegrain rotation axis", expand: false }
+          ron                         : { type: AxesRotationConfig        , comment: "Nasmyth rotation axis", expand: false }
+          cassegrainRotatorName       : { type: t_string                  , comment: "Name of the Cassegrain rotator" }
+          nasmythRotatorName          : { type: t_string                  , comment: "Name of the Nasmyth rotator" }
+          rocGuiAngle                 : { type: t_double                  , comment: "Amgle to show ROC in the GUI" }
+          ronGuiAngle                 : { type: t_double                  , comment: "Amgle to show RON in the GUI" }
+          nasmythRotatorName          : { type: t_string                  , comment: "Name of the Nasmyth rotator" }
+          knownPositionToleranceAzi   : { type: t_double                  , comment: "Tolerance (in degrees) to determine if the telescope is at a known position in azi direction" }
+          knownPositionToleranceEle   : { type: t_double                  , comment: "Tolerance (in degrees) to determine if the telescope is at a known position in ele direction" }
+          knownPositionToleranceRoc   : { type: t_double                  , comment: "Tolerance (in degrees) to determine if the telescope is at a known position in roc direction" }
+          knownPositionToleranceRon   : { type: t_double                  , comment: "Tolerance (in degrees) to determine if the telescope is at a known position in ron direction" }
+          rocPositionAngleSign        : { type: t_int16                   , comment: "-1 to invert the sign of the PA for the cas derotator, 1 for positive" }
+          ronPositionAngleSign        : { type: t_int16                   , comment: "-1 to invert the sign of the PA for the cas derotator, 1 for positive" }
+          tpointAziSign               : { type: t_int16                   , comment: "-1 or 1 to invert input for TPOINT: A" }
+          tpointEleSign               : { type: t_int16                   , comment: "-1 or 1 to invert input for TPOINT: E " }
+          tpointDeltaAziSign          : { type: t_int16                   , comment: "-1 or 1 to invert input for TPOINT: DA" }
+          tpointDeltaEleSign          : { type: t_int16                   , comment: "-1 or 1 to invert input for TPOINT: DE" }
+          tpointOldFormulas           : { type: t_bool                    , comment: "True to use the old formulas" }
+          tpointConvertRawAlphaDelta  : { type: t_bool                    , comment: "If True, raw encoder values will be converted to feedback.alpha and feedback.delta, instead of corrected encoder values. Only use for tech stuff!" }
+  
+  ########################################################################################################################
+  # AxesPointingModelConfig
+  ########################################################################################################################
+  
+  !CONFIG AxesPointingModelConfig:
+      items:
+          name    : { type: t_string, comment: "This name can be matched against the instrument name in the MTCS config and the focal station name in the M3 config." }
+          IE      : { type: t_double, comment: "Index error in elevation" }
+          IA      : { type: t_double, comment: "Index error in azimuth" }
+          CA      : { type: t_double, comment: "Nonperpendicularity of elevation and pointing axes" }
+          AN      : { type: t_double, comment: "NS misalignment of azimuth axis" }
+          AW      : { type: t_double, comment: "EW misalignment of azimuth axis" }
+          NPAE    : { type: t_double, comment: "Nonperpendicularity of azimuth and elevation axes" }
+          NRX     : { type: t_double, comment: "Horizontal displacement of Nasmyth rotation" }
+          NRY     : { type: t_double, comment: "Vertical displacement of Nasmyth rotation" }
+          ACES    : { type: t_double, comment: "Az centering error (sin component)" }
+          ACEC    : { type: t_double, comment: "Az centering error (cos component)" }
+          ECES    : { type: t_double, comment: "El centering error (sin component)" }
+          ECEC    : { type: t_double, comment: "El centering error (cos component)" }
+  #        A1A     : { type: t_double, comment: "Az change supplied through auxiliary reading 1" }
+  #        A1S     : { type: t_double, comment: "LR change supplied through auxiliary reading 1" }
+  #        A1E     : { type: t_double, comment: "El change supplied through auxiliary reading 1" }
+  #        A2A     : { type: t_double, comment: "Az change supplied through auxiliary reading 2" }
+  #        A2S     : { type: t_double, comment: "LR change supplied through auxiliary reading 2" }
+  #        A2E     : { type: t_double, comment: "El change supplied through auxiliary reading 2" }
+          TF      : { type: t_double, comment: "Tube flexure - sin(zeta) law" }
+          TX      : { type: t_double, comment: "Tube flexure - tan(zeta) law" }
+          FLOP    : { type: t_double, comment: "Constant vertical displacement" }
+          POX     : { type: t_double, comment: "The x-coordinate of a pointing origin on a derotator" }
+          POY     : { type: t_double, comment: "The y-coordinate of a pointing origin on a derotator" }
+  
+  
+  
+  ########################################################################################################################
+  # AxesMoveUnits
+  ########################################################################################################################
+  !ENUMERATION AxesMoveUnits:
+      items:
+          [   "DEGREES",
+              "RADIANS",
+              "ARCSECONDS" ]
+  
+  ########################################################################################################################
+  # AxesAlphaUnits
+  ########################################################################################################################
+  !ENUMERATION AxesAlphaUnits:
+      items:
+          [   "HOURS",
+              "DEGREES",
+              "RADIANS" ]
+  
+  ########################################################################################################################
+  # AxesDeltaUnits
+  ########################################################################################################################
+  !ENUMERATION AxesDeltaUnits:
+      items:
+          [   "DEGREES",
+              "RADIANS" ]
+  
+  ########################################################################################################################
+  # AxesMuUnits
+  ########################################################################################################################
+  !ENUMERATION AxesMuUnits:
+      items:
+          [   "ARCSECONDS_PER_YEAR",
+              "MILLIARCSECONDS_PER_YEAR",
+              "DEGREES_PER_YEAR",
+              "RADIANS_PER_YEAR" ]
+  
+  
+  ########################################################################################################################
+  # AxesSetTargetProcess
+  ########################################################################################################################
+  !PROCESS AxesSetTargetProcess:
+      extends: mtcs_common.BaseProcess
+      arguments:
+          alphaUnits          : { type: AxesAlphaUnits                      , comment: "The units in which alpha is given" }
+          alpha               : { type: t_double                            , comment: "Right ascention, in the units of the alphaUnits argument" }
+          deltaUnits          : { type: AxesDeltaUnits                      , comment: "The units in which delta is given" }
+          delta               : { type: t_double                            , comment: "Declination, in the units of the deltaUnits argument" }
+          muUnits             : { type: AxesMuUnits                         , comment: "The units in which muAlpha and muDelta are given" }
+          muAlpha             : { type: t_double                            , comment: "Right ascention proper motion, the units of muUmits (do not multiply by cos(delta)!)" }
+          muDelta             : { type: t_double                            , comment: "Declination proper motion, in radians/year" }
+          parallax            : { type: t_double                            , comment: "Object parallax, in arcseconds" }
+          radialVelocity      : { type: t_double                            , comment: "Object radial velocity, in km/s" }
+          epoch               : { type: t_double, initial: !DOUBLE 2000.0   , comment: "Epoch, e.g. 2000.0" }
+  
+  ########################################################################################################################
+  # AxesPointProcess
+  ########################################################################################################################
+  !PROCESS AxesPointProcess:
+      extends: mtcs_common.BaseProcess
+      variables:
+          state               : { type: t_int16                           , comment: "State of the process" }
+      arguments:
+          alphaUnits          : { type: AxesAlphaUnits                    , comment: "The units in which alpha is given" }
+          alpha               : { type: t_double                          , comment: "Right ascention, in the units of the alphaUnits argument" }
+          deltaUnits          : { type: AxesDeltaUnits                    , comment: "The units in which delta is given" }
+          delta               : { type: t_double                          , comment: "Declination, in the units of the deltaUnits argument" }
+          muUnits             : { type: AxesMuUnits                       , comment: "The units in which muAlpha and muDelta are given" }
+          muAlpha             : { type: t_double                          , comment: "Right ascention proper motion, the units of muUmits (do not multiply by cos(delta)!)" }
+          muDelta             : { type: t_double                          , comment: "Declination proper motion, in radians/year" }
+          parallax            : { type: t_double                          , comment: "Object parallax, in arcseconds" }
+          radialVelocity      : { type: t_double                          , comment: "Object radial velocity, in km/s" }
+          epoch               : { type: t_double, initial: !DOUBLE 2000.0 , comment: "Epoch, e.g. 2000.0" }
+          tracking            : { type: t_bool  , initial: !BOOL "TRUE"   , comment: "True to start tracking the object, false to Only do a pointing" }
+          rotUnits            : { type: AxesMoveUnits                     , comment: "Units of the 'rot', 'roc' and 'ron' arguments (RADIANS, DEGREES, ARCSECONDS, ...)"}
+          rotOffset           : { type: t_double                          , comment: "Offset to move the currently active rotator (incompatible with 'roc' and 'ron' args)"}
+          rocOffset           : { type: t_double                          , comment: "Offset to move the cassegrain rotation axis (incompatible with 'rot' arg)" }
+          ronOffset           : { type: t_double                          , comment: "Offset to move the nasmyth rotation axis (incompatible with 'rot' arg)" }
+          doRotOffset         : { type: t_bool                            , comment: "True to move the currently active rotator, false to leave it untouched" }
+          doRocOffset         : { type: t_bool                            , comment: "True to move the cassegrain rotation axis, false to leave it untouched" }
+          doRonOffset         : { type: t_bool                            , comment: "True to move the nasmyth rotation axis, false to leave it untouched" }
+  
+  
+  ########################################################################################################################
+  # AxesPointRelativeProcess
+  ########################################################################################################################
+  !PROCESS AxesPointRelativeProcess:
+      extends: mtcs_common.BaseProcess
+      arguments:
+          alphaUnits          : { type: AxesAlphaUnits          , comment: "The units in which alpha is given" }
+          alpha               : { type: t_double                , comment: "Right ascention, in the units of the alphaUnits argument" }
+          deltaUnits          : { type: AxesDeltaUnits          , comment: "The units in which delta is given" }
+          delta               : { type: t_double                , comment: "Declination, in the units of the deltaUnits argument" }
+  
+  
+  
+  ########################################################################################################################
+  # AxesMoveRelativeProcess
+  ########################################################################################################################
+  !PROCESS AxesMoveRelativeProcess:
+      extends: mtcs_common.BaseProcess
+      arguments:
+          units : { type: AxesMoveUnits                         , comment: "Units of the 'value' argument (RADIANS, DEGREES, ARCSECONDS, ...)"}
+          value : { type: t_double                              , comment: "Move the axis with this value (which units depends on the 'units' argument)" }
+  
+  ########################################################################################################################
+  # AxesMoveAbsoluteProcess
+  ########################################################################################################################
+  !PROCESS AxesMoveAbsoluteProcess:
+      extends: mtcs_common.BaseProcess
+      arguments:
+          units  : { type: AxesMoveUnits                        , comment: "Units of the 'value' argument (RADIANS, DEGREES, ARCSECONDS, ...)"}
+          value  : { type: t_double                             , comment: "Move the axis to this value (which units depends on the 'units' argument) + the optional offset" }
+          offset : { type: t_double                             , comment: "Optional extra offset (which will not be added to the 'startPos'" }
+  
+  ########################################################################################################################
+  # AxesMoveKnownPositionProcess
+  ########################################################################################################################
+  !PROCESS AxesMoveKnownPositionProcess:
+      extends: mtcs_common.BaseProcess
+      arguments:
+          name        : { type: t_string                        , comment: "Name of the position to move to"}
+  
+  
+  
+  ########################################################################################################################
+  # AxesMoveUnits
+  ########################################################################################################################
+  !ENUMERATION AxesMoveVelocityUnits:
+      items:
+          [   "DEGREES_PER_SECOND",
+              "ARCSECONDS_PER_SECOND",
+              "RADIANS_PER_SECOND",
+              "ARCSECONDS_PER_MINUTE",
+              "ARCSECONDS_PER_HOUR" ]
+  
+  
+  ########################################################################################################################
+  # AxesRotatorActivity
+  ########################################################################################################################
+  !ENUMERATION AxesRotatorActivity:
+      items:
+          [   "NONE_ACTIVE",
+              "ROC_ACTIVE",
+              "RON_ACTIVE" ]
+  
+  
+  
+  ########################################################################################################################
+  # AxesMoveVelocityProcess
+  ########################################################################################################################
+  !PROCESS AxesMoveVelocityProcess:
+      extends: mtcs_common.BaseProcess
+      arguments:
+          units : { type: AxesMoveVelocityUnits             , comment: "Units of the 'value' argument (RADIANS_PER_SECOND, DEGREES_PER_SECOND, ...)"}
+          value : { type: t_double                          , comment: "Move the axis with this velocity (which units depends on the 'units' argument)" }
+  
+  
+  ########################################################################################################################
+  # AxesMoveOutOfLimitSwitchProcess
+  ########################################################################################################################
+  !PROCESS AxesMoveOutOfLimitSwitchProcess:
+      extends: mtcs_common.BaseProcess
+      arguments:
+          switch  : { type: mtcs_common.LimitSwitches       , comment: "Positive or negative limit switch", expand: false  }
+  
+  
+  ########################################################################################################################
+  # AxesPowerOnProcess
+  ########################################################################################################################
+  !PROCESS AxesPowerOnProcess:
+      extends: mtcs_common.BaseProcess
+      variables:
+          state : { type: t_int16, comment: "State of the process" }
+  
+  ########################################################################################################################
+  # AxesMultiPowerOnProcess
+  ########################################################################################################################
+  !PROCESS AxesMultiPowerOnProcess:
+      extends: mtcs_common.BaseProcess
+      variables:
+          state : { type: t_int16, comment: "State of the process" }
+      arguments:
+          azi : { type: t_bool, comment: "TRUE to power on AZI" }
+          ele : { type: t_bool, comment: "TRUE to power on ELE" }
+          roc : { type: t_bool, comment: "TRUE to power on ROC" }
+          ron : { type: t_bool, comment: "TRUE to power on RON" }
+          fw  : { type: t_bool, comment: "TRUE to power on FW" }
+  
+  ########################################################################################################################
+  # AxesPowerOffProcess
+  ########################################################################################################################
+  !PROCESS AxesPowerOffProcess:
+      extends: mtcs_common.BaseProcess
+      variables:
+          state : { type: t_int16, comment: "State of the process" }
+  
+  
+  ########################################################################################################################
+  # AxesStopProcess
+  ########################################################################################################################
+  !PROCESS AxesStopProcess:
+      extends: mtcs_common.BaseProcess
+      variables:
+          state : { type: t_int16, comment: "State of the process" }
+  
+  
+  
+  ########################################################################################################################
+  # AxesAddAlphaDeltaVelocityProcess
+  ########################################################################################################################
+  !PROCESS AxesSetAlphaDeltaVelocityProcess:
+      extends: mtcs_common.BaseProcess
+      arguments:
+          units           : { type: AxesMoveVelocityUnits   , comment: "Units of the alphaVelocity and deltaVelocity" }
+          alphaVelocity   : { type: t_double                , comment: "Velocity in alpha direction" }
+          deltaVelocity   : { type: t_double                , comment: "Velocity in delta direction" }
+  
+  
+  ########################################################################################################################
+  # AxesDoHomingProcess
+  ########################################################################################################################
+  !PROCESS AxesDoHomingProcess:
+      extends: mtcs_common.BaseProcess
+      variables:
+          state : { type: t_int16, comment: "State of the process" }
+  
+  
+  ########################################################################################################################
+  # AxesMultiMoveProcess
+  ########################################################################################################################
+  !PROCESS AxesMultiMoveProcess:
+      extends: mtcs_common.BaseProcess
+      variables:
+          waitingForAzi : { type: t_bool                , comment: "True if the process is waiting for AZI" }
+          waitingForEle : { type: t_bool                , comment: "True if the process is waiting for ELE" }
+          waitingForRoc : { type: t_bool                , comment: "True if the process is waiting for ROC" }
+          waitingForRon : { type: t_bool                , comment: "True if the process is waiting for RON" }
+      arguments:
+          units         : { type: AxesMoveUnits         , comment: "Units of the 'azi', 'ele', 'roc' and 'ron' arguments (RADIANS, DEGREES, ARCSECONDS, ...)"}
+          azi           : { type: t_double              , comment: "Angle to move the azimuth axis" }
+          ele           : { type: t_double              , comment: "Angle to move the elevation axis" }
+          rot           : { type: t_double              , comment: "Angle to move the currently active rotator (incompatible with 'roc' and 'ron' args)"}
+          roc           : { type: t_double              , comment: "Angle to move the cassegrain rotation axis (incompatible with 'rot' arg)" }
+          ron           : { type: t_double              , comment: "Angle to move the nasmyth rotation axis (incompatible with 'rot' arg)" }
+          doAzi         : { type: t_bool                , comment: "True to move the azimuth axis, false to leave it untouched" }
+          doEle         : { type: t_bool                , comment: "True to move the elevation axis, false to leave it untouched" }
+          doRot         : { type: t_bool                , comment: "True to move the currently active rotator, false to leave it untouched" }
+          doRoc         : { type: t_bool                , comment: "True to move the cassegrain rotation axis, false to leave it untouched" }
+          doRon         : { type: t_bool                , comment: "True to move the nasmyth rotation axis, false to leave it untouched" }
+          preferMostTravel : { type: t_bool, initial: !BOOL "FALSE", comment: "Only in case of relative movement during tracking: If possible, go to the position where there is most travel (if the telescope is tracking). If false, it will go there the quickest way possible." }
+  
+
+  ########################################################################################################################
+  # AxesEnablePointingModelProcess
+  ########################################################################################################################
+  !PROCESS AxesEnablePointingModelProcess:
+      extends: mtcs_common.BaseProcess
+      arguments:
+          name : { type: t_string, comment: "Name of the pointing model" }
+  
+
+  ########################################################################################################################
+  # Axes
+  ########################################################################################################################
+  
+  !STATEMACHINE Axes:
+      variables:
+          editableConfig                  : { type: AxesConfig                              , comment: "Editable configuration of the Axes subsystem" , expand: false}
+          fromCppAxes                     : { type: mtcs_tmc.TmcToPlcAxes, address: "%I*"   , comment: "Data from the C++ task", expand: false}
+      references:
+          timing                          : { type: mtcs_services.ServicesTiming            , comment: "Reference to the timing service", expand: false }
+          motionBlocking                  : { type: mtcs_safety.SafetyMotionBlocking        , comment: "Reference to the motion blocking safety", expand: false }
+          domeAccess                      : { type: mtcs_safety.SafetyDomeAccess            , comment: "Reference to the dome access safety", expand: false }
+          operatorStatus                  : { type: mtcs_common.OperatorStatus              , comment: "Shared operator status" }
+          activityStatus                  : { type: mtcs_common.ActivityStatus              , comment: "Shared activity status"}
+          activeInstrument                : { type: mtcs_common.InstrumentConfig            , comment: "Instrument config *if* isInstrumentActive is TRUE", expand: false }
+          isInstrumentActive              : { type: t_bool                                  , comment: "Is an instrument currently active (i.e. is M3 static at a known position?)"}
+      variables_read_only:
+          isPoweredOffByPersonInDome      : { type: t_bool                                  , comment: "True if the axes are powered off due to a person entering the dome" }
+          isPointing                      : { type: t_bool                                  , comment: "True if the telescope is pointing" }
+          isLimitsReached                 : { type: t_bool                                  , comment: "True if a positiom limit is reached" }
+          isTracking                      : { type: t_bool                                  , comment: "True if the telescope is tracking" }
+          isOffsetting                    : { type: t_bool                                  , comment: "True if the telescope is offsetting (movin" }
+          isAtKnownPosition               : { type: t_bool                                  , comment: "True if the telescope is at a known position" }
+          isPointingModelActive           : { type: t_bool                                  , comment: "Is a pointing model currently active?"}
+          activeRotator                   : { type: AxesRotatorActivity                     , comment: "Which rotator is active?" }
+          actualKnownPositionName         : { type: t_string                                , comment: "Name of the known position if isAtKnownPosition is True" }
+          config                          : { type: AxesConfig                              , comment: "Active configuration of the Axes subsystem" }
+          toCppAxes                       : { type: mtcs_tmc.TmcFromPlcAxes, address: "%Q*" , comment: "Data to the C++ task", expand: false}
+          activePointingModel             : { type: AxesPointingModelConfig                 , comment: "Currently active TPoint model (if isPointingModelActive is TRUE)" , expand: false}
+          activePointingModelNumber       : { type: t_int16                                 , comment: "Number of the currently active TPoint model (if isPointingModelActive is TRUE), -1 if no model is active" , expand: false}
+          target:
+              comment                     : "The actual target"
+              arguments:
+                  isGiven                 : { comment: "Is there a target given (if not, the target values don't make sense)" }
+                  isValid                 : { comment: "Is target valid (i.e. not too low, no transformation errors present, ...)?" }
+              attributes:
+                  statuses:
+                      attributes:
+                          healthStatus    : { type: mtcs_common.HealthStatus }
+          feedback:
+              comment                     : "The actual feedback"
+              arguments:
+                  isValid                 : { comment: "Is feedback valid (i.e. are the encoders in a valid state, no transformation errors present, ...)?" }
+              attributes:
+                  statuses:
+                      attributes:
+                          healthStatus    : { type: mtcs_common.HealthStatus }
+      parts:
+          azi:
+              comment                     : "The azimuth axis"
+              arguments:            
+                  isEnabled               : { comment: "Is control enabled?" }
+                  id                      : { comment: "The axis ID" }
+                  config                  : { comment: "The axis config" }
+                  aziDriveChannel         : { comment: "The AZI drive channel" }
+                  ablDriveChannel         : { comment: "The ABL drive channel" }
+                  aziMainDriveChannel     : { comment: "The main drive channel of the AZI drive" }
+                  ablMainDriveChannel     : { comment: "The main drive channel of the ABL drive" }
+              attributes:
+                  statuses:
+                      attributes:
+                          healthStatus    : { type: mtcs_common.HealthStatus }
+                          busyStatus      : { type: mtcs_common.BusyStatus }
+                          poweredStatus   : { type: mtcs_common.PoweredStatus }
+          ele:
+              comment                     : "The elevation axis"
+              arguments:
+                  isEnabled               : { comment: "Is control enabled?" }
+                  id                      : { comment: "The axis ID" }
+                  config                  : { comment: "The axis config" }
+                  driveChannel            : { comment: "The ELE drive channel" }
+                  mainDriveChannel        : { comment: "The main drive channel of the drive" }
+              attributes:
+                  statuses:
+                      attributes:
+                          healthStatus    : { type: mtcs_common.HealthStatus }
+                          busyStatus      : { type: mtcs_common.BusyStatus }
+                          poweredStatus   : { type: mtcs_common.PoweredStatus }
+          roc:
+              comment                     : "The cassegrain derotator axis"
+              arguments:
+                  isEnabled               : { comment: "Is control enabled?" }
+                  id                      : { comment: "The axis ID" }
+                  config                  : { comment: "The axis config" }
+                  driveChannel            : { comment: "The ROC drive channel" }
+                  mainDriveChannel        : { comment: "The main drive channel of the drive" }
+              attributes:
+                  statuses:
+                      attributes:
+                          healthStatus    : { type: mtcs_common.HealthStatus }
+                          busyStatus      : { type: mtcs_common.BusyStatus }
+                          poweredStatus   : { type: mtcs_common.PoweredStatus }
+          ron:
+              comment                     : "The nasmyth derotator axis"
+              arguments:
+                  isEnabled               : { comment: "Is control enabled?" }
+                  id                      : { comment: "The axis ID" }
+                  config                  : { comment: "The axis config" }
+                  driveChannel            : { comment: "The RON drive channel" }
+                  mainDriveChannel        : { comment: "The main drive channel of the drive" }
+              attributes:
+                  statuses:
+                      attributes:
+                          healthStatus    : { type: mtcs_common.HealthStatus }
+                          busyStatus      : { type: mtcs_common.BusyStatus }
+                          poweredStatus   : { type: mtcs_common.PoweredStatus }
+          io:
+              comment                     : "I/O modules and drives"
+              attributes:
+                  isEnabled               : { type: t_bool                                    , comment: "Is control enabled?" }
+                  parts:
+                      attributes:
+                          aziDrive:
+                                type: mtcs_common.AX52XXDrive
+                                comment: "AZI drive"
+                                expand: false
+                                arguments:
+                                    isEnabled : { type: t_bool }
+                                attributes:
+                                    parts:
+                                        attributes:
+                                            channelA : { type: mtcs_common.AX52XXDriveChannel, expand: false }
+                                            channelB : { type: mtcs_common.AX52XXDriveChannel, expand: false }
+                                    statuses:
+                                        attributes:
+                                            healthStatus    : { type: mtcs_common.HealthStatus }
+                                            busyStatus      : { type: mtcs_common.BusyStatus }
+                          ablDrive:
+                                type: mtcs_common.AX52XXDrive
+                                comment: "ABL drive"
+                                expand: false
+                                arguments:
+                                    isEnabled : { type: t_bool }
+                                attributes:
+                                    parts:
+                                        attributes:
+                                            channelA : { type: mtcs_common.AX52XXDriveChannel, expand: false }
+                                            channelB : { type: mtcs_common.AX52XXDriveChannel, expand: false }
+                                    statuses:
+                                        attributes:
+                                            healthStatus    : { type: mtcs_common.HealthStatus }
+                                            busyStatus      : { type: mtcs_common.BusyStatus }
+                          eleDrive:
+                                type: mtcs_common.AX52XXDrive
+                                comment: "ELE drive"
+                                expand: false
+                                arguments:
+                                    isEnabled : { type: t_bool }
+                                attributes:
+                                    parts:
+                                        attributes:
+                                            channelA : { type: mtcs_common.AX52XXDriveChannel, expand: false }
+                                            channelB : { type: mtcs_common.AX52XXDriveChannel, expand: false }
+                                    statuses:
+                                        attributes:
+                                            healthStatus    : { type: mtcs_common.HealthStatus }
+                                            busyStatus      : { type: mtcs_common.BusyStatus }
+                  statuses:
+                      attributes:
+                          healthStatus    : { type: mtcs_common.HealthStatus }
+          configManager:
+              comment                     : "The config manager (to load/save/activate configuration data)"
+              type                        : mtcs_common.ConfigManager
+          tpoint:
+              comment                     : "The TPOINT models setup"
+              attributes:
+                  isEnabled               : { type: t_bool }
+                  statuses:
+                      attributes:
+                          healthStatus    : { type: mtcs_common.HealthStatus }
+                          busyStatus      : { type: mtcs_common.BusyStatus }
+  
+      statuses:
+          initializationStatus            : { type: mtcs_common.InitializationStatus }
+          healthStatus                    : { type: mtcs_common.HealthStatus }
+          busyStatus                      : { type: mtcs_common.BusyStatus }
+          operatingStatus                 : { type: mtcs_common.OperatingStatus }
+          poweredStatus                   : { type: mtcs_common.PoweredStatus }
+      processes:
+          initialize                      : { type: mtcs_common.Process                         , comment: "Start initializing" }
+          reset                           : { type: mtcs_common.Process                         , comment: "Reset the axis (no homing)" }
+          lock                            : { type: mtcs_common.Process                         , comment: "Lock the system" }
+          unlock                          : { type: mtcs_common.Process                         , comment: "Unlock the system" }
+          changeOperatingState            : { type: mtcs_common.ChangeOperatingStateProcess     , comment: "Change the operating state (e.g. AUTO, MANUAL, ...)" }
+          setTarget                       : { type: AxesSetTargetProcess                        , comment: "Set a new target" }
+          point                           : { type: AxesPointProcess                            , comment: "Point the telescope to a new target" }
+          pointRelative                   : { type: AxesPointRelativeProcess                    , comment: "Point the telescope relative to the current target" }
+          stop                            : { type: AxesStopProcess                             , comment: "Stop the axes (i.e. stop pointing, tracking, moving, ...)" }
+          quickStop                       : { type: AxesStopProcess                             , comment: "Quickly stop the axes (i.e. stop pointing, tracking, moving, ...)" }
+          powerOn                         : { type: AxesMultiPowerOnProcess                     , comment: "Power on the axes" }
+          powerOff                        : { type: AxesPowerOffProcess                         , comment: "Power off the axes" }
+          doHoming                        : { type: AxesDoHomingProcess                         , comment: "Do a homing of the axes" }
+          moveAbsolute                    : { type: AxesMultiMoveProcess                        , comment: "Move the axes in alt-azimuth to an absolute position" }
+          moveRelative                    : { type: AxesMultiMoveProcess                        , comment: "Move the axes in alt-azimuth relative to the current position" }
+          moveKnownPosition               : { type: AxesMoveKnownPositionProcess                , comment: "Move the axes to the given known position" }
+          enablePointingModel             : { type: AxesEnablePointingModelProcess              , comment: "Enable a pointing model with the given name" }
+          disablePointingModel            : { type: mtcs_common.Process                         , comment: "Disable the currently active pointing model"}
+          setAlphaDeltaVelocity           : { type: AxesSetAlphaDeltaVelocityProcess            , comment: "Set an additional alpha/delta velocity (e.g. to track solar system objects)"}
+      calls:
+          # processes
+          initialize:
+              isEnabled                   : !AND [ !NOT [ statuses.initializationStatus.locked ],
+                                                   !OR [ statuses.initializationStatus.shutdown,
+                                                         statuses.initializationStatus.initializingFailed,
+                                                         statuses.initializationStatus.initialized ] ]
+          lock:
+              isEnabled                   : operatorStatus.tech
+          unlock:
+              isEnabled                   : !AND [ operatorStatus.tech, statuses.initializationStatus.locked ]
+          changeOperatingState:
+              isEnabled                   : !AND [ statuses.busyStatus.idle, statuses.initializationStatus.initialized, operatorStatus.tech ]
+          setTarget:
+              isEnabled                   : !AND [ statuses.initializationStatus.initialized, operatorStatus.tech ]
+          point:
+              isEnabled                   : !AND [ statuses.initializationStatus.initialized,
+                                                   statuses.busyStatus.idle,
+                                                   statuses.poweredStatus.enabled ]
+          pointRelative:
+              isEnabled                   : !AND [ statuses.initializationStatus.initialized,
+                                                   statuses.busyStatus.idle,
+                                                   statuses.poweredStatus.enabled ]
+          reset:
+              isEnabled                   : !BOOL "TRUE"
+          stop:
+              isEnabled                   : statuses.initializationStatus.initialized
+          quickStop:
+              isEnabled                   : statuses.initializationStatus.initialized
+          moveAbsolute:
+              isEnabled                   : !AND [ statuses.initializationStatus.initialized,
+                                                   statuses.busyStatus.idle,
+                                                   statuses.poweredStatus.enabled ]
+          moveRelative:
+              isEnabled                   : !AND [ statuses.initializationStatus.initialized,
+                                                   statuses.busyStatus.idle,
+                                                   statuses.poweredStatus.enabled ]
+          powerOn:
+              isEnabled                   : !AND [  !NOT [ statuses.initializationStatus.locked ],
+                                                    statuses.initializationStatus.initialized,
+                                                    processes.powerOn.statuses.busyStatus.idle ]
+          powerOff:
+              isEnabled                   : !AND [ statuses.initializationStatus.initialized,
+                                                   processes.powerOff.statuses.busyStatus.idle ]
+          doHoming:
+              isEnabled                   : operatorStatus.tech
+          moveKnownPosition:
+              isEnabled                   : !AND [ statuses.initializationStatus.initialized,
+                                                   statuses.busyStatus.idle,
+                                                   statuses.poweredStatus.enabled ]
+          enablePointingModel:
+              isEnabled                   : statuses.busyStatus.idle
+          disablePointingModel:
+              isEnabled                   : statuses.busyStatus.idle
+          setAlphaDeltaVelocity:
+              isEnabled                   : !AND [ statuses.initializationStatus.initialized,
+                                                   statuses.busyStatus.idle ]
+          # statuses
+          healthStatus:
+              isGood                      : !MTCS_SUMMARIZE_GOOD [
+                                                       feedback,
+                                                       target,
+                                                       parts.azi,
+                                                       parts.ele,
+                                                       parts.roc,
+                                                       parts.ron,
+                                                       parts.configManager,
+                                                       parts.tpoint,
+                                                       parts.io,
+                                                       processes.initialize,
+                                                       processes.reset,
+                                                       processes.lock,
+                                                       processes.unlock,
+                                                       processes.changeOperatingState,
+                                                       processes.setTarget,
+                                                       processes.point,
+                                                       processes.pointRelative,
+                                                       processes.stop,
+                                                       processes.quickStop,
+                                                       processes.powerOn,
+                                                       processes.powerOff,
+                                                       processes.doHoming,
+                                                       processes.moveAbsolute,
+                                                       processes.moveRelative,
+                                                       processes.moveKnownPosition,
+                                                       processes.enablePointingModel,
+                                                       processes.disablePointingModel,
+                                                       processes.setAlphaDeltaVelocity ]
+              hasWarning                  : !MTCS_SUMMARIZE_WARN [
+                                                       feedback,
+                                                       target,
+                                                       parts.azi,
+                                                       parts.ele,
+                                                       parts.roc,
+                                                       parts.ron,
+                                                       parts.configManager,
+                                                       parts.tpoint,
+                                                       parts.io,
+                                                       processes.initialize,
+                                                       processes.reset,
+                                                       processes.lock,
+                                                       processes.unlock,
+                                                       processes.changeOperatingState,
+                                                       processes.setTarget,
+                                                       processes.point,
+                                                       processes.pointRelative,
+                                                       processes.stop,
+                                                       processes.quickStop,
+                                                       processes.powerOn,
+                                                       processes.powerOff,
+                                                       processes.doHoming,
+                                                       processes.moveAbsolute,
+                                                       processes.moveRelative,
+                                                       processes.moveKnownPosition,
+                                                       processes.enablePointingModel,
+                                                       processes.disablePointingModel,
+                                                       processes.setAlphaDeltaVelocity ]
+          busyStatus:
+              isBusy                      : !MTCS_SUMMARIZE_BUSY [
+                                                       parts.azi,
+                                                       parts.ele,
+                                                       parts.roc,
+                                                       parts.ron,
+                                                       parts.configManager,
+                                                       parts.tpoint,
+                                                       processes.initialize,
+                                                       processes.reset,
+                                                       processes.lock,
+                                                       processes.unlock,
+                                                       processes.changeOperatingState,
+                                                       processes.setTarget,
+                                                       processes.point,
+                                                       processes.pointRelative,
+                                                       processes.stop,
+                                                       processes.quickStop,
+                                                       processes.powerOn,
+                                                       processes.powerOff,
+                                                       processes.doHoming,
+                                                       processes.moveAbsolute,
+                                                       processes.moveRelative,
+                                                       processes.moveKnownPosition,
+                                                       processes.enablePointingModel,
+                                                       processes.disablePointingModel,
+                                                       processes.setAlphaDeltaVelocity ]
+          operatingStatus:
+              superState                  : statuses.initializationStatus.initialized
+          configManager:
+              isEnabled                   : operatorStatus.tech
+          tpoint:
+              isEnabled                   : operatorStatus.tech
+          io:
+              isEnabled                   : operatorStatus.tech
+          azi:
+              isEnabled                   : !AND [ !NOT [ statuses.initializationStatus.locked ],
+                                                   operatorStatus.tech ]
+              id                          : AxesIds.AZI
+              config                      : config.azi
+              aziDriveChannel             : parts.io.parts.aziDrive.parts.channelA
+              ablDriveChannel             : parts.io.parts.ablDrive.parts.channelA
+              aziMainDriveChannel         : parts.io.parts.aziDrive.parts.channelA # AZI drive channel = main drive channel
+              ablMainDriveChannel         : parts.io.parts.ablDrive.parts.channelA # ABL drive channel = main drive channel
+          ele:
+              isEnabled                   : !AND [  !NOT [ statuses.initializationStatus.locked ],
+                                                    operatorStatus.tech ]
+              id                          : AxesIds.ELE
+              config                      : config.ele
+              driveChannel                : parts.io.parts.eleDrive.parts.channelA
+              mainDriveChannel            : parts.io.parts.eleDrive.parts.channelA # ELE drive channel = main drive channel
+          roc:
+              isEnabled                   : !AND [  !NOT [ statuses.initializationStatus.locked ], operatorStatus.tech ]
+              id                          : AxesIds.ROC
+              config                      : config.roc
+              driveChannel                : parts.io.parts.aziDrive.parts.channelB
+              mainDriveChannel            : parts.io.parts.aziDrive.parts.channelA
+          ron:
+              isEnabled                   : !AND [ !NOT [ statuses.initializationStatus.locked ], operatorStatus.tech ]
+              id                          : AxesIds.RON
+              config                      : config.ron
+              driveChannel                : parts.io.parts.ablDrive.parts.channelB
+              mainDriveChannel            : parts.io.parts.ablDrive.parts.channelA
+  
+  
+  ########################################################################################################################
+  # AxesTarget
+  ########################################################################################################################
+  
+  !STATEMACHINE AxesTarget:
+      typeOf: Axes.target
+      variables:
+          isGiven             : { type: t_bool                          , comment: "True if the target is given, false if not" }
+          isValid             : { type: t_bool                          , comment: "True if the target is valid, false if not" }
+          isTooLow            : { type: t_bool                          , comment: "True if the target is too low to calculate, false if not" }
+          alpha               : { type: mtcs_common.AngularPosition     , comment: "The alpha coordinate (Right Ascention)" , expand: false}
+          delta               : { type: mtcs_common.AngularPosition     , comment: "The delta coordinate (Declination)" , expand: false }
+          muAlpha             : { type: t_double                        , comment: "Right ascention proper motion, in arcseconds/year (not multiplied by cos(delta)!)" }
+          muDelta             : { type: t_double                        , comment: "Declination proper motion, in arcseconds/year" }
+          parallax            : { type: t_double                        , comment: "Object parallax, in arcseconds" }
+          radialVelocity      : { type: t_double                        , comment: "Object radial velocity, in km/s" }
+          epoch               : { type: t_double                        , comment: "Epoch, e.g. 2000.0" }
+          alphaVelocity       : { type: mtcs_common.AngularVelocity     , comment: "Additional target velocity (e.g. for solar system objects) in alpha direction", expand: false}
+          deltaVelocity       : { type: mtcs_common.AngularVelocity     , comment: "Additional target velocity (e.g. for solar system objects) in delta direction", expand: false}
+          alphaTravelled      : { type: mtcs_common.AngularPosition     , comment: "Alpha traveled so far due to the alphaVelocity", expand: false}
+          deltaTravelled      : { type: mtcs_common.AngularPosition     , comment: "Delta traveled so far due to the deltaVelocity", expand: false}
+          alphaOffsetted      : { type: mtcs_common.AngularPosition     , comment: "Alpha offsetted so far due to the alphaOffset", expand: false}
+          deltaOffsetted      : { type: mtcs_common.AngularPosition     , comment: "Delta offsetted so far due to the deltaOffset", expand: false}
+          alphaStart          : { type: mtcs_common.AngularPosition     , comment: "Original alpha without traveling (=alpha - alphaTraveled - alphaOffsetted)", expand: false}
+          deltaStart          : { type: mtcs_common.AngularPosition     , comment: "Original delta without traveling (=delta - deltaTraveled - deltaOffsetted)", expand: false}
+  
+          aziPos              : { type: mtcs_common.AngularPosition     , comment: "The azimuth target position, as calculated by SLALIBl" , expand: false }
+          aziVelo             : { type: mtcs_common.AngularVelocity     , comment: "The azimuth target velocity, as calculated by SLALIB", expand: false }
+          aziAcc              : { type: mtcs_common.AngularAcceleration , comment: "The azimuth target acceleration, as calculated by SLALIB", expand: false }
+          elePos              : { type: mtcs_common.AngularPosition     , comment: "The elevation target position, as calculated by SLALIB" , expand: false }
+          eleVelo             : { type: mtcs_common.AngularVelocity     , comment: "The elevation target velocity, as calculated by SLALIB", expand: false }
+          eleAcc              : { type: mtcs_common.AngularAcceleration , comment: "The elevation target acceleration, as calculated by SLALIB", expand: false }
+          paPos               : { type: mtcs_common.AngularPosition     , comment: "The position angle target position, as calculated by SLALIB" , expand: false }
+          paVelo              : { type: mtcs_common.AngularVelocity     , comment: "The position angle target velocity, as calculated by SLALIB", expand: false }
+          paAcc               : { type: mtcs_common.AngularAcceleration , comment: "The position angle target acceleration, as calculated by SLALIB", expand: false }
+  
+          aziPointingModelOffset : { type: mtcs_common.AngularPosition  , comment: "The azimuth pointing model offset calculated by the TPoint model" , expand: false }
+          elePointingModelOffset : { type: mtcs_common.AngularPosition  , comment: "The elevation pointing model offset calculated by the TPoint model" , expand: false }
+  
+          correctedAzi         : { type: mtcs_common.AngularPosition    , comment: "The azimuth target position, as calculated by SLALIB, corrected by the TPoint model" , expand: false }
+          correctedEle         : { type: mtcs_common.AngularPosition    , comment: "The elevation target position, as calculated by SLALIB, corrected by the TPoint model" , expand: false }
+  
+  
+      statuses:
+          healthStatus        : { type: mtcs_common.HealthStatus }
+      calls:
+          healthStatus:
+              isGood          : !OR [  isValid, !NOT [ isGiven ] ]
+  
+  
+  ########################################################################################################################
+  # AxesFeedback
+  ########################################################################################################################
+  
+  !STATEMACHINE AxesFeedback:
+      typeOf: Axes.feedback
+      variables:
+          isValid             : { type: t_bool                      , comment: "True if the feedback is valid, false if not" }
+          isTooLow            : { type: t_bool                      , comment: "True if the feedback is too low to calculate, false if not" }
+          alpha               : { type: mtcs_common.AngularPosition , comment: "The alpha coordinate (Right Ascention)" , expand: false}
+          delta               : { type: mtcs_common.AngularPosition , comment: "The delta coordinate (Declination)" , expand: false}
+  
+          aziPos              : { type: mtcs_common.AngularPosition , comment: "The measured AZI position, corrected by TPoint, and normalized to [0..2*PI]" , expand: false}
+          elePos              : { type: mtcs_common.AngularPosition , comment: "The measured ELE position, corrected by TPoint, normalized to [-PI..PI]" , expand: false}
+          rocPos              : { type: mtcs_common.AngularPosition , comment: "The measured ROC position, normalized to [-PI..PI]" , expand: false}
+          ronPos              : { type: mtcs_common.AngularPosition , comment: "The measured RON position, normalized to [-PI..PI]" , expand: false}
+          rotPos              : { type: mtcs_common.AngularPosition , comment: "The measured position of the currently active rotator (ROC or RON), normalized to [-PI..PI]" , expand: false}
+  
+          rotOffset           : { type: mtcs_common.AngularPosition , comment: "The active rotator offset, to North" , expand: false }
+          rocOffset           : { type: mtcs_common.AngularPosition , comment: "The cassegrain rotator offset, to North", expand: false  }
+          ronOffset           : { type: mtcs_common.AngularPosition , comment: "The nasmyth rotator offset, to North", expand: false  }
+  
+      statuses:
+          healthStatus        : { type: mtcs_common.HealthStatus }
+      calls:
+          healthStatus:
+              isGood          : isValid
+  
+  
+  ########################################################################################################################
+  # AxesUnlockBrakeProcess
+  ########################################################################################################################
+  !PROCESS AxesUnlockBrakeProcess:
+      extends: mtcs_common.BaseProcess
+      arguments:
+          seconds : { type: t_double, initial: !DOUBLE 10.0, comment: "Unlock the brake for this number of seconds (0 means forever)" }
+  
+  
+  
+  ########################################################################################################################
+  # AxesSetPositionProcess
+  ########################################################################################################################
+  !PROCESS AxesSetPositionProcess:
+      extends: mtcs_common.BaseProcess
+      arguments:
+          value   : { type: t_double, comment: "New position to be taken over by the axis" }
+  
+  ########################################################################################################################
+  # AxesAzimuthAxis
+  ########################################################################################################################
+  
+  !STATEMACHINE AxesAzimuthAxis:
+      typeOf: AxesParts.azi
+      variables_hidden:
+          isEnabled                   : { type: t_bool                                    , comment: "Is control enabled?" }
+          REDUCTION_AZI_TO_TEL        : { type: t_double, initial: !DOUBLE 1440.0         , comment: "The mechanical reduction between absolute encoder and telescope" }
+          REDUCTION_ABL_TO_TEL        : { type: t_double, initial: !DOUBLE 180.0          , comment: "The mechanical reduction between absolute encoder and telescope" }
+          REDUCTION_ABS_ENC_TO_TEL    : { type: t_double, initial: !DOUBLE 18.0           , comment: "The mechanical reduction between absolute encoder and telescope" }
+      variables:
+          id                          : { type: AxesIds                           , comment: "Id of this axis"}
+      references:
+          config                      : { type: AxesAzimuthConfig                 , comment: "Reference to the azimuth config", expand: false }
+          aziDriveChannel             :
+              type: mtcs_common.AX52XXDriveChannel
+              comment: "Reference to the AZI drive channel"
+              expand: false
+              attributes:
+                  statuses:
+                      attributes:
+                          healthStatus    : { type: mtcs_common.HealthStatus }
+                          busyStatus      : { type: mtcs_common.BusyStatus }
+  
+          ablDriveChannel             :
+              type: mtcs_common.AX52XXDriveChannel
+              comment: "Reference to the ABL drive channel"
+              expand: false
+              attributes:
+                  statuses:
+                      attributes:
+                          healthStatus    : { type: mtcs_common.HealthStatus }
+                          busyStatus      : { type: mtcs_common.BusyStatus }
+          aziMainDriveChannel         : { type: mtcs_common.AX52XXDriveChannel              , comment: "Reference to the main drive channel (channel A) of the drive" , expand: false }
+          ablMainDriveChannel         : { type: mtcs_common.AX52XXDriveChannel              , comment: "Reference to the main drive channel (channel A) of the drive" , expand: false }
+      variables_read_only:
+          slipError                   : { type: t_bool                                    , comment: "TRUE if the motor appears to be slipping w.r.t. the external encoder" }
+          positiveLimitSwitchError    : { type: t_bool                                    , comment: "TRUE if the positive limit switch has detected the axis" }
+          negativeLimitSwitchError    : { type: t_bool                                    , comment: "TRUE if the negative limit switch has detected the axis" }
+          setPosLimitReached          : { type: t_bool                                    , comment: "TRUE if the setpoint position has reached its limit" }
+          deviation1SecAverage        : { type: mtcs_common.AngularPosition                 , comment: "The deviation between target position and actual position, as a 1 second moving average", expand: false }
+          deviation1SecRMS            : { type: mtcs_common.AngularPosition                 , comment: "The deviation between target position and actual position, as a 1 second moving RMS error", expand: false }
+          targetPos                   : { type: mtcs_common.AngularPosition                 , comment: "The target position", expand: false }
+          targetOffset                : { type: mtcs_common.AngularPosition                 , comment: "Cumulative offset of targetPos. Equals targetPos - targetStart", expand: false }
+          targetStart                 : { type: mtcs_common.AngularPosition                 , comment: "Last absolute movement end position of the axis", expand: false }
+          setPos                      : { type: mtcs_common.AngularPosition                 , comment: "The setpoint position (same as parts.physicalAxis!)", expand: false }
+          setVelo                     : { type: mtcs_common.AngularVelocity                 , comment: "The setpoint velocity (same as parts.physicalAxis!)", expand: false }
+          setAcc                      : { type: mtcs_common.AngularAcceleration             , comment: "The setpoint acceleration (same as parts.physicalAxis!)", expand: false }
+          actPos                      : { type: mtcs_common.AngularPosition                 , comment: "The actual position (same as parts.physicalAxis!)", expand: false }
+          actVelo                     : { type: mtcs_common.AngularVelocity                 , comment: "The actual velocity (same as parts.physicalAxis!)", expand: false }
+          actAcc                      : { type: mtcs_common.AngularAcceleration             , comment: "The actual acceleration (same as parts.physicalAxis!)", expand: false }
+          actTorqueAzi                : { type: mtcs_common.Torque                          , comment: "The actual torque on the telescope axis by the AZI motor", expand: false }
+          actTorqueAbl                : { type: mtcs_common.Torque                          , comment: "The actual torque on the telescope axis by the ABL motor", expand: false }
+          lida1Position               : { type: mtcs_common.AngularPosition                 , comment: "Position of the telescope according to LIDA encoder no. 1", expand: false }
+          lida2Position               : { type: mtcs_common.AngularPosition                 , comment: "Position of the telescope according to LIDA encoder no. 2", expand: false }
+          lida3Position               : { type: mtcs_common.AngularPosition                 , comment: "Position of the telescope according to LIDA encoder no. 3", expand: false }
+          lida4Position               : { type: mtcs_common.AngularPosition                 , comment: "Position of the telescope according to LIDA encoder no. 4", expand: false }
+          lidaAveragePosition         : { type: mtcs_common.AngularPosition                 , comment: "Position of the telescope according to the average of the LIDA encoders", expand: false }
+          absoluteEncoderPosition     : { type: mtcs_common.AngularPosition                 , comment: "The position of the axis, based on the absolute encoder", expand: false }
+      parts:
+          virtualAxis: 
+            type: mtcs_common.AngularAxis
+            comment: "The virtual AZI axis"
+            expand: false
+            arguments:
+                isEnabled : { type: t_bool }
+            attributes:
+                statuses:
+                    attributes:
+                        poweredStatus   : { type: mtcs_common.PoweredStatus }
+                        healthStatus    : { type: mtcs_common.HealthStatus }
+                        busyStatus      : { type: mtcs_common.BusyStatus }
+          physicalAxis: 
+            type: mtcs_common.AngularAxis
+            comment: "The physical AZI axis"
+            expand: false
+            arguments:
+                isEnabled : { type: t_bool }
+            attributes:
+                statuses:
+                    attributes:
+                        poweredStatus   : { type: mtcs_common.PoweredStatus }
+                        healthStatus    : { type: mtcs_common.HealthStatus }
+                        busyStatus      : { type: mtcs_common.BusyStatus }
+          ablAxis: 
+            type: mtcs_common.AngularAxis
+            comment: "The (anti-backlash) ABL axis"
+            expand: false
+            arguments:
+                isEnabled : { type: t_bool }
+            attributes:
+                statuses:
+                    attributes:
+                        poweredStatus   : { type: mtcs_common.PoweredStatus }
+                        healthStatus    : { type: mtcs_common.HealthStatus }
+                        busyStatus      : { type: mtcs_common.BusyStatus }
+          
+          
+          
+          lida1:
+            type: mtcs_common.IncrementalEncoder
+            comment: "The external (LIDA) encoder no. 1"
+            expand: false
+            arguments:
+                isEnabled : { type: t_bool }
+            attributes:
+                statuses:
+                    attributes:
+                        healthStatus    : { type: mtcs_common.HealthStatus }
+                        busyStatus      : { type: mtcs_common.BusyStatus }
+          lida2:
+            type: mtcs_common.IncrementalEncoder
+            comment: "The external (LIDA) encoder no. 2"
+            expand: false
+            arguments:
+                isEnabled : { type: t_bool }
+            attributes:
+                statuses:
+                    attributes:
+                        healthStatus    : { type: mtcs_common.HealthStatus }
+                        busyStatus      : { type: mtcs_common.BusyStatus }
+          lida3:
+            type: mtcs_common.IncrementalEncoder
+            comment: "The external (LIDA) encoder no. 3"
+            expand: false
+            arguments:
+                isEnabled : { type: t_bool }
+            attributes:
+                statuses:
+                    attributes:
+                        healthStatus    : { type: mtcs_common.HealthStatus }
+                        busyStatus      : { type: mtcs_common.BusyStatus }
+          lida4:
+            type: mtcs_common.IncrementalEncoder
+            comment: "The external (LIDA) encoder no. 4"
+            expand: false
+            arguments:
+                isEnabled : { type: t_bool }
+            attributes:
+                statuses:
+                    attributes:
+                        healthStatus  : { type: mtcs_common.HealthStatus }
+                        busyStatus    : { type: mtcs_common.BusyStatus }
+          absoluteEncoder             : { type: mtcs_common.SSIEncoder                      , comment: "The external absolute encoder" }
+      processes:
+          moveAbsolute                : { type: AxesMoveAbsoluteProcess           , comment: "Move the axis in an absolute way" }
+          moveRelative                : { type: AxesMoveRelativeProcess           , comment: "Move the axis relative to the current position" }
+          moveVelocity                : { type: AxesMoveVelocityProcess           , comment: "Move the axis endlessly with the given velocity" }
+          reset                       : { type: mtcs_common.Process                         , comment: "Reset the axis (no homing)" }
+          moveOutOfLimitSwitch        : { type: AxesMoveOutOfLimitSwitchProcess   , comment: "Move out of a limit switch" }
+          powerOn                     : { type: AxesPowerOnProcess                , comment: "Power on the axis" }
+          powerOff                    : { type: AxesPowerOffProcess               , comment: "Power off the axis" }
+          doHoming                    : { type: AxesDoHomingProcess               , comment: "Do a homing of the axis" }
+          stop                        : { type: AxesStopProcess                   , comment: "Stop the axis (i.e. stop pointing, tracking, moving, ...)" }
+          quickStop                   : { type: AxesStopProcess                   , comment: "Quickly stop the axes (i.e. stop pointing, tracking, moving, ...)" }
+          unlockBrake                 : { type: AxesUnlockBrakeProcess            , comment: "Temporarily unlock the brake" }
+          setPosition                 : { type: AxesSetPositionProcess            , comment: "Set the axis to the given position" }
+      statuses:
+          busyStatus                  : { type: mtcs_common.BusyStatus                      , comment: "Is the axis in a busy state?" }
+          healthStatus                : { type: mtcs_common.HealthStatus                    , comment: "Is the axis in a healthy state?" }
+          poweredStatus               : { type: mtcs_common.PoweredStatus                   , comment: "Is the axis powered on or off?" }
+      calls:
+          virtualAxis:
+              isEnabled  : isEnabled
+          physicalAxis:
+              isEnabled  : isEnabled
+          ablAxis:
+              isEnabled  : isEnabled
+          lida1:
+              isEnabled  : isEnabled
+          lida2:
+              isEnabled  : isEnabled
+          lida3:
+              isEnabled  : isEnabled
+          lida4:
+              isEnabled  : isEnabled
+          poweredStatus:
+              isEnabled  : !AND [ parts.virtualAxis.statuses.poweredStatus.enabled,
+                                  parts.physicalAxis.statuses.poweredStatus.enabled,
+                                  parts.ablAxis.statuses.poweredStatus.enabled ]
+          healthStatus:
+              isGood     : !AND [  !MTCS_SUMMARIZE_GOOD [ aziDriveChannel,
+                                                          ablDriveChannel,
+                                                          parts.virtualAxis,
+                                                          parts.physicalAxis,
+                                                          parts.ablAxis,
+                                                          parts.lida1,
+                                                          parts.lida2,
+                                                          parts.lida3,
+                                                          parts.lida4,
+                                                          parts.absoluteEncoder,
+                                                          processes.moveAbsolute,
+                                                          processes.moveRelative,
+                                                          processes.moveVelocity,
+                                                          processes.reset,
+                                                          processes.moveOutOfLimitSwitch,
+                                                          processes.powerOn,
+                                                          processes.powerOff,
+                                                          processes.doHoming,
+                                                          processes.stop,
+                                                          processes.quickStop,
+                                                          processes.unlockBrake,
+                                                          processes.setPosition ],
+                                   !NOT [ slipError ],
+                                   !NOT [ positiveLimitSwitchError ],
+                                   !NOT [ negativeLimitSwitchError ] ]
+              hasWarning :  !MTCS_SUMMARIZE_WARN [ aziDriveChannel,
+                                                   ablDriveChannel,
+                                                   parts.virtualAxis,
+                                                   parts.physicalAxis,
+                                                   parts.ablAxis,
+                                                   parts.lida1,
+                                                   parts.lida2,
+                                                   parts.lida3,
+                                                   parts.lida4,
+                                                   parts.absoluteEncoder,
+                                                   processes.moveAbsolute,
+                                                   processes.moveRelative,
+                                                   processes.moveVelocity,
+                                                   processes.reset,
+                                                   processes.moveOutOfLimitSwitch,
+                                                   processes.powerOn,
+                                                   processes.powerOff,
+                                                   processes.doHoming,
+                                                   processes.stop,
+                                                   processes.quickStop,
+                                                   processes.unlockBrake,
+                                                   processes.setPosition ]
+          busyStatus:
+              isBusy     :  !MTCS_SUMMARIZE_BUSY [ aziDriveChannel,
+                                                   ablDriveChannel,
+                                                   parts.virtualAxis,
+                                                   parts.physicalAxis,
+                                                   parts.ablAxis,
+                                                   parts.lida1,
+                                                   parts.lida2,
+                                                   parts.lida3,
+                                                   parts.lida4,
+                                                   processes.moveAbsolute,
+                                                   processes.moveRelative,
+                                                   processes.moveVelocity,
+                                                   processes.reset,
+                                                   processes.moveOutOfLimitSwitch,
+                                                   processes.powerOn,
+                                                   processes.powerOff,
+                                                   processes.doHoming,
+                                                   processes.stop,
+                                                   processes.quickStop,
+                                                   processes.unlockBrake,
+                                                   processes.setPosition ]
+          quickStop:
+              isEnabled  : isEnabled
+          moveAbsolute:
+              isEnabled  : isEnabled
+          moveRelative:
+              isEnabled  : isEnabled
+          moveVelocity:
+              isEnabled  : isEnabled
+          reset:
+              isEnabled  : isEnabled
+          moveOutOfLimitSwitch:
+              isEnabled  : isEnabled
+          unlockBrake:
+              isEnabled  : isEnabled
+          doHoming:
+              isEnabled   : isEnabled
+          powerOn:
+              isEnabled   : isEnabled
+          powerOff:
+              isEnabled   : isEnabled
+          stop:
+              isEnabled   : isEnabled
+          setPosition:
+              isEnabled  : isEnabled
+  
+  
+  
+  
+  ########################################################################################################################
+  # AxesElevationAxis
+  ########################################################################################################################
+  !STATEMACHINE AxesElevationAxis:
+      typeOf: AxesParts.ele
+      variables_hidden:
+          isEnabled                   : { type: t_bool                                      , comment: "Is control enabled?" }
+          REDUCTION_MOT_TO_TEL        : { type: t_double, initial: !DOUBLE 1440.0           , comment: "The mechanical reduction between absolute encoder and telescope" }
+          REDUCTION_ABS_ENC_TO_TEL    : { type: t_double, initial: !DOUBLE 18.0             , comment: "The mechanical reduction between absolute encoder and telescope" }
+      variables:
+          id                          : { type: AxesIds                                     , comment: "Id of this axis"}
+      references:
+          config                      : { type: AxesElevationConfig                         , comment: "Reference to the elevation config", expand: false  }
+          driveChannel             :
+              type: mtcs_common.AX52XXDriveChannel
+              comment: "Reference to the ELE drive channel"
+              expand: false
+              attributes:
+                  statuses:
+                      attributes:
+                          healthStatus: { type: mtcs_common.HealthStatus }
+                          busyStatus  : { type: mtcs_common.BusyStatus }
+          mainDriveChannel            : { type: mtcs_common.AX52XXDriveChannel              , comment: "Reference to the main drive channel (channel A) of the drive" , expand: false }
+      variables_read_only:
+          slipError                   : { type: t_bool                                      , comment: "TRUE if the motor appears to be slipping w.r.t. the external encoder" }
+          positiveLimitSwitchError    : { type: t_bool                                      , comment: "TRUE if the positive limit switch has detected the axis" }
+          negativeLimitSwitchError    : { type: t_bool                                      , comment: "TRUE if the negative limit switch has detected the axis" }
+          setPosLimitReached          : { type: t_bool                                      , comment: "TRUE if the setpoint position has reached its limit" }
+          deviation1SecAverage        : { type: mtcs_common.AngularPosition                 , comment: "The deviation between target position and actual position, as a 1 second moving average" , expand: false}
+          deviation1SecRMS            : { type: mtcs_common.AngularPosition                 , comment: "The deviation between target position and actual position, as a 1 second moving RMS error", expand: false }
+          targetPos                   : { type: mtcs_common.AngularPosition                 , comment: "The target position", expand: false }
+          targetOffset                : { type: mtcs_common.AngularPosition                 , comment: "Cumulative offset of targetPos. Equals targetPos - targetStart", expand: false }
+          targetStart                 : { type: mtcs_common.AngularPosition                 , comment: "Last absolute movement end position of the axis", expand: false }
+          setPos                      : { type: mtcs_common.AngularPosition                 , comment: "The setpoint position (same as parts.physicalAxis!)", expand: false }
+          setVelo                     : { type: mtcs_common.AngularVelocity                 , comment: "The setpoint velocity (same as parts.physicalAxis!)" , expand: false}
+          setAcc                      : { type: mtcs_common.AngularAcceleration             , comment: "The setpoint acceleration (same as parts.physicalAxis!)" , expand: false}
+          actPos                      : { type: mtcs_common.AngularPosition                 , comment: "The actual position (same as parts.physicalAxis!)" , expand: false}
+          actVelo                     : { type: mtcs_common.AngularVelocity                 , comment: "The actual velocity (same as parts.physicalAxis!)" , expand: false}
+          actAcc                      : { type: mtcs_common.AngularAcceleration             , comment: "The actual acceleration (same as parts.physicalAxis!)" , expand: false}
+          actTorque                   : { type: mtcs_common.Torque                          , comment: "The actual torque on the telescope axis by the ELE motor" , expand: false}
+          lida1Position               : { type: mtcs_common.AngularPosition                 , comment: "Position of the telescope according to LIDA encoder no. 1" , expand: false}
+          lida2Position               : { type: mtcs_common.AngularPosition                 , comment: "Position of the telescope according to LIDA encoder no. 2" , expand: false}
+          lidaAveragePosition         : { type: mtcs_common.AngularPosition                 , comment: "Position of the telescope according to the average of the LIDA encoders" , expand: false}
+          absoluteEncoderPosition     : { type: mtcs_common.AngularPosition                 , comment: "Position of the telescope according to the absolute encoder" , expand: false}
+      parts:
+          virtualAxis:
+            type: mtcs_common.AngularAxis
+            comment: "The virtual axis"
+            expand: false
+            arguments:
+                isEnabled : { type: t_bool }
+            attributes:
+                statuses:
+                    attributes:
+                        poweredStatus   : { type: mtcs_common.PoweredStatus }
+                        healthStatus    : { type: mtcs_common.HealthStatus }
+                        busyStatus      : { type: mtcs_common.BusyStatus }
+          physicalAxis:
+            type: mtcs_common.AngularAxis
+            comment: "The physical ELE axis"
+            expand: false
+            arguments:
+                isEnabled : { type: t_bool }
+            attributes:
+                statuses:
+                    attributes:
+                        poweredStatus   : { type: mtcs_common.PoweredStatus }
+                        healthStatus    : { type: mtcs_common.HealthStatus }
+                        busyStatus      : { type: mtcs_common.BusyStatus }
+          lida1:
+            type: mtcs_common.IncrementalEncoder
+            comment: "The external (LIDA) encoder no. 1"
+            expand: false
+            arguments:
+                isEnabled : { type: t_bool }
+            attributes:
+                statuses:
+                    attributes:
+                        healthStatus    : { type: mtcs_common.HealthStatus }
+                        busyStatus      : { type: mtcs_common.BusyStatus }
+          lida2:
+            type: mtcs_common.IncrementalEncoder
+            comment: "The external (LIDA) encoder no. 2"
+            expand: false
+            arguments:
+                isEnabled : { type: t_bool }
+            attributes:
+                statuses:
+                    attributes:
+                        healthStatus  : { type: mtcs_common.HealthStatus }
+                        busyStatus    : { type: mtcs_common.BusyStatus }
+          absoluteEncoder             : { type: mtcs_common.SSIEncoder            , comment: "The external absolute encoder" }
+      processes:
+          moveAbsolute                : { type: AxesMoveAbsoluteProcess           , comment: "Move the axis in an absolute way" }
+          moveRelative                : { type: AxesMoveRelativeProcess           , comment: "Move the axis relative to the current position" }
+          moveVelocity                : { type: AxesMoveVelocityProcess           , comment: "Move the axis endlessly with the given velocity" }
+          reset                       : { type: mtcs_common.Process               , comment: "Reset the axis (no homing)" }
+          moveOutOfLimitSwitch        : { type: AxesMoveOutOfLimitSwitchProcess   , comment: "Move out of a limit switch" }
+          powerOn                     : { type: AxesPowerOnProcess                , comment: "Power on the axis" }
+          powerOff                    : { type: AxesPowerOffProcess               , comment: "Power off the axis" }
+          doHoming                    : { type: AxesDoHomingProcess               , comment: "Do a homing of the axis" }
+          stop                        : { type: AxesStopProcess                   , comment: "Stop the axis (i.e. stop pointing, tracking, moving, ...)" }
+          quickStop                   : { type: AxesStopProcess                   , comment: "Quickly stop the axes (i.e. stop pointing, tracking, moving, ...)" }
+          setPosition                 : { type: AxesSetPositionProcess            , comment: "Set the axis to the given position" }
+          unlockBrake                 : { type: AxesUnlockBrakeProcess            , comment: "Temporarily unlock the brake" }
+      statuses:
+          busyStatus                  : { type: mtcs_common.BusyStatus            , comment: "Is the axis in a busy state?" }
+          healthStatus                : { type: mtcs_common.HealthStatus          , comment: "Is the axis in a healthy state?" }
+          poweredStatus               : { type: mtcs_common.PoweredStatus         , comment: "Is the axis powered on or off?" }
+      calls:
+          virtualAxis:
+              isEnabled  : isEnabled
+          physicalAxis:
+              isEnabled  : isEnabled
+          lida1:
+              isEnabled  : isEnabled
+          lida2:
+              isEnabled  : isEnabled
+          healthStatus:
+              isGood     : !AND [ !MTCS_SUMMARIZE_GOOD [ driveChannel,
+                                                         parts.virtualAxis,
+                                                         parts.physicalAxis,
+                                                         parts.lida1,
+                                                         parts.lida2,
+                                                         parts.absoluteEncoder,
+                                                         processes.moveAbsolute,
+                                                         processes.moveRelative,
+                                                         processes.moveVelocity,
+                                                         processes.reset,
+                                                         processes.moveOutOfLimitSwitch,
+                                                         processes.powerOn,
+                                                         processes.powerOff,
+                                                         processes.doHoming,
+                                                         processes.stop,
+                                                         processes.quickStop,
+                                                         processes.unlockBrake,
+                                                         processes.setPosition ],
+                                   !NOT [ slipError ],
+                                   !NOT [ positiveLimitSwitchError ],
+                                   !NOT [ negativeLimitSwitchError ] ]
+              hasWarning :  !MTCS_SUMMARIZE_WARN [ driveChannel,
+                                                   parts.virtualAxis,
+                                                   parts.physicalAxis,
+                                                   parts.lida1,
+                                                   parts.lida2,
+                                                   parts.absoluteEncoder,
+                                                   processes.moveAbsolute,
+                                                   processes.moveRelative,
+                                                   processes.moveVelocity,
+                                                   processes.reset,
+                                                   processes.moveOutOfLimitSwitch,
+                                                   processes.powerOn,
+                                                   processes.powerOff,
+                                                   processes.doHoming,
+                                                   processes.stop,
+                                                   processes.quickStop,
+                                                   processes.unlockBrake,
+                                                   processes.setPosition ]
+          busyStatus:
+              isBusy     :   !MTCS_SUMMARIZE_BUSY [ driveChannel,
+                                                    parts.virtualAxis,
+                                                    parts.physicalAxis,
+                                                    parts.lida1,
+                                                    parts.lida2,
+                                                    processes.moveAbsolute,
+                                                    processes.moveRelative,
+                                                    processes.moveVelocity,
+                                                    processes.reset,
+                                                    processes.moveOutOfLimitSwitch,
+                                                    processes.powerOn,
+                                                    processes.powerOff,
+                                                    processes.doHoming,
+                                                    processes.stop,
+                                                    processes.quickStop,
+                                                    processes.unlockBrake,
+                                                    processes.setPosition ]
+          poweredStatus:
+              isEnabled  : !AND [ parts.virtualAxis.statuses.poweredStatus.enabled,
+                                  parts.physicalAxis.statuses.poweredStatus.enabled ]
+          quickStop:
+              isEnabled  : isEnabled
+          moveAbsolute:
+              isEnabled  : isEnabled
+          moveRelative:
+              isEnabled  : isEnabled
+          moveVelocity:
+              isEnabled  : isEnabled
+          reset:
+              isEnabled  : isEnabled
+          doHoming:
+              isEnabled  : isEnabled
+          moveOutOfLimitSwitch:
+              isEnabled  : isEnabled
+          powerOn:
+              isEnabled  : isEnabled
+          powerOff:
+              isEnabled  : isEnabled
+          stop:
+              isEnabled  : isEnabled
+          setPosition:
+              isEnabled  : isEnabled
+  
+  
+  ########################################################################################################################
+  # AxesRotationAxis
+  ########################################################################################################################
+  !STATEMACHINE AxesRotationAxis:
+      typeOf: [AxesParts.roc, AxesParts.ron]
+      variables_hidden:
+          isEnabled                   : { type: t_bool                                      , comment: "Is control enabled?" }
+      variables:
+          id                          : { type: AxesIds                                     , comment: "Id of this axis"}
+      references:
+          config                      : { type: AxesRotationConfig                          , comment: "Reference to the rotation config" , expand: false }
+          driveChannel             :
+              type: mtcs_common.AX52XXDriveChannel
+              comment: "Reference to the axis drive channel"
+              expand: false
+              attributes:
+                  statuses:
+                      attributes:
+                          healthStatus    : { type: mtcs_common.HealthStatus }
+                          busyStatus      : { type: mtcs_common.BusyStatus }
+          mainDriveChannel            : { type: mtcs_common.AX52XXDriveChannel              , comment: "Reference to the main drive channel (channel A) of the drive" , expand: false }
+      variables_read_only:
+          positiveLimitSwitchError    : { type: t_bool                                      , comment: "TRUE if the positive limit switch has detected the axis" }
+          negativeLimitSwitchError    : { type: t_bool                                      , comment: "TRUE if the negative limit switch has detected the axis" }
+          setPosLimitReached          : { type: t_bool                                      , comment: "TRUE if the setpoint position has reached its limit" }
+          deviation1SecAverage        : { type: mtcs_common.AngularPosition                 , comment: "The deviation between target position and actual position, as a 1 second moving average", expand: false }
+          deviation1SecRMS            : { type: mtcs_common.AngularPosition                 , comment: "The deviation between target position and actual position, as a 1 second moving RMS error", expand: false }
+          targetPos                   : { type: mtcs_common.AngularPosition                 , comment: "The target position", expand: false }
+          targetOffset                : { type: mtcs_common.AngularPosition                 , comment: "Cumulative offset of targetPos. Equals targetPos - targetStart", expand: false }
+          targetStart                 : { type: mtcs_common.AngularPosition                 , comment: "Last absolute movement end position of the axis", expand: false }
+          setPos                      : { type: mtcs_common.AngularPosition                 , comment: "The setpoint position (same as parts.physicalAxis!)", expand: false }
+          setVelo                     : { type: mtcs_common.AngularVelocity                 , comment: "The setpoint velocity (same as parts.physicalAxis!)", expand: false }
+          setAcc                      : { type: mtcs_common.AngularAcceleration             , comment: "The setpoint acceleration (same as parts.physicalAxis!)", expand: false }
+          actPos                      : { type: mtcs_common.AngularPosition                 , comment: "The actual position (same as parts.eleAxis!)", expand: false }
+          actVelo                     : { type: mtcs_common.AngularVelocity                 , comment: "The actual velocity (same as parts.eleAxis!)", expand: false }
+          actAcc                      : { type: mtcs_common.AngularAcceleration             , comment: "The actual acceleration (same as parts.eleAxis!)", expand: false }
+          actTorque                   : { type: mtcs_common.Torque                          , comment: "The actual torque on the telescope axis by the ELE motor", expand: false }
+      parts:
+          virtualAxis:
+            type: mtcs_common.AngularAxis
+            comment: "The virtual axis"
+            expand: false
+            arguments:
+                isEnabled : { type: t_bool }
+            attributes:
+                statuses:
+                    attributes:
+                        poweredStatus   : { type: mtcs_common.PoweredStatus }
+                        healthStatus    : { type: mtcs_common.HealthStatus }
+                        busyStatus      : { type: mtcs_common.BusyStatus }
+          physicalAxis:
+            type: mtcs_common.AngularAxis
+            comment: "The physical axis"
+            expand: false
+            arguments:
+                isEnabled : { type: t_bool }
+            attributes:
+                statuses:
+                    attributes:
+                        poweredStatus   : { type: mtcs_common.PoweredStatus }
+                        healthStatus    : { type: mtcs_common.HealthStatus }
+                        busyStatus      : { type: mtcs_common.BusyStatus }
+      processes:
+          moveAbsolute                : { type: AxesMoveAbsoluteProcess             , comment: "Move the axis in an absolute way" }
+          moveRelative                : { type: AxesMoveRelativeProcess             , comment: "Move the axis relative to the current position" }
+          moveVelocity                : { type: AxesMoveVelocityProcess             , comment: "Move the axis endlessly with the given velocity" }
+          reset                       : { type: mtcs_common.Process                 , comment: "Reset the axis (no homing)" }
+          moveOutOfLimitSwitch        : { type: AxesMoveOutOfLimitSwitchProcess     , comment: "Move out of a limit switch" }
+          powerOn                     : { type: AxesPowerOnProcess                  , comment: "Power on the axis" }
+          powerOff                    : { type: AxesPowerOffProcess                 , comment: "Power off the axis" }
+          stop                        : { type: AxesStopProcess                     , comment: "Stop the axis (i.e. stop pointing, tracking, moving, ...)" }
+          quickStop                   : { type: AxesStopProcess                     , comment: "Quickly stop the axes (i.e. stop pointing, tracking, moving, ...)" }
+          setPosition                 : { type: AxesSetPositionProcess              , comment: "Set the axis to the given position" }
+      statuses:
+          busyStatus                  : { type: mtcs_common.BusyStatus              , comment: "Is the axis in a busy state?" }
+          healthStatus                : { type: mtcs_common.HealthStatus            , comment: "Is the axis in a healthy state?" }
+          poweredStatus               : { type: mtcs_common.PoweredStatus           , comment: "Is the axis powered on or off?" }
+      calls:
+          virtualAxis:
+              isEnabled  : isEnabled
+          physicalAxis:
+              isEnabled  : isEnabled
+          healthStatus:
+              isGood     : !AND [ !MTCS_SUMMARIZE_GOOD [ driveChannel,
+                                                         parts.virtualAxis,
+                                                         parts.physicalAxis,
+                                                         processes.moveAbsolute,
+                                                         processes.moveRelative,
+                                                         processes.moveVelocity,
+                                                         processes.reset,
+                                                         processes.moveOutOfLimitSwitch,
+                                                         processes.powerOn,
+                                                         processes.powerOff,
+                                                         processes.stop,
+                                                         processes.quickStop,
+                                                         processes.setPosition ],
+                                   !NOT [ positiveLimitSwitchError ],
+                                   !NOT [ negativeLimitSwitchError ] ]
+              hasWarning :  !MTCS_SUMMARIZE_WARN [ driveChannel,
+                                                   parts.virtualAxis,
+                                                   parts.physicalAxis,
+                                                   processes.moveAbsolute,
+                                                   processes.moveRelative,
+                                                   processes.moveVelocity,
+                                                   processes.reset,
+                                                   processes.moveOutOfLimitSwitch,
+                                                   processes.powerOn,
+                                                   processes.powerOff,
+                                                   processes.stop,
+                                                   processes.quickStop,
+                                                   processes.setPosition ]
+          busyStatus:
+              isBusy     :    !MTCS_SUMMARIZE_BUSY [ driveChannel,
+                                                     parts.virtualAxis,
+                                                     parts.physicalAxis,
+                                                     processes.moveAbsolute,
+                                                     processes.moveRelative,
+                                                     processes.moveVelocity,
+                                                     processes.reset,
+                                                     processes.moveOutOfLimitSwitch,
+                                                     processes.powerOn,
+                                                     processes.powerOff,
+                                                     processes.stop,
+                                                     processes.quickStop,
+                                                     processes.setPosition ]
+          poweredStatus:
+              isEnabled  : !AND [ parts.virtualAxis.statuses.poweredStatus.enabled,
+                                  parts.physicalAxis.statuses.poweredStatus.enabled ]
+          quickStop:
+              isEnabled  : isEnabled
+          moveAbsolute:
+              isEnabled  : isEnabled
+          moveRelative:
+              isEnabled  : isEnabled
+          moveVelocity:
+              isEnabled  : isEnabled
+          reset:
+              isEnabled  : isEnabled
+          moveOutOfLimitSwitch:
+              isEnabled  : isEnabled
+          powerOn:
+              isEnabled  : isEnabled
+          powerOff:
+              isEnabled  : isEnabled
+          stop:
+              isEnabled  : isEnabled
+          setPosition:
+              isEnabled  : isEnabled
+  
+  
+  ########################################################################################################################
+  # AxesPointingModelSetup
+  ########################################################################################################################
+  !STATEMACHINE AxesPointingModelSetup:
+      variables_hidden:
+          isEnabled               : { type: t_bool                          , comment: "Is control enabled?" }
+      variables:
+          editableConfig          : { type: AxesPointingModelConfig         , comment: "Editable configuration of the particular TPOINT model" , expand: false}
+      variables_read_only:
+          config                  : { type: AxesPointingModelConfig         , comment: "Active configuration of the particular TPOINT model", expand: false }
+      parts:
+          configManager           : { type: mtcs_common.ConfigManager       , comment: "The config manager (to load/save/activate configuration data)" }
+      calls:
+          configManager:
+              isEnabled           : isEnabled
+  
+  
+  ########################################################################################################################
+  # AxesPointingModelsSetup
+  ########################################################################################################################
+  !STATEMACHINE AxesPointingModelsSetup:
+      typeOf                      : [ AxesParts.tpoint ]
+      variables_hidden:
+          isEnabled               : { type: t_bool                        , comment: "Is control enabled?" }
+      statuses:
+          busyStatus              : { type: mtcs_common.BusyStatus          , comment: "Is the pointing models setup in a busy state?" }
+          healthStatus            : { type: mtcs_common.HealthStatus        , comment: "Is the pointing models setup in a healthy state?" }
+      parts:
+          model0:
+              type: AxesPointingModelSetup
+              expand: false
+              arguments:
+                  isEnabled : { type: t_bool }
+              attributes:
+                  parts:
+                      attributes:
+                          configManager:
+                              attributes:
+                                  statuses:
+                                      attributes:
+                                          healthStatus    : { type: mtcs_common.HealthStatus }
+                                          busyStatus      : { type: mtcs_common.BusyStatus }
+          model1:
+              type: AxesPointingModelSetup
+              expand: false
+              arguments:
+                  isEnabled : { type: t_bool }
+              attributes:
+                  parts:
+                      attributes:
+                          configManager:
+                              attributes:
+                                  statuses:
+                                      attributes:
+                                          healthStatus    : { type: mtcs_common.HealthStatus }
+                                          busyStatus      : { type: mtcs_common.BusyStatus }
+          model2:
+              type: AxesPointingModelSetup
+              expand: false
+              arguments:
+                  isEnabled : { type: t_bool }
+              attributes:
+                  parts:
+                      attributes:
+                          configManager:
+                              attributes:
+                                  statuses:
+                                      attributes:
+                                          healthStatus    : { type: mtcs_common.HealthStatus }
+                                          busyStatus      : { type: mtcs_common.BusyStatus }
+          model3:
+              type: AxesPointingModelSetup
+              expand: false
+              arguments:
+                  isEnabled : { type: t_bool }
+              attributes:
+                  parts:
+                      attributes:
+                          configManager:
+                              attributes:
+                                  statuses:
+                                      attributes:
+                                          healthStatus    : { type: mtcs_common.HealthStatus }
+                                          busyStatus      : { type: mtcs_common.BusyStatus }
+          model4:
+              type: AxesPointingModelSetup
+              expand: false
+              arguments:
+                  isEnabled : { type: t_bool }
+              attributes:
+                  parts:
+                      attributes:
+                          configManager:
+                              attributes:
+                                  statuses:
+                                      attributes:
+                                          healthStatus    : { type: mtcs_common.HealthStatus }
+                                          busyStatus      : { type: mtcs_common.BusyStatus }
+          model5:
+              type: AxesPointingModelSetup
+              expand: false
+              arguments:
+                  isEnabled : { type: t_bool }
+              attributes:
+                  parts:
+                      attributes:
+                          configManager:
+                              attributes:
+                                  statuses:
+                                      attributes:
+                                          healthStatus    : { type: mtcs_common.HealthStatus }
+                                          busyStatus      : { type: mtcs_common.BusyStatus }
+          model6:
+              type: AxesPointingModelSetup
+              expand: false
+              arguments:
+                  isEnabled : { type: t_bool }
+              attributes:
+                  parts:
+                      attributes:
+                          configManager:
+                              attributes:
+                                  statuses:
+                                      attributes:
+                                          healthStatus    : { type: mtcs_common.HealthStatus }
+                                          busyStatus      : { type: mtcs_common.BusyStatus }
+          model7:
+              type: AxesPointingModelSetup
+              expand: false
+              arguments:
+                  isEnabled : { type: t_bool }
+              attributes:
+                  parts:
+                      attributes:
+                          configManager:
+                              attributes:
+                                  statuses:
+                                      attributes:
+                                          healthStatus    : { type: mtcs_common.HealthStatus }
+                                          busyStatus      : { type: mtcs_common.BusyStatus }
+          model8:
+              type: AxesPointingModelSetup
+              expand: false
+              arguments:
+                  isEnabled : { type: t_bool }
+              attributes:
+                  parts:
+                      attributes:
+                          configManager:
+                              attributes:
+                                  statuses:
+                                      attributes:
+                                          healthStatus    : { type: mtcs_common.HealthStatus }
+                                          busyStatus      : { type: mtcs_common.BusyStatus }
+          model9:
+              type: AxesPointingModelSetup
+              expand: false
+              arguments:
+                  isEnabled : { type: t_bool }
+              attributes:
+                  parts:
+                      attributes:
+                          configManager:
+                              attributes:
+                                  statuses:
+                                      attributes:
+                                          healthStatus    : { type: mtcs_common.HealthStatus }
+                                          busyStatus      : { type: mtcs_common.BusyStatus }
+      calls:
+          busyStatus:
+              isBusy              : !MTCS_SUMMARIZE_BUSY [ parts.model0.parts.configManager,
+                                                           parts.model1.parts.configManager,
+                                                           parts.model2.parts.configManager,
+                                                           parts.model3.parts.configManager,
+                                                           parts.model4.parts.configManager,
+                                                           parts.model5.parts.configManager,
+                                                           parts.model6.parts.configManager,
+                                                           parts.model7.parts.configManager,
+                                                           parts.model8.parts.configManager,
+                                                           parts.model9.parts.configManager ]
+          healthStatus:
+              isGood              : !MTCS_SUMMARIZE_GOOD [ parts.model0.parts.configManager,
+                                                           parts.model1.parts.configManager,
+                                                           parts.model2.parts.configManager,
+                                                           parts.model3.parts.configManager,
+                                                           parts.model4.parts.configManager,
+                                                           parts.model5.parts.configManager,
+                                                           parts.model6.parts.configManager,
+                                                           parts.model7.parts.configManager,
+                                                           parts.model8.parts.configManager,
+                                                           parts.model9.parts.configManager ]
+              hasWarning          : !MTCS_SUMMARIZE_WARN [ parts.model0.parts.configManager,
+                                                           parts.model1.parts.configManager,
+                                                           parts.model2.parts.configManager,
+                                                           parts.model3.parts.configManager,
+                                                           parts.model4.parts.configManager,
+                                                           parts.model5.parts.configManager,
+                                                           parts.model6.parts.configManager,
+                                                           parts.model7.parts.configManager,
+                                                           parts.model8.parts.configManager,
+                                                           parts.model9.parts.configManager ]
+          model0:
+              isEnabled           : isEnabled
+          model1:
+              isEnabled           : isEnabled
+          model2:
+              isEnabled           : isEnabled
+          model3:
+              isEnabled           : isEnabled
+          model4:
+              isEnabled           : isEnabled
+          model5:
+              isEnabled           : isEnabled
+          model6:
+              isEnabled           : isEnabled
+          model7:
+              isEnabled           : isEnabled
+          model8:
+              isEnabled           : isEnabled
+          model9:
+              isEnabled           : isEnabled
+  
+  
+  
+  
+  
+  
+  ########################################################################################################################
+  # AxesIO
+  ########################################################################################################################
+  
+  !STATEMACHINE AxesIO:
+      typeOf              : [ AxesParts.io ]
+      variables:
+          isEnabled       : { type: t_bool                   , comment: "Is control enabled?" }
+      statuses:
+          healthStatus    : { type: mtcs_common.HealthStatus   , comment: "Is the I/O in a healthy state?"  }
+      parts:
+          aziDrive:
+              type: mtcs_common.AX52XXDrive
+              comment: "The AX5000 drive for the AZI en ROC motors"
+              expand: false
+              arguments:
+                  isEnabled : { type: t_bool }
+              attributes:
+                  parts:
+                      attributes:
+                          channelA : { type: mtcs_common.AX52XXDriveChannel, expand: false }
+                          channelB : { type: mtcs_common.AX52XXDriveChannel, expand: false }
+                  statuses:
+                      attributes:
+                          healthStatus    : { type: mtcs_common.HealthStatus }
+                          busyStatus      : { type: mtcs_common.BusyStatus }
+          ablDrive:
+              type: mtcs_common.AX52XXDrive
+              comment: "The AX5000 drive for the ABL en RON motors"
+              expand: false
+              arguments:
+                  isEnabled : { type: t_bool }
+              attributes:
+                  parts:
+                      attributes:
+                          channelA : { type: mtcs_common.AX52XXDriveChannel, expand: false }
+                          channelB : { type: mtcs_common.AX52XXDriveChannel, expand: false }
+                  statuses:
+                      attributes:
+                          healthStatus    : { type: mtcs_common.HealthStatus }
+                          busyStatus      : { type: mtcs_common.BusyStatus }
+          eleDrive:
+              type: mtcs_common.AX52XXDrive
+              comment: "The AX5000 drive for the ELE en FW motors"
+              expand: false
+              arguments:
+                  isEnabled : { type: t_bool }
+              attributes:
+                  parts:
+                      attributes:
+                          channelA : { type: mtcs_common.AX52XXDriveChannel, expand: false }
+                          channelB : { type: mtcs_common.AX52XXDriveChannel, expand: false }
+                  statuses:
+                      attributes:
+                          healthStatus    : { type: mtcs_common.HealthStatus }
+                          busyStatus      : { type: mtcs_common.BusyStatus }
+          TA_AZID         : { type: mtcs_common.EtherCatDevice , comment: "Telescope Axis - AZID" }
+          TA_ABLD         : { type: mtcs_common.EtherCatDevice , comment: "Telescope Axis - ABLD" }
+          TA_ELED         : { type: mtcs_common.EtherCatDevice , comment: "Telescope Axis - ELED" }
+          TE_COU          : { type: mtcs_common.EtherCatDevice , comment: "Telescope Encoders - COU" }
+          TE_EN1          : { type: mtcs_common.EtherCatDevice , comment: "Telescope Encoders - EN1" }
+          TE_EN2          : { type: mtcs_common.EtherCatDevice , comment: "Telescope Encoders - EN2" }
+          TE_EN3          : { type: mtcs_common.EtherCatDevice , comment: "Telescope Encoders - EN3" }
+          TE_EN4          : { type: mtcs_common.EtherCatDevice , comment: "Telescope Encoders - EN4" }
+          TE_EN5          : { type: mtcs_common.EtherCatDevice , comment: "Telescope Encoders - EN5" }
+          TE_EN6          : { type: mtcs_common.EtherCatDevice , comment: "Telescope Encoders - EN6" }
+          TE_EN7          : { type: mtcs_common.EtherCatDevice , comment: "Telescope Encoders - EN7" }
+      calls:
+          aziDrive:
+              isEnabled   : isEnabled
+          ablDrive:
+              isEnabled   : isEnabled
+          eleDrive:
+              isEnabled   : isEnabled
+          TA_AZID:
+              id          : !STRING "TA:AZID"
+              typeId      : !STRING "AX5206"
+          TA_ABLD:
+              id          : !STRING "TA:ABLD"
+              typeId      : !STRING "AX5206"
+          TA_ELED:
+              id          : !STRING "TA:ELED"
+              typeId      : !STRING "AX5206"
+          TE_COU:
+              id          : !STRING "TE:COU"
+              typeId      : !STRING "EK1100"
+          TE_EN1:
+              id          : !STRING "TE:EN1"
+              typeId      : !STRING "EL5101"
+          TE_EN2:
+              id          : !STRING "TE:EN2"
+              typeId      : !STRING "EL5101"
+          TE_EN3:
+              id          : !STRING "TE:EN3"
+              typeId      : !STRING "EL5101"
+          TE_EN4:
+              id          : !STRING "TE:EN4"
+              typeId      : !STRING "EL5101"
+          TE_EN5:
+              id          : !STRING "TE:EN5"
+              typeId      : !STRING "EL5101"
+          TE_EN6:
+              id          : !STRING "TE:EN6"
+              typeId      : !STRING "EL5101"
+          TE_EN7:
+              id          : !STRING "TE:EN7"
+              typeId      : !STRING "EL5002"
+          healthStatus:
+              isGood      : !MTCS_SUMMARIZE_GOOD [ parts.aziDrive,
+                                                   parts.ablDrive,
+                                                   parts.eleDrive,
+                                                   parts.TA_AZID,
+                                                   parts.TA_ABLD,
+                                                   parts.TA_ELED,
+                                                   parts.TE_COU,
+                                                   parts.TE_EN1,
+                                                   parts.TE_EN1,
+                                                   parts.TE_EN2,
+                                                   parts.TE_EN3,
+                                                   parts.TE_EN4,
+                                                   parts.TE_EN5,
+                                                   parts.TE_EN6,
+                                                   parts.TE_EN7 ]
+  
+  
+  

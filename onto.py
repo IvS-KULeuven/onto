@@ -1,4 +1,4 @@
-import argparse, os, sys, fnmatch, glob, os, pathlib
+import argparse, os, sys, fnmatch, glob, os, pathlib, time
 from mako.template import Template
 from mako.lookup import TemplateLookup
 
@@ -173,6 +173,7 @@ if __name__ == "__main__":
         LOG(f"FATAL: Input directory {args.INPUTDIR} does not exist!")
         sys.exit(1)
     
+    t_start = time.time()
     # process each input file sequentially:
     for input_fp in inputdir_fp.rglob('*.yaml'):
         
@@ -183,5 +184,6 @@ if __name__ == "__main__":
             if not template_fp.stem.startswith('_'):
                 template_fps.append(template_fp)
 
-        render(input_fp, template_fps)                
+        render(input_fp, template_fps)
+        LOG("%4.0f Model %s was rendered" % ((time.time() - t_start), input_fp))
                 

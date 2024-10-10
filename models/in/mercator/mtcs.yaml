@@ -1,0 +1,528 @@
+########################################################################################################################
+#                                                                                                                      #
+# Model containing the upper-level software design of the Mercator TCS.                                                #
+#                                                                                                                      #
+########################################################################################################################
+
+
+!IMPORT models/in/mercator/mtcs_common.yaml:
+!IMPORT models/in/mercator/mtcs_tmc.yaml:
+!IMPORT models/in/mercator/mtcs_cover.yaml:
+!IMPORT models/in/mercator/mtcs_m1.yaml:
+!IMPORT models/in/mercator/mtcs_m2.yaml:
+!IMPORT models/in/mercator/mtcs_m3.yaml:
+!IMPORT models/in/mercator/mtcs_services.yaml:
+!IMPORT models/in/mercator/mtcs_telemetry.yaml:
+!IMPORT models/in/mercator/mtcs_safety.yaml:
+!IMPORT models/in/mercator/mtcs_hydraulics.yaml:
+!IMPORT models/in/mercator/mtcs_axes.yaml:
+!IMPORT models/in/mercator/mtcs_dome.yaml:
+
+
+########################################################################################################################
+# Define the containing PLC library
+########################################################################################################################
+
+!LIBRARY mtcs:
+
+  ########################################################################################################################
+  # MTCSInstrumentsConfig
+  ########################################################################################################################
+  !CONFIG MTCSInstrumentsConfig:
+      items:
+          instrument0: { type: mtcs_common.InstrumentConfig, comment: "Instrument 0", expand: false }
+          instrument1: { type: mtcs_common.InstrumentConfig, comment: "Instrument 1", expand: false }
+          instrument2: { type: mtcs_common.InstrumentConfig, comment: "Instrument 2", expand: false }
+          instrument3: { type: mtcs_common.InstrumentConfig, comment: "Instrument 3", expand: false }
+          instrument4: { type: mtcs_common.InstrumentConfig, comment: "Instrument 4", expand: false }
+          instrument5: { type: mtcs_common.InstrumentConfig, comment: "Instrument 5", expand: false }
+          instrument6: { type: mtcs_common.InstrumentConfig, comment: "Instrument 6", expand: false }
+          instrument7: { type: mtcs_common.InstrumentConfig, comment: "Instrument 7", expand: false }
+          instrument8: { type: mtcs_common.InstrumentConfig, comment: "Instrument 8", expand: false }
+          instrument9: { type: mtcs_common.InstrumentConfig, comment: "Instrument 9", expand: false }
+  
+  
+  ########################################################################################################################
+  # MTCSEndOfNightStepConfig
+  ########################################################################################################################
+  !CONFIG MTCSEndOfNightStepConfig:
+      items:
+          description           : { type: t_string , comment: "Description of this step (to show in HMI)" }
+          parkAxes              : { type: t_bool   , comment: "Park the axes" }
+          parkAxesPosition      : { type: t_string , comment: "Position to park the axes" }
+          parkAxesWait          : { type: t_bool   , comment: "Wait until the axes is parked" }
+          parkM3                : { type: t_bool   , comment: "Park M3" }
+          parkM3Position        : { type: t_string , comment: "Position to park M3" }
+          parkM3Wait            : { type: t_bool   , comment: "Wait until M3 is parked" }
+          parkDome              : { type: t_bool   , comment: "Park the dome" }
+          parkDomePosition      : { type: t_string , comment: "Position to park the dome" }
+          parkDomeWait          : { type: t_bool   , comment: "Wait until the dome is parked" }
+          closeCover            : { type: t_bool   , comment: "Close the cover" }
+          closeCoverWait        : { type: t_bool   , comment: "Wait until the cover is closed" }
+          closeDome             : { type: t_bool   , comment: "Close the dome" }
+          closeDomeWait         : { type: t_bool   , comment: "Wait until the dome is closed" }
+          stop                  : { type: t_bool   , comment: "Stop the axes and dome" }
+          stopWait              : { type: t_bool   , comment: "Wait until the axes and dome are stopped" }
+          goToSleep             : { type: t_bool   , comment: "Make the telescope go to sleep" }
+          goToSleepWait         : { type: t_bool   , comment: "Wait until the telescope is sleeping" }
+  
+  
+  ########################################################################################################################
+  # MTCSEndOfNightConfig
+  ########################################################################################################################
+  !CONFIG MTCSEndOfNightConfig:
+      items:
+          step0 : { type: MTCSEndOfNightStepConfig, comment: "Step 0" , expand: false }
+          step1 : { type: MTCSEndOfNightStepConfig, comment: "Step 1" , expand: false }
+          step2 : { type: MTCSEndOfNightStepConfig, comment: "Step 2" , expand: false }
+          step3 : { type: MTCSEndOfNightStepConfig, comment: "Step 3" , expand: false }
+          step4 : { type: MTCSEndOfNightStepConfig, comment: "Step 4" , expand: false }
+          step5 : { type: MTCSEndOfNightStepConfig, comment: "Step 5" , expand: false }
+          step6 : { type: MTCSEndOfNightStepConfig, comment: "Step 6" , expand: false }
+          step7 : { type: MTCSEndOfNightStepConfig, comment: "Step 7" , expand: false }
+          step8 : { type: MTCSEndOfNightStepConfig, comment: "Step 8" , expand: false }
+          step9 : { type: MTCSEndOfNightStepConfig, comment: "Step 9" , expand: false }
+          step10: { type: MTCSEndOfNightStepConfig, comment: "Step 10", expand: false }
+          step11: { type: MTCSEndOfNightStepConfig, comment: "Step 11", expand: false }
+          step12: { type: MTCSEndOfNightStepConfig, comment: "Step 12", expand: false }
+          step13: { type: MTCSEndOfNightStepConfig, comment: "Step 13", expand: false }
+          step14: { type: MTCSEndOfNightStepConfig, comment: "Step 14", expand: false }
+          step15: { type: MTCSEndOfNightStepConfig, comment: "Step 15", expand: false }
+          step16: { type: MTCSEndOfNightStepConfig, comment: "Step 16", expand: false }
+          step17: { type: MTCSEndOfNightStepConfig, comment: "Step 17", expand: false }
+          step18: { type: MTCSEndOfNightStepConfig, comment: "Step 18", expand: false }
+          step19: { type: MTCSEndOfNightStepConfig, comment: "Step 19", expand: false }
+  
+  
+  ########################################################################################################################
+  # MTCSRemoteOperationConfig
+  ########################################################################################################################
+  !CONFIG MTCSRemoteOperationConfig:
+      items:
+          defaultOperationgMode          : { type: t_bool   , comment: "Default Operation Mode False=LOCAL True=REMOTE" }
+          watchdogMocsActivityEnable     : { type: t_bool   , comment: "Enable the watchdog for MOCS activity" }
+          watchdogMocsActivityTime1      : { type: t_double , comment: "The watchdog timer time for MOCS 1" }
+          watchdogMocsActivityTime2      : { type: t_double , comment: "The watchdog timer time for MOCS 2" }
+          warningMocsTime1               : { type: t_double , comment: "The warning timer time for MOCS 1" }
+          warningMocsTime2               : { type: t_double , comment: "The warning timer time for MOCS 2" }
+          watchdogRemoteConnectionEnable : { type: t_bool   , comment: "Enable the watchdog for remote connection" }
+          watchdogRemoteConnectionTime   : { type: t_double , comment: "The watchdog timer time for remote connection" }
+          warningRemoteConnectionTime    : { type: t_double , comment: "The warning timer time for remote connection" }
+          watchdogConnectionPortEnable   : { type: t_bool   , comment: "Enable the watchdog for connection Port" }
+          watchdogConnectionPortTime     : { type: t_double , comment: "The watchdog timer time for connection Port" }
+          warningConnectionPortTime      : { type: t_double , comment: "The warning timer time for connection Port" }
+          remoteConnectionPortNumber     : { type: t_double , comment: "The port number for remote connection" }
+  
+  
+  ########################################################################################################################
+  # MTCSConfig
+  ########################################################################################################################
+  !CONFIG MTCSConfig:
+      items:
+          instruments:
+              type: MTCSInstrumentsConfig
+              comment: "Configure the instruments"
+          endOfNight:
+              type: MTCSEndOfNightConfig
+              comment: "Configure the instruments"
+              expand: false
+          remoteOperation:
+              type: MTCSRemoteOperationConfig
+              comment: "Configure the remote operation"
+  
+  
+  ########################################################################################################################
+  # MTCSChangeInstrumentProcess
+  ########################################################################################################################
+  !PROCESS MTCSChangeInstrumentProcess:
+      extends: mtcs_common.BaseProcess
+      arguments:
+          name : { type: t_string, comment: "Name of the instrument" }
+  
+  
+  ########################################################################################################################
+  # MTCSPointProcess
+  ########################################################################################################################
+  !PROCESS MTCSPointProcess:
+      extends: mtcs_common.BaseProcess
+      arguments:
+          # from AxesPointProcess
+          alphaUnits          : { type: mtcs_axes.AxesAlphaUnits            , comment: "The units in which alpha is given" }
+          alpha               : { type: t_double                            , comment: "Right ascention, in the units of the alphaUnits argument" }
+          deltaUnits          : { type: mtcs_axes.AxesDeltaUnits            , comment: "The units in which delta is given" }
+          delta               : { type: t_double                            , comment: "Declination, in the units of the deltaUnits argument" }
+          muUnits             : { type: mtcs_axes.AxesMuUnits               , comment: "The units in which muAlpha and muDelta are given" }
+          muAlpha             : { type: t_double                            , comment: "Right ascention proper motion, the units of muUmits (do not multiply by cos(delta)!)" }
+          muDelta             : { type: t_double                            , comment: "Declination proper motion, in radians/year" }
+          parallax            : { type: t_double                            , comment: "Object parallax, in arcseconds" }
+          radialVelocity      : { type: t_double                            , comment: "Object radial velocity, in km/s" }
+          epoch               : { type: t_double, initial: !DOUBLE 2000.0   , comment: "Epoch, e.g. 2000.0" }
+          tracking            : { type: t_bool  , initial: !BOOL TRUE       , comment: "True to start tracking the object, false to Only do a pointing" }
+          rotUnits            : { type: mtcs_axes.AxesMoveUnits             , comment: "Units of the 'rot', 'roc' and 'ron' arguments (RADIANS, DEGREES, ARCSECONDS, ...)"}
+          rotOffset           : { type: t_double                            , comment: "Offset to move the currently active rotator (incompatible with 'roc' and 'ron' args)"}
+          rocOffset           : { type: t_double                            , comment: "Offset to move the cassegrain rotation axis (incompatible with 'rot' arg)" }
+          ronOffset           : { type: t_double                            , comment: "Offset to move the nasmyth rotation axis (incompatible with 'rot' arg)" }
+          doRotOffset         : { type: t_bool                              , comment: "True to move the currently active rotator, false to leave it untouched" }
+          doRocOffset         : { type: t_bool                              , comment: "True to move the cassegrain rotation axis, false to leave it untouched" }
+          doRonOffset         : { type: t_bool                              , comment: "True to move the nasmyth rotation axis, false to leave it untouched" }
+          # dome
+          doDomeTracking      : { type: t_bool, initial: !BOOL TRUE         , comment: "True to enable dome tracking" }
+  
+  
+  ########################################################################################################################
+  # MTCSMocsObservationProcess
+  ########################################################################################################################
+  !PROCESS MTCSMocsObservationProcess:
+      extends: mtcs_common.BaseProcess
+      arguments:
+          status : { type: t_bool, comment: "True to notify that there is an observation running" }
+  
+  
+  
+  ########################################################################################################################
+  # MTCS
+  ########################################################################################################################
+  !STATEMACHINE MTCS:
+      variables:
+          editableConfig              : { type: MTCSConfig                  , comment: "Editable configuration of the MTCS" , expand: false }
+          remoteOperationEnable       : { type: t_bool                      , comment: "True to Remote operation enabled" }
+          mocsObservationStatus       : { type: t_bool                      , comment: "True to notify that there is an observation running" }
+          remoteConnectionStatus      : { type: t_bool                      , comment: "True to notify that there is a remote connection" }
+          remoteconnectionPortStatus  : { type: t_bool                      , comment: "True to notify that there is a connection port established" }
+          
+      variables_read_only:
+          noOfFailedOperatorChanges   : { type: t_uint16                    , comment: "How many times has a wrong password been entered?"}
+          activeInstrument            : { type: mtcs_common.InstrumentConfig, comment: "Config of the currently active instrument (depending on M3 and possibly derotator) *if* isInstrumentActive is TRUE" , expand: false}
+          activeInstrumentNumber      : { type: t_int16                     , comment: "Number of the currently active instrument (0..9, or -1 if no instrument is active)" }
+          activeInstrumentName        : { type: t_string                    , comment: "Name of the currently active instrument" }
+          isInstrumentActive          : { type: t_bool                      , comment: "Is an instrument currently active (i.e. is M3 static at a known position?)"}
+          config                      : { type: MTCSConfig                  , comment: "Active configuration of the ServicesTiming subsystem" }
+          remoteConnectionWarningFlag : { type: t_bool                      , comment: "Warning flag in case of remote connections is lost for a while"}
+          remoteMocsWarningFlag       : { type: t_bool                      , comment: "Warning flag in case of there is no MOCS activity for a while"}
+      parts:
+          telemetry:
+              type : mtcs_telemetry.Telemetry
+              comment: "The telemetry"
+              expand: false
+              arguments:
+                  operatorStatus          : { type: mtcs_common.OperatorStatus, expand: false }
+              attributes:
+                  parts:
+                      attributes:
+                          temperatures    : { type: mtcs_telemetry.TelemetryTemperatures , expand: false }
+                          accelerometers:
+                              attributes:
+                                  tube    : { type: mtcs_telemetry.TelemetryAccelerometer , expand: false }
+                  statuses:
+                      attributes:
+                          healthStatus    : { type: mtcs_common.HealthStatus }
+                          busyStatus      : { type: mtcs_common.BusyStatus }
+          cover:
+              type : mtcs_cover.Cover
+              comment: "The Cover of the telescope"
+              expand: false
+              arguments:
+                  operatorStatus          : { type: mtcs_common.OperatorStatus, expand: false }
+                  aziPos                  : { type: mtcs_common.AngularPosition, expand: false }
+                  elePos                  : { type: mtcs_common.AngularPosition, expand: false }
+              attributes:
+                  statuses:
+                      attributes:
+                          healthStatus    : { type: mtcs_common.HealthStatus }
+                          busyStatus      : { type: mtcs_common.BusyStatus }
+          m1:
+              type : mtcs_m1.M1
+              comment: "The primary mirror of the telescope"
+              expand: false
+              arguments:
+                  tubeAngleMeasurement    : { type: mtcs_telemetry.TelemetryAccelerometer , expand: false }
+                  operatorStatus          : { type: mtcs_common.OperatorStatus, expand: false }
+              attributes:
+                  parts:
+                      attributes:
+                          io              : { type: mtcs_m1.M1M2IO , expand: false }
+                  statuses:
+                      attributes:
+                          healthStatus    : { type: mtcs_common.HealthStatus }
+                          busyStatus      : { type: mtcs_common.BusyStatus }
+  
+          m2:
+              type : mtcs_m2.M2
+              comment: "The secondary mirror of the telescope"
+              expand: false
+              arguments:
+                  io                      : { type: mtcs_m1.M1M2IO , expand: false }
+                  operatorStatus          : { type: mtcs_common.OperatorStatus, expand: false }
+                  actualFocalStation      : { type: mtcs_m3.M3PositionIDs, expand: false }
+                  m3KnownPositionsConfig  : { type: mtcs_m3.M3KnownPositionsConfig, expand: false }
+                  temperatures            : { type: mtcs_telemetry.TelemetryTemperatures , expand: false }
+              attributes:
+                  statuses:
+                      attributes:
+                          healthStatus    : { type: mtcs_common.HealthStatus }
+                          busyStatus      : { type: mtcs_common.BusyStatus }
+  
+          m3:
+              type : mtcs_m3.M3
+              comment: "The tertiary mirror of the telescope"
+              expand: false
+              arguments:
+                  operatorStatus          : { type: mtcs_common.OperatorStatus, expand: false }
+              attributes:
+                  actualKnownPositionID   : { type: mtcs_m3.M3PositionIDs }
+                  config:
+                      attributes:
+                          knownPositions  : { type: mtcs_m3.M3KnownPositionsConfig, expand: false }
+                  statuses:
+                      attributes:
+                          healthStatus    : { type: mtcs_common.HealthStatus }
+                          busyStatus      : { type: mtcs_common.BusyStatus }
+  
+          services:
+              type : mtcs_services.Services
+              comment: "The Services system"
+              expand: false
+              arguments:
+                  operatorStatus          : { type: mtcs_common.OperatorStatus, expand: false }
+                  domeApertureStatus      : { type: mtcs_common.ApertureStatus, expand: false }
+              attributes:
+                  statuses:
+                      attributes:
+                          healthStatus    : { type: mtcs_common.HealthStatus }
+                          busyStatus      : { type: mtcs_common.BusyStatus }
+          safety:
+              type : mtcs_safety.Safety
+              comment: "The safety"
+              expand: false
+              arguments:
+                  operatorStatus          : { type: mtcs_common.OperatorStatus, expand: false }
+                  activityStatus          : { type: mtcs_common.ActivityStatus, expand: false }
+              attributes:
+                  parts:
+                      attributes:
+                          hydraulics      : { type: mtcs_safety.SafetyHydraulics, expand: false }
+                          domeShutter     : { type: mtcs_safety.SafetyDomeShutter, expand: false }
+                          motionBlocking  : { type: mtcs_safety.SafetyMotionBlocking, expand: false }
+                          domeAccess      : { type: mtcs_safety.SafetyDomeAccess, expand: false }
+                          io              : { type: mtcs_safety.SafetyIO, expand: false }
+                  statuses:
+                      attributes:
+                          healthStatus    : { type: mtcs_common.HealthStatus }
+                          busyStatus      : { type: mtcs_common.BusyStatus }
+          hydraulics:
+              type : mtcs_hydraulics.Hydraulics
+              comment: "The hydraulics"
+              expand: false
+              arguments:
+                  operatorStatus          : { type: mtcs_common.OperatorStatus, expand: false }
+                  safetyHydraulics        : { type: mtcs_safety.SafetyHydraulics, expand: false }
+                  safetyIO                : { type: mtcs_safety.SafetyIO, expand: false }
+              attributes:
+                  pumpsState              : { type: mtcs_hydraulics.HydraulicsPumpsStates, expand: false }
+                  statuses:
+                      attributes:
+                          healthStatus    : { type: mtcs_common.HealthStatus }
+                          busyStatus      : { type: mtcs_common.BusyStatus }
+          axes:
+              type : mtcs_axes.Axes
+              comment: "The axes"
+              expand: false
+              attributes:
+                  isTracking              : { type: t_bool }
+                  target:
+                      attributes:
+                          aziPos          : { type: mtcs_common.AngularPosition, expand: false }
+                  parts:
+                      attributes:
+                          azi:
+                              attributes:
+                                  actPos          : { type: mtcs_common.AngularPosition, expand: false}
+                          ele:
+                              attributes:
+                                  actPos          : { type: mtcs_common.AngularPosition, expand: false}
+                  statuses:
+                      attributes:
+                          poweredStatus   : { type: mtcs_common.PoweredStatus }
+                          healthStatus    : { type: mtcs_common.HealthStatus }
+                          busyStatus      : { type: mtcs_common.BusyStatus }
+                  processes:
+                      attributes:
+                          point           : { type: mtcs_axes.AxesPointProcess }
+          dome:
+              type : mtcs_dome.Dome
+              comment: "The dome"
+              expand: false
+              arguments:
+                  operatorStatus          : { type: mtcs_common.OperatorStatus          , expand: false }
+                  activityStatus          : { type: mtcs_common.ActivityStatus          , expand: false }
+                  aziTargetPos            : { type: mtcs_common.AngularPosition         , expand: false }
+                  safetyDomeShutter       : { type: mtcs_safety.SafetyDomeShutter       , expand: false }
+                  safetyMotionBlocking    : { type: mtcs_safety.SafetyMotionBlocking    , expand: false }
+                  safetyDomeAccess        : { type: mtcs_safety.SafetyDomeAccess        , expand: false }
+              attributes:
+                  isTracking              : { type: t_bool }
+                  parts:
+                      attributes:
+                          shutter:
+                              attributes:
+                                  statuses:
+                                      attributes:
+                                          apertureStatus: { type: mtcs_common.ApertureStatus }
+                  statuses:
+                      attributes:
+                          poweredStatus   : { type: mtcs_common.PoweredStatus }
+                          healthStatus    : { type: mtcs_common.HealthStatus }
+                          busyStatus      : { type: mtcs_common.BusyStatus }
+                  processes:
+                      attributes:
+                          syncWithAxes   : { type: mtcs_common.Process }
+          configManager:
+              comment                     : "The config manager (to load/save/activate configuration data)"
+              type                        : mtcs_common.ConfigManager
+      statuses:
+          initializationStatus        : { type: mtcs_common.InitializationStatus }
+          healthStatus                : { type: mtcs_common.HealthStatus }
+          busyStatus                  : { type: mtcs_common.BusyStatus }
+          operatorStatus              : { type: mtcs_common.OperatorStatus }
+          passwordHealthStatus        : { type: mtcs_common.HealthStatus }
+          activityStatus              : { type: mtcs_common.ActivityStatus }
+          operatingModeStatus         : { type: mtcs_common.OperatingModeStatus }
+      processes:
+          initialize                  : { type: mtcs_common.Process                         , comment: "Start initializing the whole MTCS" }
+          lock                        : { type: mtcs_common.Process                         , comment: "Lock the whole MTCS" }
+          unlock                      : { type: mtcs_common.Process                         , comment: "Unlock the whole MTCS" }
+          changeOperator              : { type: mtcs_common.ChangeOperatorStateProcess      , comment: "Change the operator (e.g. OBSERVER, TECH, ...)" }
+          verifyPassword              : { type: mtcs_common.ChangeOperatorStateProcess      , comment: "Only verify the operator password" }
+          reboot                      : { type: mtcs_common.Process                         , comment: "Reboot the whole MTCS" }
+          shutdown                    : { type: mtcs_common.Process                         , comment: "Shutdown the whole MTCS" }
+          wakeUp                      : { type: mtcs_common.Process                         , comment: "Wake up the whole MTCS" }
+          goToSleep                   : { type: mtcs_common.Process                         , comment: "Let the whole MTCS go to sleep" }
+          stop                        : { type: mtcs_common.Process                         , comment: "Stop the dome and telescope" }
+          endOfNight                  : { type: mtcs_common.Process                         , comment: "End of night" }
+          changeInstrument            : { type: MTCSChangeInstrumentProcess                 , comment: "Change the instrument" }
+          point                       : { type: MTCSPointProcess                            , comment: "Point the telescope and dome to a new target" }
+          emergencyClose              : { type: mtcs_common.Process                         , comment: "Close the dome and shutter asap" }
+          changeOperatingMode         : { type: mtcs_common.ChangeOperatingModeStateProcess , comment: "Change the operating mode (e.g. LOCAL, REMOTE, ...)" }
+          mocsObservation             : { type: MTCSMocsObservationProcess                  , comment: "Notifications about MOCS observation status" }
+          remoteConnectionCheck       : { type: mtcs_common.Process                         , comment: "Remote connection checking" }
+          remoteConnectionPortCheck   : { type: mtcs_common.Process                         , comment: "Remote connection port checking" }
+          resetWatchdogTimer          : { type: mtcs_common.Process                         , comment: "Reset the watchdog timer" }        
+      calls:
+          initialize:
+              isEnabled           : !NOT [ statuses.initializationStatus.initializing ]
+          lock:
+              isEnabled           : !AND [ statuses.operatorStatus.tech, statuses.initializationStatus.initialized ]
+          unlock:
+              isEnabled           : !AND [ statuses.operatorStatus.tech, statuses.initializationStatus.locked ]
+          changeOperator:
+              isEnabled           : !BOOL TRUE
+          verifyPassword:
+              isEnabled           : !BOOL TRUE
+          reboot:
+              isEnabled           : !BOOL TRUE
+          endOfNight:
+              isEnabled           : !BOOL TRUE
+          point:
+              isEnabled           : !AND [ parts.axes.processes.point.statuses.enabledStatus.enabled,
+                                           parts.dome.processes.syncWithAxes.statuses.enabledStatus.enabled ]
+          shutdown:
+              isEnabled           : statuses.operatorStatus.tech
+          wakeUp:
+              isEnabled           : statuses.activityStatus.sleeping
+          goToSleep:
+              isEnabled           : !OR [ statuses.activityStatus.awake, statuses.healthStatus.bad ]
+          stop:
+              isEnabled           : statuses.initializationStatus.initialized
+          changeInstrument:
+              isEnabled           : !OR [ statuses.initializationStatus.initialized, statuses.healthStatus.bad ]
+          emergencyClose:
+              isEnabled           : !NOT [ parts.dome.parts.shutter.statuses.apertureStatus.isClosed ]
+          changeOperatingMode:
+              isEnabled           : statuses.operatorStatus.tech
+          mocsObservation:
+              isEnabled           : !BOOL TRUE
+          remoteConnectionCheck:
+              isEnabled           : !BOOL TRUE
+          remoteConnectionPortCheck:
+              isEnabled           : !BOOL TRUE           
+          resetWatchdogTimer:
+              isEnabled           : !BOOL TRUE
+          cover:
+              operatorStatus      : statuses.operatorStatus
+              aziPos              : parts.axes.parts.azi.actPos
+              elePos              : parts.axes.parts.ele.actPos
+          m3:
+              operatorStatus      : statuses.operatorStatus
+          services:
+              operatorStatus      : statuses.operatorStatus
+              domeApertureStatus  : parts.dome.parts.shutter.statuses.apertureStatus
+          telemetry:
+              operatorStatus      : statuses.operatorStatus
+          m1:
+              operatorStatus      : statuses.operatorStatus
+              tubeAngleMeasurement: parts.telemetry.parts.accelerometers.tube
+          m2:
+              operatorStatus      : statuses.operatorStatus
+              io                  : parts.m1.parts.io
+              actualFocalStation  : parts.m3.actualKnownPositionID
+              m3KnownPositionsConfig  : parts.m3.config.knownPositions
+              temperatures        : parts.telemetry.parts.temperatures
+          safety:
+              operatorStatus      : statuses.operatorStatus
+              activityStatus      : statuses.activityStatus
+          hydraulics:
+              operatorStatus      : statuses.operatorStatus
+              safetyHydraulics    : parts.safety.parts.hydraulics
+              safetyIO            : parts.safety.parts.io
+          dome:
+              operatorStatus      : statuses.operatorStatus
+              activityStatus      : statuses.activityStatus
+              aziTargetPos        : parts.axes.parts.azi.actPos
+              safetyDomeShutter   : parts.safety.parts.domeShutter
+              safetyDomeAccess    : parts.safety.parts.domeAccess
+              safetyMotionBlocking: parts.safety.parts.motionBlocking
+          configManager:
+             isEnabled            : statuses.operatorStatus.tech
+          activityStatus:
+              superState          : !OR [ statuses.initializationStatus.initialized, statuses.initializationStatus.initializingFailed ]
+              isAwake             : !OR [  !EQ [ parts.hydraulics.pumpsState, mtcs_hydraulics.HydraulicsPumpsStates.RUNNING ], 
+                                           parts.axes.statuses.poweredStatus.enabled ] 
+              isMoving            : !OR [ parts.axes.statuses.busyStatus.busy, parts.axes.isTracking ]
+          healthStatus:
+              isGood              : !MTCS_SUMMARIZE_GOOD [ parts.axes,
+                                                           parts.cover,
+                                                           parts.m1,
+                                                           parts.m2,
+                                                           parts.m3,
+                                                           parts.services,
+                                                           parts.telemetry,
+                                                           parts.safety ,
+                                                           parts.hydraulics,
+                                                           parts.dome ]
+              hasWarning          : !MTCS_SUMMARIZE_WARN [ parts.axes,
+                                                           parts.cover,
+                                                           parts.m1,
+                                                           parts.m2,
+                                                           parts.m3,
+                                                           parts.services,
+                                                           parts.telemetry,
+                                                           parts.safety,
+                                                           parts.hydraulics,
+                                                           parts.dome ]
+          busyStatus:
+              isBusy              : !MTCS_SUMMARIZE_BUSY [ parts.axes,
+                                                           parts.cover,
+                                                           parts.m1,
+                                                           parts.m2,
+                                                           parts.m3,
+                                                           parts.services,
+                                                           parts.telemetry,
+                                                           parts.safety,
+                                                           parts.hydraulics,
+                                                           parts.dome ]
+  
+          passwordHealthStatus:
+              superState          : statuses.operatorStatus.observer
+      disabled_calls: ['axes']
+  
+  

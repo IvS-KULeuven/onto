@@ -1,0 +1,3931 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project xmlns="http://www.plcopen.org/xml/tc6_0200">
+  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2024-10-10T21:22:23.483241" />
+  <contentHeader name="mtcs" modificationDateTime="2024-10-10T21:22:23.483241">
+    <coordinateInfo>
+      <fbd>
+        <scaling x="1" y="1" />
+      </fbd>
+      <ld>
+        <scaling x="1" y="1" />
+      </ld>
+      <sfc>
+        <scaling x="1" y="1" />
+      </sfc>
+    </coordinateInfo>
+    <addData>
+      <data name="http://www.3s-software.com/plcopenxml/projectinformation" handleUnknown="implementation">
+        <ProjectInformation />
+      </data>
+    </addData>
+  </contentHeader>
+  <types>
+    <dataTypes>
+      <dataType name="MTCSParts">
+        <baseType>
+          <struct>
+            <variable name="telemetry">
+              <type><derived name="Telemetry" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The telemetry</xhtml>
+              </documentation>
+            </variable>
+            <variable name="cover">
+              <type><derived name="Cover" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The Cover of the telescope</xhtml>
+              </documentation>
+            </variable>
+            <variable name="m1">
+              <type><derived name="M1" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The primary mirror of the telescope</xhtml>
+              </documentation>
+            </variable>
+            <variable name="m2">
+              <type><derived name="M2" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The secondary mirror of the telescope</xhtml>
+              </documentation>
+            </variable>
+            <variable name="m3">
+              <type><derived name="M3" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The tertiary mirror of the telescope</xhtml>
+              </documentation>
+            </variable>
+            <variable name="services">
+              <type><derived name="Services" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The Services system</xhtml>
+              </documentation>
+            </variable>
+            <variable name="safety">
+              <type><derived name="Safety" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The safety</xhtml>
+              </documentation>
+            </variable>
+            <variable name="hydraulics">
+              <type><derived name="Hydraulics" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The hydraulics</xhtml>
+              </documentation>
+            </variable>
+            <variable name="axes">
+              <type><derived name="Axes" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The axes</xhtml>
+              </documentation>
+            </variable>
+            <variable name="dome">
+              <type><derived name="Dome" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The dome</xhtml>
+              </documentation>
+            </variable>
+            <variable name="configManager">
+              <type><derived name="ConfigManager" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The config manager (to load/save/activate configuration data)</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="MTCSProcesses">
+        <baseType>
+          <struct>
+            <variable name="initialize">
+              <type><derived name="Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Start initializing the whole MTCS</xhtml>
+              </documentation>
+            </variable>
+            <variable name="lock">
+              <type><derived name="Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Lock the whole MTCS</xhtml>
+              </documentation>
+            </variable>
+            <variable name="unlock">
+              <type><derived name="Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Unlock the whole MTCS</xhtml>
+              </documentation>
+            </variable>
+            <variable name="changeOperator">
+              <type><derived name="ChangeOperatorStateProcess" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Change the operator (e.g. OBSERVER, TECH, ...)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="verifyPassword">
+              <type><derived name="ChangeOperatorStateProcess" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Only verify the operator password</xhtml>
+              </documentation>
+            </variable>
+            <variable name="reboot">
+              <type><derived name="Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Reboot the whole MTCS</xhtml>
+              </documentation>
+            </variable>
+            <variable name="shutdown">
+              <type><derived name="Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Shutdown the whole MTCS</xhtml>
+              </documentation>
+            </variable>
+            <variable name="wakeUp">
+              <type><derived name="Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Wake up the whole MTCS</xhtml>
+              </documentation>
+            </variable>
+            <variable name="goToSleep">
+              <type><derived name="Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Let the whole MTCS go to sleep</xhtml>
+              </documentation>
+            </variable>
+            <variable name="stop">
+              <type><derived name="Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Stop the dome and telescope</xhtml>
+              </documentation>
+            </variable>
+            <variable name="endOfNight">
+              <type><derived name="Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">End of night</xhtml>
+              </documentation>
+            </variable>
+            <variable name="changeInstrument">
+              <type><derived name="MTCSChangeInstrumentProcess" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Change the instrument</xhtml>
+              </documentation>
+            </variable>
+            <variable name="point">
+              <type><derived name="MTCSPointProcess" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Point the telescope and dome to a new target</xhtml>
+              </documentation>
+            </variable>
+            <variable name="emergencyClose">
+              <type><derived name="Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Close the dome and shutter asap</xhtml>
+              </documentation>
+            </variable>
+            <variable name="changeOperatingMode">
+              <type><derived name="ChangeOperatingModeStateProcess" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Change the operating mode (e.g. LOCAL, REMOTE, ...)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="mocsObservation">
+              <type><derived name="MTCSMocsObservationProcess" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Notifications about MOCS observation status</xhtml>
+              </documentation>
+            </variable>
+            <variable name="remoteConnectionCheck">
+              <type><derived name="Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Remote connection checking</xhtml>
+              </documentation>
+            </variable>
+            <variable name="remoteConnectionPortCheck">
+              <type><derived name="Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Remote connection port checking</xhtml>
+              </documentation>
+            </variable>
+            <variable name="resetWatchdogTimer">
+              <type><derived name="Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Reset the watchdog timer</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="MTCSStatuses">
+        <baseType>
+          <struct>
+            <variable name="initializationStatus">
+              <type><derived name="InitializationStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="healthStatus">
+              <type><derived name="HealthStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="busyStatus">
+              <type><derived name="BusyStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="operatorStatus">
+              <type><derived name="OperatorStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="passwordHealthStatus">
+              <type><derived name="HealthStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="activityStatus">
+              <type><derived name="ActivityStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="operatingModeStatus">
+              <type><derived name="OperatingModeStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="MTCSInstrumentsConfig">
+        <baseType>
+          <struct>
+            <variable name="instrument0">
+              <type><derived name="InstrumentConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Instrument 0</xhtml>
+              </documentation>
+            </variable>
+            <variable name="instrument1">
+              <type><derived name="InstrumentConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Instrument 1</xhtml>
+              </documentation>
+            </variable>
+            <variable name="instrument2">
+              <type><derived name="InstrumentConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Instrument 2</xhtml>
+              </documentation>
+            </variable>
+            <variable name="instrument3">
+              <type><derived name="InstrumentConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Instrument 3</xhtml>
+              </documentation>
+            </variable>
+            <variable name="instrument4">
+              <type><derived name="InstrumentConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Instrument 4</xhtml>
+              </documentation>
+            </variable>
+            <variable name="instrument5">
+              <type><derived name="InstrumentConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Instrument 5</xhtml>
+              </documentation>
+            </variable>
+            <variable name="instrument6">
+              <type><derived name="InstrumentConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Instrument 6</xhtml>
+              </documentation>
+            </variable>
+            <variable name="instrument7">
+              <type><derived name="InstrumentConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Instrument 7</xhtml>
+              </documentation>
+            </variable>
+            <variable name="instrument8">
+              <type><derived name="InstrumentConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Instrument 8</xhtml>
+              </documentation>
+            </variable>
+            <variable name="instrument9">
+              <type><derived name="InstrumentConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Instrument 9</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="MTCSEndOfNightStepConfig">
+        <baseType>
+          <struct>
+            <variable name="description">
+              <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Description of this step (to show in HMI)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="parkAxes">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Park the axes</xhtml>
+              </documentation>
+            </variable>
+            <variable name="parkAxesPosition">
+              <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Position to park the axes</xhtml>
+              </documentation>
+            </variable>
+            <variable name="parkAxesWait">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Wait until the axes is parked</xhtml>
+              </documentation>
+            </variable>
+            <variable name="parkM3">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Park M3</xhtml>
+              </documentation>
+            </variable>
+            <variable name="parkM3Position">
+              <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Position to park M3</xhtml>
+              </documentation>
+            </variable>
+            <variable name="parkM3Wait">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Wait until M3 is parked</xhtml>
+              </documentation>
+            </variable>
+            <variable name="parkDome">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Park the dome</xhtml>
+              </documentation>
+            </variable>
+            <variable name="parkDomePosition">
+              <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Position to park the dome</xhtml>
+              </documentation>
+            </variable>
+            <variable name="parkDomeWait">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Wait until the dome is parked</xhtml>
+              </documentation>
+            </variable>
+            <variable name="closeCover">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Close the cover</xhtml>
+              </documentation>
+            </variable>
+            <variable name="closeCoverWait">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Wait until the cover is closed</xhtml>
+              </documentation>
+            </variable>
+            <variable name="closeDome">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Close the dome</xhtml>
+              </documentation>
+            </variable>
+            <variable name="closeDomeWait">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Wait until the dome is closed</xhtml>
+              </documentation>
+            </variable>
+            <variable name="stop">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Stop the axes and dome</xhtml>
+              </documentation>
+            </variable>
+            <variable name="stopWait">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Wait until the axes and dome are stopped</xhtml>
+              </documentation>
+            </variable>
+            <variable name="goToSleep">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Make the telescope go to sleep</xhtml>
+              </documentation>
+            </variable>
+            <variable name="goToSleepWait">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Wait until the telescope is sleeping</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="MTCSEndOfNightConfig">
+        <baseType>
+          <struct>
+            <variable name="step0">
+              <type><derived name="MTCSEndOfNightStepConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Step 0</xhtml>
+              </documentation>
+            </variable>
+            <variable name="step1">
+              <type><derived name="MTCSEndOfNightStepConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Step 1</xhtml>
+              </documentation>
+            </variable>
+            <variable name="step2">
+              <type><derived name="MTCSEndOfNightStepConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Step 2</xhtml>
+              </documentation>
+            </variable>
+            <variable name="step3">
+              <type><derived name="MTCSEndOfNightStepConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Step 3</xhtml>
+              </documentation>
+            </variable>
+            <variable name="step4">
+              <type><derived name="MTCSEndOfNightStepConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Step 4</xhtml>
+              </documentation>
+            </variable>
+            <variable name="step5">
+              <type><derived name="MTCSEndOfNightStepConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Step 5</xhtml>
+              </documentation>
+            </variable>
+            <variable name="step6">
+              <type><derived name="MTCSEndOfNightStepConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Step 6</xhtml>
+              </documentation>
+            </variable>
+            <variable name="step7">
+              <type><derived name="MTCSEndOfNightStepConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Step 7</xhtml>
+              </documentation>
+            </variable>
+            <variable name="step8">
+              <type><derived name="MTCSEndOfNightStepConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Step 8</xhtml>
+              </documentation>
+            </variable>
+            <variable name="step9">
+              <type><derived name="MTCSEndOfNightStepConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Step 9</xhtml>
+              </documentation>
+            </variable>
+            <variable name="step10">
+              <type><derived name="MTCSEndOfNightStepConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Step 10</xhtml>
+              </documentation>
+            </variable>
+            <variable name="step11">
+              <type><derived name="MTCSEndOfNightStepConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Step 11</xhtml>
+              </documentation>
+            </variable>
+            <variable name="step12">
+              <type><derived name="MTCSEndOfNightStepConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Step 12</xhtml>
+              </documentation>
+            </variable>
+            <variable name="step13">
+              <type><derived name="MTCSEndOfNightStepConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Step 13</xhtml>
+              </documentation>
+            </variable>
+            <variable name="step14">
+              <type><derived name="MTCSEndOfNightStepConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Step 14</xhtml>
+              </documentation>
+            </variable>
+            <variable name="step15">
+              <type><derived name="MTCSEndOfNightStepConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Step 15</xhtml>
+              </documentation>
+            </variable>
+            <variable name="step16">
+              <type><derived name="MTCSEndOfNightStepConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Step 16</xhtml>
+              </documentation>
+            </variable>
+            <variable name="step17">
+              <type><derived name="MTCSEndOfNightStepConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Step 17</xhtml>
+              </documentation>
+            </variable>
+            <variable name="step18">
+              <type><derived name="MTCSEndOfNightStepConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Step 18</xhtml>
+              </documentation>
+            </variable>
+            <variable name="step19">
+              <type><derived name="MTCSEndOfNightStepConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Step 19</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="MTCSRemoteOperationConfig">
+        <baseType>
+          <struct>
+            <variable name="defaultOperationgMode">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Default Operation Mode False=LOCAL True=REMOTE</xhtml>
+              </documentation>
+            </variable>
+            <variable name="watchdogMocsActivityEnable">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Enable the watchdog for MOCS activity</xhtml>
+              </documentation>
+            </variable>
+            <variable name="watchdogMocsActivityTime1">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The watchdog timer time for MOCS 1</xhtml>
+              </documentation>
+            </variable>
+            <variable name="watchdogMocsActivityTime2">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The watchdog timer time for MOCS 2</xhtml>
+              </documentation>
+            </variable>
+            <variable name="warningMocsTime1">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The warning timer time for MOCS 1</xhtml>
+              </documentation>
+            </variable>
+            <variable name="warningMocsTime2">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The warning timer time for MOCS 2</xhtml>
+              </documentation>
+            </variable>
+            <variable name="watchdogRemoteConnectionEnable">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Enable the watchdog for remote connection</xhtml>
+              </documentation>
+            </variable>
+            <variable name="watchdogRemoteConnectionTime">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The watchdog timer time for remote connection</xhtml>
+              </documentation>
+            </variable>
+            <variable name="warningRemoteConnectionTime">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The warning timer time for remote connection</xhtml>
+              </documentation>
+            </variable>
+            <variable name="watchdogConnectionPortEnable">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Enable the watchdog for connection Port</xhtml>
+              </documentation>
+            </variable>
+            <variable name="watchdogConnectionPortTime">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The watchdog timer time for connection Port</xhtml>
+              </documentation>
+            </variable>
+            <variable name="warningConnectionPortTime">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The warning timer time for connection Port</xhtml>
+              </documentation>
+            </variable>
+            <variable name="remoteConnectionPortNumber">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The port number for remote connection</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="MTCSConfig">
+        <baseType>
+          <struct>
+            <variable name="instruments">
+              <type><derived name="MTCSInstrumentsConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Configure the instruments</xhtml>
+              </documentation>
+            </variable>
+            <variable name="endOfNight">
+              <type><derived name="MTCSEndOfNightConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Configure the instruments</xhtml>
+              </documentation>
+            </variable>
+            <variable name="remoteOperation">
+              <type><derived name="MTCSRemoteOperationConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Configure the remote operation</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="MTCSChangeInstrumentProcessArgs">
+        <baseType>
+          <struct>
+            <variable name="name">
+              <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of the instrument</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="MTCSPointProcessArgs">
+        <baseType>
+          <struct>
+            <variable name="alphaUnits">
+              <type><derived name="AxesAlphaUnits" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The units in which alpha is given</xhtml>
+              </documentation>
+            </variable>
+            <variable name="alpha">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Right ascention, in the units of the alphaUnits argument</xhtml>
+              </documentation>
+            </variable>
+            <variable name="deltaUnits">
+              <type><derived name="AxesDeltaUnits" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The units in which delta is given</xhtml>
+              </documentation>
+            </variable>
+            <variable name="delta">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Declination, in the units of the deltaUnits argument</xhtml>
+              </documentation>
+            </variable>
+            <variable name="muUnits">
+              <type><derived name="AxesMuUnits" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The units in which muAlpha and muDelta are given</xhtml>
+              </documentation>
+            </variable>
+            <variable name="muAlpha">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Right ascention proper motion, the units of muUmits (do not multiply by cos(delta)!)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="muDelta">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Declination proper motion, in radians/year</xhtml>
+              </documentation>
+            </variable>
+            <variable name="parallax">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Object parallax, in arcseconds</xhtml>
+              </documentation>
+            </variable>
+            <variable name="radialVelocity">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Object radial velocity, in km/s</xhtml>
+              </documentation>
+            </variable>
+            <variable name="epoch">
+              <type><LREAL /></type>
+              <initialValue><simpleValue value="2000.0" /></initialValue>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Epoch, e.g. 2000.0</xhtml>
+              </documentation>
+            </variable>
+            <variable name="tracking">
+              <type><BOOL /></type>
+              <initialValue><simpleValue value="TRUE" /></initialValue>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">True to start tracking the object, false to Only do a pointing</xhtml>
+              </documentation>
+            </variable>
+            <variable name="rotUnits">
+              <type><derived name="AxesMoveUnits" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Units of the &#39;rot&#39;, &#39;roc&#39; and &#39;ron&#39; arguments (RADIANS, DEGREES, ARCSECONDS, ...)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="rotOffset">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Offset to move the currently active rotator (incompatible with &#39;roc&#39; and &#39;ron&#39; args)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="rocOffset">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Offset to move the cassegrain rotation axis (incompatible with &#39;rot&#39; arg)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="ronOffset">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Offset to move the nasmyth rotation axis (incompatible with &#39;rot&#39; arg)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="doRotOffset">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">True to move the currently active rotator, false to leave it untouched</xhtml>
+              </documentation>
+            </variable>
+            <variable name="doRocOffset">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">True to move the cassegrain rotation axis, false to leave it untouched</xhtml>
+              </documentation>
+            </variable>
+            <variable name="doRonOffset">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">True to move the nasmyth rotation axis, false to leave it untouched</xhtml>
+              </documentation>
+            </variable>
+            <variable name="doDomeTracking">
+              <type><BOOL /></type>
+              <initialValue><simpleValue value="TRUE" /></initialValue>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">True to enable dome tracking</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="MTCSMocsObservationProcessArgs">
+        <baseType>
+          <struct>
+            <variable name="status">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">True to notify that there is an observation running</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+    </dataTypes>
+    <pous>
+      <pou name="SM_MTCS" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="editableConfig">
+              <type><derived name="MTCSConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Editable configuration of the MTCS</xhtml>
+              </documentation>
+            </variable>
+            <variable name="remoteOperationEnable">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">True to Remote operation enabled</xhtml>
+              </documentation>
+            </variable>
+            <variable name="mocsObservationStatus">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">True to notify that there is an observation running</xhtml>
+              </documentation>
+            </variable>
+            <variable name="remoteConnectionStatus">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">True to notify that there is a remote connection</xhtml>
+              </documentation>
+            </variable>
+            <variable name="remoteconnectionPortStatus">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">True to notify that there is a connection port established</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="actualStatus">
+              <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Current status description</xhtml>
+              </documentation>
+            </variable>
+            <variable name="previousStatus">
+              <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Previous status description</xhtml>
+              </documentation>
+            </variable>
+            <variable name="noOfFailedOperatorChanges">
+              <type><UINT /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">How many times has a wrong password been entered?</xhtml>
+              </documentation>
+            </variable>
+            <variable name="activeInstrument">
+              <type><derived name="InstrumentConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config of the currently active instrument (depending on M3 and possibly derotator) *if* isInstrumentActive is TRUE</xhtml>
+              </documentation>
+            </variable>
+            <variable name="activeInstrumentNumber">
+              <type><INT /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Number of the currently active instrument (0..9, or -1 if no instrument is active)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="activeInstrumentName">
+              <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of the currently active instrument</xhtml>
+              </documentation>
+            </variable>
+            <variable name="isInstrumentActive">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Is an instrument currently active (i.e. is M3 static at a known position?)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="config">
+              <type><derived name="MTCSConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Active configuration of the ServicesTiming subsystem</xhtml>
+              </documentation>
+            </variable>
+            <variable name="remoteConnectionWarningFlag">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Warning flag in case of remote connections is lost for a while</xhtml>
+              </documentation>
+            </variable>
+            <variable name="remoteMocsWarningFlag">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Warning flag in case of there is no MOCS activity for a while</xhtml>
+              </documentation>
+            </variable>
+            <variable name="statuses">
+              <type><derived name="MTCSStatuses" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Statuses of the state machine</xhtml>
+              </documentation>
+            </variable>
+            <variable name="parts">
+              <type><derived name="MTCSParts" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Parts of the state machine</xhtml>
+              </documentation>
+            </variable>
+            <variable name="processes">
+              <type><derived name="MTCSProcesses" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Processes of the state machine</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <inOutVars>
+          </inOutVars>
+          <localVars>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">parts.telemetry( operatorStatus := statuses.operatorStatus );
+parts.cover(
+    operatorStatus := statuses.operatorStatus,
+    aziPos := parts.axes.parts.azi.actPos,
+    elePos := parts.axes.parts.ele.actPos);
+parts.m1(
+    operatorStatus := statuses.operatorStatus,
+    tubeAngleMeasurement := parts.telemetry.parts.accelerometers.tube);
+parts.m2(
+    operatorStatus := statuses.operatorStatus,
+    io := parts.m1.parts.io,
+    actualFocalStation := parts.m3.actualKnownPositionID,
+    m3KnownPositionsConfig := parts.m3.config.knownPositions,
+    temperatures := parts.telemetry.parts.temperatures);
+parts.m3( operatorStatus := statuses.operatorStatus );
+parts.services(
+    operatorStatus := statuses.operatorStatus,
+    domeApertureStatus := parts.dome.parts.shutter.statuses.apertureStatus);
+parts.safety(
+    operatorStatus := statuses.operatorStatus,
+    activityStatus := statuses.activityStatus);
+parts.hydraulics(
+    operatorStatus := statuses.operatorStatus,
+    safetyHydraulics := parts.safety.parts.hydraulics,
+    safetyIO := parts.safety.parts.io);
+parts.dome(
+    operatorStatus := statuses.operatorStatus,
+    activityStatus := statuses.activityStatus,
+    aziTargetPos := parts.axes.parts.azi.actPos,
+    safetyDomeShutter := parts.safety.parts.domeShutter,
+    safetyDomeAccess := parts.safety.parts.domeAccess,
+    safetyMotionBlocking := parts.safety.parts.motionBlocking);
+parts.configManager( isEnabled := statuses.operatorStatus.tech );
+statuses.initializationStatus();
+statuses.healthStatus(
+    isGood := parts.axes.statuses.healthStatus.isGood AND (parts.cover.statuses.healthStatus.isGood AND (parts.m1.statuses.healthStatus.isGood AND (parts.m2.statuses.healthStatus.isGood AND (parts.m3.statuses.healthStatus.isGood AND (parts.services.statuses.healthStatus.isGood AND (parts.telemetry.statuses.healthStatus.isGood AND (parts.safety.statuses.healthStatus.isGood AND (parts.hydraulics.statuses.healthStatus.isGood AND parts.dome.statuses.healthStatus.isGood)))))))),
+    hasWarning := parts.axes.statuses.healthStatus.hasWarning OR (parts.cover.statuses.healthStatus.hasWarning OR (parts.m1.statuses.healthStatus.hasWarning OR (parts.m2.statuses.healthStatus.hasWarning OR (parts.m3.statuses.healthStatus.hasWarning OR (parts.services.statuses.healthStatus.hasWarning OR (parts.telemetry.statuses.healthStatus.hasWarning OR (parts.safety.statuses.healthStatus.hasWarning OR (parts.hydraulics.statuses.healthStatus.hasWarning OR parts.dome.statuses.healthStatus.hasWarning)))))))));
+statuses.busyStatus( isBusy := parts.axes.statuses.busyStatus.busy OR (parts.cover.statuses.busyStatus.busy OR (parts.m1.statuses.busyStatus.busy OR (parts.m2.statuses.busyStatus.busy OR (parts.m3.statuses.busyStatus.busy OR (parts.services.statuses.busyStatus.busy OR (parts.telemetry.statuses.busyStatus.busy OR (parts.safety.statuses.busyStatus.busy OR (parts.hydraulics.statuses.busyStatus.busy OR parts.dome.statuses.busyStatus.busy)))))))) );
+statuses.operatorStatus();
+statuses.passwordHealthStatus( superState := statuses.operatorStatus.observer );
+statuses.activityStatus(
+    superState := statuses.initializationStatus.initialized OR statuses.initializationStatus.initializingFailed,
+    isAwake := (parts.hydraulics.pumpsState = HydraulicsPumpsStates.RUNNING) OR parts.axes.statuses.poweredStatus.enabled,
+    isMoving := parts.axes.statuses.busyStatus.busy OR parts.axes.isTracking);
+statuses.operatingModeStatus();
+processes.initialize( isEnabled := NOT(statuses.initializationStatus.initializing) );
+processes.lock( isEnabled := statuses.operatorStatus.tech AND statuses.initializationStatus.initialized );
+processes.unlock( isEnabled := statuses.operatorStatus.tech AND statuses.initializationStatus.locked );
+processes.changeOperator( isEnabled := TRUE );
+processes.verifyPassword( isEnabled := TRUE );
+processes.reboot( isEnabled := TRUE );
+processes.shutdown( isEnabled := statuses.operatorStatus.tech );
+processes.wakeUp( isEnabled := statuses.activityStatus.sleeping );
+processes.goToSleep( isEnabled := statuses.activityStatus.awake OR statuses.healthStatus.bad );
+processes.stop( isEnabled := statuses.initializationStatus.initialized );
+processes.endOfNight( isEnabled := TRUE );
+processes.changeInstrument( isEnabled := statuses.initializationStatus.initialized OR statuses.healthStatus.bad );
+processes.point( isEnabled := parts.axes.processes.point.statuses.enabledStatus.enabled AND parts.dome.processes.syncWithAxes.statuses.enabledStatus.enabled );
+processes.emergencyClose( isEnabled := NOT(parts.dome.parts.shutter.statuses.apertureStatus.isClosed) );
+processes.changeOperatingMode( isEnabled := statuses.operatorStatus.tech );
+processes.mocsObservation( isEnabled := TRUE );
+processes.remoteConnectionCheck( isEnabled := TRUE );
+processes.remoteConnectionPortCheck( isEnabled := TRUE );
+processes.resetWatchdogTimer( isEnabled := TRUE );
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="initialize">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">initialize := THIS^.processes.initialize.request();
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="lock">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">lock := THIS^.processes.lock.request();
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="unlock">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">unlock := THIS^.processes.unlock.request();
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="changeOperator">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                  <variable name="state">
+                    <type><derived name="OperatorStates" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="password">
+                    <type><string /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">changeOperator := THIS^.processes.changeOperator.request(
+    state := state,
+    password := password);
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="verifyPassword">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                  <variable name="state">
+                    <type><derived name="OperatorStates" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="password">
+                    <type><string /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">verifyPassword := THIS^.processes.verifyPassword.request(
+    state := state,
+    password := password);
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="reboot">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">reboot := THIS^.processes.reboot.request();
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="shutdown">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">shutdown := THIS^.processes.shutdown.request();
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="wakeUp">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">wakeUp := THIS^.processes.wakeUp.request();
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="goToSleep">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">goToSleep := THIS^.processes.goToSleep.request();
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="stop">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">stop := THIS^.processes.stop.request();
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="endOfNight">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">endOfNight := THIS^.processes.endOfNight.request();
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="changeInstrument">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                  <variable name="name">
+                    <type><string /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">changeInstrument := THIS^.processes.changeInstrument.request( name := name );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="point">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                  <variable name="alphaUnits">
+                    <type><derived name="AxesAlphaUnits" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="alpha">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="deltaUnits">
+                    <type><derived name="AxesDeltaUnits" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="delta">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="muUnits">
+                    <type><derived name="AxesMuUnits" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="muAlpha">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="muDelta">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="parallax">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="radialVelocity">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="epoch">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="tracking">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="rotUnits">
+                    <type><derived name="AxesMoveUnits" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="rotOffset">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="rocOffset">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="ronOffset">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="doRotOffset">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="doRocOffset">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="doRonOffset">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="doDomeTracking">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">point := THIS^.processes.point.request(
+    alphaUnits := alphaUnits,
+    alpha := alpha,
+    deltaUnits := deltaUnits,
+    delta := delta,
+    muUnits := muUnits,
+    muAlpha := muAlpha,
+    muDelta := muDelta,
+    parallax := parallax,
+    radialVelocity := radialVelocity,
+    epoch := epoch,
+    tracking := tracking,
+    rotUnits := rotUnits,
+    rotOffset := rotOffset,
+    rocOffset := rocOffset,
+    ronOffset := ronOffset,
+    doRotOffset := doRotOffset,
+    doRocOffset := doRocOffset,
+    doRonOffset := doRonOffset,
+    doDomeTracking := doDomeTracking);
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="emergencyClose">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">emergencyClose := THIS^.processes.emergencyClose.request();
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="changeOperatingMode">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                  <variable name="state">
+                    <type><derived name="OperatingModeStates" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">changeOperatingMode := THIS^.processes.changeOperatingMode.request( state := state );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="mocsObservation">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                  <variable name="status">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">mocsObservation := THIS^.processes.mocsObservation.request( status := status );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="remoteConnectionCheck">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">remoteConnectionCheck := THIS^.processes.remoteConnectionCheck.request();
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="remoteConnectionPortCheck">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">remoteConnectionPortCheck := THIS^.processes.remoteConnectionPortCheck.request();
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="resetWatchdogTimer">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">resetWatchdogTimer := THIS^.processes.resetWatchdogTimer.request();
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_log">
+              <interface>
+                <returnType><BOOL /></returnType>
+                <inputVars>
+                  <variable name="name">
+                    <type><string /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="buffer">
+                    <type><derived name="LogBuffer" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                  <variable name="subBuffer">
+                    <type><derived name="LogBuffer" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
+                    </documentation>
+                  </variable>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.parts.telemetry._log(
+    name := &#39;telemetry&#39;,
+    buffer := subBuffer);
+THIS^.parts.cover._log(
+    name := &#39;cover&#39;,
+    buffer := subBuffer);
+THIS^.parts.m1._log(
+    name := &#39;m1&#39;,
+    buffer := subBuffer);
+THIS^.parts.m2._log(
+    name := &#39;m2&#39;,
+    buffer := subBuffer);
+THIS^.parts.m3._log(
+    name := &#39;m3&#39;,
+    buffer := subBuffer);
+THIS^.parts.services._log(
+    name := &#39;services&#39;,
+    buffer := subBuffer);
+THIS^.parts.safety._log(
+    name := &#39;safety&#39;,
+    buffer := subBuffer);
+THIS^.parts.hydraulics._log(
+    name := &#39;hydraulics&#39;,
+    buffer := subBuffer);
+THIS^.parts.axes._log(
+    name := &#39;axes&#39;,
+    buffer := subBuffer);
+THIS^.parts.dome._log(
+    name := &#39;dome&#39;,
+    buffer := subBuffer);
+THIS^.parts.configManager._log(
+    name := &#39;configManager&#39;,
+    buffer := subBuffer);
+THIS^.processes.initialize._log(
+    name := &#39;processes.initialize&#39;,
+    buffer := subBuffer);
+THIS^.processes.lock._log(
+    name := &#39;processes.lock&#39;,
+    buffer := subBuffer);
+THIS^.processes.unlock._log(
+    name := &#39;processes.unlock&#39;,
+    buffer := subBuffer);
+THIS^.processes.changeOperator._log(
+    name := &#39;processes.changeOperator&#39;,
+    buffer := subBuffer);
+THIS^.processes.verifyPassword._log(
+    name := &#39;processes.verifyPassword&#39;,
+    buffer := subBuffer);
+THIS^.processes.reboot._log(
+    name := &#39;processes.reboot&#39;,
+    buffer := subBuffer);
+THIS^.processes.shutdown._log(
+    name := &#39;processes.shutdown&#39;,
+    buffer := subBuffer);
+THIS^.processes.wakeUp._log(
+    name := &#39;processes.wakeUp&#39;,
+    buffer := subBuffer);
+THIS^.processes.goToSleep._log(
+    name := &#39;processes.goToSleep&#39;,
+    buffer := subBuffer);
+THIS^.processes.stop._log(
+    name := &#39;processes.stop&#39;,
+    buffer := subBuffer);
+THIS^.processes.endOfNight._log(
+    name := &#39;processes.endOfNight&#39;,
+    buffer := subBuffer);
+THIS^.processes.changeInstrument._log(
+    name := &#39;processes.changeInstrument&#39;,
+    buffer := subBuffer);
+THIS^.processes.point._log(
+    name := &#39;processes.point&#39;,
+    buffer := subBuffer);
+THIS^.processes.emergencyClose._log(
+    name := &#39;processes.emergencyClose&#39;,
+    buffer := subBuffer);
+THIS^.processes.changeOperatingMode._log(
+    name := &#39;processes.changeOperatingMode&#39;,
+    buffer := subBuffer);
+THIS^.processes.mocsObservation._log(
+    name := &#39;processes.mocsObservation&#39;,
+    buffer := subBuffer);
+THIS^.processes.remoteConnectionCheck._log(
+    name := &#39;processes.remoteConnectionCheck&#39;,
+    buffer := subBuffer);
+THIS^.processes.remoteConnectionPortCheck._log(
+    name := &#39;processes.remoteConnectionPortCheck&#39;,
+    buffer := subBuffer);
+THIS^.processes.resetWatchdogTimer._log(
+    name := &#39;processes.resetWatchdogTimer&#39;,
+    buffer := subBuffer);
+LOGGER(
+    name := name,
+    actualStatus := THIS^.actualStatus,
+    previousStatus := THIS^.previousStatus,
+    buffer := buffer,
+    subBuffer := subBuffer,
+    pHealthStatus := ADR(THIS^.statuses.healthStatus),
+    pBusyStatus := ADR(THIS^.statuses.busyStatus));
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+        </addData>
+      </pou>
+      <pou name="MTCSChangeInstrumentProcess" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="set">
+              <type><derived name="MTCSChangeInstrumentProcessArgs" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Arguments to be set, before writing do_request TRUE</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="get">
+              <type><derived name="MTCSChangeInstrumentProcessArgs" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Arguments in use by the process, if do_request was accepted</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <inOutVars>
+          </inOutVars>
+          <localVars>
+          </localVars>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/pouinheritance" handleUnknown="implementation">
+              <Inheritance>
+                <Extends>BaseProcess</Extends>
+              </Inheritance>
+            </data>
+          </addData>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+    do_request_result := request( name := set.name );
+    do_request := FALSE;
+END_IF;
+SUPER^();
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="start">
+              <interface>
+                <inputVars>
+                  <variable name="name">
+                    <type><string /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of the instrument</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.name := name;
+THIS^.statuses.busyStatus( isBusy := TRUE );
+THIS^.statuses.healthStatus( isGood := TRUE );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="request">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                  <variable name="name">
+                    <type><string /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of the instrument</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF THIS^.statuses.enabledStatus.enabled THEN
+    request := RequestResults.ACCEPTED;
+    THIS^.start( name := name );
+ELSE
+    request := RequestResults.REJECTED;
+END_IF;
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+        </addData>
+      </pou>
+      <pou name="MTCSPointProcess" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="set">
+              <type><derived name="MTCSPointProcessArgs" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Arguments to be set, before writing do_request TRUE</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="get">
+              <type><derived name="MTCSPointProcessArgs" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Arguments in use by the process, if do_request was accepted</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <inOutVars>
+          </inOutVars>
+          <localVars>
+          </localVars>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/pouinheritance" handleUnknown="implementation">
+              <Inheritance>
+                <Extends>BaseProcess</Extends>
+              </Inheritance>
+            </data>
+          </addData>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+    do_request_result := request(
+    alphaUnits := set.alphaUnits,
+    alpha := set.alpha,
+    deltaUnits := set.deltaUnits,
+    delta := set.delta,
+    muUnits := set.muUnits,
+    muAlpha := set.muAlpha,
+    muDelta := set.muDelta,
+    parallax := set.parallax,
+    radialVelocity := set.radialVelocity,
+    epoch := set.epoch,
+    tracking := set.tracking,
+    rotUnits := set.rotUnits,
+    rotOffset := set.rotOffset,
+    rocOffset := set.rocOffset,
+    ronOffset := set.ronOffset,
+    doRotOffset := set.doRotOffset,
+    doRocOffset := set.doRocOffset,
+    doRonOffset := set.doRonOffset,
+    doDomeTracking := set.doDomeTracking);
+    do_request := FALSE;
+END_IF;
+SUPER^();
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="start">
+              <interface>
+                <inputVars>
+                  <variable name="alphaUnits">
+                    <type><derived name="AxesAlphaUnits" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">The units in which alpha is given</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="alpha">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Right ascention, in the units of the alphaUnits argument</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="deltaUnits">
+                    <type><derived name="AxesDeltaUnits" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">The units in which delta is given</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="delta">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Declination, in the units of the deltaUnits argument</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="muUnits">
+                    <type><derived name="AxesMuUnits" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">The units in which muAlpha and muDelta are given</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="muAlpha">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Right ascention proper motion, the units of muUmits (do not multiply by cos(delta)!)</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="muDelta">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Declination proper motion, in radians/year</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="parallax">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Object parallax, in arcseconds</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="radialVelocity">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Object radial velocity, in km/s</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="epoch">
+                    <type><LREAL /></type>
+                    <initialValue><simpleValue value="2000.0" /></initialValue>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Epoch, e.g. 2000.0</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="tracking">
+                    <type><BOOL /></type>
+                    <initialValue><simpleValue value="TRUE" /></initialValue>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">True to start tracking the object, false to Only do a pointing</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="rotUnits">
+                    <type><derived name="AxesMoveUnits" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Units of the &#39;rot&#39;, &#39;roc&#39; and &#39;ron&#39; arguments (RADIANS, DEGREES, ARCSECONDS, ...)</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="rotOffset">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Offset to move the currently active rotator (incompatible with &#39;roc&#39; and &#39;ron&#39; args)</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="rocOffset">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Offset to move the cassegrain rotation axis (incompatible with &#39;rot&#39; arg)</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="ronOffset">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Offset to move the nasmyth rotation axis (incompatible with &#39;rot&#39; arg)</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="doRotOffset">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">True to move the currently active rotator, false to leave it untouched</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="doRocOffset">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">True to move the cassegrain rotation axis, false to leave it untouched</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="doRonOffset">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">True to move the nasmyth rotation axis, false to leave it untouched</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="doDomeTracking">
+                    <type><BOOL /></type>
+                    <initialValue><simpleValue value="TRUE" /></initialValue>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">True to enable dome tracking</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.alphaUnits := alphaUnits;
+THIS^.get.alpha := alpha;
+THIS^.get.deltaUnits := deltaUnits;
+THIS^.get.delta := delta;
+THIS^.get.muUnits := muUnits;
+THIS^.get.muAlpha := muAlpha;
+THIS^.get.muDelta := muDelta;
+THIS^.get.parallax := parallax;
+THIS^.get.radialVelocity := radialVelocity;
+THIS^.get.epoch := epoch;
+THIS^.get.tracking := tracking;
+THIS^.get.rotUnits := rotUnits;
+THIS^.get.rotOffset := rotOffset;
+THIS^.get.rocOffset := rocOffset;
+THIS^.get.ronOffset := ronOffset;
+THIS^.get.doRotOffset := doRotOffset;
+THIS^.get.doRocOffset := doRocOffset;
+THIS^.get.doRonOffset := doRonOffset;
+THIS^.get.doDomeTracking := doDomeTracking;
+THIS^.statuses.busyStatus( isBusy := TRUE );
+THIS^.statuses.healthStatus( isGood := TRUE );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="request">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                  <variable name="alphaUnits">
+                    <type><derived name="AxesAlphaUnits" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">The units in which alpha is given</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="alpha">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Right ascention, in the units of the alphaUnits argument</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="deltaUnits">
+                    <type><derived name="AxesDeltaUnits" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">The units in which delta is given</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="delta">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Declination, in the units of the deltaUnits argument</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="muUnits">
+                    <type><derived name="AxesMuUnits" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">The units in which muAlpha and muDelta are given</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="muAlpha">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Right ascention proper motion, the units of muUmits (do not multiply by cos(delta)!)</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="muDelta">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Declination proper motion, in radians/year</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="parallax">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Object parallax, in arcseconds</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="radialVelocity">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Object radial velocity, in km/s</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="epoch">
+                    <type><LREAL /></type>
+                    <initialValue><simpleValue value="2000.0" /></initialValue>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Epoch, e.g. 2000.0</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="tracking">
+                    <type><BOOL /></type>
+                    <initialValue><simpleValue value="TRUE" /></initialValue>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">True to start tracking the object, false to Only do a pointing</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="rotUnits">
+                    <type><derived name="AxesMoveUnits" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Units of the &#39;rot&#39;, &#39;roc&#39; and &#39;ron&#39; arguments (RADIANS, DEGREES, ARCSECONDS, ...)</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="rotOffset">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Offset to move the currently active rotator (incompatible with &#39;roc&#39; and &#39;ron&#39; args)</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="rocOffset">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Offset to move the cassegrain rotation axis (incompatible with &#39;rot&#39; arg)</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="ronOffset">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Offset to move the nasmyth rotation axis (incompatible with &#39;rot&#39; arg)</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="doRotOffset">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">True to move the currently active rotator, false to leave it untouched</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="doRocOffset">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">True to move the cassegrain rotation axis, false to leave it untouched</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="doRonOffset">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">True to move the nasmyth rotation axis, false to leave it untouched</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="doDomeTracking">
+                    <type><BOOL /></type>
+                    <initialValue><simpleValue value="TRUE" /></initialValue>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">True to enable dome tracking</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF THIS^.statuses.enabledStatus.enabled THEN
+    request := RequestResults.ACCEPTED;
+    THIS^.start(
+        alphaUnits := alphaUnits,
+        alpha := alpha,
+        deltaUnits := deltaUnits,
+        delta := delta,
+        muUnits := muUnits,
+        muAlpha := muAlpha,
+        muDelta := muDelta,
+        parallax := parallax,
+        radialVelocity := radialVelocity,
+        epoch := epoch,
+        tracking := tracking,
+        rotUnits := rotUnits,
+        rotOffset := rotOffset,
+        rocOffset := rocOffset,
+        ronOffset := ronOffset,
+        doRotOffset := doRotOffset,
+        doRocOffset := doRocOffset,
+        doRonOffset := doRonOffset,
+        doDomeTracking := doDomeTracking);
+ELSE
+    request := RequestResults.REJECTED;
+END_IF;
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+        </addData>
+      </pou>
+      <pou name="MTCSMocsObservationProcess" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="set">
+              <type><derived name="MTCSMocsObservationProcessArgs" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Arguments to be set, before writing do_request TRUE</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="get">
+              <type><derived name="MTCSMocsObservationProcessArgs" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Arguments in use by the process, if do_request was accepted</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <inOutVars>
+          </inOutVars>
+          <localVars>
+          </localVars>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/pouinheritance" handleUnknown="implementation">
+              <Inheritance>
+                <Extends>BaseProcess</Extends>
+              </Inheritance>
+            </data>
+          </addData>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+    do_request_result := request( status := set.status );
+    do_request := FALSE;
+END_IF;
+SUPER^();
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="start">
+              <interface>
+                <inputVars>
+                  <variable name="status">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">True to notify that there is an observation running</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.status := status;
+THIS^.statuses.busyStatus( isBusy := TRUE );
+THIS^.statuses.healthStatus( isGood := TRUE );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="request">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                  <variable name="status">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">True to notify that there is an observation running</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF THIS^.statuses.enabledStatus.enabled THEN
+    request := RequestResults.ACCEPTED;
+    THIS^.start( status := status );
+ELSE
+    request := RequestResults.REJECTED;
+END_IF;
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+        </addData>
+      </pou>
+    </pous>
+  </types>
+  <instances>
+    <configurations />
+  </instances>
+  <addData>
+    <data name="http://www.3s-software.com/plcopenxml/projectstructure" handleUnknown="discard">
+      <ProjectStructure>
+        <Folder Name="mtcs">
+          <Folder Name="Enums">
+          </Folder>
+          <Folder Name="Statuses">
+          </Folder>
+          <Folder Name="StateMachines">
+            <Folder Name="Parts">
+              <Object Name="MTCSParts">
+              </Object>
+            </Folder>
+            <Folder Name="Processes">
+              <Object Name="MTCSProcesses">
+              </Object>
+            </Folder>
+            <Folder Name="Statuses">
+              <Object Name="MTCSStatuses">
+              </Object>
+            </Folder>
+            <Object Name="SM_MTCS">
+              <Object Name="initialize" />
+              <Object Name="lock" />
+              <Object Name="unlock" />
+              <Object Name="changeOperator" />
+              <Object Name="verifyPassword" />
+              <Object Name="reboot" />
+              <Object Name="shutdown" />
+              <Object Name="wakeUp" />
+              <Object Name="goToSleep" />
+              <Object Name="stop" />
+              <Object Name="endOfNight" />
+              <Object Name="changeInstrument" />
+              <Object Name="point" />
+              <Object Name="emergencyClose" />
+              <Object Name="changeOperatingMode" />
+              <Object Name="mocsObservation" />
+              <Object Name="remoteConnectionCheck" />
+              <Object Name="remoteConnectionPortCheck" />
+              <Object Name="resetWatchdogTimer" />
+              <Object Name="_log" />
+            </Object>
+          </Folder>
+          <Folder Name="Configs">
+            <Object Name="MTCSInstrumentsConfig">
+            </Object>
+            <Object Name="MTCSEndOfNightStepConfig">
+            </Object>
+            <Object Name="MTCSEndOfNightConfig">
+            </Object>
+            <Object Name="MTCSRemoteOperationConfig">
+            </Object>
+            <Object Name="MTCSConfig">
+            </Object>
+          </Folder>
+          <Folder Name="Structs">
+          </Folder>
+          <Folder Name="Processes">
+            <Folder Name="Args">
+              <Object Name="MTCSChangeInstrumentProcessArgs">
+              </Object>
+              <Object Name="MTCSPointProcessArgs">
+              </Object>
+              <Object Name="MTCSMocsObservationProcessArgs">
+              </Object>
+            </Folder>
+            <Object Name="MTCSChangeInstrumentProcess">
+              <Object Name="start" />
+              <Object Name="request" />
+            </Object>
+            <Object Name="MTCSPointProcess">
+              <Object Name="start" />
+              <Object Name="request" />
+            </Object>
+            <Object Name="MTCSMocsObservationProcess">
+              <Object Name="start" />
+              <Object Name="request" />
+            </Object>
+          </Folder>
+          <Folder Name="Functionblocks">
+          </Folder>
+        </Folder>
+      </ProjectStructure>
+    </data>
+  </addData>
+</project>

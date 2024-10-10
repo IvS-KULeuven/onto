@@ -764,7 +764,8 @@ class Statemachine(FunctionBlock):
         # separte PLC program (at a faster cycle time) calls
         # the member (as for the 'axes' member of MTCS)
         if "disabled_calls" in args:
-            self.disabledCallNames.append(args["disabled_calls"])
+            for disabled_call in args["disabled_calls"]:
+                self.disabledCallNames.append(disabled_call)
 
         if "processes" in args:
             struct = Struct(

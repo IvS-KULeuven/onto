@@ -1,0 +1,541 @@
+########################################################################################################################
+#                                                                                                                      #
+# Model of the M1 software.                                                                                            #
+#                                                                                                                      #
+########################################################################################################################
+
+
+!IMPORT models/in/mercator/mtcs_common.yaml:
+!IMPORT models/in/mercator/mtcs_telemetry.yaml:
+
+
+########################################################################################################################
+# Define the containing PLC library
+########################################################################################################################
+
+!LIBRARY mtcs_m1:
+
+  
+  ########################################################################################################################
+  # M1Config
+  ########################################################################################################################
+  !CONFIG M1Config:
+      items:
+          radialSupport                   : { comment: "Radial support" }
+          axialSupport                    : { comment: "Axial support" }
+          pneumaticSupplySensorFullScale  : { type: t_double                        , comment: "Sensor full scale range, in Bar" }
+          pneumaticSupplyPressure         : { type: mtcs_common.MeasurementConfig   , comment: "Pneumatic supply pressure config, in Bar" }
+          inclinometerVoltage             : { type: mtcs_common.MeasurementConfig   , comment: "Inclinometer voltage measuremennt config, in Volts" }
+  
+  
+  ########################################################################################################################
+  # M1
+  ########################################################################################################################
+  
+  !STATEMACHINE M1:
+      variables:
+          editableConfig                  : { type: M1Config                              , comment: "Editable configuration of the M1 subsystem" }
+      references:
+          operatorStatus                  : { type: mtcs_common.OperatorStatus            , comment: "Shared operator status"}
+          tubeAngleMeasurement            : { type: mtcs_telemetry.TelemetryAccelerometer , comment: "Accelerometer box angle measurement"}
+      variables_read_only:
+          config                          : { type: M1Config                              , comment: "Active configuration of the M1 subsystem" }
+          pneumaticSupplyPressure         : { type: mtcs_common.PressureMeasurement       , comment: "Pressure measurement of the pneumatic supply" }
+      parts:
+          inclinometer:
+              comment                     : "Inclinometer"
+              arguments:
+                  config                  : {}
+              attributes:
+                  statuses:
+                      attributes:
+                          healthStatus    : { type: mtcs_common.HealthStatus }
+          radialSupport:
+              comment                     : "Radial support"
+              arguments:
+                  config                  : {}
+                  inclinometer            : {}
+                  operatorStatus          : {}
+                  operatingStatus         : {}
+              attributes:
+                  statuses:
+                      attributes:
+                          healthStatus    : { type: mtcs_common.HealthStatus }
+                          busyStatus      : { type: mtcs_common.BusyStatus }
+          axialSupport:
+              comment                     : "Axial support"
+              arguments:
+                  config                  : {}
+                  inclinometer            : {}
+                  operatorStatus          : {}
+                  operatingStatus         : {}
+                  tubeAngle               : {}
+              attributes:
+                  statuses:
+                      attributes:
+                          healthStatus    : { type: mtcs_common.HealthStatus }
+                          busyStatus      : { type: mtcs_common.BusyStatus }
+          io:
+              comment                     : "I/O modules"
+              attributes:
+                  statuses:
+                      attributes:
+                          healthStatus    : { type: mtcs_common.HealthStatus }
+          configManager:
+              comment                     : "The config manager (to load/save/activate configuration data)"
+              type                        : mtcs_common.ConfigManager
+      statuses:
+          initializationStatus            : { type: mtcs_common.InitializationStatus }
+          healthStatus                    : { type: mtcs_common.HealthStatus }
+          busyStatus                      : { type: mtcs_common.BusyStatus }
+          operatingStatus                 : { type: mtcs_common.OperatingStatus }
+      processes:
+          initialize                      : { type: mtcs_common.Process                       , comment: "Start initializing" }
+          lock                            : { type: mtcs_common.Process                       , comment: "Lock the system" }
+          unlock                          : { type: mtcs_common.Process                       , comment: "Unlock the system" }
+          changeOperatingState            : { type: mtcs_common.ChangeOperatingStateProcess   , comment: "Change the operating state (e.g. AUTO, MANUAL, ...)" }
+      calls:
+          # processes
+          initialize:
+              isEnabled                   :  !OR [ statuses.initializationStatus.shutdown,
+                                                   statuses.initializationStatus.initializingFailed,
+                                                   statuses.initializationStatus.initialized ]
+          lock:
+              isEnabled                   :  !AND [ operatorStatus.tech, statuses.initializationStatus.initialized ]
+          unlock:
+              isEnabled                   :  !AND [ operatorStatus.tech, statuses.initializationStatus.locked ]
+          changeOperatingState:
+              isEnabled                   :  !AND [ statuses.busyStatus.idle, statuses.initializationStatus.initialized, operatorStatus.tech ]
+          # statuses
+          healthStatus:
+              isGood                      : !MTCS_SUMMARIZE_GOOD [ parts.radialSupport,
+                                                                   parts.axialSupport,
+                                                                   parts.io,
+                                                                   parts.configManager ]
+              hasWarning                  : !MTCS_SUMMARIZE_WARN [ parts.radialSupport,
+                                                                   parts.axialSupport,
+                                                                   parts.io,
+                                                                   parts.configManager ]
+          busyStatus:
+              isBusy                      :  !OR [ statuses.initializationStatus.initializing,
+                                                  parts.radialSupport.statuses.busyStatus.busy,
+                                                  parts.axialSupport.statuses.busyStatus.busy,
+                                                  parts.configManager.statuses.busyStatus.busy ]
+          operatingStatus:
+              superState                  : statuses.initializationStatus.initialized
+          # parts
+          inclinometer:
+              config                      : config.inclinometerVoltage
+          configManager:
+              isEnabled                   : operatorStatus.tech
+          radialSupport:
+              config                      : config.radialSupport
+              inclinometer                : parts.inclinometer
+              operatorStatus              : operatorStatus
+              operatingStatus             : statuses.operatingStatus
+          axialSupport:
+              config                      : config.axialSupport
+              inclinometer                : parts.inclinometer
+              operatorStatus              : operatorStatus
+              operatingStatus             : statuses.operatingStatus
+              tubeAngle                   : tubeAngleMeasurement.averageYAngle
+          # variables
+          pneumaticSupplyPressure:
+              config                      : config.pneumaticSupplyPressure
+              conversionFactor            : !DIV [
+                                              config.pneumaticSupplySensorFullScale,
+                                              !DOUBLE "2**15"
+                                            ]
+  
+  
+  ########################################################################################################################
+  # M1Inclinometer
+  ########################################################################################################################
+  
+  !STATEMACHINE M1Inclinometer:
+      typeOf                  : [ M1Parts.inclinometer ]
+      references:
+          config              : { type: mtcs_common.MeasurementConfig   , comment: "Reference to the config" }
+      variables:
+          voltageMeasurement  : { type: mtcs_common.VoltageMeasurement  , comment: 'Measured voltage' }
+      variables_read_only:
+          actualElevation     : { type: mtcs_common.AngularPosition     , comment: 'Elevation actual value' }
+          averageElevation    : { type: mtcs_common.AngularPosition     , comment: 'Elevation average value' }
+      statuses:
+          healthStatus        : { type: mtcs_common.HealthStatus        , comment: 'Is the inclinometer elevation trustworthy?'}
+      calls:
+          healthStatus:
+              isGood          : voltageMeasurement.statuses.healthStatus.isGood
+              hasWarning      : voltageMeasurement.statuses.healthStatus.hasWarning
+          voltageMeasurement:
+              config          : config
+              conversionFactor: !DIV [
+                                      !DOUBLE 10.0,
+                                      !DOUBLE "2**15"
+                                ]
+  
+  
+  ########################################################################################################################
+  # M1RadialSupportConfig
+  ########################################################################################################################
+  
+  !CONFIG M1RadialSupportConfig:
+      typeOf: [ M1Config.radialSupport ]
+      items:
+          regulatorPressure:
+              type: mtcs_common.MeasurementConfig
+              comment: "Regulator pressure config, in Bar"
+          mirrorPressure:
+              type: mtcs_common.MeasurementConfig
+              comment: "Regulator pressure config, in Bar"
+          regulatorPressureSensorFullScale:
+              type: t_double
+              comment: "Sensor full scale range, in Bar"
+          mirrorPressureSensorFullScale:
+              type: t_double
+              comment: "Sensor full scale range, in Bar"
+          correctionCoefficient:
+              type: t_double
+              comment: "Correction coefficient for radial pressure"
+          controllerLimitMax:
+              type: t_double
+              comment: "Maximum output of the controller, in Bar"
+          controllerLimitMin:
+              type: t_double
+              comment: "Minimum output of the controller, in Bar"
+          pressureRegulatorRange:
+              type: t_double
+              comment: "Pressure regulator range, in Bar"
+  
+  
+  ########################################################################################################################
+  # M1RadialSupport
+  ########################################################################################################################
+  
+  !STATEMACHINE M1RadialSupport:
+      typeOf                          : [ M1Parts.radialSupport ]
+      references:
+          config                      : { type: M1RadialSupportConfig }
+          inclinometer                : { type: M1Inclinometer, expand: false }
+          operatorStatus              : { type: mtcs_common.OperatorStatus }
+          operatingStatus             : { type: mtcs_common.OperatingStatus }
+      variables_hidden:
+          pressureSetpointOutput      : { type: t_int16                                   , comment: "Output value", address: "%Q*" }
+      variables_read_only:
+          # measured values
+          regulatorPressure           : { type: mtcs_common.PressureMeasurement             , comment: "Pressure measurement at the regulator" }
+          mirrorPressure              : { type: mtcs_common.PressureMeasurement             , comment: "Pressure measurement at the mirror" }
+          # setpoints
+          actualPressureSetpoint      : { type: mtcs_common.Pressure                        , comment: "Pressure setpoint actually used" }
+          autoPressureSetpoint        : { type: mtcs_common.Pressure                        , comment: "Pressure setpoint in AUTO mode" }
+          manualPressureSetpoint      : { type: mtcs_common.Pressure                        , comment: "Pressure setpoint in MANUAL mode" }
+      statuses:
+          pressureSetpointStatus      : { type: mtcs_common.OperatingStatus                 , comment: "Operating status of the radial pressure setpoint" }
+          healthStatus                : { type: mtcs_common.HealthStatus }
+          busyStatus                  : { type: mtcs_common.BusyStatus }
+      parts:
+          vacuumRelay                 : { type: mtcs_common.SimpleRelay                     , comment: "Switch Radial vacuum ON to retract the radial pads during mirror manipulations." }
+      processes:
+          changePressureSetpoint      : { type: mtcs_common.ChangeSetpointProcess           , comment: "Change a pressure setpoint, in Bar" }
+          changePressureSetpointState : { type: mtcs_common.ChangeOperatingStateProcess     , comment: "Change the operating state of the pressure setpoint only" }
+      calls:
+          # parts
+          vacuumRelay:
+              isEnabled               :  !AND [ statuses.busyStatus.idle,
+                                                operatingStatus.manual,
+                                                operatorStatus.tech ]
+          # processes
+          changePressureSetpoint:
+              isEnabled               : parts.vacuumRelay.isEnabled # same as for vacuumRelay
+          changePressureSetpointState:
+              isEnabled               : parts.vacuumRelay.isEnabled # same as for vacuumRelay
+          # statuses
+          healthStatus:
+              isGood                  :  !AND [ 
+                                              !MTCS_SUMMARIZE_GOOD [ processes.changePressureSetpointState,
+                                                                     processes.changePressureSetpoint,
+                                                                     regulatorPressure ],
+                                               !OR [ mirrorPressure.statuses.healthStatus.isGood, mirrorPressure.statuses.enabledStatus.disabled ] ]
+              hasWarning              :  !OR [ 
+                                              !MTCS_SUMMARIZE_WARN [ processes.changePressureSetpointState,
+                                                                     processes.changePressureSetpoint,
+                                                                     regulatorPressure,
+                                                                     mirrorPressure ],
+                                              parts.vacuumRelay.digitalOutput ]
+          busyStatus:
+              isBusy                  :  !OR [ processes.changePressureSetpointState.statuses.busyStatus.busy,
+                                               processes.changePressureSetpoint.statuses.busyStatus.busy,
+                                               parts.vacuumRelay.statuses.busyStatus.busy ]
+          # variables
+          regulatorPressure:
+              config                  : config.regulatorPressure
+              conversionFactor        : !DIV [
+                                              config.regulatorPressureSensorFullScale,
+                                              !DOUBLE "2**15"
+                                        ]
+          mirrorPressure:
+              config                  : config.mirrorPressure
+              conversionFactor        : !DIV [
+                                              config.mirrorPressureSensorFullScale,
+                                              !DOUBLE "2**15"
+                                        ]
+  
+  
+  ########################################################################################################################
+  # M1AxialSupportConfig
+  ########################################################################################################################
+  
+  !CONFIG M1AxialSupportConfig:
+      typeOf: [ M1Config.axialSupport ] # M1Parts.radialSupport.config,
+      items:
+          regulatorPressure:
+              type: mtcs_common.MeasurementConfig
+              comment: "Regulator pressure config, in Bar"
+          mirrorPressure:
+              type: mtcs_common.MeasurementConfig
+              comment: "Regulator pressure config, in Bar"
+          mirrorSouthForce:
+              type: mtcs_common.MeasurementConfig
+              comment: "Mirror south force config, in decaNewton"
+          mirrorNorthEastForce:
+              type: mtcs_common.MeasurementConfig
+              comment: "Mirror north east force config, in decaNewton"
+          mirrorNorthWestForce:
+              type: mtcs_common.MeasurementConfig
+              comment: "Mirror north west force config, in decaNewton"
+          mirrorAverageForce:
+              type: mtcs_common.MeasurementConfig
+              comment: "Mirror moving average force config, in decaNewton"
+          regulatorPressureSensorFullScale:
+              type: t_double
+              comment: "Sensor full scale range, in Bar"
+          mirrorPressureSensorFullScale:
+              type: t_double
+              comment: "Sensor full scale range, in Bar"
+          correctionCoefficient:
+              type: t_double
+              comment: "Correction coefficient for axial pressure"
+          controllerKp:
+              type: t_double
+              comment: "Proportional factor (gain) of the PI controller"
+          controllerTn:
+              type: t_double
+              comment: "Integral time factor of the PI controller. in seconds"
+          controllerLimitMax:
+              type: t_double
+              comment: "Maximum output of the controller, in Bar"
+          controllerLimitMin:
+              type: t_double
+              comment: "Minimum output of the controller, in Bar"
+          pressureRegulatorRange:
+              type: t_double
+              comment: "Pressure regulator range, in Bar"
+  
+  
+  ########################################################################################################################
+  # M1AxialSupport
+  ########################################################################################################################
+  
+  !STATEMACHINE M1AxialSupport:
+      typeOf                          : [ M1Parts.axialSupport ]
+      references:
+          config                      : { type: M1AxialSupportConfig }
+          inclinometer                : { type: M1Inclinometer, expand: false }
+          operatorStatus              : { type: mtcs_common.OperatorStatus }
+          operatingStatus             : { type: mtcs_common.OperatingStatus }
+          tubeAngle                   : { type: mtcs_common.AngularPosition }
+      variables_hidden:
+          pressureSetpointOutput      : { type: t_int16                                   , comment: "Output value", address: "%Q*" }
+      variables_read_only:
+          # measured values
+          regulatorPressure           : { type: mtcs_common.PressureMeasurement             , comment: "Pressure measurement at the regulator" }
+          mirrorPressure              : { type: mtcs_common.PressureMeasurement             , comment: "Pressure measurement at the mirror" }
+          mirrorSouthForce            : { type: mtcs_common.ForceMeasurement                , comment: "Force measurement South (SO)"}
+          mirrorNorthEastForce        : { type: mtcs_common.ForceMeasurement                , comment: "Force measurement North East (NE)"}
+          mirrorNorthWestForce        : { type: mtcs_common.ForceMeasurement                , comment: "Force measurement North West (NW)"}
+          mirrorAverageForce          : { type: mtcs_common.ForceMeasurement                , comment: "Average of SO, NE and NW"}
+          # setpoints
+          actualPressureSetpoint      : { type: mtcs_common.Pressure                        , comment: "Pressure setpoint actually used" }
+          autoPressureSetpoint        : { type: mtcs_common.Pressure                        , comment: "Pressure setpoint in AUTO mode" }
+          manualPressureSetpoint      : { type: mtcs_common.Pressure                        , comment: "Pressure setpoint in MANUAL mode" }
+          controllerSetpoint          : { type: mtcs_common.Force                           , comment: "Force setpoint of the controller" }
+      statuses:
+          pressureSetpointStatus      : { type: mtcs_common.OperatingStatus                 , comment: "Operating status of the radial pressure setpoint" }
+          healthStatus                : { type: mtcs_common.HealthStatus }
+          busyStatus                  : { type: mtcs_common.BusyStatus }
+      processes:
+          changePressureSetpoint      : { type: mtcs_common.ChangeSetpointProcess           , comment: "Change a pressure setpoint, in Bar" }
+          changePressureSetpointState : { type: mtcs_common.ChangeOperatingStateProcess     , comment: "Change the operating state of the pressure setpoint only" }
+      calls:
+          # processes
+          changePressureSetpoint:
+              isEnabled               :  !AND [ statuses.busyStatus.idle,
+                                               operatingStatus.manual,
+                                               operatorStatus.tech ]
+          changePressureSetpointState:
+              isEnabled               :  !AND [ statuses.busyStatus.idle,
+                                               operatingStatus.manual,
+                                               operatorStatus.tech ]
+          # statuses
+          healthStatus:
+              isGood                  :  !AND [ 
+                                               !MTCS_SUMMARIZE_GOOD [
+                                                                processes.changePressureSetpointState,
+                                                                processes.changePressureSetpoint,
+                                                                regulatorPressure,
+                                                                mirrorAverageForce ],
+                                               !OR [ mirrorPressure.statuses.healthStatus.isGood, 
+                                                     mirrorPressure.statuses.enabledStatus.disabled ] ]
+              hasWarning              : !MTCS_SUMMARIZE_WARN [ processes.changePressureSetpointState,
+                                                               processes.changePressureSetpoint,
+                                                               regulatorPressure,
+                                                               mirrorPressure,
+                                                               mirrorAverageForce ]
+          busyStatus:
+              isBusy                  :  !OR [ processes.changePressureSetpointState.statuses.busyStatus.busy,
+                                               processes.changePressureSetpoint.statuses.busyStatus.busy ]
+          # variables
+          regulatorPressure:
+              config                  : config.regulatorPressure
+              conversionFactor        : !DIV [
+                                              config.regulatorPressureSensorFullScale,
+                                              !DOUBLE "2**15"
+                                        ]
+          mirrorPressure:
+              config                  : config.mirrorPressure
+              conversionFactor        : !DIV [
+                                              config.mirrorPressureSensorFullScale,
+                                              !DOUBLE "2**15"
+                                        ]
+          mirrorSouthForce:
+              config                  : config.mirrorSouthForce
+              conversionFactor        : !DIV [
+                                              !MUL [
+                                                  !DOUBLE -200.0,
+                                                  !DOUBLE 20.0 ],
+                                              !DOUBLE "2**31"
+                                        ]
+  
+          mirrorNorthEastForce:
+              config                  : config.mirrorNorthEastForce
+              conversionFactor        : !DIV [
+                                              !MUL [
+                                                  !DOUBLE -200.0,
+                                                  !DOUBLE 20.0 ],
+                                              !DOUBLE "2**31"
+                                        ]
+          mirrorNorthWestForce:
+              config                  : config.mirrorNorthWestForce
+              conversionFactor        : !DIV [
+                                              !MUL [
+                                                  !DOUBLE -200.0,
+                                                  !DOUBLE 20.0 ],
+                                              !DOUBLE "2**31"
+                                        ]
+          mirrorAverageForce:
+              config                  : config.mirrorAverageForce
+              conversionFactor        : !DIV [
+                                              !MUL [
+                                                  !DOUBLE -200.0,
+                                                  !DOUBLE 20.0 ],
+                                              !DOUBLE "2**31"
+                                        ]
+  
+  
+  ########################################################################################################################
+  # M1M2IO
+  ########################################################################################################################
+  
+  !STATEMACHINE M1M2IO:
+      typeOf              : [ M1Parts.io ]
+      statuses:
+          healthStatus    : { type: mtcs_common.HealthStatus   , comment: "Is the I/O in a healthy state?"  }
+      parts:
+          COU             : { type: mtcs_common.EtherCatDevice }
+          AI1             : { type: mtcs_common.EtherCatDevice }
+          AI2             : { type: mtcs_common.EtherCatDevice }
+          AI3             : { type: mtcs_common.EtherCatDevice }
+          AO1             : { type: mtcs_common.EtherCatDevice }
+          DO1             : { type: mtcs_common.EtherCatDevice }
+          RES1            : { type: mtcs_common.EtherCatDevice }
+          RES2            : { type: mtcs_common.EtherCatDevice }
+          RES3            : { type: mtcs_common.EtherCatDevice }
+          PWR1            : { type: mtcs_common.EtherCatDevice }
+          SSI1            : { type: mtcs_common.EtherCatDevice }
+          AI4             : { type: mtcs_common.EtherCatDevice }
+          INC1            : { type: mtcs_common.EtherCatDevice }
+          P5V1            : { type: mtcs_common.EtherCatDevice }
+          DO2             : { type: mtcs_common.EtherCatDevice }
+          DO3             : { type: mtcs_common.EtherCatDevice }
+          RE1             : { type: mtcs_common.EtherCatDevice }
+      calls:
+          COU:
+              id          : !STRING "M1M2:COU"
+              typeId      : !STRING "EK1101"
+          AI1:
+              id          : !STRING "M1M2:AI1"
+              typeId      : !STRING "EL3102"
+          AI2:
+              id          : !STRING "M1M2:AI2"
+              typeId      : !STRING "EL3204"
+          AI3:
+              id          : !STRING "M1M2:AI3"
+              typeId      : !STRING "EL3204"
+          AO1:
+              id          : !STRING "M1M2:AO1"
+              typeId      : !STRING "EL4022"
+          DO1:
+              id          : !STRING "M1M2:DO1"
+              typeId      : !STRING "EL2024"
+          RES1:
+              id          : !STRING "M1M2:RES1"
+              typeId      : !STRING "EL3351"
+          RES2:
+              id          : !STRING "M1M2:RES2"
+              typeId      : !STRING "EL3351"
+          RES3:
+              id          : !STRING "M1M2:RES3"
+              typeId      : !STRING "EL3351"
+          PWR1:
+              id          : !STRING "M1M2:PWR1"
+              typeId      : !STRING "EL9410"
+          SSI1:
+              id          : !STRING "M1M2:SSI1"
+              typeId      : !STRING "EL5001"
+          AI4:
+              id          : !STRING "M1M2:AI4"
+              typeId      : !STRING "EL3164"
+          INC1:
+              id          : !STRING "M1M2:INC1"
+              typeId      : !STRING "ES5101"
+          P5V1:
+              id          : !STRING "M1M2:P5V1"
+              typeId      : !STRING "EL9505"
+          DO2:
+              id          : !STRING "M1M2:DO2"
+              typeId      : !STRING "EL2124"
+          DO3:
+              id          : !STRING "M1M2:DO3"
+              typeId      : !STRING "EL2124"
+          RE1:
+              id          : !STRING "M1M2:RE1"
+              typeId      : !STRING "EL2622"
+          healthStatus:
+              isGood      : !MTCS_SUMMARIZE_GOOD [  parts.COU,
+                                                    parts.AI1,
+                                                    parts.AI2,
+                                                    parts.AI3,
+                                                    parts.AO1,
+                                                    parts.DO1,
+                                                    parts.RES1,
+                                                    parts.RES2,
+                                                    parts.RES3,
+                                                    parts.PWR1,
+                                                    parts.SSI1,
+                                                    parts.AI4,
+                                                    parts.INC1,
+                                                    parts.P5V1,
+                                                    parts.DO2,
+                                                    parts.DO3,
+                                                    parts.RE1 ]
+  
