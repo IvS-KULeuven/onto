@@ -11,7 +11,7 @@ def get_global(name):
     return OBJECTS[name]
 
 def resolve(subject, context):
-    print(f"Resolving {subject}, context {context}")
+    #print(f"Resolving {subject}, context {context}")
     if isinstance(subject, str):
         obj = None
         parts = subject.split('.')
