@@ -134,7 +134,7 @@ if __name__ == "__main__":
     parser.add_argument("-i",
                         dest="INPUTDIR",
                         action="store",
-                        default='./models/in',
+                        default='./models/in', #mercator/test
                         help="The directory to read the yaml input files from. By default it " \
                              "will just use the ./models/in directory in this repo.")
     
@@ -185,5 +185,5 @@ if __name__ == "__main__":
                 template_fps.append(template_fp)
 
         render(input_fp, template_fps)
-        LOG("%4.0f Model %s was rendered" % ((time.time() - t_start), input_fp))
+        LOG("%4.1f Model %s was rendered" % ((time.time() - t_start), input_fp))
                 

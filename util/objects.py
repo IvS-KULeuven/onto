@@ -43,6 +43,7 @@ class Object:
         self.name = name
         self.parent = parent
         self.children = {}
+        self.resolved = False
         global OBJECTS
         if name is not None:
             if parent is None:
@@ -56,9 +57,12 @@ class Object:
         self.children[name] = child
 
     def resolve_children(self, context):
+        if self.resolved:
+            return
         for child_name, child in self.children.items():
             print(f"Resolving child {child_name} : {child}")
             self.children[child_name] = resolve(child, context)
+        self.resolved = True
 
     def get_child(self, name, recursive=True):
         print(f"{self.name}.get_child({name})  (children: {str(self.children.keys())})")
