@@ -8,6 +8,7 @@ except ImportError:
 
 from util.expressions import *
 from util.objects import add_global, get_global, Object, resolve
+from util import logger
 
 class Primitive(Object):
     def __init__(self, name, plc_symbol=None) -> None:
@@ -402,6 +403,9 @@ class Struct(Object):
 
     def __init__(self, name, parent, args={}) -> None:
         super().__init__(name, parent)
+
+        logger.info(f"Creating Struct {name}")
+
         self.items = None
         self.plc_symbol = None
         for arg in args:
@@ -491,7 +495,10 @@ class Method(Object):
 class FunctionBlock(Object):
     
     def __init__(self, name, parent, args={}) -> None:
+        logger.info(f"Creating FunctionBlock {name}")
+
         super().__init__(name, parent)
+        
         check_args("FunctionBlock", args, 
                    ["typeOf", "extends", "comment", "in", "out", "inout", "render"])
         
@@ -556,6 +563,8 @@ class FunctionBlock(Object):
 class Status(FunctionBlock):
     
     def __init__(self, name, parent, args={}) -> None:
+        logger.info(f"Creating Status {name}")
+
         super().__init__(name, parent)
         check_args("Status", args, ["typeOf", "variables", "states", "render"])
 
@@ -610,6 +619,7 @@ class Status(FunctionBlock):
 class Config(Struct):
     
     def __init__(self, name, parent, args={}) -> None:
+        logger.info(f"Creating Config {name}")
         super().__init__(name, parent, args)
 
 class Pointer(Variable):
@@ -632,6 +642,7 @@ class Pointer(Variable):
 class Statemachine(FunctionBlock):
 
     def __init__(self, name, parent, args={}) -> None:
+        logger.info(f"Creating StateMachine {name}")
         if "extends" in args:
             super().__init__(f"SM_{name}", parent, { "extends" : args["extends"] } )
         else:
@@ -991,6 +1002,7 @@ add_global("LOGGER", GlobalVariable(name="LOGGER",
 class Process(FunctionBlock):
 
     def __init__(self, name, parent, args={}) -> None:
+        logger.info(f"Creating Process {name}")
         if "extends" in args:
             super().__init__(name, parent, { "extends" : args["extends"] } )
         else:

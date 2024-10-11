@@ -10,6 +10,8 @@ try:
 except ImportError:
     from yaml import Loader, Dumper
 from util import expressions, mathematics, factories
+from util.logger import info, debug, error, setLevel
+import logging
 
 # declare VERBOSE as an evil global
 VERBOSE = False
@@ -81,7 +83,7 @@ def LOG(msg):
         print(msg)
 
 def render(input_file: Path, template_fps: list[Path]) -> str:
-    LOG(f"render {input_file}")
+    info(f"Processing {input_file}")
     model = {}
     with open(input_file, 'r') as file:
         
@@ -89,13 +91,13 @@ def render(input_file: Path, template_fps: list[Path]) -> str:
             model = yaml.load(file, Loader=get_loader())
             global IMPORTED
             IMPORTED.append(str(input_file))
-            print(f"======= {str(IMPORTED)}")
+            debug(f"Imported: {str(IMPORTED)}")
         except ImportNeeded as e:
             render(Path(e.name), template_fps)
             render(input_file, template_fps)
             
         if len(model) > 0: # TODO: find out why sometimes the yaml load returns empty models
-            print(f"Model: {model} from file: {file}")
+            debug(f"Model: {model} from file: {file}")
 
             for template_fp in template_fps:
                 template = Template(filename=str(template_fp), 
@@ -109,7 +111,7 @@ def render(input_file: Path, template_fps: list[Path]) -> str:
                                 .replace('{filepath}', filepath_key))
 
                 output_fp.parent.mkdir(parents=True, exist_ok=True)
-                LOG("  Writing output file '%s'" %output_fp)
+                info("Writing output file '%s'" %output_fp)
                 output_fp.write_text(output, newline='\n')
 
 
@@ -156,6 +158,8 @@ if __name__ == "__main__":
     
     VERBOSE = args.verbose
 
+    setLevel(logging.INFO)
+
     # normalize the arguments by removing a trailing slash if needed
     if args.INPUTDIR.endswith(os.path.sep):
         args.INPUTDIR = args.INPUTDIR[:-1]
@@ -170,14 +174,14 @@ if __name__ == "__main__":
     
     inputdir_fp = Path(args.INPUTDIR)
     if not inputdir_fp.exists():
-        LOG(f"FATAL: Input directory {args.INPUTDIR} does not exist!")
+        error(f"FATAL: Input directory {args.INPUTDIR} does not exist!")
         sys.exit(1)
     
     t_start = time.time()
     # process each input file sequentially:
     for input_fp in inputdir_fp.rglob('*.yaml'):
         
-        LOG("Processing input file '%s'" %input_fp)
+        info("Processing input file '%s'" %input_fp)
         
         template_fps = []
         for template_fp in Path('./templates').rglob('*.mako'):
@@ -185,5 +189,5 @@ if __name__ == "__main__":
                 template_fps.append(template_fp)
 
         render(input_fp, template_fps)
-        LOG("%4.1f Model %s was rendered" % ((time.time() - t_start), input_fp))
+        info("Model %s was rendered after %4.1fs" % (input_fp, (time.time() - t_start)))
                 

@@ -1,3 +1,4 @@
+from util import logger
 
 # global object store
 OBJECTS = {}
@@ -60,14 +61,14 @@ class Object:
         if self.resolved:
             return
         for child_name, child in self.children.items():
-            print(f"Resolving child {child_name} : {child}")
+            logger.debug(f"Resolving child {child_name} : {child}")
             self.children[child_name] = resolve(child, context)
         self.resolved = True
 
     def get_child(self, name, recursive=True):
-        print(f"{self.name}.get_child({name})  (children: {str(self.children.keys())})")
+        logger.debug(f"{self.name}.get_child({name})")
         if name in self.children:
-            print(f" .. found {self.children[name]}")
+            logger.debug(f" .. found {self.children[name]}")
             return self.children[name]
         
         if recursive and self.parent is not None:

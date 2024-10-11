@@ -4,7 +4,7 @@
     from util.expressions import IfThen, BinaryOperation, UnaryOperation, Primitive, Bool, String
     from util.factories import Variable, Method, Call, EnumItem, FunctionBlock, GlobalVariable
     from xml.sax.saxutils import escape as sax_escape
-
+    from util.logger import debug, info
 
     def escape(s):
         return sax_escape(s, entities={
@@ -15,7 +15,7 @@
         })
 
     def getPrefixAndPath(dest, scope = []):
-        #print(f" --- getPrefixAndPath({dest.name})")
+        #debug(f" --- getPrefixAndPath({dest.name})")
         e = None
         for head in scope:
             if isinstance(dest, EnumItem):
@@ -125,6 +125,7 @@
 %>\
 
 <%def name="xml_project(lib, timeNow)">\
+<% info(f"Rendering project {lib.name}") %>\
 <?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
   <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="${timeNow}" />
@@ -227,6 +228,7 @@ ${indent}</Object>\
 </%def>
 
 <%def name="xml_enum(enum, indent='')">\
+<% info(f"Rendering enum {enum.name}") %>\
 <dataType name="${enum.name}">
 ${indent}  <baseType>
 ${indent}    <enum>
@@ -242,6 +244,7 @@ ${indent}</dataType>\
 
 
 <%def name="xml_pou_functionBlock(fb, indent='')">\
+<% info(f"Rendering FunctionBlock {fb.name}") %>\
 <pou name="${fb.name}" pouType="functionBlock">
 ${indent}  <interface>
 ${indent}    ${xml_variables("input" , fb.var_in.values()    , indent+'    ')}
@@ -290,7 +293,7 @@ ${xml_method(method, owner, indent)}\
 </%def>
 
 <%def name="xml_method(node, owner, indent='')">\
-<% print(f"+++ xml_method({node.name})") %>\
+<% debug(f"+++ xml_method({node.name})") %>\
 <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
 ${indent}  <Method name="${node.name}">
 ${indent}    <interface>
@@ -322,7 +325,7 @@ ${indent}</data>\
 </%def>
 
 <%def name="xml_return_type(node)">\
-<% print(f"+++ xml_return_type {node}") %>\
+<% debug(f"+++ xml_return_type {node}") %>\
 <returnType>${xml_type_element(node)}</returnType>\
 </%def>
 
@@ -363,7 +366,7 @@ ${indent}</${kind}Vars>\
 
 <%def name="layoutExpression(e, scope, indent='', more='    ')">\
 <%
-    print(f"layoutExpression({e} ({type(e)}), {scope})")
+    debug(f"layoutExpression({e} ({type(e)}), {scope})")
     if e is None or scope is None:
         raise Exception("layoutExpression with None argument!")
 %>\
@@ -393,13 +396,13 @@ ${render_implementation(e, scope, indent=indent)}\
 </%def>
 
 <%def name="layoutMethod(m, scope,indent='',more='    ')">\
-<% print("+++ layoutMethod") %>\
+<% debug("+++ layoutMethod") %>\
 ${render_path(m, scope)}\
 </%def>
 
 
 <%def name="layoutIfThen(node, scope, indent='', more='    ')">\
-<% print("+++ layoutIfThen START") %>\
+<% debug("+++ layoutIfThen START") %>\
 IF ${layoutExpression(node.if_, scope)} THEN
 ${indent+more}${layoutExpressions(node.then_, scope, indent=indent+more)}\
     %if node.else_ is not None:
@@ -407,12 +410,12 @@ ${indent}ELSE
 ${indent+more}${layoutExpressions(node.else_, scope, indent=indent+more)}\
     %endif
 ${indent}END_IF\
-<% print("+++ layoutIfThen END") %>\
+<% debug("+++ layoutIfThen END") %>\
 </%def>
 
 <%def name="render_value(node, scope, indent='')">\
 <%
-    print(f" +++ render_value({node}, {scope})")
+    debug(f" +++ render_value({node}, {scope})")
 %>\
 % if isinstance(node, Bool):
 ${str(node.value).upper()}\
@@ -425,13 +428,13 @@ ${node.value}\
 
 
 <%def name="layoutVariable(v,scope,indent='',more='    ')">\
-<% print(f" +++ layoutVariable({v}, {scope})") %>\
+<% debug(f" +++ layoutVariable({v}, {scope})") %>\
 ${render_path(v, scope)}\
 </%def>
 
 <%def name="layoutBinaryOperation(node, scope, indent='', more='    ')">\
 <%
-    print("+++ layoutBinaryOperation")
+    debug("+++ layoutBinaryOperation")
     useBracketsForLeft  = not (isinstance(node.left, Variable) or isinstance(node.left, Primitive))
     useBracketsForRight = not (isinstance(node.right, Variable) or isinstance(node.right, Primitive))
     if node.operator.plc_symbol is None:
@@ -459,7 +462,7 @@ ${layoutExpression(node.right, scope)}\
 <%def name="render_path(dest, scope)">\
 <% 
     prefix, path = getPrefixAndPath(dest, scope) 
-    print(f" +++ prefix: {prefix}  +++  {str(path)}")
+    debug(f" +++ prefix: {prefix}  +++  {str(path)}")
 %>\
     %if prefix is not None:
 ${prefix}\
@@ -477,13 +480,13 @@ ${item.name}\
 
 
 <%def name="render_assignment(node, scope)">\
-<% print(f"+++ render_assignment(node={node.name}, scope={[item.name for item in scope]}) START") %>\
+<% debug(f"+++ render_assignment(node={node.name}, scope={[item.name for item in scope]}) START") %>\
 ${node.left.name} := ${layoutExpression(node.right, scope=scope)}\
 </%def>
 
 <%def name="layoutCall(node, scope, indent='', more='    ')">\
 <%
-    print(f"+++ layoutCall(node={node.name}, scope={[item.name for item in scope]}) START")
+    debug(f"+++ layoutCall(node={node.name}, scope={[item.name for item in scope]}) START")
     #if node.calls.parent is not None:
     #    scope = [node.calls.parent] + scope
 %>\
@@ -508,7 +511,7 @@ ${indent+more}${render_assignment(assignment, scope)}\
             % endif
         % endfor
     % endif
-<% print(f"layoutCall END") %>\
+<% debug(f"layoutCall END") %>\
 </%def>
 
 
@@ -516,7 +519,7 @@ ${indent+more}${render_assignment(assignment, scope)}\
 
 <%def name="layoutUnaryOperation(node, scope, indent='', more='    ')">\
 <%
-    print(f"+++ layoutUnaryOperation({node})")
+    debug(f"+++ layoutUnaryOperation({node})")
     if node.operator.plc_symbol is None:
         raise Exception("Unknown symbol in layoutUnaryOperation(%s) for operator %s" %(node.name), operator.name)
 %>\
@@ -562,13 +565,13 @@ ${indent}</variable>\
 
 
 <%def name="xml_type(node)">\
-<% print(f"+++ xml_type({node})") %>\
+<% debug(f"+++ xml_type({node})") %>\
 <type>${xml_type_contents(node)}</type>\
 </%def>
 
 
 <%def name="xml_type_element(node)">\
-<% print(f"xml_type_element({node})") %>\
+<% debug(f"xml_type_element({node})") %>\
   %if node.plc_symbol is not None:
 ##for some reason, STRING must be rendered lowercase, otherwise you cannot import the file in TwinCAT !!!
     % if node.plc_symbol == 'STRING':
@@ -582,7 +585,7 @@ ${indent}</variable>\
 </%def>
 
 <%def name="xml_type_contents(node)">\
-<% print(f"+++ xml_type_contents {node}") %>\
+<% debug(f"+++ xml_type_contents {node}") %>\
     %if node.type is not None:
 ${xml_type_element(node.type)}\
     %elif node.points_to_type is not None:
@@ -592,6 +595,7 @@ ${xml_type_element(node.type)}\
 
 
 <%def name="xml_struct(node,indent='')">\
+<% info(f"Rendering Struct {node.name}") %>\
 <dataType name="${node.name}">
 ${indent}  <baseType>
 ${indent}    <struct>
