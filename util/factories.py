@@ -26,6 +26,7 @@ class PRIMITIVE_TYPES:
     Just a class to hold the various primitive types.
     """
     t_bool       = Primitive("t_bool"       , plc_symbol="BOOL")
+    t_bit        = Primitive("t_bit"        , plc_symbol="BIT")
     t_bytestring = Primitive("t_bytestring" , plc_symbol=None)
     t_double     = Primitive("t_double"     , plc_symbol="LREAL")
     t_float      = Primitive("t_float"      , plc_symbol="REAL")
@@ -45,6 +46,7 @@ class PRIMITIVE_TYPES:
 
 # add the above primitive types to the global namespace
 add_global("t_bool",       PRIMITIVE_TYPES.t_bool)
+add_global("t_bit",        PRIMITIVE_TYPES.t_bit)
 add_global("t_bytestring", PRIMITIVE_TYPES.t_bytestring)
 add_global("t_double",     PRIMITIVE_TYPES.t_double)
 add_global("t_float",      PRIMITIVE_TYPES.t_float)
@@ -470,8 +472,9 @@ class Struct(Object):
 
         self.items = None
         self.plc_symbol = None
+        self.qualifiers = None
         for arg in args:
-            if arg not in ["items", "comment", "typeOf"]:
+            if arg not in ["items", "comment", "typeOf", "qualifiers"]:
                 raise Exception(f"Struct {name} contains illegal argument '{arg}'")
         
         if 'comment' in args:
@@ -481,6 +484,11 @@ class Struct(Object):
             self.items = {}
             for item_k, item_v in args['items'].items():
                 self.items[item_k] = Variable(item_k, self, item_v)
+
+        if 'qualifiers' in args:
+            self.qualifiers = []
+            for qualifier in args['qualifiers']:
+                self.qualifiers.append(PlcOpenAttribute(qualifier['symbol'], qualifier['value']))
 
         if 'typeOf' in args:
             typeOfList = args['typeOf']
@@ -928,6 +936,22 @@ class Statemachine(FunctionBlock):
 
             self.implementation.append(c)
         
+
+
+        for var in self.vars.values():
+            if var.address is not None:
+                if var.address.startswith("%I"):
+                    name_ro = f"{var.name}_ro"
+                    var_ro = Variable(name_ro, self)
+                    var_ro.type = var.type
+                    var_ro.qualifiers = var.qualifiers
+                    self.var_local[name_ro] = var_ro
+                                
+                    if self.implementation is None:
+                        self.implementation = []
+                        
+                    self.implementation.append(ASSIGN([var_ro, var]))
+
 
         if self.extends is not None:
             if self.implementation is None:

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
-  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2024-10-22T16:57:18.797943" />
-  <contentHeader name="mtcs_m3" modificationDateTime="2024-10-22T16:57:18.797943">
+  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2024-11-16T22:32:18.154264" />
+  <contentHeader name="mtcs_m3" modificationDateTime="2024-11-16T22:32:18.154264">
     <coordinateInfo>
       <fbd>
         <scaling x="1" y="1" />
@@ -3311,6 +3311,34 @@ statuses.healthStatus(
             </variable>
           </inOutVars>
           <localVars>
+            <variable name="positiveLimitSwitchActive_ro">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="negativeLimitSwitchActive_ro">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
           </localVars>
         </interface>
         <body>
@@ -3372,6 +3400,8 @@ processes.goto( isEnabled := operatingStatus.manual AND (initializationStatus.in
 processes.abort( isEnabled := parts.gotoProcedure.statuses.busyStatus.busy OR parts.calibrateProcedure.statuses.busyStatus.busy );
 processes.reset( isEnabled := statuses.healthStatus.bad );
 processes.calibrate( isEnabled := operatingStatus.manual AND initializationStatus.initialized );
+positiveLimitSwitchActive_ro := positiveLimitSwitchActive;
+negativeLimitSwitchActive_ro := negativeLimitSwitchActive;
 </xhtml>
           </ST>
         </body>
@@ -4444,6 +4474,34 @@ statuses.healthStatus(
             </variable>
           </inOutVars>
           <localVars>
+            <variable name="positiveLimitSwitchActive_ro">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="negativeLimitSwitchActive_ro">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
           </localVars>
         </interface>
         <body>
@@ -4484,6 +4542,8 @@ processes.goto( isEnabled := operatingStatus.manual AND (initializationStatus.in
 processes.reset( isEnabled := statuses.healthStatus.bad );
 processes.abort( isEnabled := parts.gotoProcedure.statuses.busyStatus.busy OR parts.homingProcedure.statuses.busyStatus.busy );
 processes.startHoming( isEnabled := operatingStatus.manual AND initializationStatus.initialized );
+positiveLimitSwitchActive_ro := positiveLimitSwitchActive;
+negativeLimitSwitchActive_ro := negativeLimitSwitchActive;
 </xhtml>
           </ST>
         </body>

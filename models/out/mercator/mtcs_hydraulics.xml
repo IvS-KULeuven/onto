@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
-  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2024-10-22T16:57:18.797943" />
-  <contentHeader name="mtcs_hydraulics" modificationDateTime="2024-10-22T16:57:18.797943">
+  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2024-11-16T22:32:18.154264" />
+  <contentHeader name="mtcs_hydraulics" modificationDateTime="2024-11-16T22:32:18.154264">
     <coordinateInfo>
       <fbd>
         <scaling x="1" y="1" />
@@ -893,6 +893,48 @@
             </variable>
           </inOutVars>
           <localVars>
+            <variable name="circulationFilterGOK_ro">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="circulationFilterDOK_ro">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="oilLevelTooHigh_ro">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
           </localVars>
         </interface>
         <body>
@@ -926,6 +968,9 @@ processes.unlock( isEnabled := operatorStatus.tech AND statuses.initializationSt
 processes.changeOperatingState( isEnabled := statuses.busyStatus.idle AND operatorStatus.tech );
 processes.startUpPumps( isEnabled := statuses.initializationStatus.initialized AND ((pumpsState = HydraulicsPumpsStates.STOPPED) OR ((pumpsState = HydraulicsPumpsStates.MANUAL) OR (pumpsState = HydraulicsPumpsStates.ERROR))) );
 processes.stopPumps( isEnabled := statuses.initializationStatus.initialized AND ((pumpsState = HydraulicsPumpsStates.RUNNING) OR ((pumpsState = HydraulicsPumpsStates.MANUAL) OR (pumpsState = HydraulicsPumpsStates.ERROR))) );
+circulationFilterGOK_ro := circulationFilterGOK;
+circulationFilterDOK_ro := circulationFilterDOK;
+oilLevelTooHigh_ro := oilLevelTooHigh;
 </xhtml>
           </ST>
         </body>
@@ -1511,6 +1556,62 @@ LOGGER(
             </variable>
           </inOutVars>
           <localVars>
+            <variable name="entranceFilter1OK_ro">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="entranceFilter2OK_ro">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="entranceFilter3OK_ro">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="entranceFilter4OK_ro">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
           </localVars>
         </interface>
         <body>
@@ -1527,6 +1628,10 @@ statuses.healthStatus(
 statuses.busyStatus( isBusy := processes.changeFrequencySetpoint.statuses.busyStatus.busy OR processes.resetDrive.statuses.busyStatus.busy );
 processes.resetDrive( isEnabled := statuses.busyStatus.idle AND operatorStatus.tech );
 processes.changeFrequencySetpoint( isEnabled := statuses.busyStatus.idle AND (operatingStatus.manual AND operatorStatus.tech) );
+entranceFilter1OK_ro := entranceFilter1OK;
+entranceFilter2OK_ro := entranceFilter2OK;
+entranceFilter3OK_ro := entranceFilter3OK;
+entranceFilter4OK_ro := entranceFilter4OK;
 </xhtml>
           </ST>
         </body>

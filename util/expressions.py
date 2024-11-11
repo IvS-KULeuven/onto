@@ -247,6 +247,16 @@ class Bool(Primitive):
             raise Exception(f"Invalid argument '{str(value)}' for BOOL, must be either TRUE or FALSE (case insensitive)")
         super().__init__(v)
 
+class Bit(Primitive):
+    def __init__(self, value: str) -> None:
+        if str(value).upper() == "TRUE":
+            v = True
+        elif str(value).upper() == "FALSE":
+            v = False
+        else:
+            raise Exception(f"Invalid argument '{str(value)}' for BIT, must be either TRUE or FALSE (case insensitive)")
+        super().__init__(v)
+
 class UInt8(Primitive):
     def __init__(self, value: str) -> None:
         try:
@@ -291,6 +301,10 @@ class String(Primitive):
 def Bool_constructor(loader, node):
     value = loader.construct_scalar(node)
     return Bool(value)
+
+def Bit_constructor(loader, node):
+    value = loader.construct_scalar(node)
+    return Bit(value)
 
 def UInt8_constructor(loader, node):
     value = loader.construct_scalar(node)

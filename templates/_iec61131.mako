@@ -225,6 +225,9 @@ ${indent}      <values>
 ${indent}        <value name="${item.name}" value="${item.number}" />
                  %endfor
 ${indent}      </values>
+    % if enum.type is not None:
+${indent}      <baseType>${xml_type_element(enum.type)}</baseType>
+    % endif
 ${indent}    </enum>
 ${indent}  </baseType>
 ${indent}</dataType>\
@@ -558,6 +561,8 @@ ${indent}</variable>\
 ##for some reason, STRING must be rendered lowercase, otherwise you cannot import the file in TwinCAT !!!
     % if node.plc_symbol == 'STRING':
 <string />\
+    % elif node.plc_symbol == 'BIT':
+<derived name="BIT" />\
     % else:
 <${node.plc_symbol} />\
     % endif
@@ -586,5 +591,16 @@ ${indent}      ${xml_variable(item, indent+'      ')}
              %endfor
 ${indent}    </struct>
 ${indent}  </baseType>
+        % if node.qualifiers is not None:
+${indent}  <addData>
+${indent}    <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+${indent}      <Attributes>
+               % for qualifier in node.qualifiers:
+${indent}        <Attribute Name="${qualifier.plc_symbol}" Value="${qualifier.value}" />
+               % endfor
+${indent}      </Attributes>
+${indent}    </data>
+${indent}  </addData>
+        % endif
 ${indent}</dataType>\
 </%def>

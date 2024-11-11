@@ -45,6 +45,7 @@ def get_loader():
     loader.add_constructor('!NEG', mathematics.NEG_constructor)
     loader.add_constructor('!DOUBLE', expressions.Double_constructor)
     loader.add_constructor('!BOOL', expressions.Bool_constructor)
+    loader.add_constructor('!BIT', expressions.Bit_constructor)
     loader.add_constructor('!UINT8', expressions.UInt8_constructor)
     loader.add_constructor('!INT16', expressions.Int16_constructor)
     loader.add_constructor('!UINT16', expressions.UInt16_constructor)
@@ -127,7 +128,7 @@ if __name__ == "__main__":
     parser.add_argument("-i",
                         dest="INPUTDIR",
                         action="store",
-                        default='./models/in', #mercator/test
+                        default='./models/in',
                         help="The directory to read the yaml input files from. By default it " \
                              "will just use the ./models/in directory in this repo.")
     
