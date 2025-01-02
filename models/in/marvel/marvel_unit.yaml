@@ -6,6 +6,7 @@
 
 
 !IMPORT models/in/marvel/marvel_dome.yaml:
+!IMPORT models/in/marvel/marvel_telescope.yaml:
 
 
 ########################################################################################################################
@@ -20,7 +21,8 @@
   ########################################################################################################################
   !CONFIG UnitConfig:
       items:
-        dome: { type: marvel_dome.DomeConfig              , comment: "Dome config of a Marvel unit", expand: false }
+        dome:       { type: marvel_dome.DomeConfig              , comment: "Dome config of a Marvel unit", expand: false }
+        telescope:  { type: marvel_telescope.TelescopeConfig    , comment: "Telescope config of a Marvel unit", expand: false }
 
 
   ########################################################################################################################
@@ -28,9 +30,10 @@
   ########################################################################################################################
   !STATEMACHINE Unit:
       variables:
-          editableConfig              : { type: UnitConfig                , comment: "Editable configuration of the unit" , expand: false }
+          number                    : { type: t_uint8                           , comment: "Number of the unit (1-4)" }
+          editableConfig            : { type: UnitConfig                        , comment: "Editable configuration of the unit" , expand: false }
       variables_read_only:
-          config                      : { type: UnitConfig                , comment: "Active configuration of the unit" }
+          config                    : { type: UnitConfig                        , comment: "Active configuration of the unit" }
       references:
         operatorStatus              : { type: mtcs_common.OperatorStatus        , comment: "Reference to the operator (observer/tech)"}
         activityStatus              : { type: mtcs_common.ActivityStatus        , comment: "Shared activity status"}
@@ -42,15 +45,27 @@
               arguments:
                   operatorStatus          : { type: mtcs_common.OperatorStatus          , expand: false }
                   activityStatus          : { type: mtcs_common.ActivityStatus          , expand: false }
+                  config                  : { type: marvel_dome.DomeConfig              , expand: false }
               attributes:
                   # isTracking              : { type: t_bool }
                   statuses:
                       attributes:
                           healthStatus    : { type: mtcs_common.HealthStatus }
                           busyStatus      : { type: mtcs_common.BusyStatus }
-                  # processes:
-                  #     attributes:
-                  #         syncWithAxes   : { type: mtcs_common.Process }
+          telescope:
+              type : marvel_telescope.Telescope
+              comment: "The telescope"
+              expand: false
+              arguments:
+                  operatorStatus          : { type: mtcs_common.OperatorStatus          , expand: false }
+                  activityStatus          : { type: mtcs_common.ActivityStatus          , expand: false }
+                  config                  : { type: marvel_telescope.TelescopeConfig    , expand: false }
+              attributes:
+                  # isTracking              : { type: t_bool }
+                  statuses:
+                      attributes:
+                          healthStatus    : { type: mtcs_common.HealthStatus }
+                          busyStatus      : { type: mtcs_common.BusyStatus }
           configManager:
               comment                     : "The config manager (to load/save/activate configuration data)"
               type                        : mtcs_common.ConfigManager
@@ -66,12 +81,17 @@
           dome:
               operatorStatus      : operatorStatus
               activityStatus      : activityStatus
+              config              : config.dome
               # aziTargetPos        : parts.axes.parts.azi.actPos
+          telescope:
+              operatorStatus      : operatorStatus
+              activityStatus      : activityStatus
+              config              : config.telescope
           configManager:
-             isEnabled            : statuses.operatorStatus.tech
+             isEnabled            : operatorStatus.tech
           healthStatus:
-              isGood              : !MTCS_SUMMARIZE_GOOD [ parts.dome, parts.configManager ]
-              hasWarning          : !MTCS_SUMMARIZE_WARN [ parts.dome, parts.configManager ]
+              isGood              : !MTCS_SUMMARIZE_GOOD [ parts.dome, parts.telescope, parts.configManager ]
+              hasWarning          : !MTCS_SUMMARIZE_WARN [ parts.dome, parts.telescope, parts.configManager ]
           busyStatus:
-              isBusy              : !MTCS_SUMMARIZE_BUSY [ parts.dome, parts.configManager ]
+              isBusy              : !MTCS_SUMMARIZE_BUSY [ parts.dome, parts.telescope, parts.configManager ]
 

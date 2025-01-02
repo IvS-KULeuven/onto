@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
-  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2024-11-16T22:32:18.154264" />
-  <contentHeader name="marvel_dome" modificationDateTime="2024-11-16T22:32:18.154264">
+  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-01-02T17:03:04.905516" />
+  <contentHeader name="marvel_dome" modificationDateTime="2025-01-02T17:03:04.905516">
     <coordinateInfo>
       <fbd>
         <scaling x="1" y="1" />
@@ -107,26 +107,14 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Rotation mechanism</xhtml>
               </documentation>
             </variable>
-            <variable name="configManager">
-              <type><derived name="ConfigManager" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">The config manager (to load/save/activate configuration data)</xhtml>
-              </documentation>
-            </variable>
           </struct>
         </baseType>
       </dataType>
-      <dataType name="DomeShutterParts">
+      <dataType name="DomeRotationParts">
         <baseType>
           <struct>
-            <variable name="pumpsRelay">
-              <type><derived name="SimpleRelay" /></type>
+            <variable name="motorAxis">
+              <type><derived name="AngularAxis" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -134,11 +122,11 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Relay to start the pumps motors</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Motor axis</xhtml>
               </documentation>
             </variable>
-            <variable name="upperOpenRelay">
-              <type><derived name="SimpleRelay" /></type>
+            <variable name="encoderAxis">
+              <type><derived name="AngularAxis" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -146,43 +134,7 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Relay to open the upper shutter panel</xhtml>
-              </documentation>
-            </variable>
-            <variable name="upperCloseRelay">
-              <type><derived name="SimpleRelay" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Relay to close the upper shutter panel</xhtml>
-              </documentation>
-            </variable>
-            <variable name="lowerOpenRelay">
-              <type><derived name="SimpleRelay" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Relay to open the upper shutter panel</xhtml>
-              </documentation>
-            </variable>
-            <variable name="lowerCloseRelay">
-              <type><derived name="SimpleRelay" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Relay to close the upper shutter panel</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Encoder axis</xhtml>
               </documentation>
             </variable>
           </struct>
@@ -213,6 +165,30 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Change the operating state (e.g. AUTO, MANUAL, ...)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="lock">
+              <type><derived name="Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Lock the cover</xhtml>
+              </documentation>
+            </variable>
+            <variable name="unlock">
+              <type><derived name="Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Unlock the cover</xhtml>
               </documentation>
             </variable>
             <variable name="reset">
@@ -857,6 +833,43 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">The timeout of a single ADS command.</xhtml>
               </documentation>
             </variable>
+            <variable name="simulated">
+              <type><BOOL /></type>
+              <initialValue><simpleValue value="TRUE" /></initialValue>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if the shutter is simulated, FALSE if not</xhtml>
+              </documentation>
+            </variable>
+            <variable name="openingTimeoutSeconds">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The opening timeout.</xhtml>
+              </documentation>
+            </variable>
+            <variable name="closingTimeoutSeconds">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The closing timeout.</xhtml>
+              </documentation>
+            </variable>
           </struct>
         </baseType>
       </dataType>
@@ -1445,20 +1458,6 @@ unknownDriveLogicError := (shutterValue = DomeShutterMotionStates.UNKNOWN_DRIVE_
       <pou name="SM_Dome" pouType="functionBlock">
         <interface>
           <inputVars>
-            <variable name="editableConfig">
-              <type><derived name="DomeConfig" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Editable configuration of the cover</xhtml>
-              </documentation>
-            </variable>
           </inputVars>
           <outputVars>
             <variable name="actualStatus">
@@ -1485,20 +1484,6 @@ unknownDriveLogicError := (shutterValue = DomeShutterMotionStates.UNKNOWN_DRIVE_
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Previous status description</xhtml>
-              </documentation>
-            </variable>
-            <variable name="config">
-              <type><derived name="DomeConfig" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Active configuration of the cover</xhtml>
               </documentation>
             </variable>
             <variable name="isTracking">
@@ -1607,6 +1592,19 @@ unknownDriveLogicError := (shutterValue = DomeShutterMotionStates.UNKNOWN_DRIVE_
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Shared activity status</xhtml>
               </documentation>
             </variable>
+            <variable name="config">
+              <type><derived name="DomeConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Active configuration of the cover</xhtml>
+              </documentation>
+            </variable>
           </inOutVars>
           <localVars>
           </localVars>
@@ -1624,7 +1622,6 @@ parts.rotation(
     operatorStatus := operatorStatus,
     operatingStatus := statuses.operatingStatus,
     config := config.rotation);
-parts.configManager( isEnabled := operatorStatus.tech );
 statuses.initializationStatus();
 statuses.healthStatus(
     isGood := parts.shutter.statuses.healthStatus.isGood AND parts.rotation.statuses.healthStatus.isGood,
@@ -1634,6 +1631,8 @@ statuses.operatingStatus( superState := statuses.initializationStatus.initialize
 statuses.poweredStatus( isEnabled := parts.rotation.statuses.poweredStatus.enabled );
 processes.initialize( isEnabled := (NOT(statuses.initializationStatus.locked)) AND (statuses.initializationStatus.shutdown OR (statuses.initializationStatus.initializingFailed OR statuses.initializationStatus.initialized)) );
 processes.changeOperatingState( isEnabled := FALSE );
+processes.lock( isEnabled := operatorStatus.tech );
+processes.unlock( isEnabled := operatorStatus.tech AND statuses.initializationStatus.locked );
 processes.reset( isEnabled := statuses.busyStatus.idle AND statuses.initializationStatus.initialized );
 processes.powerOn( isEnabled := (NOT(statuses.initializationStatus.locked)) AND (statuses.initializationStatus.initialized AND processes.powerOn.statuses.busyStatus.idle) );
 processes.powerOff( isEnabled := statuses.initializationStatus.initialized AND processes.powerOff.statuses.busyStatus.idle );
@@ -1709,6 +1708,62 @@ processes.moveKnownPosition( isEnabled := statuses.initializationStatus.initiali
               <body>
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">changeOperatingState := THIS^.processes.changeOperatingState.request( state := state );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="lock">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">lock := THIS^.processes.lock.request();
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="unlock">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">unlock := THIS^.processes.unlock.request();
 </xhtml>
                 </ST>
               </body>
@@ -2014,14 +2069,17 @@ processes.moveKnownPosition( isEnabled := statuses.initializationStatus.initiali
 THIS^.parts.rotation._log(
     name := &#39;rotation&#39;,
     buffer := subBuffer);
-THIS^.parts.configManager._log(
-    name := &#39;configManager&#39;,
-    buffer := subBuffer);
 THIS^.processes.initialize._log(
     name := &#39;processes.initialize&#39;,
     buffer := subBuffer);
 THIS^.processes.changeOperatingState._log(
     name := &#39;processes.changeOperatingState&#39;,
+    buffer := subBuffer);
+THIS^.processes.lock._log(
+    name := &#39;processes.lock&#39;,
+    buffer := subBuffer);
+THIS^.processes.unlock._log(
+    name := &#39;processes.unlock&#39;,
     buffer := subBuffer);
 THIS^.processes.reset._log(
     name := &#39;processes.reset&#39;,
@@ -2093,7 +2151,7 @@ LOGGER(
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">The data written to the shutter PLC via Bluetooth</xhtml>
               </documentation>
             </variable>
-            <variable name="lowerOpenSignal">
+            <variable name="adsReadError">
               <type><BOOL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -2104,80 +2162,10 @@ LOGGER(
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">False if the signal is not present OR if there is a communication error</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the ADS Read communication to the shutter PLC is in error</xhtml>
               </documentation>
             </variable>
-            <variable name="lowerClosedSignal">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">False if the signal is not present OR if there is a communication error</xhtml>
-              </documentation>
-            </variable>
-            <variable name="upperOpenSignal">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">False if the signal is not present OR if there is a communication error</xhtml>
-              </documentation>
-            </variable>
-            <variable name="upperClosedSignal">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">False if the signal is not present OR if there is a communication error</xhtml>
-              </documentation>
-            </variable>
-            <variable name="wirelessTimeout">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the wireless communication to the shutter signals is timing out</xhtml>
-              </documentation>
-            </variable>
-            <variable name="wirelessError">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the wireless communication to the shutter signals is in error (other than timeout)</xhtml>
-              </documentation>
-            </variable>
-            <variable name="wirelessErrorId">
+            <variable name="adsReadErrorId">
               <type><UDINT /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -2188,52 +2176,10 @@ LOGGER(
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">The error id if wirelessError is true</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The error id if adsReadError is true</xhtml>
               </documentation>
             </variable>
-            <variable name="wirelessData">
-              <type><UINT /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">The received wireless data</xhtml>
-              </documentation>
-            </variable>
-            <variable name="upperTimeRemaining">
-              <type><derived name="Duration" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Estimated time remaining to open/close the upper panel</xhtml>
-              </documentation>
-            </variable>
-            <variable name="lowerTimeRemaining">
-              <type><derived name="Duration" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Estimated time remaining to open/close the lower panel</xhtml>
-              </documentation>
-            </variable>
-            <variable name="isLowerMonitored">
+            <variable name="adsWriteError">
               <type><BOOL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -2244,11 +2190,11 @@ LOGGER(
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if the lower shutter panel is being monitored</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the ADS Read communication to the shutter PLC is in error</xhtml>
               </documentation>
             </variable>
-            <variable name="noOfLowerAutoClosings">
-              <type><INT /></type>
+            <variable name="adsWriteErrorId">
+              <type><UDINT /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -2258,91 +2204,7 @@ LOGGER(
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">The number of times that the lower panel has been closed automatically, by monitoring</xhtml>
-              </documentation>
-            </variable>
-            <variable name="manualOpenUpper" address="%I*">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Manual operation: open upper switch</xhtml>
-              </documentation>
-            </variable>
-            <variable name="manualCloseUpper" address="%I*">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Manual operation: close upper switch</xhtml>
-              </documentation>
-            </variable>
-            <variable name="manualOpenLower" address="%I*">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Manual operation: open lower switch</xhtml>
-              </documentation>
-            </variable>
-            <variable name="manualCloseLower" address="%I*">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Manual operation: close lower switch</xhtml>
-              </documentation>
-            </variable>
-            <variable name="manualPumpOn" address="%I*">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Manual operation: pump ON</xhtml>
-              </documentation>
-            </variable>
-            <variable name="automaticOperation" address="%I*">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if switch is on Auto, FALSE if switch is Manual</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The error id if adsReadError is true</xhtml>
               </documentation>
             </variable>
           </inputVars>
@@ -2373,6 +2235,34 @@ LOGGER(
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Previous status description</xhtml>
               </documentation>
             </variable>
+            <variable name="isSimulated">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the shutter is being simulated</xhtml>
+              </documentation>
+            </variable>
+            <variable name="isConnected">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the shutter PLC is connected</xhtml>
+              </documentation>
+            </variable>
             <variable name="statuses">
               <type><derived name="DomeShutterStatuses" /></type>
               <addData>
@@ -2383,18 +2273,6 @@ LOGGER(
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Statuses of the state machine</xhtml>
-              </documentation>
-            </variable>
-            <variable name="parts">
-              <type><derived name="DomeShutterParts" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Parts of the state machine</xhtml>
               </documentation>
             </variable>
             <variable name="processes">
@@ -2478,117 +2356,22 @@ LOGGER(
             </variable>
           </inOutVars>
           <localVars>
-            <variable name="manualOpenUpper_ro">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-            <variable name="manualCloseUpper_ro">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-            <variable name="manualOpenLower_ro">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-            <variable name="manualCloseLower_ro">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-            <variable name="manualPumpOn_ro">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-            <variable name="automaticOperation_ro">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
           </localVars>
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">parts.pumpsRelay( isEnabled := operatorStatus.tech );
-parts.upperOpenRelay( isEnabled := operatorStatus.tech );
-parts.upperCloseRelay( isEnabled := operatorStatus.tech );
-parts.lowerOpenRelay( isEnabled := operatorStatus.tech );
-parts.lowerCloseRelay( isEnabled := operatorStatus.tech );
-statuses.apertureStatus(
-    superState := NOT(wirelessTimeout OR wirelessError),
-    isOpen := statuses.apertureStatus.open,
-    isClosed := statuses.apertureStatus.closed);
-statuses.motionStatus();
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">statuses.apertureStatus(
+    superState := NOT((dataRead.apertureState = DomeShutterApertureStates.UNKNOWN) OR (dataRead.apertureState = DomeShutterApertureStates.INVALID)),
+    isOpen := dataRead.apertureState = DomeShutterApertureStates.FULLY_OPEN,
+    isClosed := dataRead.apertureState = DomeShutterApertureStates.FULLY_CLOSED);
+statuses.motionStatus( shutterValue := dataRead.motionState );
 statuses.healthStatus(
-    isGood := (NOT(wirelessTimeout OR wirelessError)) AND (processes.open.statuses.healthStatus.isGood AND (processes.close.statuses.healthStatus.isGood AND processes.stop.statuses.healthStatus.isGood)),
-    hasWarning := (processes.open.statuses.healthStatus.hasWarning OR (processes.close.statuses.healthStatus.hasWarning OR processes.stop.statuses.healthStatus.hasWarning)) OR ((statuses.busyStatus.idle AND statuses.apertureStatus.partiallyOpen) OR (NOT(automaticOperation))));
+    isGood := isConnected AND (processes.open.statuses.healthStatus.isGood AND (processes.close.statuses.healthStatus.isGood AND processes.stop.statuses.healthStatus.isGood)),
+    hasWarning := (processes.open.statuses.healthStatus.hasWarning OR (processes.close.statuses.healthStatus.hasWarning OR processes.stop.statuses.healthStatus.hasWarning)) OR (statuses.busyStatus.idle AND statuses.apertureStatus.partiallyOpen));
 statuses.busyStatus( isBusy := processes.open.statuses.busyStatus.busy OR (processes.close.statuses.busyStatus.busy OR processes.stop.statuses.busyStatus.busy) );
 processes.open( isEnabled := statuses.healthStatus.isGood AND ((NOT(initializationStatus.locked)) AND (operatorStatus.tech OR (statuses.busyStatus.idle AND (initializationStatus.initialized AND (activityStatus.awake OR activityStatus.moving))))) );
-processes.close( isEnabled := statuses.healthStatus.isGood AND ((NOT(initializationStatus.locked)) AND (statuses.busyStatus.idle AND initializationStatus.initialized)) );
+processes.close( isEnabled := operatorStatus.tech OR (statuses.healthStatus.isGood AND ((NOT(initializationStatus.locked)) AND (statuses.busyStatus.idle AND initializationStatus.initialized))) );
 processes.stop( isEnabled := statuses.busyStatus.busy );
-manualOpenUpper_ro := manualOpenUpper;
-manualCloseUpper_ro := manualCloseUpper;
-manualOpenLower_ro := manualOpenLower;
-manualCloseLower_ro := manualCloseLower;
-manualPumpOn_ro := manualPumpOn;
-automaticOperation_ro := automaticOperation;
 </xhtml>
           </ST>
         </body>
@@ -2735,22 +2518,7 @@ automaticOperation_ro := automaticOperation;
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.parts.pumpsRelay._log(
-    name := &#39;pumpsRelay&#39;,
-    buffer := subBuffer);
-THIS^.parts.upperOpenRelay._log(
-    name := &#39;upperOpenRelay&#39;,
-    buffer := subBuffer);
-THIS^.parts.upperCloseRelay._log(
-    name := &#39;upperCloseRelay&#39;,
-    buffer := subBuffer);
-THIS^.parts.lowerOpenRelay._log(
-    name := &#39;lowerOpenRelay&#39;,
-    buffer := subBuffer);
-THIS^.parts.lowerCloseRelay._log(
-    name := &#39;lowerCloseRelay&#39;,
-    buffer := subBuffer);
-THIS^.processes.open._log(
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.processes.open._log(
     name := &#39;processes.open&#39;,
     buffer := subBuffer);
 THIS^.processes.close._log(
@@ -2845,6 +2613,18 @@ LOGGER(
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Statuses of the state machine</xhtml>
               </documentation>
             </variable>
+            <variable name="parts">
+              <type><derived name="DomeRotationParts" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Parts of the state machine</xhtml>
+              </documentation>
+            </variable>
             <variable name="processes">
               <type><derived name="DomeRotationProcesses" /></type>
               <addData>
@@ -2917,11 +2697,13 @@ LOGGER(
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">statuses.healthStatus(
-    isGood := processes.reset.statuses.healthStatus.isGood AND processes.stop.statuses.healthStatus.isGood,
-    hasWarning := processes.reset.statuses.healthStatus.hasWarning OR processes.stop.statuses.healthStatus.hasWarning);
-statuses.busyStatus( isBusy := processes.reset.statuses.busyStatus.busy OR processes.stop.statuses.busyStatus.busy );
-statuses.poweredStatus();
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">parts.motorAxis( isEnabled := (NOT(initializationStatus.locked)) AND operatorStatus.tech );
+parts.encoderAxis( isEnabled := (NOT(initializationStatus.locked)) AND operatorStatus.tech );
+statuses.healthStatus(
+    isGood := parts.motorAxis.statuses.healthStatus.isGood AND (parts.encoderAxis.statuses.healthStatus.isGood AND (processes.reset.statuses.healthStatus.isGood AND processes.stop.statuses.healthStatus.isGood)),
+    hasWarning := parts.motorAxis.statuses.healthStatus.hasWarning OR (parts.encoderAxis.statuses.healthStatus.hasWarning OR (processes.reset.statuses.healthStatus.hasWarning OR processes.stop.statuses.healthStatus.hasWarning)));
+statuses.busyStatus( isBusy := parts.motorAxis.statuses.busyStatus.busy OR (parts.encoderAxis.statuses.busyStatus.busy OR (processes.reset.statuses.busyStatus.busy OR processes.stop.statuses.busyStatus.busy)) );
+statuses.poweredStatus( isEnabled := parts.motorAxis.statuses.poweredStatus.enabled );
 processes.reset( isEnabled := statuses.busyStatus.idle );
 processes.stop( isEnabled := statuses.busyStatus.busy OR operatorStatus.tech );
 processes.moveAbsolute( isEnabled := statuses.busyStatus.idle AND statuses.poweredStatus.enabled );
@@ -3182,7 +2964,13 @@ processes.powerOff( isEnabled := statuses.busyStatus.idle );
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.processes.reset._log(
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.parts.motorAxis._log(
+    name := &#39;motorAxis&#39;,
+    buffer := subBuffer);
+THIS^.parts.encoderAxis._log(
+    name := &#39;encoderAxis&#39;,
+    buffer := subBuffer);
+THIS^.processes.reset._log(
     name := &#39;processes.reset&#39;,
     buffer := subBuffer);
 THIS^.processes.stop._log(
@@ -3530,7 +3318,7 @@ END_IF;
             <Folder Name="Parts">
               <Object Name="DomeParts">
               </Object>
-              <Object Name="DomeShutterParts">
+              <Object Name="DomeRotationParts">
               </Object>
             </Folder>
             <Folder Name="Processes">
@@ -3552,6 +3340,8 @@ END_IF;
             <Object Name="SM_Dome">
               <Object Name="initialize" />
               <Object Name="changeOperatingState" />
+              <Object Name="lock" />
+              <Object Name="unlock" />
               <Object Name="reset" />
               <Object Name="powerOn" />
               <Object Name="powerOff" />

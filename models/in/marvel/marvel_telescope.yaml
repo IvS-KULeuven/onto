@@ -1,0 +1,230 @@
+########################################################################################################################
+#                                                                                                                      #
+# Model of the Telescope software.                                                                                     #
+#                                                                                                                      #
+########################################################################################################################
+
+
+!IMPORT models/in/mercator/mtcs_common.yaml:
+
+
+########################################################################################################################
+# Define the containing PLC library
+########################################################################################################################
+
+!LIBRARY marvel_telescope:
+  
+  
+  ########################################################################################################################
+  # TelescopeKnownPositionConfig
+  ########################################################################################################################
+  !CONFIG TelescopeKnownPositionConfig:
+      items:
+          name:
+              type: t_string
+              comment: "The name of the position (e.g. 'PARK')"
+          allowObserver:
+              type: t_bool
+              comment: "Can an observer switch to this position?"
+          azi:
+              type: t_double
+              comment: "Azimuth in degrees"
+          ele:
+              type: t_double
+              comment: "Elevation in degrees"
+          rot:
+              type: t_double
+              comment: "Nasmyth rotation in degrees"
+          doAzi:
+              type: t_bool
+              comment: "Change the azimuth axis to the 'azi' position"
+          doEle:
+              type: t_bool
+              comment: "Change the elevation axis to the 'ele' position"
+          doRot:
+              type: t_bool
+              comment: "Change the nasmyth rotation axis to the 'rot' position"
+  
+  
+  ########################################################################################################################
+  # TelescopeKnownPositionsConfig
+  ########################################################################################################################
+  !CONFIG TelescopeKnownPositionsConfig:
+      items:
+          position0     : { type: TelescopeKnownPositionConfig, comment : "Known position 0"   , expand: false }
+          position1     : { type: TelescopeKnownPositionConfig, comment : "Known position 1"   , expand: false }
+          position2     : { type: TelescopeKnownPositionConfig, comment : "Known position 2"   , expand: false }
+          position3     : { type: TelescopeKnownPositionConfig, comment : "Known position 3"   , expand: false }
+          position4     : { type: TelescopeKnownPositionConfig, comment : "Known position 4"   , expand: false }
+          position5     : { type: TelescopeKnownPositionConfig, comment : "Known position 5"   , expand: false }
+          position6     : { type: TelescopeKnownPositionConfig, comment : "Known position 6"   , expand: false }
+          position7     : { type: TelescopeKnownPositionConfig, comment : "Known position 7"   , expand: false }
+          position8     : { type: TelescopeKnownPositionConfig, comment : "Known position 8"   , expand: false }
+          position9     : { type: TelescopeKnownPositionConfig, comment : "Known position 9"   , expand: false }
+  
+  
+  ########################################################################################################################
+  # TelescopeConfig
+  ########################################################################################################################
+  
+  !CONFIG TelescopeConfig:
+      items:
+          alpacaTelHost               : { type: t_string                  , comment: "ASA TEL alpaca server IP address or hostname" }
+          alpacaTelPort               : { type: t_uint16                  , comment: "ASA TEL alpaca server port number" }
+          alpacaAccHost               : { type: t_string                  , comment: "ASA ACC alpaca server IP address or hostname" }
+          alpacaAccPort               : { type: t_uint16                  , comment: "ASA ACC alpaca server port number" }
+          alpacaLoopTime              : { type: t_uint16                  , comment: "Alpaca loop time in ms" }
+          knownPositions              : { type: TelescopeKnownPositionsConfig  , comment: "Known (predefined) positions (e.g. could be Park, Cover, Park winter, Mirror washing, ...)", expand: false }
+          knownPositionToleranceAzi   : { type: t_double                  , comment: "Tolerance (in degrees) to determine if the telescope is at a known position in azi direction" }
+          knownPositionToleranceEle   : { type: t_double                  , comment: "Tolerance (in degrees) to determine if the telescope is at a known position in ele direction" }
+          knownPositionToleranceRot   : { type: t_double                  , comment: "Tolerance (in degrees) to determine if the telescope is at a known position in rot direction" }
+
+
+  ########################################################################################################################
+  # TelescopeSlewToCoordinatesProcess
+  ########################################################################################################################
+  !PROCESS TelescopeSlewToCoordinatesProcess:
+      extends: mtcs_common.BaseProcess
+      arguments:
+          alpha               : { type: t_double                            , comment: "Right ascention, in hours" }
+          delta               : { type: t_double                            , comment: "Declination, in degrees" }
+  
+
+  ########################################################################################################################
+  # TelescopeSlewToAziEleProcess
+  ########################################################################################################################
+  !PROCESS TelescopeSlewToAziEleProcess:
+      extends: mtcs_common.BaseProcess
+      arguments:
+          azimuth               : { type: t_double                            , comment: "Azimuth, in degrees" }
+          elevation             : { type: t_double                            , comment: "Elevation, in degrees" }
+  
+
+  ########################################################################################################################
+  # TelescopeSetTrackingProcess
+  ########################################################################################################################
+  !PROCESS TelescopeSetTrackingProcess:
+      extends: mtcs_common.BaseProcess
+      arguments:
+          tracking              : { type: t_bool                              , comment: "Switch tracking on (TRUE) or off (FALSE)" }
+  
+  
+  ########################################################################################################################
+  # TelescopeMoveKnownPositionProcess
+  ########################################################################################################################
+  !PROCESS TelescopeMoveKnownPositionProcess:
+      extends: mtcs_common.BaseProcess
+      arguments:
+          name        : { type: t_string                        , comment: "Name of the position to move to"}
+  
+  
+  ########################################################################################################################
+  # Telescope
+  ########################################################################################################################
+  
+  !STATEMACHINE Telescope:
+      references:
+          operatorStatus                  : { type: mtcs_common.OperatorStatus              , comment: "Shared operator status" }
+          activityStatus                  : { type: mtcs_common.ActivityStatus              , comment: "Shared activity status"}
+          config                          : { type: TelescopeConfig                         , comment: "Active configuration of the telescope" }
+      variables_read_only:
+          isSlewing                       : { type: t_bool                                  , comment: "True if the telescope is slewing" }
+          isTracking                      : { type: t_bool                                  , comment: "True if the telescope is tracking" }
+          isAtKnownPosition               : { type: t_bool                                  , comment: "True if the telescope is at a known position" }
+          actualKnownPositionName         : { type: t_string                                , comment: "Name of the known position if isAtKnownPosition is True" }
+      statuses:
+          initializationStatus            : { type: mtcs_common.InitializationStatus }
+          healthStatus                    : { type: mtcs_common.HealthStatus }
+          busyStatus                      : { type: mtcs_common.BusyStatus }
+          operatingStatus                 : { type: mtcs_common.OperatingStatus }
+          poweredStatus                   : { type: mtcs_common.PoweredStatus }
+      processes:
+          initialize                      : { type: mtcs_common.Process                         , comment: "Start initializing" }
+          lock                            : { type: mtcs_common.Process                     , comment: "Lock the cover" }
+          unlock                          : { type: mtcs_common.Process                     , comment: "Unlock the cover" }
+          changeOperatingState            : { type: mtcs_common.ChangeOperatingStateProcess     , comment: "Change the operating state (e.g. AUTO, MANUAL, ...)" }
+          slewToCoordinates               : { type: TelescopeSlewToCoordinatesProcess           , comment: "Slew to the given equatorial coordinates" }
+          slewToAziEle                    : { type: TelescopeSlewToAziEleProcess                , comment: "Slew to the given horizontal coordinates" }
+          abortSlew                       : { type: mtcs_common.Process                         , comment: "Stop the slewing" }
+          reset                           : { type: mtcs_common.Process                     , comment: "Reset any errors" }
+          powerOn                         : { type: mtcs_common.Process                         , comment: "Power on the axes" }
+          powerOff                        : { type: mtcs_common.Process                         , comment: "Power off the axes" }
+          moveKnownPosition               : { type: TelescopeMoveKnownPositionProcess           , comment: "Move the telescope to the given known position" }
+          setTracking                     : { type: TelescopeSetTrackingProcess                 , comment: "Power on the axes" }
+      calls:
+          # processes
+          initialize:
+              isEnabled                   : !AND [ !NOT [ statuses.initializationStatus.locked ],
+                                                   !OR [ statuses.initializationStatus.shutdown,
+                                                         statuses.initializationStatus.initializingFailed,
+                                                         statuses.initializationStatus.initialized ] ]
+          lock:
+              isEnabled                   : operatorStatus.tech
+          unlock:
+              isEnabled                   : !AND [ operatorStatus.tech,
+                                                   statuses.initializationStatus.locked ]
+          changeOperatingState:
+              isEnabled                   : !AND [ statuses.busyStatus.idle, statuses.initializationStatus.initialized, operatorStatus.tech ]
+          reset:
+              isEnabled                   : !AND [ statuses.busyStatus.idle,
+                                                   statuses.initializationStatus.initialized ]
+          slewToCoordinates:
+              isEnabled                   : !AND [ statuses.initializationStatus.initialized,
+                                                   statuses.busyStatus.idle,
+                                                   statuses.poweredStatus.enabled ]
+          slewToAziEle:
+              isEnabled                   : !AND [ statuses.initializationStatus.initialized,
+                                                   statuses.busyStatus.idle,
+                                                   statuses.poweredStatus.enabled ]
+          abortSlew:
+              isEnabled                   : statuses.initializationStatus.initialized
+          powerOn:
+              isEnabled                   : !AND [  !NOT [ statuses.initializationStatus.locked ],
+                                                    statuses.initializationStatus.initialized,
+                                                    processes.powerOn.statuses.busyStatus.idle ]
+          powerOff:
+              isEnabled                   : !AND [ statuses.initializationStatus.initialized,
+                                                   processes.powerOff.statuses.busyStatus.idle ]
+          moveKnownPosition:
+              isEnabled                   : !AND [ statuses.initializationStatus.initialized,
+                                                   statuses.busyStatus.idle,
+                                                   statuses.poweredStatus.enabled ]
+          setTracking:
+              isEnabled                   : statuses.initializationStatus.initialized
+          # statuses
+          healthStatus:
+              isGood                      : !MTCS_SUMMARIZE_GOOD [
+                                                       processes.initialize,
+                                                       processes.changeOperatingState,
+                                                       processes.slewToCoordinates,
+                                                       processes.slewToAziEle,
+                                                       processes.abortSlew,
+                                                       processes.powerOn,
+                                                       processes.powerOff,
+                                                       processes.moveKnownPosition,
+                                                       processes.setTracking ]
+              hasWarning                  : !MTCS_SUMMARIZE_WARN [
+                                                       processes.initialize,
+                                                       processes.changeOperatingState,
+                                                       processes.slewToCoordinates,
+                                                       processes.slewToAziEle,
+                                                       processes.abortSlew,
+                                                       processes.powerOn,
+                                                       processes.powerOff,
+                                                       processes.moveKnownPosition,
+                                                       processes.setTracking ]
+          busyStatus:
+              isBusy                      : !MTCS_SUMMARIZE_BUSY [
+                                                       processes.initialize,
+                                                       processes.changeOperatingState,
+                                                       processes.slewToCoordinates,
+                                                       processes.slewToAziEle,
+                                                       processes.abortSlew,
+                                                       processes.powerOn,
+                                                       processes.powerOff,
+                                                       processes.moveKnownPosition,
+                                                       processes.setTracking ]
+          operatingStatus:
+              superState                  : statuses.initializationStatus.initialized
+  
+  

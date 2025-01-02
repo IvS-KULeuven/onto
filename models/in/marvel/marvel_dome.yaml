@@ -169,8 +169,11 @@
   !CONFIG DomeShutterConfig:
     typeOf: DomeConfig.shutter
     items:
-      remotePlcAmsId           : { type: t_string, comment: "AMS ID of the shutter PLC" }
-      remotePlcTimeoutSeconds  : { type: t_double, comment: "The timeout of a single ADS command."}
+      remotePlcAmsId           : { type: t_string                       , comment: "AMS ID of the shutter PLC" }
+      remotePlcTimeoutSeconds  : { type: t_double                       , comment: "The timeout of a single ADS command."}
+      simulated                : { type: t_bool,  initial: !BOOL "TRUE" , comment: "TRUE if the shutter is simulated, FALSE if not"}
+      openingTimeoutSeconds    : { type: t_double                       , comment: "The opening timeout."}
+      closingTimeoutSeconds    : { type: t_double                       , comment: "The closing timeout."}
   
   ##########################################################################
   # DomeRotationConfig
@@ -220,14 +223,12 @@
   ########################################################################################################################
   
   !STATEMACHINE Dome:
-    variables:
-      editableConfig              : { type: DomeConfig                        , comment: "Editable configuration of the cover" }
     references:
       operatorStatus              : { type: mtcs_common.OperatorStatus        , comment: "Reference to the operator (observer/tech)"}
       activityStatus              : { type: mtcs_common.ActivityStatus        , comment: "Shared activity status"}
+      config                      : { type: DomeConfig                        , comment: "Active configuration of the cover" }
       # aziTargetPos                : { type: mtcs_common.AngularPosition       , comment: "Azimuth target position of the telescope Axes"}
     variables_read_only:
-      config                      : { type: DomeConfig                        , comment: "Active configuration of the cover" }
       isTracking                  : { type: t_bool                            , comment: "True if the dome is tracking the telescope" }
       # telescopeTargetDistance     : { type: mtcs_common.AngularPosition       , comment: "Actual distance between telescope target and dome" }
       isAtKnownPosition           : { type: t_bool                            , comment: "True if the dome is at a known position" }
@@ -280,9 +281,6 @@
       #     statuses:
       #       attributes:
       #         healthStatus        : { type: mtcs_common.HealthStatus }
-      configManager:
-        comment                   : "The config manager (to load/save/activate configuration data)"
-        type                      : mtcs_common.ConfigManager
     statuses:
       initializationStatus        : { type: mtcs_common.InitializationStatus }
       healthStatus                : { type: mtcs_common.HealthStatus }
@@ -292,6 +290,8 @@
     processes:
       initialize                  : { type: mtcs_common.Process                     , comment: "Start initializing" }
       changeOperatingState        : { type: mtcs_common.ChangeOperatingStateProcess , comment: "Change the operating state (e.g. AUTO, MANUAL, ...)" }
+      lock                        : { type: mtcs_common.Process                     , comment: "Lock the cover" }
+      unlock                      : { type: mtcs_common.Process                     , comment: "Unlock the cover" }
       reset                       : { type: mtcs_common.Process                     , comment: "Reset any errors" }
       powerOn                     : { type: mtcs_common.Process                     , comment: "Power on the dome" }
       powerOff                    : { type: mtcs_common.Process                     , comment: "Power off the dome" }
@@ -309,7 +309,6 @@
                                                  statuses.initializationStatus.initialized ] ]
       lock:
         isEnabled                 : operatorStatus.tech
-        
       unlock:
         isEnabled                 : !AND [ operatorStatus.tech,
                                            statuses.initializationStatus.locked ]
@@ -358,8 +357,6 @@
       #   operatingStatus           : statuses.operatingStatus
       #   activityStatus            : activityStatus
       #   config                    : config.light
-      configManager:
-        isEnabled                 : operatorStatus.tech
       # statuses
       poweredStatus:
         isEnabled                 : parts.rotation.statuses.poweredStatus.enabled
@@ -445,45 +442,35 @@
   
   !STATEMACHINE DomeShutter:
     typeOf: DomeParts.shutter
+    variables_read_only:
+      isSimulated             : { type: t_bool                            , comment: "True if the shutter is being simulated" }
+      isConnected             : { type: t_bool                            , comment: "True if the shutter PLC is connected" }
     variables:
+      # ADS 
       dataRead                : { type: DomeShutterDataRead               , comment: "The data read from the shutter PLC via Bluetooth" }
       dataWrite               : { type: DomeShutterDataWrite              , comment: "The data written to the shutter PLC via Bluetooth" }
-
-      lowerOpenSignal         : { type: t_bool                            , comment: "False if the signal is not present OR if there is a communication error" }
-      lowerClosedSignal       : { type: t_bool                            , comment: "False if the signal is not present OR if there is a communication error" }
-      upperOpenSignal         : { type: t_bool                            , comment: "False if the signal is not present OR if there is a communication error" }
-      upperClosedSignal       : { type: t_bool                            , comment: "False if the signal is not present OR if there is a communication error" }
-      wirelessTimeout         : { type: t_bool                            , comment: "True if the wireless communication to the shutter signals is timing out" }
-      wirelessError           : { type: t_bool                            , comment: "True if the wireless communication to the shutter signals is in error (other than timeout)" }
-      wirelessErrorId         : { type: t_uint32                          , comment: "The error id if wirelessError is true" }
-      wirelessData            : { type: t_uint16                          , comment: "The received wireless data" }
-      upperTimeRemaining      : { type: mtcs_common.Duration              , comment: "Estimated time remaining to open/close the upper panel" }
-      lowerTimeRemaining      : { type: mtcs_common.Duration              , comment: "Estimated time remaining to open/close the lower panel" }
-      isLowerMonitored        : { type: t_bool                            , comment: "TRUE if the lower shutter panel is being monitored" }
-      noOfLowerAutoClosings   : { type: t_int16                           , comment: "The number of times that the lower panel has been closed automatically, by monitoring" }
-      
-      manualOpenUpper         : { type: t_bool          , address: "%I*"  , comment: "Manual operation: open upper switch" }
-      manualCloseUpper        : { type: t_bool          , address: "%I*"  , comment: "Manual operation: close upper switch" }
-      manualOpenLower         : { type: t_bool          , address: "%I*"  , comment: "Manual operation: open lower switch" }
-      manualCloseLower        : { type: t_bool          , address: "%I*"  , comment: "Manual operation: close lower switch" }
-      manualPumpOn            : { type: t_bool          , address: "%I*"  , comment: "Manual operation: pump ON" }
-      automaticOperation      : { type: t_bool          , address: "%I*"  , comment: "TRUE if switch is on Auto, FALSE if switch is Manual" }
+      # ADS read
+      adsReadError            : { type: t_bool                            , comment: "True if the ADS Read communication to the shutter PLC is in error" }
+      adsReadErrorId          : { type: t_uint32                          , comment: "The error id if adsReadError is true" }
+      # ADS write
+      adsWriteError            : { type: t_bool                            , comment: "True if the ADS Read communication to the shutter PLC is in error" }
+      adsWriteErrorId          : { type: t_uint32                          , comment: "The error id if adsReadError is true" }
+      # manual buttons
+      #  manualOpenUpper         : { type: t_bool          , address: "%I*"  , comment: "Manual operation: open upper switch" }
+      #  manualCloseUpper        : { type: t_bool          , address: "%I*"  , comment: "Manual operation: close upper switch" }
+      #  manualOpenLower         : { type: t_bool          , address: "%I*"  , comment: "Manual operation: open lower switch" }
+      #  manualCloseLower        : { type: t_bool          , address: "%I*"  , comment: "Manual operation: close lower switch" }
+      #  automaticOperation      : { type: t_bool          , address: "%I*"  , comment: "TRUE if switch is on Auto, FALSE if switch is Manual" }
       
     references:
       initializationStatus    : { type: mtcs_common.InitializationStatus    , comment: "Dome initialization status (initialized/initializing/...)"}
       operatorStatus          : { type: mtcs_common.OperatorStatus          , comment: "MTCS operator (observer/tech)"}
       operatingStatus         : { type: mtcs_common.OperatingStatus         , comment: "Dome operating status (manual/auto)"}
       activityStatus          : { type: mtcs_common.ActivityStatus          , comment: "Shared activity status"}
-      config                  : { type: DomeShutterConfig             , comment: "The shutter config"}
-    parts:
-      pumpsRelay              : { type: mtcs_common.SimpleRelay             , comment: "Relay to start the pumps motors" }
-      upperOpenRelay          : { type: mtcs_common.SimpleRelay             , comment: "Relay to open the upper shutter panel" }
-      upperCloseRelay         : { type: mtcs_common.SimpleRelay             , comment: "Relay to close the upper shutter panel" }
-      lowerOpenRelay          : { type: mtcs_common.SimpleRelay             , comment: "Relay to open the upper shutter panel" }
-      lowerCloseRelay         : { type: mtcs_common.SimpleRelay             , comment: "Relay to close the upper shutter panel" }
+      config                  : { type: DomeShutterConfig                   , comment: "The shutter config"}
     statuses:
       apertureStatus          : { type: mtcs_common.ApertureStatus          , comment: "Combined aperture status (i.e. of both panels)" }
-      motionStatus            : { type: DomeShutterOpeningStatus                 , comment: "Motion status" }
+      motionStatus            : { type: DomeShutterOpeningStatus            , comment: "Motion status" }
       healthStatus            : { type: mtcs_common.HealthStatus            , comment: "Health status" }
       busyStatus              : { type: mtcs_common.BusyStatus              , comment: "Busy status"  }
     processes:
@@ -494,40 +481,23 @@
       # processes
       stop:
         isEnabled             : statuses.busyStatus.busy
-      reset:
-        isEnabled             : !BOOL TRUE
       open:
         isEnabled             : !AND [ statuses.healthStatus.isGood, !NOT [ initializationStatus.locked ], 
                                        !OR [ operatorStatus.tech, !AND [ statuses.busyStatus.idle, initializationStatus.initialized, !OR [ activityStatus.awake, activityStatus.moving ] ] ] ]
-      lowerOpen:
-        isEnabled             : processes.open.isEnabled # same as processes.open
-      upperOpen:
-        isEnabled             : processes.open.isEnabled # same as processes.open
       close:
-        isEnabled             : !AND [ statuses.healthStatus.isGood, !NOT [ initializationStatus.locked ], statuses.busyStatus.idle, initializationStatus.initialized ]
-      lowerClose:
-        isEnabled             : processes.close.isEnabled # same as processes.close
-      upperClose:
-        isEnabled             : processes.close.isEnabled # same as processes.close
-      # relays
-      pumpsRelay:
-        isEnabled             : operatorStatus.tech
-      upperOpenRelay:
-        isEnabled             : operatorStatus.tech
-      upperCloseRelay:
-        isEnabled             : operatorStatus.tech
-      lowerOpenRelay:
-        isEnabled             : operatorStatus.tech
-      lowerCloseRelay:
-        isEnabled             : operatorStatus.tech
+        isEnabled             : !OR [ operatorStatus.tech,
+                                      !AND [ statuses.healthStatus.isGood, !NOT [ initializationStatus.locked ], statuses.busyStatus.idle, initializationStatus.initialized ] ]
       # statuses
       apertureStatus:
-        superState            : !NOT [ !OR [ wirelessTimeout, wirelessError ] ]
-        isOpen                : statuses.apertureStatus.open
-        isClosed              : statuses.apertureStatus.closed
+        superState            : !NOT [ !OR [ !EQ [ dataRead.apertureState, DomeShutterApertureStates.UNKNOWN ], 
+                                             !EQ [ dataRead.apertureState, DomeShutterApertureStates.INVALID ] ] ]
+        isOpen                : !EQ [ dataRead.apertureState, DomeShutterApertureStates.FULLY_OPEN ]
+        isClosed              : !EQ [ dataRead.apertureState, DomeShutterApertureStates.FULLY_CLOSED ]
+      motionStatus:
+        shutterValue          : dataRead.motionState
       healthStatus:
         isGood                : !AND [ 
-                                      !NOT [ !OR [ wirelessTimeout, wirelessError ] ],
+                                      isConnected,
                                       !MTCS_SUMMARIZE_GOOD [ processes.open,
                                                              processes.close,
                                                              processes.stop] ]
@@ -535,8 +505,10 @@
                                       !MTCS_SUMMARIZE_WARN [ processes.open,
                                                              processes.close,
                                                              processes.stop ],
-                                      !AND [ statuses.busyStatus.idle, statuses.apertureStatus.partiallyOpen ],
-                                      !NOT [ automaticOperation ] ]
+                                      !AND [ statuses.busyStatus.idle, statuses.apertureStatus.partiallyOpen ]
+                                      #,
+                                      #!NOT [ automaticOperation ] 
+                                      ]
       busyStatus:
         isBusy                : !MTCS_SUMMARIZE_BUSY [ processes.open,
                                                        processes.close,
@@ -562,9 +534,9 @@
       operatorStatus              : { type: mtcs_common.OperatorStatus          , comment: "Reference to the MTCS operator status"}
       operatingStatus             : { type: mtcs_common.OperatingStatus         , comment: "Reference to the Dome operating status"}
       config                      : { type: DomeRotationConfig                  , comment: "Reference to the rotation config"}
-    #parts:
-      #masterAxis                  : { type: mtcs_common.AngularAxis             , comment: "Master axis" }
-      #slaveAxis                   : { type: mtcs_common.AngularAxis             , comment: "Slave axis" }
+    parts:
+      motorAxis                    : { type: mtcs_common.AngularAxis             , comment: "Motor axis" }
+      encoderAxis                   : { type: mtcs_common.AngularAxis             , comment: "Encoder axis" }
       #drive                       : { type: mtcs_common.AX52XXDrive             , comment: "Dual axis drive" }
     statuses:
       healthStatus                : { type: mtcs_common.HealthStatus            , comment: "Health status"}
@@ -591,34 +563,28 @@
       powerOff:
         isEnabled                 : statuses.busyStatus.idle
       # parts
-      masterAxis:
+      motorAxis:
         isEnabled                 : !AND [ !NOT [ initializationStatus.locked ], operatorStatus.tech ]
-      slaveAxis:
-        isEnabled                 : !AND [ !NOT [ initializationStatus.locked ], operatorStatus.tech ]
-      drive:
+      encoderAxis:
         isEnabled                 : !AND [ !NOT [ initializationStatus.locked ], operatorStatus.tech ]
       # statuses
-      # poweredStatus:
-      #   isEnabled             : !AND [ parts.masterAxis.statuses.poweredStatus.enabled,
-      #                                  parts.slaveAxis.statuses.poweredStatus.enabled ]
+      poweredStatus:
+         isEnabled                : parts.motorAxis.statuses.poweredStatus.enabled
       healthStatus:
-        isGood                : #!AND [ 
-                                       !MTCS_SUMMARIZE_GOOD [ #parts.masterAxis,
-                                                              #parts.slaveAxis,
-                                                              #parts.drive,
-                                                              processes.reset,
-                                                              processes.stop
-                                                             ]
-                                      #!NOT [ masterSlaveLagError ]
-                                     # ]
-        hasWarning            : !MTCS_SUMMARIZE_WARN [ #parts.masterAxis,
-                                                       # parts.slaveAxis,
+        isGood                    : !MTCS_SUMMARIZE_GOOD [ parts.motorAxis,
+                                                           parts.encoderAxis,
+                                                           #parts.drive,
+                                                           processes.reset,
+                                                           processes.stop
+                                                         ]
+        hasWarning            : !MTCS_SUMMARIZE_WARN [ parts.motorAxis,
+                                                       parts.encoderAxis,
                                                        # parts.drive,
-                                                        processes.reset,
-                                                        processes.stop ]
+                                                       processes.reset,
+                                                       processes.stop ]
       busyStatus:
-        isBusy                : !MTCS_SUMMARIZE_BUSY [ #parts.masterAxis,
-                                                       #parts.slaveAxis,
+        isBusy                : !MTCS_SUMMARIZE_BUSY [ parts.motorAxis,
+                                                       parts.encoderAxis,
                                                        #parts.drive,
                                                        processes.reset,
                                                        processes.stop ]

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
-  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2024-11-16T22:32:18.154264" />
-  <contentHeader name="marvel" modificationDateTime="2024-11-16T22:32:18.154264">
+  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-01-02T17:03:04.905516" />
+  <contentHeader name="marvel" modificationDateTime="2025-01-02T17:03:04.905516">
     <coordinateInfo>
       <fbd>
         <scaling x="1" y="1" />
@@ -90,6 +90,54 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Start initializing the whole MTCS</xhtml>
               </documentation>
             </variable>
+            <variable name="lock">
+              <type><derived name="Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Lock the whole MTCS</xhtml>
+              </documentation>
+            </variable>
+            <variable name="unlock">
+              <type><derived name="Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Unlock the whole MTCS</xhtml>
+              </documentation>
+            </variable>
+            <variable name="changeOperator">
+              <type><derived name="ChangeOperatorStateProcess" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Change the operator (e.g. OBSERVER, TECH, ...)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="verifyPassword">
+              <type><derived name="ChangeOperatorStateProcess" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Only verify the operator password</xhtml>
+              </documentation>
+            </variable>
             <variable name="emergencyClose">
               <type><derived name="Process" /></type>
               <addData>
@@ -156,6 +204,18 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
+            <variable name="passwordHealthStatus">
+              <type><derived name="HealthStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
             <variable name="activityStatus">
               <type><derived name="ActivityStatus" /></type>
               <addData>
@@ -204,6 +264,20 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Previous status description</xhtml>
               </documentation>
             </variable>
+            <variable name="noOfFailedOperatorChanges">
+              <type><UINT /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">How many times has a wrong password been entered?</xhtml>
+              </documentation>
+            </variable>
             <variable name="statuses">
               <type><derived name="MarvelStatuses" /></type>
               <addData>
@@ -249,15 +323,19 @@
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">parts.u1(
+    number := 1,
     operatorStatus := statuses.operatorStatus,
     activityStatus := statuses.activityStatus);
 parts.u2(
+    number := 2,
     operatorStatus := statuses.operatorStatus,
     activityStatus := statuses.activityStatus);
 parts.u3(
+    number := 3,
     operatorStatus := statuses.operatorStatus,
     activityStatus := statuses.activityStatus);
 parts.u4(
+    number := 4,
     operatorStatus := statuses.operatorStatus,
     activityStatus := statuses.activityStatus);
 statuses.initializationStatus();
@@ -266,8 +344,13 @@ statuses.healthStatus(
     hasWarning := parts.u1.statuses.healthStatus.hasWarning OR (parts.u2.statuses.healthStatus.hasWarning OR (parts.u3.statuses.healthStatus.hasWarning OR parts.u4.statuses.healthStatus.hasWarning)));
 statuses.busyStatus( isBusy := parts.u1.statuses.busyStatus.busy OR (parts.u2.statuses.busyStatus.busy OR (parts.u3.statuses.busyStatus.busy OR parts.u4.statuses.busyStatus.busy)) );
 statuses.operatorStatus();
+statuses.passwordHealthStatus( superState := statuses.operatorStatus.observer );
 statuses.activityStatus();
 processes.initialize( isEnabled := NOT(statuses.initializationStatus.initializing) );
+processes.lock( isEnabled := statuses.operatorStatus.tech AND statuses.initializationStatus.initialized );
+processes.unlock( isEnabled := statuses.operatorStatus.tech AND statuses.initializationStatus.locked );
+processes.changeOperator( isEnabled := TRUE );
+processes.verifyPassword( isEnabled := TRUE );
 processes.emergencyClose( isEnabled := NOT(parts.u1.parts.dome.parts.shutter.statuses.apertureStatus.closed AND (parts.u1.parts.dome.parts.shutter.statuses.apertureStatus.closed AND (parts.u1.parts.dome.parts.shutter.statuses.apertureStatus.closed AND parts.u1.parts.dome.parts.shutter.statuses.apertureStatus.closed))) );
 </xhtml>
           </ST>
@@ -296,6 +379,170 @@ processes.emergencyClose( isEnabled := NOT(parts.u1.parts.dome.parts.shutter.sta
               <body>
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">initialize := THIS^.processes.initialize.request();
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="lock">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">lock := THIS^.processes.lock.request();
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="unlock">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">unlock := THIS^.processes.unlock.request();
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="changeOperator">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                  <variable name="state">
+                    <type><derived name="OperatorStates" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="password">
+                    <type><string /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">changeOperator := THIS^.processes.changeOperator.request(
+    state := state,
+    password := password);
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="verifyPassword">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                  <variable name="state">
+                    <type><derived name="OperatorStates" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="password">
+                    <type><string /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">verifyPassword := THIS^.processes.verifyPassword.request(
+    state := state,
+    password := password);
 </xhtml>
                 </ST>
               </body>
@@ -402,6 +649,18 @@ THIS^.parts.u4._log(
 THIS^.processes.initialize._log(
     name := &#39;processes.initialize&#39;,
     buffer := subBuffer);
+THIS^.processes.lock._log(
+    name := &#39;processes.lock&#39;,
+    buffer := subBuffer);
+THIS^.processes.unlock._log(
+    name := &#39;processes.unlock&#39;,
+    buffer := subBuffer);
+THIS^.processes.changeOperator._log(
+    name := &#39;processes.changeOperator&#39;,
+    buffer := subBuffer);
+THIS^.processes.verifyPassword._log(
+    name := &#39;processes.verifyPassword&#39;,
+    buffer := subBuffer);
 THIS^.processes.emergencyClose._log(
     name := &#39;processes.emergencyClose&#39;,
     buffer := subBuffer);
@@ -448,6 +707,10 @@ LOGGER(
             </Folder>
             <Object Name="SM_Marvel">
               <Object Name="initialize" />
+              <Object Name="lock" />
+              <Object Name="unlock" />
+              <Object Name="changeOperator" />
+              <Object Name="verifyPassword" />
               <Object Name="emergencyClose" />
               <Object Name="_log" />
             </Object>

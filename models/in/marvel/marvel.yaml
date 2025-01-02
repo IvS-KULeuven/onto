@@ -32,8 +32,8 @@
           # remoteConnectionStatus      : { type: t_bool                      , comment: "True to notify that there is a remote connection" }
           # remoteconnectionPortStatus  : { type: t_bool                      , comment: "True to notify that there is a connection port established" }
           
-      #variables_read_only:
-      #    noOfFailedOperatorChanges   : { type: t_uint16                    , comment: "How many times has a wrong password been entered?"}
+      variables_read_only:
+          noOfFailedOperatorChanges   : { type: t_uint16                    , comment: "How many times has a wrong password been entered?"}
       #    config                      : { type: MTCSConfig                  , comment: "Active configuration of the ServicesTiming subsystem" }
       parts:
           u1:
@@ -41,6 +41,7 @@
               comment: "Unit 1"
               expand: false
               arguments:
+                  number                  : { type: t_uint8 }
                   operatorStatus          : { type: mtcs_common.OperatorStatus          , expand: false }
                   activityStatus          : { type: mtcs_common.ActivityStatus          , expand: false }
               attributes:
@@ -62,6 +63,7 @@
               comment: "Unit 2"
               expand: false
               arguments:
+                  number                  : { type: t_uint8 }
                   operatorStatus          : { type: mtcs_common.OperatorStatus          , expand: false }
                   activityStatus          : { type: mtcs_common.ActivityStatus          , expand: false }
               attributes:
@@ -83,6 +85,7 @@
               comment: "Unit 3"
               expand: false
               arguments:
+                  number                  : { type: t_uint8 }
                   operatorStatus          : { type: mtcs_common.OperatorStatus          , expand: false }
                   activityStatus          : { type: mtcs_common.ActivityStatus          , expand: false }
               attributes:
@@ -104,6 +107,7 @@
               comment: "Unit 4"
               expand: false
               arguments:
+                  number                  : { type: t_uint8 }
                   operatorStatus          : { type: mtcs_common.OperatorStatus          , expand: false }
                   activityStatus          : { type: mtcs_common.ActivityStatus          , expand: false }
               attributes:
@@ -128,23 +132,40 @@
           healthStatus                : { type: mtcs_common.HealthStatus }
           busyStatus                  : { type: mtcs_common.BusyStatus }
           operatorStatus              : { type: mtcs_common.OperatorStatus }
+          passwordHealthStatus        : { type: mtcs_common.HealthStatus }
           activityStatus              : { type: mtcs_common.ActivityStatus }
       processes:
           initialize                  : { type: mtcs_common.Process                         , comment: "Start initializing the whole MTCS" }      
+          lock                        : { type: mtcs_common.Process                         , comment: "Lock the whole MTCS" }
+          unlock                      : { type: mtcs_common.Process                         , comment: "Unlock the whole MTCS" }
+          changeOperator              : { type: mtcs_common.ChangeOperatorStateProcess      , comment: "Change the operator (e.g. OBSERVER, TECH, ...)" }
+          verifyPassword              : { type: mtcs_common.ChangeOperatorStateProcess      , comment: "Only verify the operator password" }
           emergencyClose              : { type: mtcs_common.Process                         , comment: "Close all domes asap" }
       calls:
           initialize:
               isEnabled           : !NOT [ statuses.initializationStatus.initializing ]
+          lock:
+              isEnabled           : !AND [ statuses.operatorStatus.tech, statuses.initializationStatus.initialized ]
+          unlock:
+              isEnabled           : !AND [ statuses.operatorStatus.tech, statuses.initializationStatus.locked ]
+          changeOperator:
+              isEnabled           : !BOOL TRUE
+          verifyPassword:
+              isEnabled           : !BOOL TRUE
           u1:
+              number              : !UINT8 1
               operatorStatus      : statuses.operatorStatus
               activityStatus      : statuses.activityStatus
           u2:
+              number              : !UINT8 2
               operatorStatus      : statuses.operatorStatus
               activityStatus      : statuses.activityStatus
           u3:
+              number              : !UINT8 3
               operatorStatus      : statuses.operatorStatus
               activityStatus      : statuses.activityStatus
           u4:
+              number              : !UINT8 4
               operatorStatus      : statuses.operatorStatus
               activityStatus      : statuses.activityStatus
           configManager:
@@ -159,3 +180,5 @@
               hasWarning          : !MTCS_SUMMARIZE_WARN [ parts.u1, parts.u2, parts.u3, parts.u4 ]
           busyStatus:
               isBusy              : !MTCS_SUMMARIZE_BUSY [ parts.u1, parts.u2, parts.u3, parts.u4 ]
+          passwordHealthStatus:
+              superState          : statuses.operatorStatus.observer
