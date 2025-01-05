@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
-  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-01-02T17:03:04.905516" />
-  <contentHeader name="marvel" modificationDateTime="2025-01-02T17:03:04.905516">
+  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-01-04T23:45:03.038676" />
+  <contentHeader name="marvel" modificationDateTime="2025-01-04T23:45:03.038676">
     <coordinateInfo>
       <fbd>
         <scaling x="1" y="1" />
@@ -136,6 +136,30 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Only verify the operator password</xhtml>
+              </documentation>
+            </variable>
+            <variable name="wakeUp">
+              <type><derived name="Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Wake up the whole Marvel TCS</xhtml>
+              </documentation>
+            </variable>
+            <variable name="goToSleep">
+              <type><derived name="Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Let the whole Marvel TCS go to sleep</xhtml>
               </documentation>
             </variable>
             <variable name="emergencyClose">
@@ -351,6 +375,8 @@ processes.lock( isEnabled := statuses.operatorStatus.tech AND statuses.initializ
 processes.unlock( isEnabled := statuses.operatorStatus.tech AND statuses.initializationStatus.locked );
 processes.changeOperator( isEnabled := TRUE );
 processes.verifyPassword( isEnabled := TRUE );
+processes.wakeUp( isEnabled := statuses.activityStatus.sleeping );
+processes.goToSleep( isEnabled := statuses.activityStatus.awake OR statuses.healthStatus.bad );
 processes.emergencyClose( isEnabled := NOT(parts.u1.parts.dome.parts.shutter.statuses.apertureStatus.closed AND (parts.u1.parts.dome.parts.shutter.statuses.apertureStatus.closed AND (parts.u1.parts.dome.parts.shutter.statuses.apertureStatus.closed AND parts.u1.parts.dome.parts.shutter.statuses.apertureStatus.closed))) );
 </xhtml>
           </ST>
@@ -549,6 +575,62 @@ processes.emergencyClose( isEnabled := NOT(parts.u1.parts.dome.parts.shutter.sta
             </Method>
           </data>
           <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="wakeUp">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">wakeUp := THIS^.processes.wakeUp.request();
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="goToSleep">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">goToSleep := THIS^.processes.goToSleep.request();
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
             <Method name="emergencyClose">
               <interface>
                 <returnType><derived name="RequestResults" /></returnType>
@@ -661,6 +743,12 @@ THIS^.processes.changeOperator._log(
 THIS^.processes.verifyPassword._log(
     name := &#39;processes.verifyPassword&#39;,
     buffer := subBuffer);
+THIS^.processes.wakeUp._log(
+    name := &#39;processes.wakeUp&#39;,
+    buffer := subBuffer);
+THIS^.processes.goToSleep._log(
+    name := &#39;processes.goToSleep&#39;,
+    buffer := subBuffer);
 THIS^.processes.emergencyClose._log(
     name := &#39;processes.emergencyClose&#39;,
     buffer := subBuffer);
@@ -711,6 +799,8 @@ LOGGER(
               <Object Name="unlock" />
               <Object Name="changeOperator" />
               <Object Name="verifyPassword" />
+              <Object Name="wakeUp" />
+              <Object Name="goToSleep" />
               <Object Name="emergencyClose" />
               <Object Name="_log" />
             </Object>

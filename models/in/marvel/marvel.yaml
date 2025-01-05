@@ -140,6 +140,8 @@
           unlock                      : { type: mtcs_common.Process                         , comment: "Unlock the whole MTCS" }
           changeOperator              : { type: mtcs_common.ChangeOperatorStateProcess      , comment: "Change the operator (e.g. OBSERVER, TECH, ...)" }
           verifyPassword              : { type: mtcs_common.ChangeOperatorStateProcess      , comment: "Only verify the operator password" }
+          wakeUp                      : { type: mtcs_common.Process                         , comment: "Wake up the whole Marvel TCS" }
+          goToSleep                   : { type: mtcs_common.Process                         , comment: "Let the whole Marvel TCS go to sleep" }
           emergencyClose              : { type: mtcs_common.Process                         , comment: "Close all domes asap" }
       calls:
           initialize:
@@ -152,6 +154,10 @@
               isEnabled           : !BOOL TRUE
           verifyPassword:
               isEnabled           : !BOOL TRUE
+          wakeUp:
+              isEnabled           : statuses.activityStatus.sleeping
+          goToSleep:
+              isEnabled           : !OR [ statuses.activityStatus.awake, statuses.healthStatus.bad ]
           u1:
               number              : !UINT8 1
               operatorStatus      : statuses.operatorStatus

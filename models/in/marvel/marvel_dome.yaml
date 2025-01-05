@@ -482,11 +482,18 @@
       stop:
         isEnabled             : statuses.busyStatus.busy
       open:
-        isEnabled             : !AND [ statuses.healthStatus.isGood, !NOT [ initializationStatus.locked ], 
-                                       !OR [ operatorStatus.tech, !AND [ statuses.busyStatus.idle, initializationStatus.initialized, !OR [ activityStatus.awake, activityStatus.moving ] ] ] ]
+        isEnabled             : !AND [ statuses.healthStatus.isGood, 
+                                       !NOT [ initializationStatus.locked ], 
+                                       !OR [ operatorStatus.tech, 
+                                             !AND [ statuses.busyStatus.idle, 
+                                                    initializationStatus.initialized, 
+                                                    !OR [ activityStatus.awake, activityStatus.moving ] ] ] ]
       close:
         isEnabled             : !OR [ operatorStatus.tech,
-                                      !AND [ statuses.healthStatus.isGood, !NOT [ initializationStatus.locked ], statuses.busyStatus.idle, initializationStatus.initialized ] ]
+                                      !AND [ statuses.healthStatus.isGood, 
+                                             !NOT [ initializationStatus.locked ], 
+                                             statuses.busyStatus.idle, 
+                                             initializationStatus.initialized ] ]
       # statuses
       apertureStatus:
         superState            : !NOT [ !OR [ !EQ [ dataRead.apertureState, DomeShutterApertureStates.UNKNOWN ], 
