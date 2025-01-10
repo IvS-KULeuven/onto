@@ -90,8 +90,10 @@
           configManager:
              isEnabled            : operatorStatus.tech
           healthStatus:
+              superState          : !NOT [ statuses.initializationStatus.shutdown ]
               isGood              : !MTCS_SUMMARIZE_GOOD [ parts.dome, parts.telescope, parts.configManager ]
               hasWarning          : !MTCS_SUMMARIZE_WARN [ parts.dome, parts.telescope, parts.configManager ]
           busyStatus:
+              superState          : !NOT [ statuses.initializationStatus.shutdown ]
               isBusy              : !MTCS_SUMMARIZE_BUSY [ parts.dome, parts.telescope, parts.configManager ]
 

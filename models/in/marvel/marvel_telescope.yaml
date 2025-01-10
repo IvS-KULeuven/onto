@@ -193,6 +193,7 @@
               isEnabled                   : statuses.initializationStatus.initialized
           # statuses
           healthStatus:
+              superState                  : !NOT [ statuses.initializationStatus.shutdown ]
               isGood                      : !MTCS_SUMMARIZE_GOOD [
                                                        processes.initialize,
                                                        processes.changeOperatingState,
@@ -214,6 +215,7 @@
                                                        processes.moveKnownPosition,
                                                        processes.setTracking ]
           busyStatus:
+              superState                  : !NOT [ statuses.initializationStatus.shutdown ]
               isBusy                      : !MTCS_SUMMARIZE_BUSY [
                                                        processes.initialize,
                                                        processes.changeOperatingState,

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
-  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-01-04T23:45:03.038676" />
-  <contentHeader name="marvel" modificationDateTime="2025-01-04T23:45:03.038676">
+  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-01-10T14:32:38.371541" />
+  <contentHeader name="marvel" modificationDateTime="2025-01-10T14:32:38.371541">
     <coordinateInfo>
       <fbd>
         <scaling x="1" y="1" />
@@ -364,9 +364,12 @@ parts.u4(
     activityStatus := statuses.activityStatus);
 statuses.initializationStatus();
 statuses.healthStatus(
+    superState := NOT(statuses.initializationStatus.shutdown),
     isGood := parts.u1.statuses.healthStatus.isGood AND (parts.u2.statuses.healthStatus.isGood AND (parts.u3.statuses.healthStatus.isGood AND parts.u4.statuses.healthStatus.isGood)),
     hasWarning := parts.u1.statuses.healthStatus.hasWarning OR (parts.u2.statuses.healthStatus.hasWarning OR (parts.u3.statuses.healthStatus.hasWarning OR parts.u4.statuses.healthStatus.hasWarning)));
-statuses.busyStatus( isBusy := parts.u1.statuses.busyStatus.busy OR (parts.u2.statuses.busyStatus.busy OR (parts.u3.statuses.busyStatus.busy OR parts.u4.statuses.busyStatus.busy)) );
+statuses.busyStatus(
+    superState := NOT(statuses.initializationStatus.shutdown),
+    isBusy := parts.u1.statuses.busyStatus.busy OR (parts.u2.statuses.busyStatus.busy OR (parts.u3.statuses.busyStatus.busy OR parts.u4.statuses.busyStatus.busy)));
 statuses.operatorStatus();
 statuses.passwordHealthStatus( superState := statuses.operatorStatus.observer );
 statuses.activityStatus();

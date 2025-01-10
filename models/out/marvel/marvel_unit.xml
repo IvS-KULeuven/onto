@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
-  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-01-04T23:45:03.038676" />
-  <contentHeader name="marvel_unit" modificationDateTime="2025-01-04T23:45:03.038676">
+  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-01-10T14:32:38.371541" />
+  <contentHeader name="marvel_unit" modificationDateTime="2025-01-10T14:32:38.371541">
     <coordinateInfo>
       <fbd>
         <scaling x="1" y="1" />
@@ -309,9 +309,12 @@ parts.telescope(
 parts.configManager( isEnabled := operatorStatus.tech );
 statuses.initializationStatus();
 statuses.healthStatus(
+    superState := NOT(statuses.initializationStatus.shutdown),
     isGood := parts.dome.statuses.healthStatus.isGood AND (parts.telescope.statuses.healthStatus.isGood AND parts.configManager.statuses.healthStatus.isGood),
     hasWarning := parts.dome.statuses.healthStatus.hasWarning OR (parts.telescope.statuses.healthStatus.hasWarning OR parts.configManager.statuses.healthStatus.hasWarning));
-statuses.busyStatus( isBusy := parts.dome.statuses.busyStatus.busy OR (parts.telescope.statuses.busyStatus.busy OR parts.configManager.statuses.busyStatus.busy) );
+statuses.busyStatus(
+    superState := NOT(statuses.initializationStatus.shutdown),
+    isBusy := parts.dome.statuses.busyStatus.busy OR (parts.telescope.statuses.busyStatus.busy OR parts.configManager.statuses.busyStatus.busy));
 processes.initialize( isEnabled := NOT(statuses.initializationStatus.initializing) );
 </xhtml>
           </ST>

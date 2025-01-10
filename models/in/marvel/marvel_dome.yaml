@@ -503,6 +503,7 @@
       motionStatus:
         shutterValue          : dataRead.motionState
       healthStatus:
+        superState            : !NOT [ statuses.initializationStatus.shutdown ]
         isGood                : !AND [ 
                                       isConnected,
                                       !MTCS_SUMMARIZE_GOOD [ processes.open,
@@ -517,6 +518,7 @@
                                       #!NOT [ automaticOperation ] 
                                       ]
       busyStatus:
+        superState            : !NOT [ statuses.initializationStatus.shutdown ]
         isBusy                : !MTCS_SUMMARIZE_BUSY [ processes.open,
                                                        processes.close,
                                                        processes.stop ]

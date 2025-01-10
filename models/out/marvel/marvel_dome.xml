@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
-  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-01-04T23:45:03.038676" />
-  <contentHeader name="marvel_dome" modificationDateTime="2025-01-04T23:45:03.038676">
+  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-01-10T14:32:38.371541" />
+  <contentHeader name="marvel_dome" modificationDateTime="2025-01-10T14:32:38.371541">
     <coordinateInfo>
       <fbd>
         <scaling x="1" y="1" />
@@ -2366,9 +2366,12 @@ LOGGER(
     isClosed := dataRead.apertureState = DomeShutterApertureStates.FULLY_CLOSED);
 statuses.motionStatus( shutterValue := dataRead.motionState );
 statuses.healthStatus(
+    superState := NOT(initializationStatus.shutdown),
     isGood := isConnected AND (processes.open.statuses.healthStatus.isGood AND (processes.close.statuses.healthStatus.isGood AND processes.stop.statuses.healthStatus.isGood)),
     hasWarning := (processes.open.statuses.healthStatus.hasWarning OR (processes.close.statuses.healthStatus.hasWarning OR processes.stop.statuses.healthStatus.hasWarning)) OR (statuses.busyStatus.idle AND statuses.apertureStatus.partiallyOpen));
-statuses.busyStatus( isBusy := processes.open.statuses.busyStatus.busy OR (processes.close.statuses.busyStatus.busy OR processes.stop.statuses.busyStatus.busy) );
+statuses.busyStatus(
+    superState := NOT(initializationStatus.shutdown),
+    isBusy := processes.open.statuses.busyStatus.busy OR (processes.close.statuses.busyStatus.busy OR processes.stop.statuses.busyStatus.busy));
 processes.open( isEnabled := statuses.healthStatus.isGood AND ((NOT(initializationStatus.locked)) AND (operatorStatus.tech OR (statuses.busyStatus.idle AND (initializationStatus.initialized AND (activityStatus.awake OR activityStatus.moving))))) );
 processes.close( isEnabled := operatorStatus.tech OR (statuses.healthStatus.isGood AND ((NOT(initializationStatus.locked)) AND (statuses.busyStatus.idle AND initializationStatus.initialized))) );
 processes.stop( isEnabled := statuses.busyStatus.busy );
