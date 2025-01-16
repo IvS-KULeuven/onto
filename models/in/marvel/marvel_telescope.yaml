@@ -117,7 +117,7 @@
       arguments:
           name        : { type: t_string                        , comment: "Name of the position to move to"}
   
-  
+
   ########################################################################################################################
   # Telescope
   ########################################################################################################################
@@ -130,6 +130,13 @@
       variables_read_only:
           isSlewing                       : { type: t_bool                                  , comment: "True if the telescope is slewing" }
           isTracking                      : { type: t_bool                                  , comment: "True if the telescope is tracking" }
+          # actual position
+          actAlpha                        : { type: mtcs_common.AngularPosition             , comment: "The actual alpha coordinate (Right Ascention)" , expand: false}
+          actDelta                        : { type: mtcs_common.AngularPosition             , comment: "The actual delta coordinate (Declination)" , expand: false }
+          actAzi                          : { type: mtcs_common.AngularPosition             , comment: "The actual azimuth" , expand: false}
+          actEle                          : { type: mtcs_common.AngularPosition             , comment: "The actual elevation" , expand: false }
+          targetAlpha                     : { type: mtcs_common.AngularPosition             , comment: "The target alpha coordinate (Right Ascention)" , expand: false}
+          targetDelta                     : { type: mtcs_common.AngularPosition             , comment: "The target delta coordinate (Declination)" , expand: false }
           isAtKnownPosition               : { type: t_bool                                  , comment: "True if the telescope is at a known position" }
           actualKnownPositionName         : { type: t_string                                , comment: "Name of the known position if isAtKnownPosition is True" }
       statuses:
@@ -194,7 +201,8 @@
           # statuses
           healthStatus:
               superState                  : !NOT [ statuses.initializationStatus.shutdown ]
-              isGood                      : !MTCS_SUMMARIZE_GOOD [
+              isGood                      : !AND [  !NOT [ statuses.initializationStatus.initializingFailed ],
+                                                    !MTCS_SUMMARIZE_GOOD [
                                                        processes.initialize,
                                                        processes.changeOperatingState,
                                                        processes.slewToCoordinates,
@@ -204,6 +212,7 @@
                                                        processes.powerOff,
                                                        processes.moveKnownPosition,
                                                        processes.setTracking ]
+                                            ]
               hasWarning                  : !MTCS_SUMMARIZE_WARN [
                                                        processes.initialize,
                                                        processes.changeOperatingState,
