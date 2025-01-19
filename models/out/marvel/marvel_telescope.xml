@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
-  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-01-15T22:09:50.380054" />
-  <contentHeader name="marvel_telescope" modificationDateTime="2025-01-15T22:09:50.380054">
+  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-01-16T21:38:38.092686" />
+  <contentHeader name="marvel_telescope" modificationDateTime="2025-01-16T21:38:38.092686">
     <coordinateInfo>
       <fbd>
         <scaling x="1" y="1" />
@@ -708,6 +708,34 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Previous status description</xhtml>
               </documentation>
             </variable>
+            <variable name="isTelConnected">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the TEL server is connected</xhtml>
+              </documentation>
+            </variable>
+            <variable name="isAccConnected">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the ACC server is connected</xhtml>
+              </documentation>
+            </variable>
             <variable name="isSlewing">
               <type><BOOL /></type>
               <addData>
@@ -922,7 +950,7 @@
             <xhtml xmlns="http://www.w3.org/1999/xhtml">statuses.initializationStatus();
 statuses.healthStatus(
     superState := NOT(statuses.initializationStatus.shutdown),
-    isGood := (NOT(statuses.initializationStatus.initializingFailed)) AND (processes.initialize.statuses.healthStatus.isGood AND (processes.changeOperatingState.statuses.healthStatus.isGood AND (processes.slewToCoordinates.statuses.healthStatus.isGood AND (processes.slewToAziEle.statuses.healthStatus.isGood AND (processes.abortSlew.statuses.healthStatus.isGood AND (processes.powerOn.statuses.healthStatus.isGood AND (processes.powerOff.statuses.healthStatus.isGood AND (processes.moveKnownPosition.statuses.healthStatus.isGood AND processes.setTracking.statuses.healthStatus.isGood)))))))),
+    isGood := (NOT(statuses.initializationStatus.initializingFailed)) AND (isTelConnected AND (isAccConnected AND (processes.initialize.statuses.healthStatus.isGood AND (processes.changeOperatingState.statuses.healthStatus.isGood AND (processes.slewToCoordinates.statuses.healthStatus.isGood AND (processes.slewToAziEle.statuses.healthStatus.isGood AND (processes.abortSlew.statuses.healthStatus.isGood AND (processes.powerOn.statuses.healthStatus.isGood AND (processes.powerOff.statuses.healthStatus.isGood AND (processes.moveKnownPosition.statuses.healthStatus.isGood AND processes.setTracking.statuses.healthStatus.isGood)))))))))),
     hasWarning := processes.initialize.statuses.healthStatus.hasWarning OR (processes.changeOperatingState.statuses.healthStatus.hasWarning OR (processes.slewToCoordinates.statuses.healthStatus.hasWarning OR (processes.slewToAziEle.statuses.healthStatus.hasWarning OR (processes.abortSlew.statuses.healthStatus.hasWarning OR (processes.powerOn.statuses.healthStatus.hasWarning OR (processes.powerOff.statuses.healthStatus.hasWarning OR (processes.moveKnownPosition.statuses.healthStatus.hasWarning OR processes.setTracking.statuses.healthStatus.hasWarning))))))));
 statuses.busyStatus(
     superState := NOT(statuses.initializationStatus.shutdown),

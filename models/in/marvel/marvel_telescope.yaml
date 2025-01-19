@@ -128,6 +128,8 @@
           activityStatus                  : { type: mtcs_common.ActivityStatus              , comment: "Shared activity status"}
           config                          : { type: TelescopeConfig                         , comment: "Active configuration of the telescope" }
       variables_read_only:
+          isTelConnected                  : { type: t_bool                                  , comment: "True if the TEL server is connected" }
+          isAccConnected                  : { type: t_bool                                  , comment: "True if the ACC server is connected" }
           isSlewing                       : { type: t_bool                                  , comment: "True if the telescope is slewing" }
           isTracking                      : { type: t_bool                                  , comment: "True if the telescope is tracking" }
           # actual position
@@ -202,6 +204,8 @@
           healthStatus:
               superState                  : !NOT [ statuses.initializationStatus.shutdown ]
               isGood                      : !AND [  !NOT [ statuses.initializationStatus.initializingFailed ],
+                                                    isTelConnected,
+                                                    isAccConnected,
                                                     !MTCS_SUMMARIZE_GOOD [
                                                        processes.initialize,
                                                        processes.changeOperatingState,
