@@ -86,6 +86,7 @@ class QUALIFIERS:
     OPC_UA_ACCESS_W = PlcOpenAttribute(symbol = 'OPC.UA.DA.Access', value = '2')
     OPC_UA_ACCESS_RW = PlcOpenAttribute(symbol = 'OPC.UA.DA.Access', value = '3')
     HMI_SHOW = PlcOpenAttribute(symbol = 'TcHmiSymbol.Show', value = '')
+    HMI_HIDE = PlcOpenAttribute(symbol = 'TcHmiSymbol.Hide', value = '')
 
 
 class Namespace(Object):
@@ -443,6 +444,10 @@ class Variable(Object):
         if 'address' in args:
             self.address = args['address']
 
+        if not name.startswith('_'):
+            if QUALIFIERS.HMI_SHOW not in self.qualifiers:
+                if QUALIFIERS.OPC_UA_DEACTIVATE not in self.qualifiers:
+                    self.qualifiers.append(QUALIFIERS.HMI_SHOW)
 
 
 class EnumItem(Variable):
@@ -671,7 +676,7 @@ class Status(FunctionBlock):
                         "type": "t_bool",
                         "comment": var_args["comment"] 
                     })
-                v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_R]
+                v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_R, QUALIFIERS.HMI_SHOW]
                 self.var_out[var_name] = v
         
         self.implementation = []
@@ -749,7 +754,7 @@ class Statemachine(FunctionBlock):
             v = Variable("actualStatus", self)
             v.type = PRIMITIVE_TYPES.t_string
             v.comment = "Current status description"
-            v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_R]
+            v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_R, QUALIFIERS.HMI_SHOW]
             self.var_out['actualStatus'] = v
             self.vars['actualStatus'] = v
         
@@ -767,6 +772,8 @@ class Statemachine(FunctionBlock):
                     v.qualifiers.append(QUALIFIERS.OPC_UA_ACTIVATE)
                 if QUALIFIERS.OPC_UA_ACCESS_R not in v.qualifiers:
                     v.qualifiers.append(QUALIFIERS.OPC_UA_ACCESS_R)
+                if QUALIFIERS.HMI_SHOW not in v.qualifiers:
+                    v.qualifiers.append(QUALIFIERS.HMI_SHOW)
                 self.var_in[var_name] = v
                 self.vars[var_name] = v
 
@@ -777,6 +784,8 @@ class Statemachine(FunctionBlock):
                     v.qualifiers.append(QUALIFIERS.OPC_UA_ACTIVATE)
                 if QUALIFIERS.OPC_UA_ACCESS_R not in v.qualifiers:
                     v.qualifiers.append(QUALIFIERS.OPC_UA_ACCESS_R)
+                if QUALIFIERS.HMI_SHOW not in v.qualifiers:
+                    v.qualifiers.append(QUALIFIERS.HMI_SHOW)
                 self.var_out[var_name] = v
                 self.vars[var_name] = v
 
@@ -785,6 +794,7 @@ class Statemachine(FunctionBlock):
                 v = Variable(var_name, self, var)
                 if QUALIFIERS.OPC_UA_DEACTIVATE not in v.qualifiers:
                     v.qualifiers.append(QUALIFIERS.OPC_UA_DEACTIVATE)
+                    v.qualifiers.append(QUALIFIERS.HMI_HIDE)
                 self.var_in[var_name] = v
                 self.vars[var_name] = v
 
@@ -793,6 +803,7 @@ class Statemachine(FunctionBlock):
                 v = Variable(var_name, self, var)
                 if QUALIFIERS.OPC_UA_DEACTIVATE not in v.qualifiers:
                     v.qualifiers.append(QUALIFIERS.OPC_UA_DEACTIVATE)
+                    v.qualifiers.append(QUALIFIERS.HMI_HIDE)
                 self.var_inout[var_name] = v
                 self.vars[var_name] = v
 
@@ -892,7 +903,7 @@ class Statemachine(FunctionBlock):
         if "local" in args:
             for var_name, var in args['local'].items():
                 v = Variable(var_name, self, var)
-                v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE]
+                v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.HMI_SHOW]
                 self.var_local[var_name] = v
                 self.vars[var_name] = v
 
