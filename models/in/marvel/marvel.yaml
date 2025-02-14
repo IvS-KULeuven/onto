@@ -21,6 +21,21 @@
 #   !CONFIG MTCSConfig:
 #       items:
 
+
+  ########################################################################################################################
+  # MarvelPointProcess
+  ########################################################################################################################
+  !PROCESS MarvelPointProcess:
+      extends: mtcs_common.BaseProcess
+      arguments:
+          alpha               : { type: t_double                            , comment: "Right ascention, in hours" }
+          delta               : { type: t_double                            , comment: "Declination, in degrees" }
+          u1                  : { type: t_bool                              , comment: "True to point Unit 1" }
+          u2                  : { type: t_bool                              , comment: "True to point Unit 2" }
+          u3                  : { type: t_bool                              , comment: "True to point Unit 3" }
+          u4                  : { type: t_bool                              , comment: "True to point Unit 4" }
+  
+
   ########################################################################################################################
   # Marvel
   ########################################################################################################################
@@ -58,6 +73,11 @@
                       attributes:
                           healthStatus    : { type: mtcs_common.HealthStatus }
                           busyStatus      : { type: mtcs_common.BusyStatus }
+                  processes:
+                      attributes:
+                        point:
+                            attributes:
+                                isEnabled : { type: t_bool }
           u2:
               type : marvel_unit.Unit
               comment: "Unit 2"
@@ -80,6 +100,11 @@
                       attributes:
                           healthStatus    : { type: mtcs_common.HealthStatus }
                           busyStatus      : { type: mtcs_common.BusyStatus }
+                  processes:
+                      attributes:
+                        point:
+                            attributes:
+                                isEnabled : { type: t_bool }
           u3:
               type : marvel_unit.Unit
               comment: "Unit 3"
@@ -102,6 +127,11 @@
                       attributes:
                           healthStatus    : { type: mtcs_common.HealthStatus }
                           busyStatus      : { type: mtcs_common.BusyStatus }
+                  processes:
+                      attributes:
+                        point:
+                            attributes:
+                                isEnabled : { type: t_bool }
           u4:
               type : marvel_unit.Unit
               comment: "Unit 4"
@@ -124,6 +154,11 @@
                       attributes:
                           healthStatus    : { type: mtcs_common.HealthStatus }
                           busyStatus      : { type: mtcs_common.BusyStatus }
+                  processes:
+                      attributes:
+                        point:
+                            attributes:
+                                isEnabled : { type: t_bool }
         #   configManager:
         #       comment                     : "The config manager (to load/save/activate configuration data)"
         #       type                        : mtcs_common.ConfigManager
@@ -143,6 +178,7 @@
           wakeUp                      : { type: mtcs_common.Process                         , comment: "Wake up the whole Marvel TCS" }
           goToSleep                   : { type: mtcs_common.Process                         , comment: "Let the whole Marvel TCS go to sleep" }
           emergencyClose              : { type: mtcs_common.Process                         , comment: "Close all domes asap" }
+          point                       : { type: MarvelPointProcess                          , comment: "Point multiple units at once"}
       calls:
           initialize:
               isEnabled           : !NOT [ statuses.initializationStatus.initializing ]
@@ -155,9 +191,14 @@
           verifyPassword:
               isEnabled           : !BOOL TRUE
           wakeUp:
-              isEnabled           : statuses.activityStatus.sleeping
+              isEnabled           : !BOOL TRUE
           goToSleep:
-              isEnabled           : !OR [ statuses.activityStatus.awake, statuses.healthStatus.bad ]
+              isEnabled           : !BOOL TRUE # !OR [ statuses.activityStatus.awake, statuses.healthStatus.bad ]
+          point:
+              isEnabled           : !OR [ parts.u1.processes.point.isEnabled,
+                                          parts.u2.processes.point.isEnabled,
+                                          parts.u3.processes.point.isEnabled,
+                                          parts.u4.processes.point.isEnabled ]
           u1:
               number              : !UINT8 1
               operatorStatus      : statuses.operatorStatus

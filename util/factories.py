@@ -85,6 +85,7 @@ class QUALIFIERS:
     OPC_UA_ACCESS_R = PlcOpenAttribute(symbol = 'OPC.UA.DA.Access', value = '1')
     OPC_UA_ACCESS_W = PlcOpenAttribute(symbol = 'OPC.UA.DA.Access', value = '2')
     OPC_UA_ACCESS_RW = PlcOpenAttribute(symbol = 'OPC.UA.DA.Access', value = '3')
+    HMI_SHOW = PlcOpenAttribute(symbol = 'TcHmiSymbol.Show', value = '')
 
 
 class Namespace(Object):

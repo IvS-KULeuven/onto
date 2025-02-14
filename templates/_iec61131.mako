@@ -299,7 +299,9 @@ ${indent}      <addData>
 ${indent}        <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
 ${indent}          <Attributes>
 ##${indent}            <Attribute Name="object_name" Value="${label}" />
+% if not node.name.startswith('_'):
 ${indent}            <Attribute Name="TcRpcEnable" Value="1" />
+% endif
 ${indent}          </Attributes>
 ${indent}        </data>
 ${indent}      </addData>

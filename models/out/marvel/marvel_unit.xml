@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
-  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-01-16T21:38:38.092686" />
-  <contentHeader name="marvel_unit" modificationDateTime="2025-01-16T21:38:38.092686">
+  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-02-14T19:08:53.030329" />
+  <contentHeader name="marvel_unit" modificationDateTime="2025-02-14T19:08:53.030329">
     <coordinateInfo>
       <fbd>
         <scaling x="1" y="1" />
@@ -78,6 +78,18 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Start initializing the unit</xhtml>
               </documentation>
             </variable>
+            <variable name="point">
+              <type><derived name="UnitPointProcess" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Point the telescope and dome</xhtml>
+              </documentation>
+            </variable>
           </struct>
         </baseType>
       </dataType>
@@ -148,6 +160,36 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Telescope config of a Marvel unit</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="UnitPointProcessArgs">
+        <baseType>
+          <struct>
+            <variable name="alpha">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Right ascention, in hours</xhtml>
+              </documentation>
+            </variable>
+            <variable name="delta">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Declination, in degrees</xhtml>
               </documentation>
             </variable>
           </struct>
@@ -301,7 +343,8 @@
             <xhtml xmlns="http://www.w3.org/1999/xhtml">parts.dome(
     operatorStatus := operatorStatus,
     activityStatus := activityStatus,
-    config := config.dome);
+    config := config.dome,
+    telescopeAzi := parts.telescope.actAzi);
 parts.telescope(
     operatorStatus := operatorStatus,
     activityStatus := activityStatus,
@@ -316,6 +359,7 @@ statuses.busyStatus(
     superState := NOT(statuses.initializationStatus.shutdown),
     isBusy := parts.dome.statuses.busyStatus.busy OR (parts.telescope.statuses.busyStatus.busy OR parts.configManager.statuses.busyStatus.busy));
 processes.initialize( isEnabled := NOT(statuses.initializationStatus.initializing) );
+processes.point( isEnabled := parts.telescope.processes.slewToCoordinates.isEnabled AND parts.dome.processes.syncWithAxes.isEnabled );
 </xhtml>
           </ST>
         </body>
@@ -343,6 +387,60 @@ processes.initialize( isEnabled := NOT(statuses.initializationStatus.initializin
               <body>
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">initialize := THIS^.processes.initialize.request();
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="point">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                  <variable name="alpha">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="delta">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">point := THIS^.processes.point.request(
+    alpha := alpha,
+    delta := delta);
 </xhtml>
                 </ST>
               </body>
@@ -399,7 +497,6 @@ processes.initialize( isEnabled := NOT(statuses.initializationStatus.initializin
                 <addData>
                   <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                     <Attributes>
-                      <Attribute Name="TcRpcEnable" Value="1" />
                     </Attributes>
                   </data>
                 </addData>
@@ -418,6 +515,9 @@ THIS^.parts.configManager._log(
 THIS^.processes.initialize._log(
     name := &#39;processes.initialize&#39;,
     buffer := subBuffer);
+THIS^.processes.point._log(
+    name := &#39;processes.point&#39;,
+    buffer := subBuffer);
 LOGGER(
     name := name,
     actualStatus := THIS^.actualStatus,
@@ -426,6 +526,179 @@ LOGGER(
     subBuffer := subBuffer,
     pHealthStatus := ADR(THIS^.statuses.healthStatus),
     pBusyStatus := ADR(THIS^.statuses.busyStatus));
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+        </addData>
+      </pou>
+      <pou name="UnitPointProcess" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="set">
+              <type><derived name="UnitPointProcessArgs" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Arguments to be set, before writing do_request TRUE</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="get">
+              <type><derived name="UnitPointProcessArgs" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Arguments in use by the process, if do_request was accepted</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <inOutVars>
+          </inOutVars>
+          <localVars>
+          </localVars>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/pouinheritance" handleUnknown="implementation">
+              <Inheritance>
+                <Extends>BaseProcess</Extends>
+              </Inheritance>
+            </data>
+          </addData>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+    do_request_result := request(
+    alpha := set.alpha,
+    delta := set.delta);
+    do_request := FALSE;
+END_IF;
+SUPER^();
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="start">
+              <interface>
+                <inputVars>
+                  <variable name="alpha">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Right ascention, in hours</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="delta">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Declination, in degrees</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.alpha := alpha;
+THIS^.get.delta := delta;
+THIS^.statuses.busyStatus( isBusy := TRUE );
+THIS^.statuses.healthStatus( isGood := TRUE );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="request">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                  <variable name="alpha">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Right ascention, in hours</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="delta">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Declination, in degrees</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF THIS^.statuses.enabledStatus.enabled THEN
+    request := RequestResults.ACCEPTED;
+    THIS^.start(
+        alpha := alpha,
+        delta := delta);
+ELSE
+    request := RequestResults.REJECTED;
+END_IF;
 </xhtml>
                 </ST>
               </body>
@@ -461,6 +734,7 @@ LOGGER(
             </Folder>
             <Object Name="SM_Unit">
               <Object Name="initialize" />
+              <Object Name="point" />
               <Object Name="_log" />
             </Object>
           </Folder>
@@ -472,7 +746,13 @@ LOGGER(
           </Folder>
           <Folder Name="Processes">
             <Folder Name="Args">
+              <Object Name="UnitPointProcessArgs">
+              </Object>
             </Folder>
+            <Object Name="UnitPointProcess">
+              <Object Name="start" />
+              <Object Name="request" />
+            </Object>
           </Folder>
           <Folder Name="Functionblocks">
           </Folder>

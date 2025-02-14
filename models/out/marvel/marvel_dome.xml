@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
-  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-01-16T21:38:38.092686" />
-  <contentHeader name="marvel_dome" modificationDateTime="2025-01-16T21:38:38.092686">
+  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-02-14T19:08:53.030329" />
+  <contentHeader name="marvel_dome" modificationDateTime="2025-02-14T19:08:53.030329">
     <coordinateInfo>
       <fbd>
         <scaling x="1" y="1" />
@@ -1605,6 +1605,19 @@ unknownDriveLogicError := (shutterValue = DomeShutterMotionStates.UNKNOWN_DRIVE_
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Active configuration of the cover</xhtml>
               </documentation>
             </variable>
+            <variable name="telescopeAzi">
+              <type><derived name="AngularPosition" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Azimuth target position of the telescope Axes</xhtml>
+              </documentation>
+            </variable>
           </inOutVars>
           <localVars>
           </localVars>
@@ -2056,7 +2069,6 @@ processes.moveKnownPosition( isEnabled := statuses.initializationStatus.initiali
                 <addData>
                   <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                     <Attributes>
-                      <Attribute Name="TcRpcEnable" Value="1" />
                     </Attributes>
                   </data>
                 </addData>
@@ -2514,7 +2526,6 @@ processes.stop( isEnabled := statuses.busyStatus.busy );
                 <addData>
                   <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                     <Attributes>
-                      <Attribute Name="TcRpcEnable" Value="1" />
                     </Attributes>
                   </data>
                 </addData>
@@ -2960,7 +2971,6 @@ processes.powerOff( isEnabled := statuses.busyStatus.idle );
                 <addData>
                   <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                     <Attributes>
-                      <Attribute Name="TcRpcEnable" Value="1" />
                     </Attributes>
                   </data>
                 </addData>
