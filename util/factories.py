@@ -369,7 +369,7 @@ class Variable(Object):
 
     def __init__(self, name, parent, args={}):
         super().__init__(name, parent)
-        check_args("Variable", args, 
+        check_args(f"Variable {name}", args, 
                    ["type", "expand", "initial", "comment",
                     "pointsToType", "attributes", "qualifiers", "arguments",
                     "address"])

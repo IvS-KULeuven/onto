@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
-  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-02-14T23:22:01.793207" />
-  <contentHeader name="marvel" modificationDateTime="2025-02-14T23:22:01.793207">
+  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-02-15T22:09:55.843531" />
+  <contentHeader name="marvel" modificationDateTime="2025-02-15T22:09:55.843531">
     <coordinateInfo>
       <fbd>
         <scaling x="1" y="1" />
@@ -199,6 +199,45 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Point multiple units at once</xhtml>
               </documentation>
             </variable>
+            <variable name="openDomes">
+              <type><derived name="MarvelMultiUnitProcess" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Open the dome of multiple units at once</xhtml>
+              </documentation>
+            </variable>
+            <variable name="closeDomes">
+              <type><derived name="MarvelMultiUnitProcess" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Close the dome of multiple units at once</xhtml>
+              </documentation>
+            </variable>
+            <variable name="stopDomes">
+              <type><derived name="MarvelMultiUnitProcess" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Stop the dome of multiple units at once</xhtml>
+              </documentation>
+            </variable>
           </struct>
         </baseType>
       </dataType>
@@ -370,6 +409,64 @@
           </struct>
         </baseType>
       </dataType>
+      <dataType name="MarvelMultiUnitProcessArgs">
+        <baseType>
+          <struct>
+            <variable name="u1">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">True to use Unit 1</xhtml>
+              </documentation>
+            </variable>
+            <variable name="u2">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">True to use Unit 2</xhtml>
+              </documentation>
+            </variable>
+            <variable name="u3">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">True to use Unit 3</xhtml>
+              </documentation>
+            </variable>
+            <variable name="u4">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">True to use Unit 4</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
     </dataTypes>
     <pous>
       <pou name="SM_Marvel" pouType="functionBlock">
@@ -503,6 +600,9 @@ processes.wakeUp( isEnabled := TRUE );
 processes.goToSleep( isEnabled := TRUE );
 processes.emergencyClose( isEnabled := NOT(parts.u1.parts.dome.parts.shutter.statuses.apertureStatus.closed AND (parts.u1.parts.dome.parts.shutter.statuses.apertureStatus.closed AND (parts.u1.parts.dome.parts.shutter.statuses.apertureStatus.closed AND parts.u1.parts.dome.parts.shutter.statuses.apertureStatus.closed))) );
 processes.point( isEnabled := parts.u1.processes.point.isEnabled OR (parts.u2.processes.point.isEnabled OR (parts.u3.processes.point.isEnabled OR parts.u4.processes.point.isEnabled)) );
+processes.openDomes( isEnabled := parts.u1.parts.dome.parts.shutter.processes.open.isEnabled OR (parts.u2.parts.dome.parts.shutter.processes.open.isEnabled OR (parts.u3.parts.dome.parts.shutter.processes.open.isEnabled OR parts.u4.parts.dome.parts.shutter.processes.open.isEnabled)) );
+processes.closeDomes( isEnabled := parts.u1.parts.dome.parts.shutter.processes.close.isEnabled OR (parts.u2.parts.dome.parts.shutter.processes.close.isEnabled OR (parts.u3.parts.dome.parts.shutter.processes.close.isEnabled OR parts.u4.parts.dome.parts.shutter.processes.close.isEnabled)) );
+processes.stopDomes( isEnabled := parts.u1.parts.dome.parts.shutter.processes.stop.isEnabled OR (parts.u2.parts.dome.parts.shutter.processes.stop.isEnabled OR (parts.u3.parts.dome.parts.shutter.processes.stop.isEnabled OR parts.u4.parts.dome.parts.shutter.processes.stop.isEnabled)) );
 </xhtml>
           </ST>
         </body>
@@ -900,6 +1000,258 @@ processes.point( isEnabled := parts.u1.processes.point.isEnabled OR (parts.u2.pr
             </Method>
           </data>
           <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="openDomes">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                  <variable name="u1">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="TcHmiSymbol.Show" Value="" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="u2">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="TcHmiSymbol.Show" Value="" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="u3">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="TcHmiSymbol.Show" Value="" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="u4">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="TcHmiSymbol.Show" Value="" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">openDomes := THIS^.processes.openDomes.request(
+    u1 := u1,
+    u2 := u2,
+    u3 := u3,
+    u4 := u4);
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="closeDomes">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                  <variable name="u1">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="TcHmiSymbol.Show" Value="" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="u2">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="TcHmiSymbol.Show" Value="" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="u3">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="TcHmiSymbol.Show" Value="" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="u4">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="TcHmiSymbol.Show" Value="" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">closeDomes := THIS^.processes.closeDomes.request(
+    u1 := u1,
+    u2 := u2,
+    u3 := u3,
+    u4 := u4);
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="stopDomes">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                  <variable name="u1">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="TcHmiSymbol.Show" Value="" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="u2">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="TcHmiSymbol.Show" Value="" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="u3">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="TcHmiSymbol.Show" Value="" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="u4">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="TcHmiSymbol.Show" Value="" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">stopDomes := THIS^.processes.stopDomes.request(
+    u1 := u1,
+    u2 := u2,
+    u3 := u3,
+    u4 := u4);
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
             <Method name="_log">
               <interface>
                 <returnType><BOOL /></returnType>
@@ -997,6 +1349,15 @@ THIS^.processes.emergencyClose._log(
     buffer := subBuffer);
 THIS^.processes.point._log(
     name := &#39;processes.point&#39;,
+    buffer := subBuffer);
+THIS^.processes.openDomes._log(
+    name := &#39;processes.openDomes&#39;,
+    buffer := subBuffer);
+THIS^.processes.closeDomes._log(
+    name := &#39;processes.closeDomes&#39;,
+    buffer := subBuffer);
+THIS^.processes.stopDomes._log(
+    name := &#39;processes.stopDomes&#39;,
     buffer := subBuffer);
 LOGGER(
     name := name,
@@ -1308,6 +1669,243 @@ END_IF;
           </data>
         </addData>
       </pou>
+      <pou name="MarvelMultiUnitProcess" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="set">
+              <type><derived name="MarvelMultiUnitProcessArgs" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Arguments to be set, before writing do_request TRUE</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="get">
+              <type><derived name="MarvelMultiUnitProcessArgs" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Arguments in use by the process, if do_request was accepted</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <inOutVars>
+          </inOutVars>
+          <localVars>
+          </localVars>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/pouinheritance" handleUnknown="implementation">
+              <Inheritance>
+                <Extends>BaseProcess</Extends>
+              </Inheritance>
+            </data>
+          </addData>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+    do_request_result := request(
+    u1 := set.u1,
+    u2 := set.u2,
+    u3 := set.u3,
+    u4 := set.u4);
+    do_request := FALSE;
+END_IF;
+SUPER^();
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="start">
+              <interface>
+                <inputVars>
+                  <variable name="u1">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="TcHmiSymbol.Show" Value="" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">True to use Unit 1</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="u2">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="TcHmiSymbol.Show" Value="" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">True to use Unit 2</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="u3">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="TcHmiSymbol.Show" Value="" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">True to use Unit 3</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="u4">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="TcHmiSymbol.Show" Value="" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">True to use Unit 4</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.u1 := u1;
+THIS^.get.u2 := u2;
+THIS^.get.u3 := u3;
+THIS^.get.u4 := u4;
+THIS^.statuses.busyStatus( isBusy := TRUE );
+THIS^.statuses.healthStatus( isGood := TRUE );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="request">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                  <variable name="u1">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="TcHmiSymbol.Show" Value="" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">True to use Unit 1</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="u2">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="TcHmiSymbol.Show" Value="" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">True to use Unit 2</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="u3">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="TcHmiSymbol.Show" Value="" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">True to use Unit 3</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="u4">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="TcHmiSymbol.Show" Value="" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">True to use Unit 4</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF THIS^.statuses.enabledStatus.enabled THEN
+    request := RequestResults.ACCEPTED;
+    THIS^.start(
+        u1 := u1,
+        u2 := u2,
+        u3 := u3,
+        u4 := u4);
+ELSE
+    request := RequestResults.REJECTED;
+END_IF;
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+        </addData>
+      </pou>
     </pous>
   </types>
   <instances>
@@ -1344,6 +1942,9 @@ END_IF;
               <Object Name="goToSleep" />
               <Object Name="emergencyClose" />
               <Object Name="point" />
+              <Object Name="openDomes" />
+              <Object Name="closeDomes" />
+              <Object Name="stopDomes" />
               <Object Name="_log" />
             </Object>
           </Folder>
@@ -1355,8 +1956,14 @@ END_IF;
             <Folder Name="Args">
               <Object Name="MarvelPointProcessArgs">
               </Object>
+              <Object Name="MarvelMultiUnitProcessArgs">
+              </Object>
             </Folder>
             <Object Name="MarvelPointProcess">
+              <Object Name="start" />
+              <Object Name="request" />
+            </Object>
+            <Object Name="MarvelMultiUnitProcess">
               <Object Name="start" />
               <Object Name="request" />
             </Object>

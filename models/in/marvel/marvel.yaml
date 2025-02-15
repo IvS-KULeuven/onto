@@ -37,6 +37,18 @@
   
 
   ########################################################################################################################
+  # MarvelMultiUnitProcess
+  ########################################################################################################################
+  !PROCESS MarvelMultiUnitProcess:
+      extends: mtcs_common.BaseProcess
+      arguments:
+          u1                  : { type: t_bool                              , comment: "True to use Unit 1" }
+          u2                  : { type: t_bool                              , comment: "True to use Unit 2" }
+          u3                  : { type: t_bool                              , comment: "True to use Unit 3" }
+          u4                  : { type: t_bool                              , comment: "True to use Unit 4" }
+  
+
+  ########################################################################################################################
   # Marvel
   ########################################################################################################################
   !STATEMACHINE Marvel:
@@ -69,6 +81,11 @@
                                         statuses:
                                             attributes:
                                                 apertureStatus: { type: mtcs_common.ApertureStatus }
+                                        processes:
+                                            attributes:
+                                                open:   { attributes: { isEnabled: { type: t_bool } } }
+                                                close:  { attributes: { isEnabled: { type: t_bool } } }
+                                                stop:   { attributes: { isEnabled: { type: t_bool } } }
                   statuses:
                       attributes:
                           healthStatus    : { type: mtcs_common.HealthStatus }
@@ -96,6 +113,11 @@
                                         statuses:
                                             attributes:
                                                 apertureStatus: { type: mtcs_common.ApertureStatus }
+                                        processes:
+                                            attributes:
+                                                open:   { attributes: { isEnabled: { type: t_bool } } }
+                                                close:  { attributes: { isEnabled: { type: t_bool } } }
+                                                stop:   { attributes: { isEnabled: { type: t_bool } } }
                   statuses:
                       attributes:
                           healthStatus    : { type: mtcs_common.HealthStatus }
@@ -123,6 +145,11 @@
                                         statuses:
                                             attributes:
                                                 apertureStatus: { type: mtcs_common.ApertureStatus }
+                                        processes:
+                                            attributes:
+                                                open:   { attributes: { isEnabled: { type: t_bool } } }
+                                                close:  { attributes: { isEnabled: { type: t_bool } } }
+                                                stop:   { attributes: { isEnabled: { type: t_bool } } }
                   statuses:
                       attributes:
                           healthStatus    : { type: mtcs_common.HealthStatus }
@@ -150,6 +177,11 @@
                                         statuses:
                                             attributes:
                                                 apertureStatus: { type: mtcs_common.ApertureStatus }
+                                        processes:
+                                            attributes:
+                                                open:   { attributes: { isEnabled: { type: t_bool } } }
+                                                close:  { attributes: { isEnabled: { type: t_bool } } }
+                                                stop:   { attributes: { isEnabled: { type: t_bool } } }
                   statuses:
                       attributes:
                           healthStatus    : { type: mtcs_common.HealthStatus }
@@ -179,6 +211,9 @@
           goToSleep                   : { type: mtcs_common.Process                         , comment: "Let the whole Marvel TCS go to sleep" }
           emergencyClose              : { type: mtcs_common.Process                         , comment: "Close all domes asap" }
           point                       : { type: MarvelPointProcess                          , comment: "Point multiple units at once"}
+          openDomes                   : { type: MarvelMultiUnitProcess                      , comment: "Open the dome of multiple units at once"}
+          closeDomes                  : { type: MarvelMultiUnitProcess                      , comment: "Close the dome of multiple units at once"}
+          stopDomes                   : { type: MarvelMultiUnitProcess                      , comment: "Stop the dome of multiple units at once"}
       calls:
           initialize:
               isEnabled           : !NOT [ statuses.initializationStatus.initializing ]
@@ -199,6 +234,21 @@
                                           parts.u2.processes.point.isEnabled,
                                           parts.u3.processes.point.isEnabled,
                                           parts.u4.processes.point.isEnabled ]
+          openDomes:
+              isEnabled           : !OR [ parts.u1.parts.dome.parts.shutter.processes.open.isEnabled,
+                                          parts.u2.parts.dome.parts.shutter.processes.open.isEnabled,
+                                          parts.u3.parts.dome.parts.shutter.processes.open.isEnabled,
+                                          parts.u4.parts.dome.parts.shutter.processes.open.isEnabled ]
+          closeDomes:
+              isEnabled           : !OR [ parts.u1.parts.dome.parts.shutter.processes.close.isEnabled,
+                                          parts.u2.parts.dome.parts.shutter.processes.close.isEnabled,
+                                          parts.u3.parts.dome.parts.shutter.processes.close.isEnabled,
+                                          parts.u4.parts.dome.parts.shutter.processes.close.isEnabled ]
+          stopDomes:
+              isEnabled           : !OR [ parts.u1.parts.dome.parts.shutter.processes.stop.isEnabled,
+                                          parts.u2.parts.dome.parts.shutter.processes.stop.isEnabled,
+                                          parts.u3.parts.dome.parts.shutter.processes.stop.isEnabled,
+                                          parts.u4.parts.dome.parts.shutter.processes.stop.isEnabled ]
           u1:
               number              : !UINT8 1
               operatorStatus      : statuses.operatorStatus
