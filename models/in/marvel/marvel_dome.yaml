@@ -174,6 +174,9 @@
       simulated                : { type: t_bool,  initial: !BOOL "TRUE" , comment: "TRUE if the shutter is simulated, FALSE if not"}
       openingTimeoutSeconds    : { type: t_double                       , comment: "The opening timeout."}
       closingTimeoutSeconds    : { type: t_double                       , comment: "The closing timeout."}
+      humidityLimit            : { type: t_double                       , comment: "The auto closing humidity limit in % (sent to Shutter PLC during initialization)" }
+      driveLogic               : { type: DomeShutterDriveLogic          , comment: "The logic of the shutter motor drives (sent to Shutter PLC during initialization)" }
+      heartBeatTimeout         : { type: t_int16                        , comment: "The maximum heartbeat timeout allowed in seconds (sent to Shutter PLC during initialization)" }
   
   ##########################################################################
   # DomeRotationConfig
@@ -435,6 +438,16 @@
 
 
 
+  ########################################################################################################################
+  # DomeShutterSendProcess
+  ########################################################################################################################
+  !PROCESS DomeShutterSendProcess:
+      extends: mtcs_common.BaseProcess
+      arguments:
+          command     : { type: DomeShutterCommands, comment: "Command to send" }
+          arg         : { type: t_int16            , comment: "The int16 argument belonging to the command (optional)" }
+  
+
   
   ########################################################################################################################
   # DomeShutter
@@ -463,6 +476,7 @@
       humidity                 : { type: mtcs_common.Fraction              , comment: "The measured humidity" }
       humidityHealthStatus     : { type: mtcs_common.HealthStatus          , comment: "The humidity sensor health" }
       humidityActualStatus     : { type: t_string                          , comment: "The humidity sensor status as a string" }
+      humidityLimit            : { type: mtcs_common.Fraction              , comment: "The humidity limit" }
     references:
       initializationStatus    : { type: mtcs_common.InitializationStatus    , comment: "Dome initialization status (initialized/initializing/...)"}
       operatorStatus          : { type: mtcs_common.OperatorStatus          , comment: "MTCS operator (observer/tech)"}
@@ -478,6 +492,7 @@
       open                    : { type: mtcs_common.Process                 , comment: "Open both panels" }
       close                   : { type: mtcs_common.Process                 , comment: "Close both panels" }
       stop                    : { type: mtcs_common.Process                 , comment: "Stop the panels" }
+      send                    : { type: DomeShutterSendProcess              , comment: "Send a raw command" }
     calls:
       # processes
       stop:
@@ -494,6 +509,8 @@
                                       !AND [ !NOT [ initializationStatus.locked ], 
                                              statuses.busyStatus.idle, 
                                              initializationStatus.initialized ] ]
+      send:
+        isEnabled             : !OR [ operatorStatus.tech, isConnected ]
       # statuses
       apertureStatus:
         superState            : !NOT [ !OR [ !EQ [ dataRead.apertureState, DomeShutterApertureStates.UNKNOWN ], 
