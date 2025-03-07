@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
-  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-02-15T22:09:55.843531" />
-  <contentHeader name="marvel_dome" modificationDateTime="2025-02-15T22:09:55.843531">
+  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-03-07T11:57:23.240244" />
+  <contentHeader name="marvel_dome" modificationDateTime="2025-03-07T11:57:23.240244">
     <coordinateInfo>
       <fbd>
         <scaling x="1" y="1" />
@@ -2347,6 +2347,96 @@ LOGGER(
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">The error id if adsReadError is true</xhtml>
               </documentation>
             </variable>
+            <variable name="temperature">
+              <type><derived name="Temperature" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The measured temperature</xhtml>
+              </documentation>
+            </variable>
+            <variable name="temperatureHealthStatus">
+              <type><derived name="HealthStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The temperature sensor health</xhtml>
+              </documentation>
+            </variable>
+            <variable name="temperatureActualStatus">
+              <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The temperature sensor status as a string</xhtml>
+              </documentation>
+            </variable>
+            <variable name="humidity">
+              <type><derived name="Fraction" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The measured humidity</xhtml>
+              </documentation>
+            </variable>
+            <variable name="humidityHealthStatus">
+              <type><derived name="HealthStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The humidity sensor health</xhtml>
+              </documentation>
+            </variable>
+            <variable name="humidityActualStatus">
+              <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The humidity sensor status as a string</xhtml>
+              </documentation>
+            </variable>
           </inputVars>
           <outputVars>
             <variable name="actualStatus">
@@ -2529,7 +2619,7 @@ statuses.busyStatus(
     superState := NOT(initializationStatus.shutdown),
     isBusy := processes.open.statuses.busyStatus.busy OR (processes.close.statuses.busyStatus.busy OR processes.stop.statuses.busyStatus.busy));
 processes.open( isEnabled := statuses.healthStatus.isGood AND ((NOT(initializationStatus.locked)) AND (operatorStatus.tech OR (statuses.busyStatus.idle AND (initializationStatus.initialized AND (activityStatus.awake OR activityStatus.moving))))) );
-processes.close( isEnabled := operatorStatus.tech OR (statuses.healthStatus.isGood AND ((NOT(initializationStatus.locked)) AND (statuses.busyStatus.idle AND initializationStatus.initialized))) );
+processes.close( isEnabled := operatorStatus.tech OR ((NOT(initializationStatus.locked)) AND (statuses.busyStatus.idle AND initializationStatus.initialized)) );
 processes.stop( isEnabled := statuses.busyStatus.busy );
 </xhtml>
           </ST>

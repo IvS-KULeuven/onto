@@ -74,6 +74,8 @@ class PlcOpenAttribute:
         self.plc_symbol = symbol
         self.value = value
 
+    def __eq__(self, value):
+        return (value.plc_symbol == self.plc_symbol) and (value.value == self.value)
 
 class QUALIFIERS:
     """
@@ -86,6 +88,7 @@ class QUALIFIERS:
     OPC_UA_ACCESS_W = PlcOpenAttribute(symbol = 'OPC.UA.DA.Access', value = '2')
     OPC_UA_ACCESS_RW = PlcOpenAttribute(symbol = 'OPC.UA.DA.Access', value = '3')
     HMI_SHOW = PlcOpenAttribute(symbol = 'TcHmiSymbol.Show', value = '')
+    HMI_SHOWRECURSIVELY = PlcOpenAttribute(symbol = 'TcHmiSymbol.ShowRecursively', value = '')
     HMI_HIDE = PlcOpenAttribute(symbol = 'TcHmiSymbol.Hide', value = '')
 
 
@@ -435,7 +438,11 @@ class Variable(Object):
         if 'qualifiers' in args:
             for qualifier in args['qualifiers']:
                 # TODO: resolve?
-                self.qualifiers.append(qualifier)
+                if isinstance(qualifier, dict):
+                    self.qualifiers.append(PlcOpenAttribute(symbol=qualifier['symbol'], value=qualifier['value']))
+                else:
+                    self.qualifiers.append(qualifier)
+                
         if 'arguments' in args:
             self.arguments = {}
             for argument_k, argument_v in args['arguments'].items():
@@ -447,7 +454,8 @@ class Variable(Object):
         if not name.startswith('_'):
             if QUALIFIERS.HMI_SHOW not in self.qualifiers:
                 if QUALIFIERS.OPC_UA_DEACTIVATE not in self.qualifiers:
-                    self.qualifiers.append(QUALIFIERS.HMI_SHOW)
+                    if QUALIFIERS.HMI_SHOWRECURSIVELY not in self.qualifiers:
+                        self.qualifiers.append(QUALIFIERS.HMI_SHOW)
 
 
 class EnumItem(Variable):
@@ -772,7 +780,7 @@ class Statemachine(FunctionBlock):
                     v.qualifiers.append(QUALIFIERS.OPC_UA_ACTIVATE)
                 if QUALIFIERS.OPC_UA_ACCESS_R not in v.qualifiers:
                     v.qualifiers.append(QUALIFIERS.OPC_UA_ACCESS_R)
-                if QUALIFIERS.HMI_SHOW not in v.qualifiers:
+                if QUALIFIERS.HMI_SHOW not in v.qualifiers and QUALIFIERS.HMI_SHOWRECURSIVELY not in v.qualifiers:
                     v.qualifiers.append(QUALIFIERS.HMI_SHOW)
                 self.var_in[var_name] = v
                 self.vars[var_name] = v
@@ -784,7 +792,7 @@ class Statemachine(FunctionBlock):
                     v.qualifiers.append(QUALIFIERS.OPC_UA_ACTIVATE)
                 if QUALIFIERS.OPC_UA_ACCESS_R not in v.qualifiers:
                     v.qualifiers.append(QUALIFIERS.OPC_UA_ACCESS_R)
-                if QUALIFIERS.HMI_SHOW not in v.qualifiers:
+                if QUALIFIERS.HMI_SHOW not in v.qualifiers and QUALIFIERS.HMI_SHOWRECURSIVELY not in v.qualifiers:
                     v.qualifiers.append(QUALIFIERS.HMI_SHOW)
                 self.var_out[var_name] = v
                 self.vars[var_name] = v

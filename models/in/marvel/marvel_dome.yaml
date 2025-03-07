@@ -455,13 +455,14 @@
       # ADS write
       adsWriteError            : { type: t_bool                            , comment: "True if the ADS Read communication to the shutter PLC is in error" }
       adsWriteErrorId          : { type: t_uint32                          , comment: "The error id if adsReadError is true" }
-      # manual buttons
-      #  manualOpenUpper         : { type: t_bool          , address: "%I*"  , comment: "Manual operation: open upper switch" }
-      #  manualCloseUpper        : { type: t_bool          , address: "%I*"  , comment: "Manual operation: close upper switch" }
-      #  manualOpenLower         : { type: t_bool          , address: "%I*"  , comment: "Manual operation: open lower switch" }
-      #  manualCloseLower        : { type: t_bool          , address: "%I*"  , comment: "Manual operation: close lower switch" }
-      #  automaticOperation      : { type: t_bool          , address: "%I*"  , comment: "TRUE if switch is on Auto, FALSE if switch is Manual" }
-      
+      # temperature sensor
+      temperature              : { type: mtcs_common.Temperature           , comment: "The measured temperature" }
+      temperatureHealthStatus  : { type: mtcs_common.HealthStatus          , comment: "The temperature sensor health" }
+      temperatureActualStatus  : { type: t_string                          , comment: "The temperature sensor status as a string" }
+      # humidity sensor
+      humidity                 : { type: mtcs_common.Fraction              , comment: "The measured humidity" }
+      humidityHealthStatus     : { type: mtcs_common.HealthStatus          , comment: "The humidity sensor health" }
+      humidityActualStatus     : { type: t_string                          , comment: "The humidity sensor status as a string" }
     references:
       initializationStatus    : { type: mtcs_common.InitializationStatus    , comment: "Dome initialization status (initialized/initializing/...)"}
       operatorStatus          : { type: mtcs_common.OperatorStatus          , comment: "MTCS operator (observer/tech)"}
@@ -490,8 +491,7 @@
                                                     !OR [ activityStatus.awake, activityStatus.moving ] ] ] ]
       close:
         isEnabled             : !OR [ operatorStatus.tech,
-                                      !AND [ statuses.healthStatus.isGood, 
-                                             !NOT [ initializationStatus.locked ], 
+                                      !AND [ !NOT [ initializationStatus.locked ], 
                                              statuses.busyStatus.idle, 
                                              initializationStatus.initialized ] ]
       # statuses
