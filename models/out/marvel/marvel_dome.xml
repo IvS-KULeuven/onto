@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
-  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-03-07T15:43:21.042435" />
-  <contentHeader name="marvel_dome" modificationDateTime="2025-03-07T15:43:21.042435">
+  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-03-10T13:42:12.171053" />
+  <contentHeader name="marvel_dome" modificationDateTime="2025-03-10T13:42:12.171053">
     <coordinateInfo>
       <fbd>
         <scaling x="1" y="1" />
@@ -251,7 +251,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Synchronize the dome once with the axes</xhtml>
               </documentation>
             </variable>
-            <variable name="startTracking">
+            <variable name="startTrackingTelescope">
               <type><derived name="Process" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -261,10 +261,23 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Start tracking the axes</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Start tracking the telescope azimuth</xhtml>
               </documentation>
             </variable>
-            <variable name="stopTracking">
+            <variable name="point">
+              <type><derived name="PointAlphaDeltaProcess" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Point to and start tracking the alpha delta target</xhtml>
+              </documentation>
+            </variable>
+            <variable name="stopTrackingTelescope">
               <type><derived name="Process" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -274,7 +287,20 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Stop tracking the axes</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Stop tracking the telescope</xhtml>
+              </documentation>
+            </variable>
+            <variable name="stopTrackingTarget">
+              <type><derived name="Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Stop tracking the pointing target</xhtml>
               </documentation>
             </variable>
             <variable name="stop">
@@ -1673,7 +1699,7 @@ unknownDriveLogicError := (shutterValue = DomeShutterMotionStates.UNKNOWN_DRIVE_
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Previous status description</xhtml>
               </documentation>
             </variable>
-            <variable name="isTracking">
+            <variable name="isTrackingTelescope">
               <type><BOOL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -1686,6 +1712,21 @@ unknownDriveLogicError := (shutterValue = DomeShutterMotionStates.UNKNOWN_DRIVE_
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the dome is tracking the telescope</xhtml>
+              </documentation>
+            </variable>
+            <variable name="isTrackingTarget">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the dome is tracking the alpha delta target</xhtml>
               </documentation>
             </variable>
             <variable name="isAtKnownPosition">
@@ -1701,6 +1742,36 @@ unknownDriveLogicError := (shutterValue = DomeShutterMotionStates.UNKNOWN_DRIVE_
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the dome is at a known position</xhtml>
+              </documentation>
+            </variable>
+            <variable name="targetAlpha">
+              <type><derived name="AngularPosition" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The target alpha coordinate (Right Ascention)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="targetDelta">
+              <type><derived name="AngularPosition" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The target delta coordinate (Declination)</xhtml>
               </documentation>
             </variable>
             <variable name="actualKnownPositionName">
@@ -1851,9 +1922,11 @@ processes.reset( isEnabled := statuses.busyStatus.idle AND statuses.initializati
 processes.powerOn( isEnabled := (NOT(statuses.initializationStatus.locked)) AND (statuses.initializationStatus.initialized AND processes.powerOn.statuses.busyStatus.idle) );
 processes.powerOff( isEnabled := statuses.initializationStatus.initialized AND processes.powerOff.statuses.busyStatus.idle );
 processes.syncWithAxes( isEnabled := statuses.initializationStatus.initialized AND (statuses.busyStatus.idle AND statuses.poweredStatus.enabled) );
-processes.startTracking( isEnabled := statuses.poweredStatus.enabled AND (NOT(isTracking)) );
-processes.stopTracking( isEnabled := isTracking );
-processes.stop( isEnabled := statuses.busyStatus.busy OR (isTracking OR operatorStatus.tech) );
+processes.startTrackingTelescope( isEnabled := statuses.poweredStatus.enabled AND (NOT(isTrackingTelescope)) );
+processes.point( isEnabled := statuses.poweredStatus.enabled AND (NOT(isTrackingTarget)) );
+processes.stopTrackingTelescope( isEnabled := isTrackingTelescope );
+processes.stopTrackingTarget( isEnabled := isTrackingTarget );
+processes.stop( isEnabled := statuses.busyStatus.busy OR (isTrackingTelescope OR (isTrackingTarget OR operatorStatus.tech)) );
 processes.moveKnownPosition( isEnabled := statuses.initializationStatus.initialized AND (statuses.busyStatus.idle AND statuses.poweredStatus.enabled) );
 </xhtml>
           </ST>
@@ -2097,7 +2170,7 @@ processes.moveKnownPosition( isEnabled := statuses.initializationStatus.initiali
             </Method>
           </data>
           <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="startTracking">
+            <Method name="startTrackingTelescope">
               <interface>
                 <returnType><derived name="RequestResults" /></returnType>
                 <inputVars>
@@ -2118,14 +2191,70 @@ processes.moveKnownPosition( isEnabled := statuses.initializationStatus.initiali
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">startTracking := THIS^.processes.startTracking.request();
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">startTrackingTelescope := THIS^.processes.startTrackingTelescope.request();
 </xhtml>
                 </ST>
               </body>
             </Method>
           </data>
           <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="stopTracking">
+            <Method name="point">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                  <variable name="alpha">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="TcHmiSymbol.Show" Value="" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="delta">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="TcHmiSymbol.Show" Value="" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">point := THIS^.processes.point.request(
+    alpha := alpha,
+    delta := delta);
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="stopTrackingTelescope">
               <interface>
                 <returnType><derived name="RequestResults" /></returnType>
                 <inputVars>
@@ -2146,7 +2275,35 @@ processes.moveKnownPosition( isEnabled := statuses.initializationStatus.initiali
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">stopTracking := THIS^.processes.stopTracking.request();
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">stopTrackingTelescope := THIS^.processes.stopTrackingTelescope.request();
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="stopTrackingTarget">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">stopTrackingTarget := THIS^.processes.stopTrackingTarget.request();
 </xhtml>
                 </ST>
               </body>
@@ -2311,11 +2468,17 @@ THIS^.processes.powerOff._log(
 THIS^.processes.syncWithAxes._log(
     name := &#39;processes.syncWithAxes&#39;,
     buffer := subBuffer);
-THIS^.processes.startTracking._log(
-    name := &#39;processes.startTracking&#39;,
+THIS^.processes.startTrackingTelescope._log(
+    name := &#39;processes.startTrackingTelescope&#39;,
     buffer := subBuffer);
-THIS^.processes.stopTracking._log(
-    name := &#39;processes.stopTracking&#39;,
+THIS^.processes.point._log(
+    name := &#39;processes.point&#39;,
+    buffer := subBuffer);
+THIS^.processes.stopTrackingTelescope._log(
+    name := &#39;processes.stopTrackingTelescope&#39;,
+    buffer := subBuffer);
+THIS^.processes.stopTrackingTarget._log(
+    name := &#39;processes.stopTrackingTarget&#39;,
     buffer := subBuffer);
 THIS^.processes.stop._log(
     name := &#39;processes.stop&#39;,
@@ -3962,8 +4125,10 @@ END_IF;
               <Object Name="powerOn" />
               <Object Name="powerOff" />
               <Object Name="syncWithAxes" />
-              <Object Name="startTracking" />
-              <Object Name="stopTracking" />
+              <Object Name="startTrackingTelescope" />
+              <Object Name="point" />
+              <Object Name="stopTrackingTelescope" />
+              <Object Name="stopTrackingTarget" />
               <Object Name="stop" />
               <Object Name="moveKnownPosition" />
               <Object Name="_log" />

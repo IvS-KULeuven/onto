@@ -6,6 +6,7 @@
 
 
 !IMPORT models/in/mercator/mtcs_common.yaml:
+!IMPORT models/in/marvel/marvel_common.yaml:
 
 
 ########################################################################################################################
@@ -81,16 +82,6 @@
 
 
   ########################################################################################################################
-  # TelescopeSlewToCoordinatesProcess
-  ########################################################################################################################
-  !PROCESS TelescopeSlewToCoordinatesProcess:
-      extends: mtcs_common.BaseProcess
-      arguments:
-          alpha               : { type: t_double                            , comment: "Right ascention, in hours" }
-          delta               : { type: t_double                            , comment: "Declination, in degrees" }
-  
-
-  ########################################################################################################################
   # TelescopeSlewToAziEleProcess
   ########################################################################################################################
   !PROCESS TelescopeSlewToAziEleProcess:
@@ -149,13 +140,13 @@
           poweredStatus                   : { type: mtcs_common.PoweredStatus }
       processes:
           initialize                      : { type: mtcs_common.Process                         , comment: "Start initializing" }
-          lock                            : { type: mtcs_common.Process                     , comment: "Lock the cover" }
-          unlock                          : { type: mtcs_common.Process                     , comment: "Unlock the cover" }
+          lock                            : { type: mtcs_common.Process                         , comment: "Lock the cover" }
+          unlock                          : { type: mtcs_common.Process                         , comment: "Unlock the cover" }
           changeOperatingState            : { type: mtcs_common.ChangeOperatingStateProcess     , comment: "Change the operating state (e.g. AUTO, MANUAL, ...)" }
-          slewToCoordinates               : { type: TelescopeSlewToCoordinatesProcess           , comment: "Slew to the given equatorial coordinates" }
+          slewToCoordinates               : { type: marvel_common.PointAlphaDeltaProcess        , comment: "Slew to the given equatorial coordinates" }
           slewToAziEle                    : { type: TelescopeSlewToAziEleProcess                , comment: "Slew to the given horizontal coordinates" }
           abortSlew                       : { type: mtcs_common.Process                         , comment: "Stop the slewing" }
-          reset                           : { type: mtcs_common.Process                     , comment: "Reset any errors" }
+          reset                           : { type: mtcs_common.Process                         , comment: "Reset any errors" }
           powerOn                         : { type: mtcs_common.Process                         , comment: "Power on the axes" }
           powerOff                        : { type: mtcs_common.Process                         , comment: "Power off the axes" }
           moveKnownPosition               : { type: TelescopeMoveKnownPositionProcess           , comment: "Move the telescope to the given known position" }

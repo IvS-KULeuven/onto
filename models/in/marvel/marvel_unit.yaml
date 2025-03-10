@@ -7,6 +7,7 @@
 
 !IMPORT models/in/marvel/marvel_dome.yaml:
 !IMPORT models/in/marvel/marvel_telescope.yaml:
+!IMPORT models/in/marvel/marvel_common.yaml:
 
 
 ########################################################################################################################
@@ -24,16 +25,6 @@
         dome:       { type: marvel_dome.DomeConfig              , comment: "Dome config of a Marvel unit", expand: false }
         telescope:  { type: marvel_telescope.TelescopeConfig    , comment: "Telescope config of a Marvel unit", expand: false }
 
-
-
-  ########################################################################################################################
-  # UnitPointProcess
-  ########################################################################################################################
-  !PROCESS UnitPointProcess:
-      extends: mtcs_common.BaseProcess
-      arguments:
-          alpha               : { type: t_double                            , comment: "Right ascention, in hours" }
-          delta               : { type: t_double                            , comment: "Declination, in degrees" }
 
   ########################################################################################################################
   # Unit
@@ -96,8 +87,8 @@
           healthStatus                : { type: mtcs_common.HealthStatus }
           busyStatus                  : { type: mtcs_common.BusyStatus }
       processes:
-          initialize                  : { type: mtcs_common.Process , comment: "Start initializing the unit" }   
-          point                       : { type: UnitPointProcess    , comment: "Point the telescope and dome"}     
+          initialize                  : { type: mtcs_common.Process                     , comment: "Start initializing the unit" }   
+          point                       : { type: marvel_common.PointAlphaDeltaProcess    , comment: "Point the telescope and dome"}     
       calls:
           initialize:
               isEnabled           : !NOT [ statuses.initializationStatus.initializing ]

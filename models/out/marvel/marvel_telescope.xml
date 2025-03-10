@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
-  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-03-07T15:43:21.042435" />
-  <contentHeader name="marvel_telescope" modificationDateTime="2025-03-07T15:43:21.042435">
+  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-03-10T13:42:12.171053" />
+  <contentHeader name="marvel_telescope" modificationDateTime="2025-03-10T13:42:12.171053">
     <coordinateInfo>
       <fbd>
         <scaling x="1" y="1" />
@@ -77,7 +77,7 @@
               </documentation>
             </variable>
             <variable name="slewToCoordinates">
-              <type><derived name="TelescopeSlewToCoordinatesProcess" /></type>
+              <type><derived name="PointAlphaDeltaProcess" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -618,38 +618,6 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Tolerance (in degrees) to determine if the telescope is at a known position in rot direction</xhtml>
-              </documentation>
-            </variable>
-          </struct>
-        </baseType>
-      </dataType>
-      <dataType name="TelescopeSlewToCoordinatesProcessArgs">
-        <baseType>
-          <struct>
-            <variable name="alpha">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Right ascention, in hours</xhtml>
-              </documentation>
-            </variable>
-            <variable name="delta">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Declination, in degrees</xhtml>
               </documentation>
             </variable>
           </struct>
@@ -1587,185 +1555,6 @@ LOGGER(
           </data>
         </addData>
       </pou>
-      <pou name="TelescopeSlewToCoordinatesProcess" pouType="functionBlock">
-        <interface>
-          <inputVars>
-            <variable name="set">
-              <type><derived name="TelescopeSlewToCoordinatesProcessArgs" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Arguments to be set, before writing do_request TRUE</xhtml>
-              </documentation>
-            </variable>
-          </inputVars>
-          <outputVars>
-            <variable name="get">
-              <type><derived name="TelescopeSlewToCoordinatesProcessArgs" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Arguments in use by the process, if do_request was accepted</xhtml>
-              </documentation>
-            </variable>
-          </outputVars>
-          <inOutVars>
-          </inOutVars>
-          <localVars>
-          </localVars>
-          <addData>
-            <data name="http://www.3s-software.com/plcopenxml/pouinheritance" handleUnknown="implementation">
-              <Inheritance>
-                <Extends>BaseProcess</Extends>
-              </Inheritance>
-            </data>
-          </addData>
-        </interface>
-        <body>
-          <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
-    do_request_result := request(
-    alpha := set.alpha,
-    delta := set.delta);
-    do_request := FALSE;
-END_IF;
-SUPER^();
-</xhtml>
-          </ST>
-        </body>
-        <addData>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="start">
-              <interface>
-                <inputVars>
-                  <variable name="alpha">
-                    <type><LREAL /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Right ascention, in hours</xhtml>
-                    </documentation>
-                  </variable>
-                  <variable name="delta">
-                    <type><LREAL /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Declination, in degrees</xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                </inOutVars>
-                <localVars>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                      <Attribute Name="TcRpcEnable" Value="1" />
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.alpha := alpha;
-THIS^.get.delta := delta;
-THIS^.statuses.busyStatus( isBusy := TRUE );
-THIS^.statuses.healthStatus( isGood := TRUE );
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="request">
-              <interface>
-                <returnType><derived name="RequestResults" /></returnType>
-                <inputVars>
-                  <variable name="alpha">
-                    <type><LREAL /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Right ascention, in hours</xhtml>
-                    </documentation>
-                  </variable>
-                  <variable name="delta">
-                    <type><LREAL /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Declination, in degrees</xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                </inOutVars>
-                <localVars>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                      <Attribute Name="TcRpcEnable" Value="1" />
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF THIS^.statuses.enabledStatus.enabled THEN
-    request := RequestResults.ACCEPTED;
-    THIS^.start(
-        alpha := alpha,
-        delta := delta);
-ELSE
-    request := RequestResults.REJECTED;
-END_IF;
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
-        </addData>
-      </pou>
       <pou name="TelescopeSlewToAziEleProcess" pouType="functionBlock">
         <interface>
           <inputVars>
@@ -2293,8 +2082,6 @@ END_IF;
           </Folder>
           <Folder Name="Processes">
             <Folder Name="Args">
-              <Object Name="TelescopeSlewToCoordinatesProcessArgs">
-              </Object>
               <Object Name="TelescopeSlewToAziEleProcessArgs">
               </Object>
               <Object Name="TelescopeSetTrackingProcessArgs">
@@ -2302,10 +2089,6 @@ END_IF;
               <Object Name="TelescopeMoveKnownPositionProcessArgs">
               </Object>
             </Folder>
-            <Object Name="TelescopeSlewToCoordinatesProcess">
-              <Object Name="start" />
-              <Object Name="request" />
-            </Object>
             <Object Name="TelescopeSlewToAziEleProcess">
               <Object Name="start" />
               <Object Name="request" />

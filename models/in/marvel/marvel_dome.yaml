@@ -6,6 +6,7 @@
 
 
 !IMPORT models/in/mercator/mtcs_common.yaml:
+!IMPORT models/in/marvel/marvel_common.yaml:
 
 
 ##########################################################################
@@ -232,9 +233,11 @@
       config                      : { type: DomeConfig                        , comment: "Active configuration of the cover" }
       telescopeAzi                : { type: mtcs_common.AngularPosition       , comment: "Azimuth target position of the telescope Axes"}
     variables_read_only:
-      isTracking                  : { type: t_bool                            , comment: "True if the dome is tracking the telescope" }
-      # telescopeTargetDistance     : { type: mtcs_common.AngularPosition       , comment: "Actual distance between telescope target and dome" }
+      isTrackingTelescope         : { type: t_bool                            , comment: "True if the dome is tracking the telescope" }
+      isTrackingTarget            : { type: t_bool                            , comment: "True if the dome is tracking the alpha delta target" }
       isAtKnownPosition           : { type: t_bool                            , comment: "True if the dome is at a known position" }
+      targetAlpha                 : { type: mtcs_common.AngularPosition       , comment: "The target alpha coordinate (Right Ascention)" , expand: false}
+      targetDelta                 : { type: mtcs_common.AngularPosition       , comment: "The target delta coordinate (Declination)" , expand: false }
       actualKnownPositionName     : { type: t_string                          , comment: "Name of the known position if isAtKnownPosition is True" }
     parts:
       shutter:
@@ -258,7 +261,6 @@
           operatingStatus         : { comment: "Dome operating status (manual/auto)"}
           config                  : { comment: "The rotation config"}
         attributes:
-          isHomed                 : { type: t_bool }
           statuses:
             attributes:
               healthStatus        : { type: mtcs_common.HealthStatus }
@@ -299,8 +301,10 @@
       powerOn                     : { type: mtcs_common.Process                     , comment: "Power on the dome" }
       powerOff                    : { type: mtcs_common.Process                     , comment: "Power off the dome" }
       syncWithAxes                : { type: mtcs_common.Process                     , comment: "Synchronize the dome once with the axes" }
-      startTracking               : { type: mtcs_common.Process                     , comment: "Start tracking the axes" }
-      stopTracking                : { type: mtcs_common.Process                     , comment: "Stop tracking the axes" }
+      startTrackingTelescope      : { type: mtcs_common.Process                     , comment: "Start tracking the telescope azimuth" }
+      point                       : { type: marvel_common.PointAlphaDeltaProcess    , comment: "Point to and start tracking the alpha delta target" }
+      stopTrackingTelescope       : { type: mtcs_common.Process                     , comment: "Stop tracking the telescope" }
+      stopTrackingTarget          : { type: mtcs_common.Process                     , comment: "Stop tracking the pointing target" }
       stop                        : { type: mtcs_common.Process                     , comment: "Stop the rotation movement and/or tracking" }
       moveKnownPosition           : { type: DomeMoveKnownPositionProcess            , comment: "Move the dome to the given known position" }
     calls:
@@ -328,12 +332,16 @@
         isEnabled                 : !AND [ statuses.initializationStatus.initialized,
                                            processes.powerOff.statuses.busyStatus.idle ]
       stop:
-        isEnabled                 : !OR [ statuses.busyStatus.busy, isTracking, operatorStatus.tech ]
+        isEnabled                 : !OR [ statuses.busyStatus.busy, isTrackingTelescope, isTrackingTarget, operatorStatus.tech ]
   
-      startTracking:
-        isEnabled                 : !AND [ statuses.poweredStatus.enabled, !NOT [isTracking] ]
-      stopTracking:
-        isEnabled                 : isTracking
+      startTrackingTelescope:
+        isEnabled                 : !AND [ statuses.poweredStatus.enabled, !NOT [isTrackingTelescope] ]
+      point:
+        isEnabled                 : !AND [ statuses.poweredStatus.enabled, !NOT [isTrackingTarget] ]
+      stopTrackingTelescope:
+        isEnabled                 : isTrackingTelescope
+      stopTrackingTarget:
+        isEnabled                 : isTrackingTarget
       moveKnownPosition:
           isEnabled               : !AND [ statuses.initializationStatus.initialized,
                                            statuses.busyStatus.idle,
@@ -549,12 +557,6 @@
     variables_read_only:
       actPos                      : { type: mtcs_common.AngularPosition         , comment: "The actual position (same as parts.masterAxis!)", expand: false }
       actVelo                     : { type: mtcs_common.AngularVelocity         , comment: "The actual velocity (same as parts.masterAxis!)", expand: false }
-      # actTorqueMaster             : { type: mtcs_common.Torque                  , comment: "The actual torque on the telescope axis by the master motor", expand: false }
-      # actTorqueSlave              : { type: mtcs_common.Torque                  , comment: "The actual torque on the telescope axis by the slave motor", expand: false }
-      # masterSlaveLag              : { type: mtcs_common.AngularPosition         , comment: "masterAxis.actPos - slaveAxis.actPos" }
-      # masterSlaveLagError         : { type: t_bool                              , comment: "(ABS(masterSlaveLag) >= config.maxMasterSlaveLag) AND isHomed AND poweredOn" }
-      # homingSensorSignal          : { type: t_bool                              , comment: "True = at home position"}
-      # isHomed                     : { type: t_bool                              , comment: "True if homing was done" }
     references:
       initializationStatus        : { type: mtcs_common.InitializationStatus    , comment: "Reference to the MTCS initialization status"}
       operatorStatus              : { type: mtcs_common.OperatorStatus          , comment: "Reference to the MTCS operator status"}
