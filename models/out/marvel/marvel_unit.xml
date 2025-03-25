@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
-  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-03-10T13:42:12.171053" />
-  <contentHeader name="marvel_unit" modificationDateTime="2025-03-10T13:42:12.171053">
+  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-03-22T23:39:50.874692" />
+  <contentHeader name="marvel_unit" modificationDateTime="2025-03-22T23:39:50.874692">
     <coordinateInfo>
       <fbd>
         <scaling x="1" y="1" />
@@ -93,6 +93,19 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Point the telescope and dome</xhtml>
+              </documentation>
+            </variable>
+            <variable name="stop">
+              <type><derived name="Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Stop the rotation movement and/or tracking</xhtml>
               </documentation>
             </variable>
           </struct>
@@ -255,6 +268,36 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Active configuration of the unit</xhtml>
               </documentation>
             </variable>
+            <variable name="targetAlpha">
+              <type><derived name="AngularPosition" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The target alpha coordinate (Right Ascention)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="targetDelta">
+              <type><derived name="AngularPosition" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The target delta coordinate (Declination)</xhtml>
+              </documentation>
+            </variable>
             <variable name="statuses">
               <type><derived name="UnitStatuses" /></type>
               <addData>
@@ -352,6 +395,7 @@ statuses.busyStatus(
     isBusy := parts.dome.statuses.busyStatus.busy OR (parts.telescope.statuses.busyStatus.busy OR parts.configManager.statuses.busyStatus.busy));
 processes.initialize( isEnabled := NOT(statuses.initializationStatus.initializing) );
 processes.point( isEnabled := parts.telescope.processes.slewToCoordinates.isEnabled AND parts.dome.processes.syncWithAxes.isEnabled );
+processes.stop( isEnabled := parts.telescope.processes.abortSlew.isEnabled OR parts.dome.processes.stop.isEnabled );
 </xhtml>
           </ST>
         </body>
@@ -441,6 +485,34 @@ processes.point( isEnabled := parts.telescope.processes.slewToCoordinates.isEnab
             </Method>
           </data>
           <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="stop">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">stop := THIS^.processes.stop.request();
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
             <Method name="_log">
               <interface>
                 <returnType><BOOL /></returnType>
@@ -515,6 +587,9 @@ THIS^.processes.initialize._log(
 THIS^.processes.point._log(
     name := &#39;processes.point&#39;,
     buffer := subBuffer);
+THIS^.processes.stop._log(
+    name := &#39;processes.stop&#39;,
+    buffer := subBuffer);
 LOGGER(
     name := name,
     actualStatus := THIS^.actualStatus,
@@ -559,6 +634,7 @@ LOGGER(
             <Object Name="SM_Unit">
               <Object Name="initialize" />
               <Object Name="point" />
+              <Object Name="stop" />
               <Object Name="_log" />
             </Object>
           </Folder>

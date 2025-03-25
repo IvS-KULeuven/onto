@@ -35,6 +35,8 @@
           editableConfig            : { type: UnitConfig                        , comment: "Editable configuration of the unit" , expand: false }
       variables_read_only:
           config                    : { type: UnitConfig                        , comment: "Active configuration of the unit" }
+          targetAlpha               : { type: mtcs_common.AngularPosition       , comment: "The target alpha coordinate (Right Ascention)" , expand: false}
+          targetDelta               : { type: mtcs_common.AngularPosition       , comment: "The target delta coordinate (Declination)" , expand: false }
       references:
         operatorStatus              : { type: mtcs_common.OperatorStatus        , comment: "Reference to the operator (observer/tech)"}
         activityStatus              : { type: mtcs_common.ActivityStatus        , comment: "Shared activity status"}
@@ -59,6 +61,9 @@
                         syncWithAxes:
                             attributes:
                                 isEnabled : { type: t_bool }
+                        stop:
+                            attributes:
+                                isEnabled : { type: t_bool }
           telescope:
               type : marvel_telescope.Telescope
               comment: "The telescope"
@@ -79,6 +84,9 @@
                         slewToCoordinates:
                             attributes:
                                 isEnabled : { type: t_bool }
+                        abortSlew:
+                            attributes:
+                                isEnabled : { type: t_bool }
           configManager:
               comment                     : "The config manager (to load/save/activate configuration data)"
               type                        : mtcs_common.ConfigManager
@@ -89,12 +97,16 @@
       processes:
           initialize                  : { type: mtcs_common.Process                     , comment: "Start initializing the unit" }   
           point                       : { type: marvel_common.PointAlphaDeltaProcess    , comment: "Point the telescope and dome"}     
+          stop                        : { type: mtcs_common.Process                     , comment: "Stop the rotation movement and/or tracking" }
       calls:
           initialize:
               isEnabled           : !NOT [ statuses.initializationStatus.initializing ]
           point:
               isEnabled           : !AND [ parts.telescope.processes.slewToCoordinates.isEnabled,
                                            parts.dome.processes.syncWithAxes.isEnabled ]
+          stop:
+              isEnabled           : !OR  [ parts.telescope.processes.abortSlew.isEnabled,
+                                           parts.dome.processes.stop.isEnabled ]
           dome:
               operatorStatus      : operatorStatus
               activityStatus      : activityStatus

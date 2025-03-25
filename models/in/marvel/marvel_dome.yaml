@@ -233,12 +233,12 @@
       config                      : { type: DomeConfig                        , comment: "Active configuration of the cover" }
       telescopeAzi                : { type: mtcs_common.AngularPosition       , comment: "Azimuth target position of the telescope Axes"}
     variables_read_only:
+      targetPos                   : { type: mtcs_common.AngularPosition       , comment: "Target azimuth"}
       isTrackingTelescope         : { type: t_bool                            , comment: "True if the dome is tracking the telescope" }
-      isTrackingTarget            : { type: t_bool                            , comment: "True if the dome is tracking the alpha delta target" }
       isAtKnownPosition           : { type: t_bool                            , comment: "True if the dome is at a known position" }
-      targetAlpha                 : { type: mtcs_common.AngularPosition       , comment: "The target alpha coordinate (Right Ascention)" , expand: false}
-      targetDelta                 : { type: mtcs_common.AngularPosition       , comment: "The target delta coordinate (Declination)" , expand: false }
       actualKnownPositionName     : { type: t_string                          , comment: "Name of the known position if isAtKnownPosition is True" }
+      targetDistance              : { type: mtcs_common.AngularPosition       , comment: "Distance to the setpoint"}
+      telescopeDistance           : { type: mtcs_common.AngularPosition       , comment: "Distance to the telescope azi"}
     parts:
       shutter:
         comment                   : "Shutter mechanism"
@@ -302,9 +302,8 @@
       powerOff                    : { type: mtcs_common.Process                     , comment: "Power off the dome" }
       syncWithAxes                : { type: mtcs_common.Process                     , comment: "Synchronize the dome once with the axes" }
       startTrackingTelescope      : { type: mtcs_common.Process                     , comment: "Start tracking the telescope azimuth" }
-      point                       : { type: marvel_common.PointAlphaDeltaProcess    , comment: "Point to and start tracking the alpha delta target" }
       stopTrackingTelescope       : { type: mtcs_common.Process                     , comment: "Stop tracking the telescope" }
-      stopTrackingTarget          : { type: mtcs_common.Process                     , comment: "Stop tracking the pointing target" }
+      moveAbsolute                : { type: DomeMoveProcess                         , comment: "Move absolute" }
       stop                        : { type: mtcs_common.Process                     , comment: "Stop the rotation movement and/or tracking" }
       moveKnownPosition           : { type: DomeMoveKnownPositionProcess            , comment: "Move the dome to the given known position" }
     calls:
@@ -332,16 +331,14 @@
         isEnabled                 : !AND [ statuses.initializationStatus.initialized,
                                            processes.powerOff.statuses.busyStatus.idle ]
       stop:
-        isEnabled                 : !OR [ statuses.busyStatus.busy, isTrackingTelescope, isTrackingTarget, operatorStatus.tech ]
-  
+        isEnabled                 : !OR [ statuses.busyStatus.busy, isTrackingTelescope,  operatorStatus.tech ]
+      moveAbsolute:
+        isEnabled                 : !AND [ statuses.initializationStatus.initialized,
+                                           processes.powerOff.statuses.busyStatus.idle ]
       startTrackingTelescope:
         isEnabled                 : !AND [ statuses.poweredStatus.enabled, !NOT [isTrackingTelescope] ]
-      point:
-        isEnabled                 : !AND [ statuses.poweredStatus.enabled, !NOT [isTrackingTarget] ]
       stopTrackingTelescope:
         isEnabled                 : isTrackingTelescope
-      stopTrackingTarget:
-        isEnabled                 : isTrackingTarget
       moveKnownPosition:
           isEnabled               : !AND [ statuses.initializationStatus.initialized,
                                            statuses.busyStatus.idle,
