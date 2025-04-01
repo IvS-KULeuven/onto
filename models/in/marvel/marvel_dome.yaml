@@ -233,11 +233,9 @@
       config                      : { type: DomeConfig                        , comment: "Active configuration of the cover" }
       telescopeAzi                : { type: mtcs_common.AngularPosition       , comment: "Azimuth target position of the telescope Axes"}
     variables_read_only:
-      targetPos                   : { type: mtcs_common.AngularPosition       , comment: "Target azimuth"}
       isTrackingTelescope         : { type: t_bool                            , comment: "True if the dome is tracking the telescope" }
       isAtKnownPosition           : { type: t_bool                            , comment: "True if the dome is at a known position" }
       actualKnownPositionName     : { type: t_string                          , comment: "Name of the known position if isAtKnownPosition is True" }
-      targetDistance              : { type: mtcs_common.AngularPosition       , comment: "Distance to the setpoint"}
       telescopeDistance           : { type: mtcs_common.AngularPosition       , comment: "Distance to the telescope azi"}
     parts:
       shutter:
@@ -265,7 +263,6 @@
             attributes:
               healthStatus        : { type: mtcs_common.HealthStatus }
               busyStatus          : { type: mtcs_common.BusyStatus }
-              poweredStatus       : { type: mtcs_common.PoweredStatus }
       # light:
       #   comment                   : "Light in dome"
       #   arguments:
@@ -291,15 +288,12 @@
       healthStatus                : { type: mtcs_common.HealthStatus }
       busyStatus                  : { type: mtcs_common.BusyStatus }
       operatingStatus             : { type: mtcs_common.OperatingStatus }
-      poweredStatus               : { type: mtcs_common.PoweredStatus }
     processes:
       initialize                  : { type: mtcs_common.Process                     , comment: "Start initializing" }
       changeOperatingState        : { type: mtcs_common.ChangeOperatingStateProcess , comment: "Change the operating state (e.g. AUTO, MANUAL, ...)" }
       lock                        : { type: mtcs_common.Process                     , comment: "Lock the cover" }
       unlock                      : { type: mtcs_common.Process                     , comment: "Unlock the cover" }
       reset                       : { type: mtcs_common.Process                     , comment: "Reset any errors" }
-      powerOn                     : { type: mtcs_common.Process                     , comment: "Power on the dome" }
-      powerOff                    : { type: mtcs_common.Process                     , comment: "Power off the dome" }
       syncWithAxes                : { type: mtcs_common.Process                     , comment: "Synchronize the dome once with the axes" }
       startTrackingTelescope      : { type: mtcs_common.Process                     , comment: "Start tracking the telescope azimuth" }
       stopTrackingTelescope       : { type: mtcs_common.Process                     , comment: "Stop tracking the telescope" }
@@ -323,30 +317,20 @@
       reset:
         isEnabled                 : !AND [ statuses.busyStatus.idle,
                                            statuses.initializationStatus.initialized ]
-      powerOn:
-        isEnabled                 : !AND [ !NOT [statuses.initializationStatus.locked ],
-                                           statuses.initializationStatus.initialized,
-                                           processes.powerOn.statuses.busyStatus.idle ]
-      powerOff:
-        isEnabled                 : !AND [ statuses.initializationStatus.initialized,
-                                           processes.powerOff.statuses.busyStatus.idle ]
       stop:
         isEnabled                 : !OR [ statuses.busyStatus.busy, isTrackingTelescope,  operatorStatus.tech ]
       moveAbsolute:
-        isEnabled                 : !AND [ statuses.initializationStatus.initialized,
-                                           processes.powerOff.statuses.busyStatus.idle ]
+        isEnabled                 : statuses.initializationStatus.initialized
       startTrackingTelescope:
-        isEnabled                 : !AND [ statuses.poweredStatus.enabled, !NOT [isTrackingTelescope] ]
+        isEnabled                 : !NOT [isTrackingTelescope]
       stopTrackingTelescope:
         isEnabled                 : isTrackingTelescope
       moveKnownPosition:
           isEnabled               : !AND [ statuses.initializationStatus.initialized,
-                                           statuses.busyStatus.idle,
-                                           statuses.poweredStatus.enabled ]
+                                           statuses.busyStatus.idle ]
       syncWithAxes:
           isEnabled               : !AND [ statuses.initializationStatus.initialized,
-                                           statuses.busyStatus.idle,
-                                           statuses.poweredStatus.enabled ]
+                                           statuses.busyStatus.idle ]
       # parts
       shutter:
         initializationStatus      : statuses.initializationStatus
@@ -366,8 +350,6 @@
       #   activityStatus            : activityStatus
       #   config                    : config.light
       # statuses
-      poweredStatus:
-        isEnabled                 : parts.rotation.statuses.poweredStatus.enabled
       operatingStatus:
         superState                : statuses.initializationStatus.initialized
       healthStatus:
@@ -375,16 +357,35 @@
                                                            parts.rotation,
                                                            # parts.light,
                                                            # parts.io 
-                                                           ]
+                                                           processes.reset,
+                                                           processes.initialize,
+                                                           processes.syncWithAxes,
+                                                           processes.startTrackingTelescope,
+                                                           processes.stopTrackingTelescope,
+                                                           processes.stop,
+                                                           processes.moveKnownPosition ]
   
         hasWarning                : !MTCS_SUMMARIZE_WARN [ parts.shutter,
                                                            parts.rotation,
                                                            # parts.light,
                                                            # parts.io
-                                                          ]
+                                                           processes.reset,
+                                                           processes.initialize,
+                                                           processes.syncWithAxes,
+                                                           processes.startTrackingTelescope,
+                                                           processes.stopTrackingTelescope,
+                                                           processes.stop,
+                                                           processes.moveKnownPosition ]
       busyStatus:
         isBusy                    : !MTCS_SUMMARIZE_BUSY [ parts.shutter,
-                                                           parts.rotation ]
+                                                           parts.rotation,
+                                                           processes.reset,
+                                                           processes.initialize,
+                                                           processes.syncWithAxes,
+                                                           processes.startTrackingTelescope,
+                                                           processes.stopTrackingTelescope,
+                                                           processes.stop,
+                                                           processes.moveKnownPosition ]
   
 
   ########################################################################################################################
@@ -552,6 +553,8 @@
   !STATEMACHINE DomeRotation:
     typeOf: DomeParts.rotation
     variables_read_only:
+      targetPos                   : { type: mtcs_common.AngularPosition         , comment: "Target azimuth"}
+      targetDistance              : { type: mtcs_common.AngularPosition         , comment: "Distance to the setpoint"}
       actPos                      : { type: mtcs_common.AngularPosition         , comment: "The actual position (same as parts.masterAxis!)", expand: false }
       actVelo                     : { type: mtcs_common.AngularVelocity         , comment: "The actual velocity (same as parts.masterAxis!)", expand: false }
     references:
@@ -560,32 +563,21 @@
       operatingStatus             : { type: mtcs_common.OperatingStatus         , comment: "Reference to the Dome operating status"}
       config                      : { type: DomeRotationConfig                  , comment: "Reference to the rotation config"}
     parts:
-      motorAxis                    : { type: mtcs_common.AngularAxis             , comment: "Motor axis" }
-      encoderAxis                   : { type: mtcs_common.AngularAxis             , comment: "Encoder axis" }
-      #drive                       : { type: mtcs_common.AX52XXDrive             , comment: "Dual axis drive" }
+      motorAxis                   : { type: mtcs_common.AngularAxis             , comment: "Motor axis" }
+      encoderAxis                 : { type: mtcs_common.AngularAxis             , comment: "Encoder axis" }
     statuses:
       healthStatus                : { type: mtcs_common.HealthStatus            , comment: "Health status"}
       busyStatus                  : { type: mtcs_common.BusyStatus              , comment: "Busy status" }
-      poweredStatus               : { type: mtcs_common.PoweredStatus           , comment: "Powered status" }
     processes:
       reset                       : { type: mtcs_common.Process                 , comment: "Reset errors" }
       stop                        : { type: mtcs_common.Process                 , comment: "Stop the rotation" }
-      moveAbsolute                : { type: DomeMoveProcess               , comment: "Move absolute" }
-      moveRelative                : { type: DomeMoveProcess               , comment: "Move relative" }
-      powerOn                     : { type: mtcs_common.Process                 , comment: "Power on master and slave" }
-      powerOff                    : { type: mtcs_common.Process                 , comment: "Power off master and slave" }
+      moveAbsolute                : { type: DomeMoveProcess                     , comment: "Move absolute" }
     calls:
       reset:
         isEnabled                 : statuses.busyStatus.idle
       stop:
         isEnabled                 : !OR [ statuses.busyStatus.busy, operatorStatus.tech ]
       moveAbsolute:
-        isEnabled                 : !AND [ statuses.busyStatus.idle, statuses.poweredStatus.enabled ]
-      moveRelative:
-        isEnabled                 : processes.moveAbsolute.isEnabled # same as moveAbsolute
-      powerOn:
-        isEnabled                 : !AND [ !NOT [ initializationStatus.locked ], statuses.busyStatus.idle ]
-      powerOff:
         isEnabled                 : statuses.busyStatus.idle
       # parts
       motorAxis:
@@ -593,24 +585,22 @@
       encoderAxis:
         isEnabled                 : !AND [ !NOT [ initializationStatus.locked ], operatorStatus.tech ]
       # statuses
-      poweredStatus:
-         isEnabled                : parts.motorAxis.statuses.poweredStatus.enabled
       healthStatus:
         isGood                    : !MTCS_SUMMARIZE_GOOD [ parts.motorAxis,
                                                            parts.encoderAxis,
-                                                           #parts.drive,
+                                                           processes.moveAbsolute,
                                                            processes.reset,
                                                            processes.stop
                                                          ]
         hasWarning            : !MTCS_SUMMARIZE_WARN [ parts.motorAxis,
                                                        parts.encoderAxis,
-                                                       # parts.drive,
+                                                       processes.moveAbsolute,
                                                        processes.reset,
                                                        processes.stop ]
       busyStatus:
         isBusy                : !MTCS_SUMMARIZE_BUSY [ parts.motorAxis,
                                                        parts.encoderAxis,
-                                                       #parts.drive,
+                                                       processes.moveAbsolute,
                                                        processes.reset,
                                                        processes.stop ]
   

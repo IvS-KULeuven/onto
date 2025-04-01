@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
-  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-03-22T23:39:50.874692" />
-  <contentHeader name="marvel_dome" modificationDateTime="2025-03-22T23:39:50.874692">
+  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-03-28T22:57:03.477723" />
+  <contentHeader name="marvel_dome" modificationDateTime="2025-03-28T22:57:03.477723">
     <coordinateInfo>
       <fbd>
         <scaling x="1" y="1" />
@@ -212,32 +212,6 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Reset any errors</xhtml>
               </documentation>
             </variable>
-            <variable name="powerOn">
-              <type><derived name="Process" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Power on the dome</xhtml>
-              </documentation>
-            </variable>
-            <variable name="powerOff">
-              <type><derived name="Process" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Power off the dome</xhtml>
-              </documentation>
-            </variable>
             <variable name="syncWithAxes">
               <type><derived name="Process" /></type>
               <addData>
@@ -419,45 +393,6 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Move absolute</xhtml>
               </documentation>
             </variable>
-            <variable name="moveRelative">
-              <type><derived name="DomeMoveProcess" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Move relative</xhtml>
-              </documentation>
-            </variable>
-            <variable name="powerOn">
-              <type><derived name="Process" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Power on master and slave</xhtml>
-              </documentation>
-            </variable>
-            <variable name="powerOff">
-              <type><derived name="Process" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Power off master and slave</xhtml>
-              </documentation>
-            </variable>
           </struct>
         </baseType>
       </dataType>
@@ -505,19 +440,6 @@
             </variable>
             <variable name="operatingStatus">
               <type><derived name="OperatingStatus" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-            <variable name="poweredStatus">
-              <type><derived name="PoweredStatus" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -617,19 +539,6 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Busy status</xhtml>
-              </documentation>
-            </variable>
-            <variable name="poweredStatus">
-              <type><derived name="PoweredStatus" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Powered status</xhtml>
               </documentation>
             </variable>
           </struct>
@@ -1686,21 +1595,6 @@ unknownDriveLogicError := (shutterValue = DomeShutterMotionStates.UNKNOWN_DRIVE_
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Previous status description</xhtml>
               </documentation>
             </variable>
-            <variable name="targetPos">
-              <type><derived name="AngularPosition" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Target azimuth</xhtml>
-              </documentation>
-            </variable>
             <variable name="isTrackingTelescope">
               <type><BOOL /></type>
               <addData>
@@ -1744,21 +1638,6 @@ unknownDriveLogicError := (shutterValue = DomeShutterMotionStates.UNKNOWN_DRIVE_
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of the known position if isAtKnownPosition is True</xhtml>
-              </documentation>
-            </variable>
-            <variable name="targetDistance">
-              <type><derived name="AngularPosition" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Distance to the setpoint</xhtml>
               </documentation>
             </variable>
             <variable name="telescopeDistance">
@@ -1896,24 +1775,21 @@ parts.rotation(
     config := config.rotation);
 statuses.initializationStatus();
 statuses.healthStatus(
-    isGood := parts.shutter.statuses.healthStatus.isGood AND parts.rotation.statuses.healthStatus.isGood,
-    hasWarning := parts.shutter.statuses.healthStatus.hasWarning OR parts.rotation.statuses.healthStatus.hasWarning);
-statuses.busyStatus( isBusy := parts.shutter.statuses.busyStatus.busy OR parts.rotation.statuses.busyStatus.busy );
+    isGood := parts.shutter.statuses.healthStatus.isGood AND (parts.rotation.statuses.healthStatus.isGood AND (processes.reset.statuses.healthStatus.isGood AND (processes.initialize.statuses.healthStatus.isGood AND (processes.syncWithAxes.statuses.healthStatus.isGood AND (processes.startTrackingTelescope.statuses.healthStatus.isGood AND (processes.stopTrackingTelescope.statuses.healthStatus.isGood AND (processes.stop.statuses.healthStatus.isGood AND processes.moveKnownPosition.statuses.healthStatus.isGood))))))),
+    hasWarning := parts.shutter.statuses.healthStatus.hasWarning OR (parts.rotation.statuses.healthStatus.hasWarning OR (processes.reset.statuses.healthStatus.hasWarning OR (processes.initialize.statuses.healthStatus.hasWarning OR (processes.syncWithAxes.statuses.healthStatus.hasWarning OR (processes.startTrackingTelescope.statuses.healthStatus.hasWarning OR (processes.stopTrackingTelescope.statuses.healthStatus.hasWarning OR (processes.stop.statuses.healthStatus.hasWarning OR processes.moveKnownPosition.statuses.healthStatus.hasWarning))))))));
+statuses.busyStatus( isBusy := parts.shutter.statuses.busyStatus.busy OR (parts.rotation.statuses.busyStatus.busy OR (processes.reset.statuses.busyStatus.busy OR (processes.initialize.statuses.busyStatus.busy OR (processes.syncWithAxes.statuses.busyStatus.busy OR (processes.startTrackingTelescope.statuses.busyStatus.busy OR (processes.stopTrackingTelescope.statuses.busyStatus.busy OR (processes.stop.statuses.busyStatus.busy OR processes.moveKnownPosition.statuses.busyStatus.busy))))))) );
 statuses.operatingStatus( superState := statuses.initializationStatus.initialized );
-statuses.poweredStatus( isEnabled := parts.rotation.statuses.poweredStatus.enabled );
 processes.initialize( isEnabled := (NOT(statuses.initializationStatus.locked)) AND (statuses.initializationStatus.shutdown OR (statuses.initializationStatus.initializingFailed OR statuses.initializationStatus.initialized)) );
 processes.changeOperatingState( isEnabled := FALSE );
 processes.lock( isEnabled := operatorStatus.tech );
 processes.unlock( isEnabled := operatorStatus.tech AND statuses.initializationStatus.locked );
 processes.reset( isEnabled := statuses.busyStatus.idle AND statuses.initializationStatus.initialized );
-processes.powerOn( isEnabled := (NOT(statuses.initializationStatus.locked)) AND (statuses.initializationStatus.initialized AND processes.powerOn.statuses.busyStatus.idle) );
-processes.powerOff( isEnabled := statuses.initializationStatus.initialized AND processes.powerOff.statuses.busyStatus.idle );
-processes.syncWithAxes( isEnabled := statuses.initializationStatus.initialized AND (statuses.busyStatus.idle AND statuses.poweredStatus.enabled) );
-processes.startTrackingTelescope( isEnabled := statuses.poweredStatus.enabled AND (NOT(isTrackingTelescope)) );
+processes.syncWithAxes( isEnabled := statuses.initializationStatus.initialized AND statuses.busyStatus.idle );
+processes.startTrackingTelescope( isEnabled := NOT(isTrackingTelescope) );
 processes.stopTrackingTelescope( isEnabled := isTrackingTelescope );
-processes.moveAbsolute( isEnabled := statuses.initializationStatus.initialized AND processes.powerOff.statuses.busyStatus.idle );
+processes.moveAbsolute( isEnabled := statuses.initializationStatus.initialized );
 processes.stop( isEnabled := statuses.busyStatus.busy OR (isTrackingTelescope OR operatorStatus.tech) );
-processes.moveKnownPosition( isEnabled := statuses.initializationStatus.initialized AND (statuses.busyStatus.idle AND statuses.poweredStatus.enabled) );
+processes.moveKnownPosition( isEnabled := statuses.initializationStatus.initialized AND statuses.busyStatus.idle );
 </xhtml>
           </ST>
         </body>
@@ -2066,62 +1942,6 @@ processes.moveKnownPosition( isEnabled := statuses.initializationStatus.initiali
               <body>
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">reset := THIS^.processes.reset.request();
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="powerOn">
-              <interface>
-                <returnType><derived name="RequestResults" /></returnType>
-                <inputVars>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                </inOutVars>
-                <localVars>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                      <Attribute Name="TcRpcEnable" Value="1" />
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">powerOn := THIS^.processes.powerOn.request();
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="powerOff">
-              <interface>
-                <returnType><derived name="RequestResults" /></returnType>
-                <inputVars>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                </inOutVars>
-                <localVars>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                      <Attribute Name="TcRpcEnable" Value="1" />
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">powerOff := THIS^.processes.powerOff.request();
 </xhtml>
                 </ST>
               </body>
@@ -2401,12 +2221,6 @@ THIS^.processes.unlock._log(
     buffer := subBuffer);
 THIS^.processes.reset._log(
     name := &#39;processes.reset&#39;,
-    buffer := subBuffer);
-THIS^.processes.powerOn._log(
-    name := &#39;processes.powerOn&#39;,
-    buffer := subBuffer);
-THIS^.processes.powerOff._log(
-    name := &#39;processes.powerOff&#39;,
     buffer := subBuffer);
 THIS^.processes.syncWithAxes._log(
     name := &#39;processes.syncWithAxes&#39;,
@@ -3088,6 +2902,36 @@ LOGGER(
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Previous status description</xhtml>
               </documentation>
             </variable>
+            <variable name="targetPos">
+              <type><derived name="AngularPosition" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Target azimuth</xhtml>
+              </documentation>
+            </variable>
+            <variable name="targetDistance">
+              <type><derived name="AngularPosition" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Distance to the setpoint</xhtml>
+              </documentation>
+            </variable>
             <variable name="actPos">
               <type><derived name="AngularPosition" /></type>
               <addData>
@@ -3228,16 +3072,12 @@ LOGGER(
             <xhtml xmlns="http://www.w3.org/1999/xhtml">parts.motorAxis( isEnabled := (NOT(initializationStatus.locked)) AND operatorStatus.tech );
 parts.encoderAxis( isEnabled := (NOT(initializationStatus.locked)) AND operatorStatus.tech );
 statuses.healthStatus(
-    isGood := parts.motorAxis.statuses.healthStatus.isGood AND (parts.encoderAxis.statuses.healthStatus.isGood AND (processes.reset.statuses.healthStatus.isGood AND processes.stop.statuses.healthStatus.isGood)),
-    hasWarning := parts.motorAxis.statuses.healthStatus.hasWarning OR (parts.encoderAxis.statuses.healthStatus.hasWarning OR (processes.reset.statuses.healthStatus.hasWarning OR processes.stop.statuses.healthStatus.hasWarning)));
-statuses.busyStatus( isBusy := parts.motorAxis.statuses.busyStatus.busy OR (parts.encoderAxis.statuses.busyStatus.busy OR (processes.reset.statuses.busyStatus.busy OR processes.stop.statuses.busyStatus.busy)) );
-statuses.poweredStatus( isEnabled := parts.motorAxis.statuses.poweredStatus.enabled );
+    isGood := parts.motorAxis.statuses.healthStatus.isGood AND (parts.encoderAxis.statuses.healthStatus.isGood AND (processes.moveAbsolute.statuses.healthStatus.isGood AND (processes.reset.statuses.healthStatus.isGood AND processes.stop.statuses.healthStatus.isGood))),
+    hasWarning := parts.motorAxis.statuses.healthStatus.hasWarning OR (parts.encoderAxis.statuses.healthStatus.hasWarning OR (processes.moveAbsolute.statuses.healthStatus.hasWarning OR (processes.reset.statuses.healthStatus.hasWarning OR processes.stop.statuses.healthStatus.hasWarning))));
+statuses.busyStatus( isBusy := parts.motorAxis.statuses.busyStatus.busy OR (parts.encoderAxis.statuses.busyStatus.busy OR (processes.moveAbsolute.statuses.busyStatus.busy OR (processes.reset.statuses.busyStatus.busy OR processes.stop.statuses.busyStatus.busy))) );
 processes.reset( isEnabled := statuses.busyStatus.idle );
 processes.stop( isEnabled := statuses.busyStatus.busy OR operatorStatus.tech );
-processes.moveAbsolute( isEnabled := statuses.busyStatus.idle AND statuses.poweredStatus.enabled );
-processes.moveRelative( isEnabled := processes.moveAbsolute.isEnabled );
-processes.powerOn( isEnabled := (NOT(initializationStatus.locked)) AND statuses.busyStatus.idle );
-processes.powerOff( isEnabled := statuses.busyStatus.idle );
+processes.moveAbsolute( isEnabled := statuses.busyStatus.idle );
 </xhtml>
           </ST>
         </body>
@@ -3340,103 +3180,6 @@ processes.powerOff( isEnabled := statuses.busyStatus.idle );
             </Method>
           </data>
           <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="moveRelative">
-              <interface>
-                <returnType><derived name="RequestResults" /></returnType>
-                <inputVars>
-                  <variable name="position">
-                    <type><LREAL /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                </inOutVars>
-                <localVars>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                      <Attribute Name="TcRpcEnable" Value="1" />
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">moveRelative := THIS^.processes.moveRelative.request( position := position );
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="powerOn">
-              <interface>
-                <returnType><derived name="RequestResults" /></returnType>
-                <inputVars>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                </inOutVars>
-                <localVars>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                      <Attribute Name="TcRpcEnable" Value="1" />
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">powerOn := THIS^.processes.powerOn.request();
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="powerOff">
-              <interface>
-                <returnType><derived name="RequestResults" /></returnType>
-                <inputVars>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                </inOutVars>
-                <localVars>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                      <Attribute Name="TcRpcEnable" Value="1" />
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">powerOff := THIS^.processes.powerOff.request();
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
             <Method name="_log">
               <interface>
                 <returnType><BOOL /></returnType>
@@ -3510,15 +3253,6 @@ THIS^.processes.stop._log(
     buffer := subBuffer);
 THIS^.processes.moveAbsolute._log(
     name := &#39;processes.moveAbsolute&#39;,
-    buffer := subBuffer);
-THIS^.processes.moveRelative._log(
-    name := &#39;processes.moveRelative&#39;,
-    buffer := subBuffer);
-THIS^.processes.powerOn._log(
-    name := &#39;processes.powerOn&#39;,
-    buffer := subBuffer);
-THIS^.processes.powerOff._log(
-    name := &#39;processes.powerOff&#39;,
     buffer := subBuffer);
 LOGGER(
     name := name,
@@ -4062,8 +3796,6 @@ END_IF;
               <Object Name="lock" />
               <Object Name="unlock" />
               <Object Name="reset" />
-              <Object Name="powerOn" />
-              <Object Name="powerOff" />
               <Object Name="syncWithAxes" />
               <Object Name="startTrackingTelescope" />
               <Object Name="stopTrackingTelescope" />
@@ -4083,9 +3815,6 @@ END_IF;
               <Object Name="reset" />
               <Object Name="stop" />
               <Object Name="moveAbsolute" />
-              <Object Name="moveRelative" />
-              <Object Name="powerOn" />
-              <Object Name="powerOff" />
               <Object Name="_log" />
             </Object>
           </Folder>
