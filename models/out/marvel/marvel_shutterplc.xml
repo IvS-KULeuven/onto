@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
-  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-04-04T10:27:49.808253" />
-  <contentHeader name="marvel_shutterplc" modificationDateTime="2025-04-04T10:27:49.808253">
+  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-04-04T11:30:05.342815" />
+  <contentHeader name="marvel_shutterplc" modificationDateTime="2025-04-04T11:30:05.342815">
     <coordinateInfo>
       <fbd>
         <scaling x="1" y="1" />
@@ -135,7 +135,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">The command that was last received by the shutter PLC, as reported by the shutter PLC</xhtml>
               </documentation>
             </variable>
-            <variable name="leftPanelOpen">
+            <variable name="panelsBottomOpen">
               <type><derived name="BIT" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -145,10 +145,10 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the left panel is open, False if not</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the panels are open according to the bottom limit switch</xhtml>
               </documentation>
             </variable>
-            <variable name="leftPanelClosed">
+            <variable name="panelsBottomClosed">
               <type><derived name="BIT" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -158,10 +158,10 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the left panel is closed, False if not</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the panels are closed according to the bottom limit switch</xhtml>
               </documentation>
             </variable>
-            <variable name="rightPanelOpen">
+            <variable name="panelsTopOpen">
               <type><derived name="BIT" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -171,10 +171,10 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the right panel is open, False if not</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the panels are open according to the top limit switch</xhtml>
               </documentation>
             </variable>
-            <variable name="rightPanelClosed">
+            <variable name="panelsTopClosed">
               <type><derived name="BIT" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -184,7 +184,7 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the right panel is closed, False if not</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the panels are closed according to the top limit switch</xhtml>
               </documentation>
             </variable>
             <variable name="relayOpenActive">

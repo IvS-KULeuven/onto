@@ -89,10 +89,10 @@
       heartBeatReceived       : { type: t_uint32                          , comment: "The heartbeat that was last received by the shutter PLC, as reported by the shutter PLC" }
       lastCommandReceived     : { type: DomeShutterCommands               , comment: "The command that was last received by the shutter PLC, as reported by the shutter PLC" }
       # limit switches
-      leftPanelOpen           : { type: t_bit                             , comment: "True if the left panel is open, False if not"}
-      leftPanelClosed         : { type: t_bit                             , comment: "True if the left panel is closed, False if not"}
-      rightPanelOpen          : { type: t_bit                             , comment: "True if the right panel is open, False if not"}
-      rightPanelClosed        : { type: t_bit                             , comment: "True if the right panel is closed, False if not"}
+      panelsBottomOpen        : { type: t_bit                             , comment: "True if the panels are open according to the bottom limit switch"}
+      panelsBottomClosed      : { type: t_bit                             , comment: "True if the panels are closed according to the bottom limit switch"}
+      panelsTopOpen           : { type: t_bit                             , comment: "True if the panels are open according to the top limit switch"}
+      panelsTopClosed         : { type: t_bit                             , comment: "True if the panels are closed according to the top limit switch"}
       # relays
       relayOpenActive         : { type: t_bit                             , comment: "True if the relay to open the shutter is active, False if not"}
       relayCloseActive        : { type: t_bit                             , comment: "True if the relay to close the shutter is active, False if not"}
