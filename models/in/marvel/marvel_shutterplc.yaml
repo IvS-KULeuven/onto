@@ -1,0 +1,131 @@
+##########################################################################
+#                                                                        #
+# Model of the shared dome shutter software.                             #
+#                                                                        #
+##########################################################################
+
+
+##########################################################################
+# Define the containing PLC library
+##########################################################################
+
+!LIBRARY marvel_shutterplc:
+
+  ##########################################################################
+  # DomeShutterApertureStates
+  ##########################################################################
+  
+  !ENUMERATION DomeShutterApertureStates:
+    comment: "The disjoint states of the shutter PLC aperture status"
+    type: t_byte
+    items: [
+      UNKNOWN,
+      FULLY_OPEN,
+      PARTIALLY_OPEN,
+      FULLY_CLOSED,
+      INVALID
+    ]
+
+  ##########################################################################
+  # DomeShutterCommands
+  ##########################################################################
+  
+  !ENUMERATION DomeShutterCommands:
+    comment: "The commands accepted by the shutter PLC"
+    type: t_byte
+    items: [
+      NONE,
+      STOP,
+      CLOSE,
+      OPEN,
+      SET_HUMIDITY_LIMIT,
+      SET_HEARTBEAT_TIMEOUT,
+      SET_DRIVE_LOGIC,
+    ]
+  
+  ##########################################################################
+  # DomeShutterDriveLogic
+  ##########################################################################
+  
+  !ENUMERATION DomeShutterDriveLogic:
+    comment: "The logic used by the shutter drives"
+    type: t_byte
+    items: [
+      UNKNOWN,
+      EDGE_BASED,
+      LEVEL_BASED
+    ]
+
+  ##########################################################################
+  # DomeShutterMotionStates
+  ##########################################################################
+  
+  !ENUMERATION DomeShutterMotionStates:
+    comment: "The disjoint states of the shutter PLC opening/closing procedure"
+    type: t_byte
+    items: [
+      STANDSTILL,
+      OPENING,
+      CLOSING,
+      STOPPING,
+      TIMEOUT_ERROR,
+      RETRY_OPENING,
+      RETRY_CLOSING,
+      UNKNOWN_DRIVE_LOGIC_ERROR
+    ]
+
+  ########################################################################################################################
+  # DomeShutterDataRead
+  ########################################################################################################################
+  
+  !STRUCT DomeShutterDataRead:
+    qualifiers:
+     - { symbol: "pack_mode", value: "8" }
+    items:
+      # enums
+      motionState             : { type: DomeShutterMotionStates           , comment: "The motion state, as reported by the shutter PLC" }
+      apertureState           : { type: DomeShutterApertureStates         , comment: "The aperture state, as reported by the shutter PLC" }
+      # some diagnostics of the communication
+      heartBeatReceived       : { type: t_uint32                          , comment: "The heartbeat that was last received by the shutter PLC, as reported by the shutter PLC" }
+      lastCommandReceived     : { type: DomeShutterCommands               , comment: "The command that was last received by the shutter PLC, as reported by the shutter PLC" }
+      # limit switches
+      leftPanelOpen           : { type: t_bit                             , comment: "True if the left panel is open, False if not"}
+      leftPanelClosed         : { type: t_bit                             , comment: "True if the left panel is closed, False if not"}
+      rightPanelOpen          : { type: t_bit                             , comment: "True if the right panel is open, False if not"}
+      rightPanelClosed        : { type: t_bit                             , comment: "True if the right panel is closed, False if not"}
+      # relays
+      relayOpenActive         : { type: t_bit                             , comment: "True if the relay to open the shutter is active, False if not"}
+      relayCloseActive        : { type: t_bit                             , comment: "True if the relay to close the shutter is active, False if not"}
+      # sensor bits
+      bHumidityUnderrange     : { type: t_bit                             , comment: "True if the humidity sensor is in underrange, False if not"}
+      bHumidityOverrange      : { type: t_bit                             , comment: "True if the humidity sensor is in overrange, False if not"}
+      bHumidityError          : { type: t_bit                             , comment: "True if the humidity sensor is in error, False if not"}
+      bTemperatureUnderrange  : { type: t_bit                             , comment: "True if the temperature sensor is in underrange, False if not"}
+      bTemperatureOverrange   : { type: t_bit                             , comment: "True if the temperature sensor is in overrange, False if not"}
+      bTemperatureError       : { type: t_bit                             , comment: "True if the temperature sensor is in error, False if not"}
+      # constraint violations
+      manualOperation         : { type: t_bit                             , comment: "True if no constraint violation checking is happenening"}
+      heartBeatViolation      : { type: t_bit                             , comment: "True if there is a missing heartbeat reported by the shutter PLC, False if not"}
+      humidityViolation       : { type: t_bit                             , comment: "True if there is high humidity reported by the shutter PLC, False if not"}
+      # logic used by the motor drives
+      driveLogic              : { type: DomeShutterDriveLogic             , comment: "Determines which logic is used by the shutter drives (edge or level based)" }
+      # sensor values
+      humidityRawValue        : { type: t_int16                           , comment: "The raw value of the humidity sensor"}
+      temperatureRawValue     : { type: t_int16                           , comment: "The raw value of the temperature sensor"}
+      # limits
+      humidityLimit           : { type: t_int16                           , comment: "Humidity limit (as raw sensor value) above which the dome will close automatically (-1 means turn off)"}
+      heartBeatTimeout        : { type: t_int16                           , comment: "Heartbeat timeout (in seconds) above which the dome will close automatically (-1 means turn off)"}
+
+
+  ########################################################################################################################
+  # DomeShutterDataWrite
+  ########################################################################################################################
+  
+  !STRUCT DomeShutterDataWrite:
+    qualifiers:
+     - { symbol: "pack_mode", value: "8" }
+    items:
+      heartBeat               : { type: t_uint32                          , comment: "The heartbeat to send to the shutter PLC" }
+      command                 : { type: DomeShutterCommands               , comment: "The command to send to the shutter PLC" }
+      arg                     : { type: t_int16                           , comment: "The int16 argument belonging to the command (optional)" }
+

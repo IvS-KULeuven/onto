@@ -7,6 +7,7 @@
 
 !IMPORT models/in/mercator/mtcs_common.yaml:
 !IMPORT models/in/marvel/marvel_common.yaml:
+!IMPORT models/in/marvel/marvel_shutterplc.yaml:
 
 
 ##########################################################################
@@ -17,101 +18,37 @@
 
 
   ##########################################################################
-  # DomeShutterMotionStates
-  ##########################################################################
-  
-  !ENUMERATION DomeShutterMotionStates:
-    comment: "The disjoint states of the shutter PLC opening/closing procedure"
-    type: t_byte
-    items: [
-      STANDSTILL,
-      OPENING,
-      CLOSING,
-      STOPPING,
-      TIMEOUT_ERROR,
-      RETRY_OPENING,
-      RETRY_CLOSING,
-      UNKNOWN_DRIVE_LOGIC_ERROR
-    ]
-
-
-  ##########################################################################
-  # DomeShutterApertureStates
-  ##########################################################################
-  
-  !ENUMERATION DomeShutterApertureStates:
-    comment: "The disjoint states of the shutter PLC aperture status"
-    type: t_byte
-    items: [
-      UNKNOWN,
-      FULLY_OPEN,
-      PARTIALLY_OPEN,
-      FULLY_CLOSED,
-      INVALID
-    ]
-
-  ##########################################################################
-  # DomeShutterCommands
-  ##########################################################################
-  
-  !ENUMERATION DomeShutterCommands:
-    comment: "The commands accepted by the shutter PLC"
-    type: t_byte
-    items: [
-      NONE,
-      STOP,
-      CLOSE,
-      OPEN,
-      SET_HUMIDITY_LIMIT,
-      SET_HEARTBEAT_TIMEOUT,
-      SET_DRIVE_LOGIC,
-    ]
-  
-  ##########################################################################
-  # DomeShutterDriveLogic
-  ##########################################################################
-  
-  !ENUMERATION DomeShutterDriveLogic:
-    comment: "The logic used by the shutter drives"
-    type: t_byte
-    items: [
-      UNKNOWN,
-      EDGE_BASED,
-      LEVEL_BASED
-    ]
-
-  ##########################################################################
   # DomeShutterOpeningStatus
   ##########################################################################
   !STATUS DomeShutterOpeningStatus:
     variables:
         shutterValue:
-            type: DomeShutterMotionStates
+            type: marvel_shutterplc.DomeShutterMotionStates
             comment: "Enum from mini PLC"
     states:
         standstill:
-            expr: !EQ [ shutterValue, DomeShutterMotionStates.STANDSTILL ]
+            expr: !EQ [ shutterValue, marvel_shutterplc.DomeShutterMotionStates.STANDSTILL ]
             comment: "Standstill"
         opening:
-            expr: !EQ [ shutterValue, DomeShutterMotionStates.OPENING ]
+            expr: !EQ [ shutterValue, marvel_shutterplc.DomeShutterMotionStates.OPENING ]
             comment: "Opening"
         closing:
-            expr: !EQ [ shutterValue, DomeShutterMotionStates.CLOSING ]
+            expr: !EQ [ shutterValue, marvel_shutterplc.DomeShutterMotionStates.CLOSING ]
             comment: "Closing"
         stopping:
-            expr: !EQ [ shutterValue, DomeShutterMotionStates.STOPPING ]
+            expr: !EQ [ shutterValue, marvel_shutterplc.DomeShutterMotionStates.STOPPING ]
             comment: "Stopping"
         timeoutError:
-            expr: !EQ [ shutterValue, DomeShutterMotionStates.TIMEOUT_ERROR ]
+            expr: !EQ [ shutterValue, marvel_shutterplc.DomeShutterMotionStates.TIMEOUT_ERROR ]
             comment: "Timeout error"
         retryOpening:
-            expr: !EQ [ shutterValue, DomeShutterMotionStates.RETRY_OPENING ]
+            expr: !EQ [ shutterValue, marvel_shutterplc.DomeShutterMotionStates.RETRY_OPENING ]
             comment: "Retry opening"
         retryClosing:
-            expr: !EQ [ shutterValue, DomeShutterMotionStates.RETRY_CLOSING ]
+            expr: !EQ [ shutterValue, marvel_shutterplc.DomeShutterMotionStates.RETRY_CLOSING ]
             comment: "Retry closing"
         unknownDriveLogicError:
-            expr: !EQ [ shutterValue, DomeShutterMotionStates.UNKNOWN_DRIVE_LOGIC_ERROR ]
+            expr: !EQ [ shutterValue, marvel_shutterplc.DomeShutterMotionStates.UNKNOWN_DRIVE_LOGIC_ERROR ]
             comment: "Drive logic (edge based or dead-man switch) was not configured yet"
 
 
@@ -176,7 +113,7 @@
       openingTimeoutSeconds    : { type: t_double                       , comment: "The opening timeout."}
       closingTimeoutSeconds    : { type: t_double                       , comment: "The closing timeout."}
       humidityLimit            : { type: t_double                       , comment: "The auto closing humidity limit in % (sent to Shutter PLC during initialization)" }
-      driveLogic               : { type: DomeShutterDriveLogic          , comment: "The logic of the shutter motor drives (sent to Shutter PLC during initialization)" }
+      driveLogic               : { type: marvel_shutterplc.DomeShutterDriveLogic          , comment: "The logic of the shutter motor drives (sent to Shutter PLC during initialization)" }
       heartBeatTimeout         : { type: t_int16                        , comment: "The maximum heartbeat timeout allowed in seconds (sent to Shutter PLC during initialization)" }
   
   ##########################################################################
@@ -389,69 +326,13 @@
   
 
   ########################################################################################################################
-  # DomeShutterDataRead
-  ########################################################################################################################
-  
-  !STRUCT DomeShutterDataRead:
-    qualifiers:
-     - { symbol: "pack_mode", value: "8" }
-    items:
-      # enums
-      motionState             : { type: DomeShutterMotionStates           , comment: "The motion state, as reported by the shutter PLC" }
-      apertureState           : { type: DomeShutterApertureStates         , comment: "The aperture state, as reported by the shutter PLC" }
-      # some diagnostics of the communication
-      heartBeatReceived       : { type: t_uint32                          , comment: "The heartbeat that was last received by the shutter PLC, as reported by the shutter PLC" }
-      lastCommandReceived     : { type: DomeShutterCommands               , comment: "The command that was last received by the shutter PLC, as reported by the shutter PLC" }
-      # limit switches
-      leftPanelOpen           : { type: t_bit                             , comment: "True if the left panel is open, False if not"}
-      leftPanelClosed         : { type: t_bit                             , comment: "True if the left panel is closed, False if not"}
-      rightPanelOpen          : { type: t_bit                             , comment: "True if the right panel is open, False if not"}
-      rightPanelClosed        : { type: t_bit                             , comment: "True if the right panel is closed, False if not"}
-      # relays
-      relayOpenActive         : { type: t_bit                             , comment: "True if the relay to open the shutter is active, False if not"}
-      relayCloseActive        : { type: t_bit                             , comment: "True if the relay to close the shutter is active, False if not"}
-      # sensor bits
-      bHumidityUnderrange     : { type: t_bit                             , comment: "True if the humidity sensor is in underrange, False if not"}
-      bHumidityOverrange      : { type: t_bit                             , comment: "True if the humidity sensor is in overrange, False if not"}
-      bHumidityError          : { type: t_bit                             , comment: "True if the humidity sensor is in error, False if not"}
-      bTemperatureUnderrange  : { type: t_bit                             , comment: "True if the temperature sensor is in underrange, False if not"}
-      bTemperatureOverrange   : { type: t_bit                             , comment: "True if the temperature sensor is in overrange, False if not"}
-      bTemperatureError       : { type: t_bit                             , comment: "True if the temperature sensor is in error, False if not"}
-      # constraint violations
-      heartBeatViolation      : { type: t_bit                             , comment: "True if there is a missing heartbeat reported by the shutter PLC, False if not"}
-      humidityViolation       : { type: t_bit                             , comment: "True if there is high humidity reported by the shutter PLC, False if not"}
-      # logic used by the motor drives
-      driveLogic              : { type: DomeShutterDriveLogic             , comment: "Determines which logic is used by the shutter drives (edge or level based)" }
-      # sensor values
-      humidityRawValue        : { type: t_int16                           , comment: "The raw value of the humidity sensor"}
-      temperatureRawValue     : { type: t_int16                           , comment: "The raw value of the temperature sensor"}
-      # limits
-      humidityLimit           : { type: t_int16                           , comment: "Humidity limit (as raw sensor value) above which the dome will close automatically (-1 means turn off)"}
-      heartBeatTimeout        : { type: t_int16                           , comment: "Heartbeat timeout (in seconds) above which the dome will close automatically (-1 means turn off)"}
-
-
-  ########################################################################################################################
-  # DomeShutterDataWrite
-  ########################################################################################################################
-  
-  !STRUCT DomeShutterDataWrite:
-    qualifiers:
-     - { symbol: "pack_mode", value: "8" }
-    items:
-      heartBeat               : { type: t_uint32                          , comment: "The heartbeat to send to the shutter PLC" }
-      command                 : { type: DomeShutterCommands               , comment: "The command to send to the shutter PLC" }
-      arg                     : { type: t_int16                           , comment: "The int16 argument belonging to the command (optional)" }
-
-
-
-  ########################################################################################################################
   # DomeShutterSendProcess
   ########################################################################################################################
   !PROCESS DomeShutterSendProcess:
       extends: mtcs_common.BaseProcess
       arguments:
-          command     : { type: DomeShutterCommands, comment: "Command to send" }
-          arg         : { type: t_int16            , comment: "The int16 argument belonging to the command (optional)" }
+          command     : { type: marvel_shutterplc.DomeShutterCommands , comment: "Command to send" }
+          arg         : { type: t_int16                               , comment: "The int16 argument belonging to the command (optional)" }
   
 
   
@@ -466,8 +347,8 @@
       isConnected             : { type: t_bool                            , comment: "True if the shutter PLC is connected" }
     variables:
       # ADS 
-      dataRead                : { type: DomeShutterDataRead               , comment: "The data read from the shutter PLC via Bluetooth" }
-      dataWrite               : { type: DomeShutterDataWrite              , comment: "The data written to the shutter PLC via Bluetooth" }
+      dataRead                : { type: marvel_shutterplc.DomeShutterDataRead,  comment: "The data read from the shutter PLC via Bluetooth" }
+      dataWrite               : { type: marvel_shutterplc.DomeShutterDataWrite, comment: "The data written to the shutter PLC via Bluetooth" }
       # ADS read
       adsReadError            : { type: t_bool                            , comment: "True if the ADS Read communication to the shutter PLC is in error" }
       adsReadErrorId          : { type: t_uint32                          , comment: "The error id if adsReadError is true" }
@@ -519,10 +400,10 @@
         isEnabled             : !OR [ operatorStatus.tech, isConnected ]
       # statuses
       apertureStatus:
-        superState            : !NOT [ !OR [ !EQ [ dataRead.apertureState, DomeShutterApertureStates.UNKNOWN ], 
-                                             !EQ [ dataRead.apertureState, DomeShutterApertureStates.INVALID ] ] ]
-        isOpen                : !EQ [ dataRead.apertureState, DomeShutterApertureStates.FULLY_OPEN ]
-        isClosed              : !EQ [ dataRead.apertureState, DomeShutterApertureStates.FULLY_CLOSED ]
+        superState            : !NOT [ !OR [ !EQ [ dataRead.apertureState, marvel_shutterplc.DomeShutterApertureStates.UNKNOWN ], 
+                                             !EQ [ dataRead.apertureState, marvel_shutterplc.DomeShutterApertureStates.INVALID ] ] ]
+        isOpen                : !EQ [ dataRead.apertureState, marvel_shutterplc.DomeShutterApertureStates.FULLY_OPEN ]
+        isClosed              : !EQ [ dataRead.apertureState, marvel_shutterplc.DomeShutterApertureStates.FULLY_CLOSED ]
       motionStatus:
         shutterValue          : dataRead.motionState
       healthStatus:
