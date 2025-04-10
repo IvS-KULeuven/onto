@@ -557,7 +557,7 @@ ${indent}</variable>\
 </%def>
 
 
-<%def name="xml_type_element(node)">\
+<%def name="xml_type_element(node, is_ref=False)">\
 <% debug(f"xml_type_element({node})") %>\
   %if node.plc_symbol is not None:
 ##for some reason, STRING must be rendered lowercase, otherwise you cannot import the file in TwinCAT !!!
@@ -568,6 +568,8 @@ ${indent}</variable>\
     % else:
 <${node.plc_symbol} />\
     % endif
+  %elif is_ref:
+<derived name="REFERENCE TO ${node.name}" />\
   %else:
 <derived name="${node.name}" />\
   % endif
@@ -576,7 +578,7 @@ ${indent}</variable>\
 <%def name="xml_type_contents(node)">\
 <% debug(f"xml_type_contents {node}") %>\
     %if node.type is not None:
-${xml_type_element(node.type)}\
+${xml_type_element(node.type, node.is_ref)}\
     %elif node.points_to_type is not None:
 <pointer><baseType>${xml_type_element(node.points_to_type)}</baseType></pointer>\
     %endif

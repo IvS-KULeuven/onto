@@ -218,6 +218,7 @@ class Enum(Object):
         self.items = []
         self.comment = None
         self.plc_symbol = None
+        self.is_ref = False
 
         if 'comment' in args:
             self.comment = args['comment']
@@ -375,7 +376,7 @@ class Variable(Object):
         check_args(f"Variable {name}", args, 
                    ["type", "expand", "initial", "comment",
                     "pointsToType", "attributes", "qualifiers", "arguments",
-                    "address"])
+                    "address", "isRef"])
         
         self.raw_args = args
         
@@ -393,6 +394,7 @@ class Variable(Object):
         self.address = None
         self.copyFrom = None
         self.methods = {}
+        self.is_ref = False
 
         if 'expand' in args:
             self.expand = args['expand']
@@ -455,7 +457,13 @@ class Variable(Object):
             if QUALIFIERS.HMI_SHOW not in self.qualifiers:
                 if QUALIFIERS.OPC_UA_DEACTIVATE not in self.qualifiers:
                     if QUALIFIERS.HMI_SHOWRECURSIVELY not in self.qualifiers:
-                        self.qualifiers.append(QUALIFIERS.HMI_SHOW)
+                        if QUALIFIERS.HMI_HIDE not in self.qualifiers:
+                            self.qualifiers.append(QUALIFIERS.HMI_SHOW)
+        
+        if 'isRef' in args:
+            self.is_ref = str(args['isRef']).upper() == "TRUE"
+
+            
 
 
 class EnumItem(Variable):
@@ -487,6 +495,7 @@ class Struct(Object):
         self.items = None
         self.plc_symbol = None
         self.qualifiers = None
+        self.is_ref = False
         for arg in args:
             if arg not in ["items", "comment", "typeOf", "qualifiers"]:
                 raise Exception(f"Struct {name} contains illegal argument '{arg}'")
@@ -600,6 +609,7 @@ class FunctionBlock(Object):
         self.methods = {}
         self.plc_symbol = None
         self.implementation = []
+        self.is_ref = False
 
         if "render" in args:
             self.render = args["render"]
@@ -770,6 +780,10 @@ class Statemachine(FunctionBlock):
             v = Variable("previousStatus", self)
             v.type = PRIMITIVE_TYPES.t_string
             v.comment = "Previous status description"
+            if QUALIFIERS.HMI_SHOW in v.qualifiers:
+                v.qualifiers.remove(QUALIFIERS.HMI_SHOW)
+            v.qualifiers.append(QUALIFIERS.HMI_HIDE)
+            v.qualifiers.append(QUALIFIERS.OPC_UA_DEACTIVATE)
             self.var_out["previousStatus"] = v
             self.vars['previousStatus'] = v
 
@@ -780,7 +794,9 @@ class Statemachine(FunctionBlock):
                     v.qualifiers.append(QUALIFIERS.OPC_UA_ACTIVATE)
                 if QUALIFIERS.OPC_UA_ACCESS_R not in v.qualifiers:
                     v.qualifiers.append(QUALIFIERS.OPC_UA_ACCESS_R)
-                if QUALIFIERS.HMI_SHOW not in v.qualifiers and QUALIFIERS.HMI_SHOWRECURSIVELY not in v.qualifiers:
+                if QUALIFIERS.HMI_SHOW not in v.qualifiers \
+                  and QUALIFIERS.HMI_SHOWRECURSIVELY not in v.qualifiers \
+                  and QUALIFIERS.HMI_HIDE not in v.qualifiers:
                     v.qualifiers.append(QUALIFIERS.HMI_SHOW)
                 self.var_in[var_name] = v
                 self.vars[var_name] = v
@@ -800,8 +816,11 @@ class Statemachine(FunctionBlock):
         if "variables_hidden" in args:
             for var_name, var in args['variables_hidden'].items():
                 v = Variable(var_name, self, var)
+                if QUALIFIERS.HMI_SHOW in v.qualifiers:
+                    v.qualifiers.remove(QUALIFIERS.HMI_SHOW)
                 if QUALIFIERS.OPC_UA_DEACTIVATE not in v.qualifiers:
                     v.qualifiers.append(QUALIFIERS.OPC_UA_DEACTIVATE)
+                if QUALIFIERS.HMI_HIDE not in v.qualifiers:
                     v.qualifiers.append(QUALIFIERS.HMI_HIDE)
                 self.var_in[var_name] = v
                 self.vars[var_name] = v
@@ -811,6 +830,7 @@ class Statemachine(FunctionBlock):
                 v = Variable(var_name, self, var)
                 if QUALIFIERS.OPC_UA_DEACTIVATE not in v.qualifiers:
                     v.qualifiers.append(QUALIFIERS.OPC_UA_DEACTIVATE)
+                if QUALIFIERS.HMI_HIDE not in v.qualifiers:
                     v.qualifiers.append(QUALIFIERS.HMI_HIDE)
                 self.var_inout[var_name] = v
                 self.vars[var_name] = v

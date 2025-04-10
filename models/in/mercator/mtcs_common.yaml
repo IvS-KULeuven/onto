@@ -943,12 +943,14 @@
     variables_hidden:
         isEnabled           : { type: t_bool                        , comment: "Is control enabled?" }
         standstillTolerance : { type: t_double                      , comment: "Tolerance in [main units] per second: if < ABS(this value), then the axis is considered to be standing still" }
+        _axis_ref           : { type: Tc2_MC2.AXIS_REF, isRef: TRUE , comment: "The AXIS_REF to be linked to the NC I/O" }
     variables:
-        axis_ref            : { type: Tc2_MC2.AXIS_REF              , comment: "The AXIS_REF to be linked to the NC I/O", 
-                                                                      qualifiers: [{ symbol: "TcHmiSymbol.ShowRecursively", value: "" }] }
         isGearingSupported  : { type: t_bool , initial: !BOOL FALSE , comment: "Is gearIn/gearOut supported?" }
+        axis_ref            : { type: Tc2_MC2.AXIS_REF              , comment: "The AXIS_REF to be linked to the NC I/O", 
+                                                                      qualifiers: [{ symbol: "TcHmiSymbol.Hide", value: "" }] }
     variables_read_only:
         isJogEnabled        : { type: t_bool                        , comment: "True if jog is enabled" }
+        errorId             : { type: t_uint32                      , comment: "Axis error ID" }
     statuses:
         busyStatus          : { type: BusyStatus            , comment: "Is the NcAxis in a busy state?" }
         healthStatus        : { type: HealthStatus          , comment: "Is the NcAxis in a healthy state?" }
@@ -997,14 +999,14 @@
                                                 processes.writeBoolParameter.statuses.busyStatus.busy,
                                                 processes.probeAbort.statuses.busyStatus.busy ]
         healthStatus:
-            isGood                      : !NOT [axis_ref.Status.Error]
+            isGood                      : !NOT [_axis_ref.Status.Error]
         poweredStatus:
-            isEnabled                   : !NOT [axis_ref.Status.Disabled]
+            isEnabled                   : !NOT [_axis_ref.Status.Disabled]
         motionStatus:
-            actVel                      : axis_ref.NcToPlc.ActVelo
+            actVel                      : _axis_ref.NcToPlc.ActVelo
             tolerance                   : standstillTolerance
         extSetGenStatus:
-            isEnabled                   : axis_ref.Status.ExtSetPointGenEnabled
+            isEnabled                   : _axis_ref.Status.ExtSetPointGenEnabled
         # processes
         power:
             isEnabled                   : !AND [ isEnabled, processes.power.statuses.busyStatus.idle ]
@@ -1057,11 +1059,20 @@
     variables_read_only:
         actPos              : { type: AngularPosition       , comment: "Actual position of the axis" }
         actVel              : { type: AngularVelocity       , comment: "Actual velocity of the axis" }
+        setPos              : { type: AngularPosition       , comment: "Setpoint position of the axis" }
+        setVel              : { type: AngularVelocity       , comment: "Setpoint velocity of the axis" }
+        targetPos           : { type: AngularPosition       , comment: "Target position of the axis" }
     calls:
         actPos:
-            newDegreesValue             : axis_ref.NcToPlc.ActPos
+            newDegreesValue             : _axis_ref.NcToPlc.ActPos
         actVel:
-            newDegreesPerSecondValue    : axis_ref.NcToPlc.ActVelo
+            newDegreesPerSecondValue    : _axis_ref.NcToPlc.ActVelo
+        setPos:
+            newDegreesValue             : _axis_ref.NcToPlc.SetPos
+        setVel:
+            newDegreesPerSecondValue    : _axis_ref.NcToPlc.SetVelo
+        targetPos:
+            newDegreesValue             : _axis_ref.NcToPlc.TargetPos
 
   ########################################################################################################################
   # LinearAxis
@@ -1069,13 +1080,22 @@
   !STATEMACHINE LinearAxis:
     extends: BaseAxis
     variables_read_only:
-        actPos                              : { type: LinearPosition       , comment: "Actual position of the axis" }
-        actVel                              : { type: LinearVelocity       , comment: "Actual velocity of the axis" }
+        actPos              : { type: LinearPosition       , comment: "Actual position of the axis" }
+        actVel              : { type: LinearVelocity       , comment: "Actual velocity of the axis" }
+        setPos              : { type: LinearPosition       , comment: "Setpoint position of the axis" }
+        setVel              : { type: LinearVelocity       , comment: "Setpoint velocity of the axis" }
+        targetPos           : { type: LinearPosition       , comment: "Target position of the axis" }
     calls:
         actPos:
-            newMillimetersValue             : axis_ref.NcToPlc.ActPos
+            newMillimetersValue             : _axis_ref.NcToPlc.ActPos
         actVel:
-            newMillimetersPerSecondValue    : axis_ref.NcToPlc.ActVelo
+            newMillimetersPerSecondValue    : _axis_ref.NcToPlc.ActVelo
+        setPos:
+            newMillimetersValue             : _axis_ref.NcToPlc.SetPos
+        setVel:
+            newMillimetersPerSecondValue    : _axis_ref.NcToPlc.SetVelo
+        targetPos:
+            newMillimetersValue             : _axis_ref.NcToPlc.TargetPos
 
 
 
