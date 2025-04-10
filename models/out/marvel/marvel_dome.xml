@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
-  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-04-10T15:33:09.365127" />
-  <contentHeader name="marvel_dome" modificationDateTime="2025-04-10T15:33:09.365127">
+  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-04-10T16:56:59.318796" />
+  <contentHeader name="marvel_dome" modificationDateTime="2025-04-10T16:56:59.318796">
     <coordinateInfo>
       <fbd>
         <scaling x="1" y="1" />
@@ -888,6 +888,19 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Azimuth position of the home sensor, in degrees</xhtml>
+              </documentation>
+            </variable>
+            <variable name="simulated">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if the rotation is simulated, FALSE if not</xhtml>
               </documentation>
             </variable>
           </struct>
@@ -2480,6 +2493,21 @@ LOGGER(
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Previous status description</xhtml>
+              </documentation>
+            </variable>
+            <variable name="isSimulated">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the rotation is being simulated</xhtml>
               </documentation>
             </variable>
             <variable name="targetPos">

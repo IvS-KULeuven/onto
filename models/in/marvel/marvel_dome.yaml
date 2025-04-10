@@ -126,6 +126,7 @@
       maxMovingVelocity             : { type: t_double, comment: "Maximum velocity when moving absolute or relative, in degrees per second" }
       maxMasterSlaveLag             : { type: t_double, comment: "Below this lag value (in degrees), the lag is considered not an error" }
       homePosition                  : { type: t_double, comment: "Azimuth position of the home sensor, in degrees" }
+      simulated                     : { type: t_bool  , comment: "TRUE if the rotation is simulated, FALSE if not"}
   
   
   
@@ -434,6 +435,7 @@
   !STATEMACHINE DomeRotation:
     typeOf: DomeParts.rotation
     variables_read_only:
+      isSimulated                 : { type: t_bool                              , comment: "True if the rotation is being simulated" }
       targetPos                   : { type: mtcs_common.AngularPosition         , comment: "Target azimuth"}
       targetDistance              : { type: mtcs_common.AngularPosition         , comment: "Distance to the setpoint"}
       actPos                      : { type: mtcs_common.AngularPosition         , comment: "The actual position (same as parts.masterAxis!)", expand: false }
