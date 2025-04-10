@@ -2088,3 +2088,59 @@
             isEnabled  : !AND [ isEnabled, statuses.busyStatus.idle ]
         diagnostics:
             isEnabled  : !AND [ isEnabled, statuses.busyStatus.idle ]
+
+
+  ########################################################################################################################
+  # MercatorMeteoExchange
+  ########################################################################################################################
+  !STRUCT MercatorMeteoExchange:
+    items:
+        mercatorServiceHealthy      : { type: t_bool    , comment : "TRUE if the Mercator service healthStatus is Good" }
+        windSpeedMinimum            : { type: t_double  , comment: "Wind speed minimum" }
+        windSpeedAverage            : { type: t_double  , comment: "Wind speed average" }
+        windSpeedMaximum            : { type: t_double  , comment: "Wind speed maximum" }
+        windDirectionMinimum        : { type: t_double  , comment: "Wind direction minimum" }
+        windDirectionAverage        : { type: t_double  , comment: "Wind direction average" }
+        windDirectionMaximum        : { type: t_double  , comment: "Wind direction maximum" }
+        airPressure                 : { type: t_double  , comment: "Air pressure" }
+        airTemperature              : { type: t_double  , comment: "Air temperature" }
+        internalTemperature         : { type: t_double  , comment: "Internal temperature" }
+        relativeHumidity            : { type: t_double  , comment: "Relative humidity" }
+        rainAccumulation            : { type: t_double  , comment: "Rain accumulation" }
+        rainDuration                : { type: t_double  , comment: "Rain duration" }
+        rainIntensity               : { type: t_double  , comment: "Rain intensity" }
+        rainPeakIntensity           : { type: t_double  , comment: "Rain peak intensity" }
+        hailAccumulation            : { type: t_double  , comment: "Hail accumulation" }
+        hailDuration                : { type: t_double  , comment: "Hail duration" }
+        hailIntensity               : { type: t_double  , comment: "Hail intensity" }
+        hailPeakIntensity           : { type: t_double  , comment: "Hail peak intensity" }
+        heatingTemperature          : { type: t_double  , comment: "Heating temperature" }
+        heatingVoltage              : { type: t_double  , comment: "Heating voltage" }
+        supplyVoltage               : { type: t_double  , comment: "Supply voltage" }
+        referenceVoltage            : { type: t_double  , comment: "Reference voltage" }
+        dewpoint                    : { type: t_double  , comment: "Calculated dewpoint" }
+        windSpeedMinimumValid       : { type: t_bit     , comment: "TRUE if Wind speed minimum is valid" }
+        windSpeedAverageValid       : { type: t_bit     , comment: "TRUE if Wind speed average is valid" }
+        windSpeedMaximumValid       : { type: t_bit     , comment: "TRUE if Wind speed maximum is valid" }
+        windDirectionMinimumValid   : { type: t_bit     , comment: "TRUE if Wind direction minimum is valid" }
+        windDirectionAverageValid   : { type: t_bit     , comment: "TRUE if Wind direction average is valid" }
+        windDirectionMaximumValid   : { type: t_bit     , comment: "TRUE if Wind direction maximum is valid" }
+        airPressureValid            : { type: t_bit     , comment: "TRUE if Air pressure is valid" }
+        airTemperatureValid         : { type: t_bit     , comment: "TRUE if Air temperature is valid" }
+        internalTemperatureValid    : { type: t_bit     , comment: "TRUE if Internal temperature is valid" }
+        relativeHumidityValid       : { type: t_bit     , comment: "TRUE if Relative humidity is valid" }
+        rainAccumulationValid       : { type: t_bit     , comment: "TRUE if Rain accumulation is valid" }
+        rainDurationValid           : { type: t_bit     , comment: "TRUE if Rain duration is valid" }
+        rainIntensityValid          : { type: t_bit     , comment: "TRUE if Rain intensity is valid" }
+        rainPeakIntensityValid      : { type: t_bit     , comment: "TRUE if Rain peak intensity is valid" }
+        hailAccumulationValid       : { type: t_bit     , comment: "TRUE if Hail accumulation is valid" }
+        hailDurationValid           : { type: t_bit     , comment: "TRUE if Hail duration is valid" }
+        hailIntensityValid          : { type: t_bit     , comment: "TRUE if Hail intensity is valid" }
+        hailPeakIntensityValid      : { type: t_bit     , comment: "TRUE if Hail peak intensity is valid" }
+        heatingTemperatureValid     : { type: t_bit     , comment: "TRUE if Heating temperature is valid" }
+        heatingVoltageValid         : { type: t_bit     , comment: "TRUE if Heating voltage is valid" }
+        supplyVoltageValid          : { type: t_bit     , comment: "TRUE if Supply voltage is valid" }
+        referenceVoltageValid       : { type: t_bit     , comment: "TRUE if Reference voltage is valid" }
+        dewpointValid               : { type: t_bit     , comment: "TRUE if Calculated dewpoint is valid" }
+
+    

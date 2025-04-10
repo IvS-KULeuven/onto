@@ -1,0 +1,463 @@
+########################################################################################################################
+#                                                                                                                      #
+# Model of the Services software.                                                                                        #
+#                                                                                                                      #
+########################################################################################################################
+
+
+!IMPORT models/in/mercator/mtcs_common.yaml:
+
+
+########################################################################################################################
+# Define the containing PLC library
+########################################################################################################################
+
+!LIBRARY marvel_services:
+
+
+  ########################################################################################################################
+  # ServicesTimingConfig
+  ########################################################################################################################
+  
+  !CONFIG ServicesTimingConfig:
+      items:
+          alwaysUseLocalClock:
+              type: t_bool
+              comment: "If TRUE, then the local clock (source=LOCAL_CLOCK) will be used even if an external (more accurate!) clock is available"
+
+  ########################################################################################################################
+  # ServicesMeteoConfig
+  ########################################################################################################################
+  
+  !CONFIG ServicesMercatorMeteoConfig:
+      items:
+          enableWeatherMonitoring:
+              type: t_bool
+              comment: "Enable weather monitoring and emergency closing"
+          wetLimit:
+              type: t_double
+              comment: "Wet if (rainIntensity+hailIntrelaensity)>wetLimit"
+          windSpeedMinimum:
+              type: mtcs_common.MeasurementConfig
+              comment: "Config for the wind speed minimum"
+              expand: false
+          windSpeedAverage:
+              type: mtcs_common.MeasurementConfig
+              comment: "Config for the wind speed average"
+              expand: false
+          windSpeedMaximum:
+              type: mtcs_common.MeasurementConfig
+              comment: "Config for the wind speed maximum"
+              expand: false
+          windDirectionMinimum:
+              type: mtcs_common.MeasurementConfig
+              comment: "Config for the wind direction minimum"
+              expand: false
+          windDirectionAverage:
+              type: mtcs_common.MeasurementConfig
+              comment: "Config for the wind direction average"
+              expand: false
+          windDirectionMaximum:
+              type: mtcs_common.MeasurementConfig
+              comment: "Config for the wind direction maximum"
+              expand: false
+          airPressure:
+              type: mtcs_common.MeasurementConfig
+              comment: "Config for the air pressure"
+              expand: false
+          airTemperature:
+              type: mtcs_common.MeasurementConfig
+              comment: "Config for the air temperature"
+              expand: false
+          internalTemperature:
+              type: mtcs_common.MeasurementConfig
+              comment: "Config for the internal temperature"
+              expand: false
+          relativeHumidity:
+              type: mtcs_common.MeasurementConfig
+              comment: "Config for the relative humidity"
+              expand: false
+          rainAccumulation:
+              type: mtcs_common.MeasurementConfig
+              comment: "Config for the rain accumulation"
+              expand: false
+          rainDuration:
+              type: mtcs_common.MeasurementConfig
+              comment: "Config for the rain duration"
+              expand: false
+          rainIntensity:
+              type: mtcs_common.MeasurementConfig
+              comment: "Config for the rain intensity"
+              expand: false
+          rainPeakIntensity:
+              type: mtcs_common.MeasurementConfig
+              comment: "Config for the rain peak intensity"
+              expand: false
+          hailAccumulation:
+              type: mtcs_common.MeasurementConfig
+              comment: "Config for the hail accumulation"
+              expand: false
+          hailDuration:
+              type: mtcs_common.MeasurementConfig
+              comment: "Config for the hail duration"
+              expand: false
+          hailIntensity:
+              type: mtcs_common.MeasurementConfig
+              comment: "Config for the hail intensity"
+              expand: false
+          hailPeakIntensity:
+              type: mtcs_common.MeasurementConfig
+              comment: "Config for the hail peak intensity"
+              expand: false
+          heatingTemperature:
+              type: mtcs_common.MeasurementConfig
+              comment: "Config for the heating temperature"
+              expand: false
+          heatingVoltage:
+              type: mtcs_common.MeasurementConfig
+              comment: "Config for the heating voltage"
+              expand: false
+          supplyVoltage:
+              type: mtcs_common.MeasurementConfig
+              comment: "Config for the supply voltage"
+              expand: false
+          referenceVoltage:
+              type: mtcs_common.MeasurementConfig
+              comment: "Config for the 3.5 V reference voltage"
+              expand: false
+  
+  ########################################################################################################################
+  # ServicesConfig
+  ########################################################################################################################
+  
+  !CONFIG ServicesConfig:
+      items:
+          timing:
+              type: ServicesTimingConfig
+              comment: "Timing config"
+              expand: false
+          mercatorMeteo:
+              type: ServicesMercatorMeteoConfig
+              comment: "Mercator meteo config"
+
+
+  ########################################################################################################################
+  # Services
+  ########################################################################################################################
+  
+  !STATEMACHINE Services:
+      variables:
+          editableConfig                  : { type: ServicesConfig              , comment: "Editable configuration of the Services subsystem", expand: false }
+      references:
+          operatorStatus                  : { type: mtcs_common.OperatorStatus  , comment: "Shared operator status" }
+      variables_read_only:
+          config                          : { type: ServicesConfig              , comment: "Active configuration of the Services subsystem" }
+      parts:
+          timing:
+              comment                     : "Timing service"
+              arguments:
+                  config                  : {}
+                  operatorStatus          : {}
+              attributes:
+                  statuses:
+                      attributes:
+                          healthStatus    : { type: mtcs_common.HealthStatus }
+          mercatorMeteo:
+              comment                     : "Mercator meteo service"
+              arguments:
+                  config                  : {}
+              attributes:
+                  airTemperature          : {}
+                  statuses:
+                      attributes:
+                          healthStatus    : { type: mtcs_common.HealthStatus }
+          configManager:
+              comment                     : "The config manager (to load/save/activate configuration data)"
+              type                        : mtcs_common.ConfigManager
+      statuses:
+          initializationStatus            : { type: mtcs_common.InitializationStatus }
+          healthStatus                    : { type: mtcs_common.HealthStatus }
+          busyStatus                      : { type: mtcs_common.BusyStatus }
+          operatingStatus                 : { type: mtcs_common.OperatingStatus }
+      processes:
+          initialize                      : { type: mtcs_common.Process                       , comment: "Start initializing" }
+          lock                            : { type: mtcs_common.Process                       , comment: "Lock the system" }
+          unlock                          : { type: mtcs_common.Process                       , comment: "Unlock the system" }
+          changeOperatingState            : { type: mtcs_common.ChangeOperatingStateProcess   , comment: "Change the operating state (e.g. AUTO, MANUAL, ...)" }
+      calls:
+          initialize:
+              isEnabled                   : !OR [ statuses.initializationStatus.shutdown,
+                                                  statuses.initializationStatus.initializingFailed,
+                                                  statuses.initializationStatus.initialized ]
+          lock:
+              isEnabled                   : !AND [ operatorStatus.tech, statuses.initializationStatus.initialized ]
+          unlock:
+              isEnabled                   : !AND [ operatorStatus.tech, statuses.initializationStatus.locked ]
+          changeOperatingState:
+              isEnabled                   : !BOOL FALSE # there is no MANUAL mode
+          operatingStatus:
+              superState                  : statuses.initializationStatus.initialized
+          healthStatus:
+              isGood                      : !MTCS_SUMMARIZE_GOOD [ parts.timing, 
+                                                                   parts.mercatorMeteo ]
+              hasWarning                  : !MTCS_SUMMARIZE_WARN [ parts.timing,
+                                                                   parts.mercatorMeteo ]
+          busyStatus:
+              isBusy                      : statuses.initializationStatus.initializing
+          configManager:
+              isEnabled                   : operatorStatus.tech
+          timing:
+              operatorStatus              : operatorStatus
+              config                      : config.timing
+          mercatorMeteo:
+              config                      : config.mercatorMeteo
+
+
+  ########################################################################################################################
+  # ServicesTiming
+  ########################################################################################################################
+  
+  !STATEMACHINE ServicesTiming:
+      typeOf                              : [ ServicesParts.timing ]
+      references:
+          operatorStatus                  : { type: mtcs_common.OperatorStatus    , comment: "Shared operator status"}
+          config                          : { type: ServicesTimingConfig          , comment: "The config" }
+      variables:
+          ntpExtTime                      : { type: t_int64 , address: "%I*"       , comment: "TcCOM object nExtTime variable" }
+          isNtpConnected                  : { type: t_bool  , address: "%I*"       , comment: "TRUE if NTP is connected" }
+          isNtpSynchronized               : { type: t_bool  , address: "%I*"       , comment: "TRUE if NTP is synchronized" }
+      variables_read_only:
+          # actual source
+          utcDateString                   : { type: t_string                      , comment: "UTC date as a string of format YYYY-MM-DD" }
+          utcTimeString                   : { type: t_string                      , comment: "UTC time as a string of format HH-MM-SS.SSS" }
+      statuses:
+          healthStatus                    : { type: mtcs_common.HealthStatus }
+      processes:
+          {}
+      calls:
+          healthStatus:
+              isGood                      : !AND [ isNtpConnected, isNtpSynchronized ]
+  
+  
+
+  ########################################################################################################################
+  # ServicesMercatorMeteoMeasurement
+  ########################################################################################################################
+  !STATEMACHINE ServicesMercatorMeteoMeasurement:
+      references:
+          config          : { type: mtcs_common.MeasurementConfig   , comment: "Reference to the config" }
+      variables:
+          data            : { type: t_double                        , comment: "The measured data" }
+          valid           : { type: t_bool                          , comment: "TRUE if the data is valid" }
+      statuses:
+          enabledStatus   : { type: mtcs_common.EnabledStatus       , comment: "Is the temperature being measured?" }
+          healthStatus    : { type: mtcs_common.HealthStatus        , comment: "Is the data valid and within range?" }
+          alarmStatus     : { type: mtcs_common.HiHiLoLoAlarmStatus , comment: "Alarm status"}
+      calls:
+          enabledStatus:
+              isEnabled    : config.enabled
+          alarmStatus:
+              superState   : statuses.enabledStatus.enabled
+              config       : config.alarms
+              value        : data
+          healthStatus:
+              superState   : statuses.enabledStatus.enabled
+              isGood       : !NOT [ !OR [ !NOT [ valid ],
+                                          statuses.alarmStatus.hiHi,
+                                          statuses.alarmStatus.loLo ] ]
+              hasWarning   : !OR [ statuses.alarmStatus.hi,
+                                   statuses.alarmStatus.lo ]
+  
+  ########################################################################################################################
+  # ServicesMercatorMeteo
+  ########################################################################################################################
+  
+  !STATEMACHINE ServicesMercatorMeteo:
+      typeOf                          : [ ServicesParts.mercatorMeteo ]
+      variables_hidden:
+          fromMercator                : { type: mtcs_common.MercatorMeteoExchange , address: "%I*" , comment: "The data exchanged by the Mercator telescope" }
+      variables:
+          # measurements
+          windSpeedMinimum            : { type: ServicesMercatorMeteoMeasurement  , comment: "Wind speed minimum" }
+          windSpeedAverage            : { type: ServicesMercatorMeteoMeasurement  , comment: "Wind speed average" }
+          windSpeedMaximum            : { type: ServicesMercatorMeteoMeasurement  , comment: "Wind speed maximum" }
+          windDirectionMinimum        : { type: ServicesMercatorMeteoMeasurement  , comment: "Wind direction minimum" }
+          windDirectionAverage        : { type: ServicesMercatorMeteoMeasurement  , comment: "Wind direction average" }
+          windDirectionMaximum        : { type: ServicesMercatorMeteoMeasurement  , comment: "Wind direction maximum" }
+          airPressure                 : { type: ServicesMercatorMeteoMeasurement  , comment: "Air pressure" }
+          airTemperature              : { type: ServicesMercatorMeteoMeasurement  , comment: "Air temperature" }
+          internalTemperature         : { type: ServicesMercatorMeteoMeasurement  , comment: "Internal temperature" }
+          relativeHumidity            : { type: ServicesMercatorMeteoMeasurement  , comment: "Relative humidity" }
+          rainAccumulation            : { type: ServicesMercatorMeteoMeasurement  , comment: "Rain accumulation" }
+          rainDuration                : { type: ServicesMercatorMeteoMeasurement  , comment: "Rain duration" }
+          rainIntensity               : { type: ServicesMercatorMeteoMeasurement  , comment: "Rain intensity" }
+          rainPeakIntensity           : { type: ServicesMercatorMeteoMeasurement  , comment: "Rain peak intensity" }
+          hailAccumulation            : { type: ServicesMercatorMeteoMeasurement  , comment: "Hail accumulation" }
+          hailDuration                : { type: ServicesMercatorMeteoMeasurement  , comment: "Hail duration" }
+          hailIntensity               : { type: ServicesMercatorMeteoMeasurement  , comment: "Hail intensity" }
+          hailPeakIntensity           : { type: ServicesMercatorMeteoMeasurement  , comment: "Hail peak intensity" }
+          heatingTemperature          : { type: ServicesMercatorMeteoMeasurement  , comment: "Heating temperature" }
+          heatingVoltage              : { type: ServicesMercatorMeteoMeasurement  , comment: "Heating voltage" }
+          supplyVoltage               : { type: ServicesMercatorMeteoMeasurement  , comment: "Supply voltage" }
+          referenceVoltage            : { type: ServicesMercatorMeteoMeasurement  , comment: "Reference voltage" }
+          dewpoint                    : { type: ServicesMercatorMeteoMeasurement  , comment: "Calculated dew point temperature" }
+          # other
+          durationOK                  : { type: mtcs_common.Duration              , comment: "Duration that the meteo is OK" }
+          wet                         : { type: t_bool                            , comment: "Wet if (rainIntensity+hailIntensity) > config.wetLimit" }
+          heating                     : { type: t_bool                            , comment: "Heating or not?"}
+          windDirectionMinimumString  : { type: t_string                          , comment: "Average direction of the wind as a string"}
+          windDirectionAverageString  : { type: t_string                          , comment: "Average direction of the wind as a string"}
+          windDirectionMaximumString  : { type: t_string                          , comment: "Average direction of the wind as a string"}
+      references:
+          config                      : { type: ServicesMercatorMeteoConfig       , comment: "The config" }
+      statuses:
+          meteoHealthStatus           : { type: mtcs_common.HealthStatus }
+          healthStatus                : { type: mtcs_common.HealthStatus }
+      processes:
+          {}
+      calls:
+          windSpeedMinimum:
+              config                  : config.windSpeedMinimum
+              data                    : fromMercator.windSpeedMinimum
+              valid                   : fromMercator.windSpeedMinimumValid
+          windSpeedAverage:
+              config                  : config.windSpeedAverage
+              data                    : fromMercator.windSpeedAverage
+              valid                   : fromMercator.windSpeedAverageValid
+          windSpeedMaximum:
+              config                  : config.windSpeedMaximum
+              data                    : fromMercator.windSpeedMaximum
+              valid                   : fromMercator.windSpeedMaximumValid
+          windDirectionMinimum:
+              config                  : config.windDirectionMinimum
+              data                    : fromMercator.windDirectionMinimum
+              valid                   : fromMercator.windDirectionMinimumValid
+          windDirectionAverage:
+              config                  : config.windDirectionAverage
+              data                    : fromMercator.windDirectionAverage
+              valid                   : fromMercator.windDirectionAverageValid
+          windDirectionMaximum:
+              config                  : config.windDirectionMaximum
+              data                    : fromMercator.windDirectionMaximum
+              valid                   : fromMercator.windDirectionMaximumValid
+          airPressure:
+              config                  : config.airPressure
+              data                    : fromMercator.airPressure
+              valid                   : fromMercator.airPressureValid
+          airTemperature:
+              config                  : config.airTemperature
+              data                    : fromMercator.airTemperature
+              valid                   : fromMercator.airTemperatureValid
+          internalTemperature:
+              config                  : config.internalTemperature
+              data                    : fromMercator.internalTemperature
+              valid                   : fromMercator.internalTemperatureValid
+          relativeHumidity:
+              config                  : config.relativeHumidity
+              data                    : fromMercator.relativeHumidity
+              valid                   : fromMercator.relativeHumidityValid
+          rainAccumulation:
+              config                  : config.rainAccumulation
+              data                    : fromMercator.rainAccumulation
+              valid                   : fromMercator.rainAccumulationValid
+          rainDuration:
+              config                  : config.rainDuration
+              data                    : fromMercator.rainDuration
+              valid                   : fromMercator.rainDurationValid
+          rainIntensity:
+              config                  : config.rainIntensity
+              data                    : fromMercator.rainIntensity
+              valid                   : fromMercator.rainIntensityValid
+          rainPeakIntensity:
+              config                  : config.rainPeakIntensity
+              data                    : fromMercator.rainPeakIntensity
+              valid                   : fromMercator.rainPeakIntensityValid
+          hailAccumulation:
+              config                  : config.hailAccumulation
+              data                    : fromMercator.hailAccumulation
+              valid                   : fromMercator.hailAccumulationValid
+          hailDuration:
+              config                  : config.hailDuration
+              data                    : fromMercator.hailDuration
+              valid                   : fromMercator.hailDurationValid
+          hailIntensity:
+              config                  : config.hailIntensity
+              data                    : fromMercator.hailIntensity
+              valid                   : fromMercator.hailIntensityValid
+          hailPeakIntensity:
+              config                  : config.hailPeakIntensity
+              data                    : fromMercator.hailPeakIntensity
+              valid                   : fromMercator.hailPeakIntensityValid
+          heatingTemperature:
+              config                  : config.heatingTemperature
+              data                    : fromMercator.heatingTemperature
+              valid                   : fromMercator.heatingTemperatureValid
+          heatingVoltage:
+              config                  : config.heatingVoltage
+              data                    : fromMercator.heatingVoltage
+              valid                   : fromMercator.heatingVoltageValid
+          supplyVoltage:
+              config                  : config.supplyVoltage
+              data                    : fromMercator.supplyVoltage
+              valid                   : fromMercator.supplyVoltageValid
+          referenceVoltage:
+              config                  : config.referenceVoltage
+              data                    : fromMercator.referenceVoltage
+              valid                   : fromMercator.referenceVoltageValid
+          dewpoint:
+              config                  : config.dewpoint
+              data                    : fromMercator.dewpoint
+              valid                   : fromMercator.dewpointValid
+          healthStatus:
+              isGood                  : fromMercator.mercatorServiceHealthy
+          meteoHealthStatus:
+              superState              : statuses.healthStatus.good
+              isGood                  : !MTCS_SUMMARIZE_GOOD_OR_DISABLED [
+                                                  windSpeedMinimum,
+                                                  windSpeedAverage,
+                                                  windSpeedMaximum,
+                                                  windDirectionMinimum,
+                                                  windDirectionAverage,
+                                                  windDirectionMaximum,
+                                                  airPressure,
+                                                  airTemperature,
+                                                  internalTemperature,
+                                                  relativeHumidity,
+                                                  rainAccumulation,
+                                                  rainDuration,
+                                                  rainIntensity,
+                                                  rainPeakIntensity,
+                                                  hailAccumulation,
+                                                  hailDuration,
+                                                  hailIntensity,
+                                                  hailPeakIntensity,
+                                                  heatingTemperature,
+                                                  heatingVoltage,
+                                                  supplyVoltage,
+                                                  referenceVoltage,
+                                                  dewpoint ]
+              hasWarning                 : !MTCS_SUMMARIZE_WARN [
+                                                  windSpeedMinimum,
+                                                  windSpeedAverage,
+                                                  windSpeedMaximum,
+                                                  windDirectionMinimum,
+                                                  windDirectionAverage,
+                                                  windDirectionMaximum,
+                                                  airPressure,
+                                                  airTemperature,
+                                                  internalTemperature,
+                                                  relativeHumidity,
+                                                  rainAccumulation,
+                                                  rainDuration,
+                                                  rainIntensity,
+                                                  rainPeakIntensity,
+                                                  hailAccumulation,
+                                                  hailDuration,
+                                                  hailIntensity,
+                                                  hailPeakIntensity,
+                                                  heatingTemperature,
+                                                  heatingVoltage,
+                                                  supplyVoltage,
+                                                  referenceVoltage,
+                                                  dewpoint ]
+  

@@ -6,6 +6,7 @@
 
 
 !IMPORT models/in/marvel/marvel_unit.yaml:
+!IMPORT models/in/marvel/marvel_services.yaml:
 
 
 ########################################################################################################################
@@ -191,6 +192,17 @@
                         point:
                             attributes:
                                 isEnabled : { type: t_bool }
+          services:
+              type : marvel_services.Services
+              comment: "Services"
+              expand: false
+              arguments:
+                  operatorStatus          : { type: mtcs_common.OperatorStatus, expand: false }
+              attributes:
+                  statuses:
+                      attributes:
+                          healthStatus    : { type: mtcs_common.HealthStatus }
+                          busyStatus      : { type: mtcs_common.BusyStatus }
         #   configManager:
         #       comment                     : "The config manager (to load/save/activate configuration data)"
         #       type                        : mtcs_common.ConfigManager
@@ -265,6 +277,8 @@
               number              : !UINT8 4
               operatorStatus      : statuses.operatorStatus
               activityStatus      : statuses.activityStatus
+          services:
+              operatorStatus      : statuses.operatorStatus
           configManager:
              isEnabled            : statuses.operatorStatus.tech
           emergencyClose:
@@ -274,10 +288,10 @@
                                                   parts.u1.parts.dome.parts.shutter.statuses.apertureStatus.closed ] ]
           healthStatus:
               superState          : !NOT [ statuses.initializationStatus.shutdown ]
-              isGood              : !MTCS_SUMMARIZE_GOOD [ parts.u1, parts.u2, parts.u3, parts.u4 ]
-              hasWarning          : !MTCS_SUMMARIZE_WARN [ parts.u1, parts.u2, parts.u3, parts.u4 ]
+              isGood              : !MTCS_SUMMARIZE_GOOD [ parts.u1, parts.u2, parts.u3, parts.u4, parts.services ]
+              hasWarning          : !MTCS_SUMMARIZE_WARN [ parts.u1, parts.u2, parts.u3, parts.u4, parts.services ]
           busyStatus:
               superState          : !NOT [ statuses.initializationStatus.shutdown ]
-              isBusy              : !MTCS_SUMMARIZE_BUSY [ parts.u1, parts.u2, parts.u3, parts.u4 ]
+              isBusy              : !MTCS_SUMMARIZE_BUSY [ parts.u1, parts.u2, parts.u3, parts.u4, parts.services ]
           passwordHealthStatus:
               superState          : statuses.operatorStatus.observer

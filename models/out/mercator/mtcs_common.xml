@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
-  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-04-10T16:56:59.318796" />
-  <contentHeader name="mtcs_common" modificationDateTime="2025-04-10T16:56:59.318796">
+  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-04-10T22:08:01.496228" />
+  <contentHeader name="mtcs_common" modificationDateTime="2025-04-10T22:08:01.496228">
     <coordinateInfo>
       <fbd>
         <scaling x="1" y="1" />
@@ -2036,6 +2036,623 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the Nasmyth rotator is active (irrespective of its power status)</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="MercatorMeteoExchange">
+        <baseType>
+          <struct>
+            <variable name="mercatorServiceHealthy">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if the Mercator service healthStatus is Good</xhtml>
+              </documentation>
+            </variable>
+            <variable name="windSpeedMinimum">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Wind speed minimum</xhtml>
+              </documentation>
+            </variable>
+            <variable name="windSpeedAverage">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Wind speed average</xhtml>
+              </documentation>
+            </variable>
+            <variable name="windSpeedMaximum">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Wind speed maximum</xhtml>
+              </documentation>
+            </variable>
+            <variable name="windDirectionMinimum">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Wind direction minimum</xhtml>
+              </documentation>
+            </variable>
+            <variable name="windDirectionAverage">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Wind direction average</xhtml>
+              </documentation>
+            </variable>
+            <variable name="windDirectionMaximum">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Wind direction maximum</xhtml>
+              </documentation>
+            </variable>
+            <variable name="airPressure">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Air pressure</xhtml>
+              </documentation>
+            </variable>
+            <variable name="airTemperature">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Air temperature</xhtml>
+              </documentation>
+            </variable>
+            <variable name="internalTemperature">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Internal temperature</xhtml>
+              </documentation>
+            </variable>
+            <variable name="relativeHumidity">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Relative humidity</xhtml>
+              </documentation>
+            </variable>
+            <variable name="rainAccumulation">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Rain accumulation</xhtml>
+              </documentation>
+            </variable>
+            <variable name="rainDuration">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Rain duration</xhtml>
+              </documentation>
+            </variable>
+            <variable name="rainIntensity">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Rain intensity</xhtml>
+              </documentation>
+            </variable>
+            <variable name="rainPeakIntensity">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Rain peak intensity</xhtml>
+              </documentation>
+            </variable>
+            <variable name="hailAccumulation">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Hail accumulation</xhtml>
+              </documentation>
+            </variable>
+            <variable name="hailDuration">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Hail duration</xhtml>
+              </documentation>
+            </variable>
+            <variable name="hailIntensity">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Hail intensity</xhtml>
+              </documentation>
+            </variable>
+            <variable name="hailPeakIntensity">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Hail peak intensity</xhtml>
+              </documentation>
+            </variable>
+            <variable name="heatingTemperature">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Heating temperature</xhtml>
+              </documentation>
+            </variable>
+            <variable name="heatingVoltage">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Heating voltage</xhtml>
+              </documentation>
+            </variable>
+            <variable name="supplyVoltage">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Supply voltage</xhtml>
+              </documentation>
+            </variable>
+            <variable name="referenceVoltage">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Reference voltage</xhtml>
+              </documentation>
+            </variable>
+            <variable name="dewpoint">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Calculated dewpoint</xhtml>
+              </documentation>
+            </variable>
+            <variable name="windSpeedMinimumValid">
+              <type><derived name="BIT" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if Wind speed minimum is valid</xhtml>
+              </documentation>
+            </variable>
+            <variable name="windSpeedAverageValid">
+              <type><derived name="BIT" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if Wind speed average is valid</xhtml>
+              </documentation>
+            </variable>
+            <variable name="windSpeedMaximumValid">
+              <type><derived name="BIT" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if Wind speed maximum is valid</xhtml>
+              </documentation>
+            </variable>
+            <variable name="windDirectionMinimumValid">
+              <type><derived name="BIT" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if Wind direction minimum is valid</xhtml>
+              </documentation>
+            </variable>
+            <variable name="windDirectionAverageValid">
+              <type><derived name="BIT" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if Wind direction average is valid</xhtml>
+              </documentation>
+            </variable>
+            <variable name="windDirectionMaximumValid">
+              <type><derived name="BIT" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if Wind direction maximum is valid</xhtml>
+              </documentation>
+            </variable>
+            <variable name="airPressureValid">
+              <type><derived name="BIT" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if Air pressure is valid</xhtml>
+              </documentation>
+            </variable>
+            <variable name="airTemperatureValid">
+              <type><derived name="BIT" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if Air temperature is valid</xhtml>
+              </documentation>
+            </variable>
+            <variable name="internalTemperatureValid">
+              <type><derived name="BIT" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if Internal temperature is valid</xhtml>
+              </documentation>
+            </variable>
+            <variable name="relativeHumidityValid">
+              <type><derived name="BIT" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if Relative humidity is valid</xhtml>
+              </documentation>
+            </variable>
+            <variable name="rainAccumulationValid">
+              <type><derived name="BIT" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if Rain accumulation is valid</xhtml>
+              </documentation>
+            </variable>
+            <variable name="rainDurationValid">
+              <type><derived name="BIT" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if Rain duration is valid</xhtml>
+              </documentation>
+            </variable>
+            <variable name="rainIntensityValid">
+              <type><derived name="BIT" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if Rain intensity is valid</xhtml>
+              </documentation>
+            </variable>
+            <variable name="rainPeakIntensityValid">
+              <type><derived name="BIT" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if Rain peak intensity is valid</xhtml>
+              </documentation>
+            </variable>
+            <variable name="hailAccumulationValid">
+              <type><derived name="BIT" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if Hail accumulation is valid</xhtml>
+              </documentation>
+            </variable>
+            <variable name="hailDurationValid">
+              <type><derived name="BIT" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if Hail duration is valid</xhtml>
+              </documentation>
+            </variable>
+            <variable name="hailIntensityValid">
+              <type><derived name="BIT" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if Hail intensity is valid</xhtml>
+              </documentation>
+            </variable>
+            <variable name="hailPeakIntensityValid">
+              <type><derived name="BIT" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if Hail peak intensity is valid</xhtml>
+              </documentation>
+            </variable>
+            <variable name="heatingTemperatureValid">
+              <type><derived name="BIT" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if Heating temperature is valid</xhtml>
+              </documentation>
+            </variable>
+            <variable name="heatingVoltageValid">
+              <type><derived name="BIT" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if Heating voltage is valid</xhtml>
+              </documentation>
+            </variable>
+            <variable name="supplyVoltageValid">
+              <type><derived name="BIT" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if Supply voltage is valid</xhtml>
+              </documentation>
+            </variable>
+            <variable name="referenceVoltageValid">
+              <type><derived name="BIT" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if Reference voltage is valid</xhtml>
+              </documentation>
+            </variable>
+            <variable name="dewpointValid">
+              <type><derived name="BIT" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if Calculated dewpoint is valid</xhtml>
               </documentation>
             </variable>
           </struct>
@@ -22133,6 +22750,8 @@ END_IF;
             </Object>
           </Folder>
           <Folder Name="Structs">
+            <Object Name="MercatorMeteoExchange">
+            </Object>
           </Folder>
           <Folder Name="Processes">
             <Folder Name="Args">

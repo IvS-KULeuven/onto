@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
-  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-04-10T16:56:59.318796" />
-  <contentHeader name="marvel_unit" modificationDateTime="2025-04-10T16:56:59.318796">
+  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-04-10T22:08:01.496228" />
+  <contentHeader name="marvel_unit" modificationDateTime="2025-04-10T22:08:01.496228">
     <coordinateInfo>
       <fbd>
         <scaling x="1" y="1" />
@@ -183,6 +183,45 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Telescope config of a Marvel unit</xhtml>
+              </documentation>
+            </variable>
+            <variable name="longitude">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Unit location: longitude [degrees, positive = E, negative = W]</xhtml>
+              </documentation>
+            </variable>
+            <variable name="latitude">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Unit location: latitude [degrees, positive = N, negative = S]</xhtml>
+              </documentation>
+            </variable>
+            <variable name="height">
+              <type><REAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Unit location: height above sea-level [m]</xhtml>
               </documentation>
             </variable>
           </struct>

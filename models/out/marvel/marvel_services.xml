@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
   <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-04-10T22:08:01.496228" />
-  <contentHeader name="mtcs_hydraulics" modificationDateTime="2025-04-10T22:08:01.496228">
+  <contentHeader name="marvel_services" modificationDateTime="2025-04-10T22:08:01.496228">
     <coordinateInfo>
       <fbd>
         <scaling x="1" y="1" />
@@ -21,29 +21,11 @@
   </contentHeader>
   <types>
     <dataTypes>
-      <dataType name="HydraulicsPumpsStates">
-        <baseType>
-          <enum>
-            <values>
-              <value name="STOPPED" value="0" />
-              <value name="POWERING_ON" value="1" />
-              <value name="RESETTING_DRIVES" value="2" />
-              <value name="COMMANDING_SAFETY" value="3" />
-              <value name="BUILDING_UP_PRESSURE" value="4" />
-              <value name="RUNNING" value="5" />
-              <value name="STOPPING" value="6" />
-              <value name="POWERING_OFF" value="7" />
-              <value name="MANUAL" value="8" />
-              <value name="ERROR" value="9" />
-            </values>
-          </enum>
-        </baseType>
-      </dataType>
-      <dataType name="HydraulicsParts">
+      <dataType name="ServicesParts">
         <baseType>
           <struct>
-            <variable name="circulationPumpRelay">
-              <type><derived name="SimpleRelay" /></type>
+            <variable name="timing">
+              <type><derived name="ServicesTiming" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -52,11 +34,11 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Relay to power on/off the circulation pump</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Timing service</xhtml>
               </documentation>
             </variable>
-            <variable name="pumpsPowerRelay">
-              <type><derived name="SimpleRelay" /></type>
+            <variable name="mercatorMeteo">
+              <type><derived name="ServicesMercatorMeteo" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -65,46 +47,7 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Relay to power on/off the pumps</xhtml>
-              </documentation>
-            </variable>
-            <variable name="top">
-              <type><derived name="HydraulicsSide" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Top side</xhtml>
-              </documentation>
-            </variable>
-            <variable name="bottom">
-              <type><derived name="HydraulicsSide" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Bottom side</xhtml>
-              </documentation>
-            </variable>
-            <variable name="io">
-              <type><derived name="HydraulicsIO" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">I/O modules</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Mercator meteo service</xhtml>
               </documentation>
             </variable>
             <variable name="configManager">
@@ -123,110 +66,7 @@
           </struct>
         </baseType>
       </dataType>
-      <dataType name="HydraulicsIOParts">
-        <baseType>
-          <struct>
-            <variable name="pumpsGroup">
-              <type><derived name="HydraulicsPumpsGroupIO" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">PG: Pumps Group</xhtml>
-              </documentation>
-            </variable>
-          </struct>
-        </baseType>
-      </dataType>
-      <dataType name="HydraulicsPumpsGroupIOParts">
-        <baseType>
-          <struct>
-            <variable name="COU">
-              <type><derived name="EtherCatDevice" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">PG:COU (EK1101)</xhtml>
-              </documentation>
-            </variable>
-            <variable name="DI1">
-              <type><derived name="EtherCatDevice" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">PG:DI1 (EL1008)</xhtml>
-              </documentation>
-            </variable>
-            <variable name="SI1">
-              <type><derived name="EtherCatDevice" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">PG:SI1 (EL1904)</xhtml>
-              </documentation>
-            </variable>
-            <variable name="SI2">
-              <type><derived name="EtherCatDevice" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">PG:SI2 (EL1904)</xhtml>
-              </documentation>
-            </variable>
-            <variable name="SI3">
-              <type><derived name="EtherCatDevice" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">PG:SI3 (EL1904)</xhtml>
-              </documentation>
-            </variable>
-            <variable name="DI2">
-              <type><derived name="EtherCatDevice" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">PG:DI2 (EL1008)</xhtml>
-              </documentation>
-            </variable>
-          </struct>
-        </baseType>
-      </dataType>
-      <dataType name="HydraulicsProcesses">
+      <dataType name="ServicesProcesses">
         <baseType>
           <struct>
             <variable name="initialize">
@@ -281,68 +121,22 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Change the operating state (e.g. AUTO, MANUAL, ...)</xhtml>
               </documentation>
             </variable>
-            <variable name="startUpPumps">
-              <type><derived name="Process" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Start up the pumps</xhtml>
-              </documentation>
-            </variable>
-            <variable name="stopPumps">
-              <type><derived name="Process" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Stop the pumps</xhtml>
-              </documentation>
-            </variable>
           </struct>
         </baseType>
       </dataType>
-      <dataType name="HydraulicsSideProcesses">
+      <dataType name="ServicesTimingProcesses">
         <baseType>
           <struct>
-            <variable name="resetDrive">
-              <type><derived name="Process" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Reset the drive</xhtml>
-              </documentation>
-            </variable>
-            <variable name="changeFrequencySetpoint">
-              <type><derived name="ChangeSetpointProcess" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Change the frequency setpoint, in Hertz</xhtml>
-              </documentation>
-            </variable>
           </struct>
         </baseType>
       </dataType>
-      <dataType name="HydraulicsStatuses">
+      <dataType name="ServicesMercatorMeteoProcesses">
+        <baseType>
+          <struct>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="ServicesStatuses">
         <baseType>
           <struct>
             <variable name="initializationStatus">
@@ -400,7 +194,7 @@
           </struct>
         </baseType>
       </dataType>
-      <dataType name="HydraulicsSideStatuses">
+      <dataType name="ServicesTimingStatuses">
         <baseType>
           <struct>
             <variable name="healthStatus">
@@ -413,11 +207,17 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Is the hydraulics side in a healthy state? Good=RUN, Bad=safe stopped</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="busyStatus">
-              <type><derived name="BusyStatus" /></type>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="ServicesMercatorMeteoMeasurementStatuses">
+        <baseType>
+          <struct>
+            <variable name="enabledStatus">
+              <type><derived name="EnabledStatus" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -426,15 +226,9 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Is the hydraulics side busy?</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Is the temperature being measured?</xhtml>
               </documentation>
             </variable>
-          </struct>
-        </baseType>
-      </dataType>
-      <dataType name="HydraulicsIOStatuses">
-        <baseType>
-          <struct>
             <variable name="healthStatus">
               <type><derived name="HealthStatus" /></type>
               <addData>
@@ -445,15 +239,41 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Is the I/O in a healthy state?</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Is the data valid and within range?</xhtml>
+              </documentation>
+            </variable>
+            <variable name="alarmStatus">
+              <type><derived name="HiHiLoLoAlarmStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Alarm status</xhtml>
               </documentation>
             </variable>
           </struct>
         </baseType>
       </dataType>
-      <dataType name="HydraulicsPumpsGroupIOStatuses">
+      <dataType name="ServicesMercatorMeteoStatuses">
         <baseType>
           <struct>
+            <variable name="meteoHealthStatus">
+              <type><derived name="HealthStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
             <variable name="healthStatus">
               <type><derived name="HealthStatus" /></type>
               <addData>
@@ -464,17 +284,17 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Is the I/O in a healthy state?</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
           </struct>
         </baseType>
       </dataType>
-      <dataType name="HydraulicsConfig">
+      <dataType name="ServicesTimingConfig">
         <baseType>
           <struct>
-            <variable name="top">
-              <type><derived name="HydraulicsSideConfig" /></type>
+            <variable name="alwaysUseLocalClock">
+              <type><BOOL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -483,120 +303,29 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Top side settings</xhtml>
-              </documentation>
-            </variable>
-            <variable name="bottom">
-              <type><derived name="HydraulicsSideConfig" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Bottom side settings</xhtml>
-              </documentation>
-            </variable>
-            <variable name="controlCycleTime">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Cycle time in seconds of the control loop (old system: 60.0)</xhtml>
-              </documentation>
-            </variable>
-            <variable name="controlHysteresis">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Don&#39;t change the frequency setpoint if the error is below this value (in Hz) (old system: 1.0)</xhtml>
-              </documentation>
-            </variable>
-            <variable name="buildUpPressureTime">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Time in seconds during startup, when the pumps must run at maxFrequency</xhtml>
-              </documentation>
-            </variable>
-            <variable name="bearingTemperature">
-              <type><derived name="MeasurementConfig" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Oil temperature measured at the bearing</xhtml>
-              </documentation>
-            </variable>
-            <variable name="stoppingTime">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Time in seconds during stopping</xhtml>
-              </documentation>
-            </variable>
-            <variable name="pumpsPowerOnTIme">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Time in seconds to wait while powering on</xhtml>
-              </documentation>
-            </variable>
-            <variable name="pumpsPowerOffTIme">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Time in seconds to wait while powering off</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">If TRUE, then the local clock (source=LOCAL_CLOCK) will be used even if an external (more accurate!) clock is available</xhtml>
               </documentation>
             </variable>
           </struct>
         </baseType>
       </dataType>
-      <dataType name="HydraulicsSideConfig">
+      <dataType name="ServicesMercatorMeteoConfig">
         <baseType>
           <struct>
-            <variable name="minFrequency">
+            <variable name="enableWeatherMonitoring">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Enable weather monitoring and emergency closing</xhtml>
+              </documentation>
+            </variable>
+            <variable name="wetLimit">
               <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -606,23 +335,10 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Minimum allowed frequency in Hz (old system: 50.0 for both pumps)</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Wet if (rainIntensity+hailIntrelaensity)&gt;wetLimit</xhtml>
               </documentation>
             </variable>
-            <variable name="maxFrequency">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Maximum allowed frequency in Hz (old system: 100.0 for both pumps)</xhtml>
-              </documentation>
-            </variable>
-            <variable name="pressureMeasurement">
+            <variable name="windSpeedMinimum">
               <type><derived name="MeasurementConfig" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -632,23 +348,10 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Pressure measurement config, in Bar</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for the wind speed minimum</xhtml>
               </documentation>
             </variable>
-            <variable name="pressureSensorFullScale">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Sensor full scale range, in Bar</xhtml>
-              </documentation>
-            </variable>
-            <variable name="frequencyMeasurement">
+            <variable name="windSpeedAverage">
               <type><derived name="MeasurementConfig" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -658,11 +361,11 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Frequency measurement config, in Hertz</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for the wind speed average</xhtml>
               </documentation>
             </variable>
-            <variable name="frequencyMeasurementFullScale">
-              <type><LREAL /></type>
+            <variable name="windSpeedMaximum">
+              <type><derived name="MeasurementConfig" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -671,11 +374,11 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Measurement full scale range, in Hertz</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for the wind speed maximum</xhtml>
               </documentation>
             </variable>
-            <variable name="conversionCoefficientA">
-              <type><LREAL /></type>
+            <variable name="windDirectionMinimum">
+              <type><derived name="MeasurementConfig" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -684,11 +387,11 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Coefficient &#39;a&#39; of formula: Frequency[Hz] = a * temp[Celsius]^2 + b * temp[Celsius] + c</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for the wind direction minimum</xhtml>
               </documentation>
             </variable>
-            <variable name="conversionCoefficientB">
-              <type><LREAL /></type>
+            <variable name="windDirectionAverage">
+              <type><derived name="MeasurementConfig" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -697,11 +400,11 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Coefficient &#39;b&#39; of formula: Frequency[Hz] = a * temp[Celsius]^2 + b * temp[Celsius] + c</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for the wind direction average</xhtml>
               </documentation>
             </variable>
-            <variable name="conversionCoefficientC">
-              <type><LREAL /></type>
+            <variable name="windDirectionMaximum">
+              <type><derived name="MeasurementConfig" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -710,7 +413,247 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Coefficient &#39;c&#39; of formula: Frequency[Hz] = a * temp[Celsius]^2 + b * temp[Celsius] + c</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for the wind direction maximum</xhtml>
+              </documentation>
+            </variable>
+            <variable name="airPressure">
+              <type><derived name="MeasurementConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for the air pressure</xhtml>
+              </documentation>
+            </variable>
+            <variable name="airTemperature">
+              <type><derived name="MeasurementConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for the air temperature</xhtml>
+              </documentation>
+            </variable>
+            <variable name="internalTemperature">
+              <type><derived name="MeasurementConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for the internal temperature</xhtml>
+              </documentation>
+            </variable>
+            <variable name="relativeHumidity">
+              <type><derived name="MeasurementConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for the relative humidity</xhtml>
+              </documentation>
+            </variable>
+            <variable name="rainAccumulation">
+              <type><derived name="MeasurementConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for the rain accumulation</xhtml>
+              </documentation>
+            </variable>
+            <variable name="rainDuration">
+              <type><derived name="MeasurementConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for the rain duration</xhtml>
+              </documentation>
+            </variable>
+            <variable name="rainIntensity">
+              <type><derived name="MeasurementConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for the rain intensity</xhtml>
+              </documentation>
+            </variable>
+            <variable name="rainPeakIntensity">
+              <type><derived name="MeasurementConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for the rain peak intensity</xhtml>
+              </documentation>
+            </variable>
+            <variable name="hailAccumulation">
+              <type><derived name="MeasurementConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for the hail accumulation</xhtml>
+              </documentation>
+            </variable>
+            <variable name="hailDuration">
+              <type><derived name="MeasurementConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for the hail duration</xhtml>
+              </documentation>
+            </variable>
+            <variable name="hailIntensity">
+              <type><derived name="MeasurementConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for the hail intensity</xhtml>
+              </documentation>
+            </variable>
+            <variable name="hailPeakIntensity">
+              <type><derived name="MeasurementConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for the hail peak intensity</xhtml>
+              </documentation>
+            </variable>
+            <variable name="heatingTemperature">
+              <type><derived name="MeasurementConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for the heating temperature</xhtml>
+              </documentation>
+            </variable>
+            <variable name="heatingVoltage">
+              <type><derived name="MeasurementConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for the heating voltage</xhtml>
+              </documentation>
+            </variable>
+            <variable name="supplyVoltage">
+              <type><derived name="MeasurementConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for the supply voltage</xhtml>
+              </documentation>
+            </variable>
+            <variable name="referenceVoltage">
+              <type><derived name="MeasurementConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for the 3.5 V reference voltage</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="ServicesConfig">
+        <baseType>
+          <struct>
+            <variable name="timing">
+              <type><derived name="ServicesTimingConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Timing config</xhtml>
+              </documentation>
+            </variable>
+            <variable name="mercatorMeteo">
+              <type><derived name="ServicesMercatorMeteoConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Mercator meteo config</xhtml>
               </documentation>
             </variable>
           </struct>
@@ -718,11 +661,11 @@
       </dataType>
     </dataTypes>
     <pous>
-      <pou name="SM_Hydraulics" pouType="functionBlock">
+      <pou name="SM_Services" pouType="functionBlock">
         <interface>
           <inputVars>
             <variable name="editableConfig">
-              <type><derived name="HydraulicsConfig" /></type>
+              <type><derived name="ServicesConfig" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -733,82 +676,7 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Editable configuration of the Safety subsystem</xhtml>
-              </documentation>
-            </variable>
-            <variable name="circulationFilterGOK" address="%I*">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if there is no overpressure for circulation filter G</xhtml>
-              </documentation>
-            </variable>
-            <variable name="circulationFilterDOK" address="%I*">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if there is no overpressure for circulation filter D</xhtml>
-              </documentation>
-            </variable>
-            <variable name="oilLevelTooHigh" address="%I*">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if the oil level is too high (--&gt; problem!)</xhtml>
-              </documentation>
-            </variable>
-            <variable name="pumpsState">
-              <type><derived name="HydraulicsPumpsStates" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">The current state of the pumps</xhtml>
-              </documentation>
-            </variable>
-            <variable name="pumpsStatus">
-              <type><string /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Textual representation of the current pumps status</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Editable configuration of the Services subsystem</xhtml>
               </documentation>
             </variable>
           </inputVars>
@@ -843,7 +711,7 @@
               </documentation>
             </variable>
             <variable name="config">
-              <type><derived name="HydraulicsConfig" /></type>
+              <type><derived name="ServicesConfig" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -854,26 +722,11 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Active configuration of the Hydraulics subsystem</xhtml>
-              </documentation>
-            </variable>
-            <variable name="bearingTemperature">
-              <type><derived name="TemperatureMeasurement" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Temperature measured at the bearing</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Active configuration of the Services subsystem</xhtml>
               </documentation>
             </variable>
             <variable name="statuses">
-              <type><derived name="HydraulicsStatuses" /></type>
+              <type><derived name="ServicesStatuses" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -886,7 +739,7 @@
               </documentation>
             </variable>
             <variable name="parts">
-              <type><derived name="HydraulicsParts" /></type>
+              <type><derived name="ServicesParts" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -899,7 +752,7 @@
               </documentation>
             </variable>
             <variable name="processes">
-              <type><derived name="HydraulicsProcesses" /></type>
+              <type><derived name="ServicesProcesses" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -928,119 +781,27 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Shared operator status</xhtml>
               </documentation>
             </variable>
-            <variable name="safetyHydraulics">
-              <type><derived name="SafetyHydraulics" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                    <Attribute Name="OPC.UA.DA" Value="0" />
-                    <Attribute Name="TcHmiSymbol.Hide" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">The hydraulics part of the safety system</xhtml>
-              </documentation>
-            </variable>
-            <variable name="safetyIO">
-              <type><derived name="SafetyIO" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                    <Attribute Name="OPC.UA.DA" Value="0" />
-                    <Attribute Name="TcHmiSymbol.Hide" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">The I/O part of the safety system</xhtml>
-              </documentation>
-            </variable>
           </inOutVars>
           <localVars>
-            <variable name="circulationFilterGOK_ro">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-            <variable name="circulationFilterDOK_ro">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-            <variable name="oilLevelTooHigh_ro">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
           </localVars>
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">bearingTemperature( config := config.bearingTemperature );
-parts.circulationPumpRelay( isEnabled := statuses.busyStatus.idle AND (operatorStatus.tech AND statuses.operatingStatus.manual) );
-parts.pumpsPowerRelay( isEnabled := statuses.busyStatus.idle AND operatorStatus.tech );
-parts.top(
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">parts.timing(
     operatorStatus := operatorStatus,
-    operatingStatus := statuses.operatingStatus,
-    safetyHydraulics := safetyHydraulics,
-    config := config.top,
-    hydraulicsConfig := config);
-parts.bottom(
-    operatorStatus := operatorStatus,
-    operatingStatus := statuses.operatingStatus,
-    safetyHydraulics := safetyHydraulics,
-    config := config.bottom,
-    hydraulicsConfig := config);
-parts.io( safetyIO := safetyIO );
+    config := config.timing);
+parts.mercatorMeteo( config := config.mercatorMeteo );
 parts.configManager( isEnabled := operatorStatus.tech );
 statuses.initializationStatus();
 statuses.healthStatus(
-    isGood := (parts.io.statuses.healthStatus.isGood AND (parts.configManager.statuses.healthStatus.isGood AND (processes.initialize.statuses.healthStatus.isGood AND (processes.lock.statuses.healthStatus.isGood AND (processes.unlock.statuses.healthStatus.isGood AND (processes.changeOperatingState.statuses.healthStatus.isGood AND safetyHydraulics.statuses.healthStatus.isGood)))))) AND (circulationFilterGOK AND (circulationFilterDOK AND ((NOT(oilLevelTooHigh)) AND (NOT(pumpsState = HydraulicsPumpsStates.ERROR))))),
-    hasWarning := (parts.io.statuses.healthStatus.hasWarning OR (parts.configManager.statuses.healthStatus.hasWarning OR (processes.initialize.statuses.healthStatus.hasWarning OR (processes.lock.statuses.healthStatus.hasWarning OR (processes.unlock.statuses.healthStatus.hasWarning OR processes.changeOperatingState.statuses.healthStatus.hasWarning))))) OR (bearingTemperature.statuses.healthStatus.hasWarning OR (bearingTemperature.statuses.healthStatus.bad OR (pumpsState = HydraulicsPumpsStates.MANUAL))));
-statuses.busyStatus( isBusy := statuses.initializationStatus.initializing OR (processes.initialize.statuses.busyStatus.busy OR (processes.lock.statuses.busyStatus.busy OR (processes.unlock.statuses.busyStatus.busy OR (processes.changeOperatingState.statuses.busyStatus.busy OR (processes.startUpPumps.statuses.busyStatus.busy OR processes.stopPumps.statuses.busyStatus.busy))))) );
-statuses.operatingStatus();
+    isGood := parts.timing.statuses.healthStatus.isGood AND parts.mercatorMeteo.statuses.healthStatus.isGood,
+    hasWarning := parts.timing.statuses.healthStatus.hasWarning OR parts.mercatorMeteo.statuses.healthStatus.hasWarning);
+statuses.busyStatus( isBusy := statuses.initializationStatus.initializing );
+statuses.operatingStatus( superState := statuses.initializationStatus.initialized );
 processes.initialize( isEnabled := statuses.initializationStatus.shutdown OR (statuses.initializationStatus.initializingFailed OR statuses.initializationStatus.initialized) );
 processes.lock( isEnabled := operatorStatus.tech AND statuses.initializationStatus.initialized );
 processes.unlock( isEnabled := operatorStatus.tech AND statuses.initializationStatus.locked );
-processes.changeOperatingState( isEnabled := statuses.busyStatus.idle AND operatorStatus.tech );
-processes.startUpPumps( isEnabled := statuses.initializationStatus.initialized AND ((pumpsState = HydraulicsPumpsStates.STOPPED) OR ((pumpsState = HydraulicsPumpsStates.MANUAL) OR (pumpsState = HydraulicsPumpsStates.ERROR))) );
-processes.stopPumps( isEnabled := statuses.initializationStatus.initialized AND ((pumpsState = HydraulicsPumpsStates.RUNNING) OR ((pumpsState = HydraulicsPumpsStates.MANUAL) OR (pumpsState = HydraulicsPumpsStates.ERROR))) );
-circulationFilterGOK_ro := circulationFilterGOK;
-circulationFilterDOK_ro := circulationFilterDOK;
-oilLevelTooHigh_ro := oilLevelTooHigh;
+processes.changeOperatingState( isEnabled := FALSE );
 </xhtml>
           </ST>
         </body>
@@ -1171,62 +932,6 @@ oilLevelTooHigh_ro := oilLevelTooHigh;
             </Method>
           </data>
           <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="startUpPumps">
-              <interface>
-                <returnType><derived name="RequestResults" /></returnType>
-                <inputVars>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                </inOutVars>
-                <localVars>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                      <Attribute Name="TcRpcEnable" Value="1" />
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">startUpPumps := THIS^.processes.startUpPumps.request();
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="stopPumps">
-              <interface>
-                <returnType><derived name="RequestResults" /></returnType>
-                <inputVars>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                </inOutVars>
-                <localVars>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                      <Attribute Name="TcRpcEnable" Value="1" />
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">stopPumps := THIS^.processes.stopPumps.request();
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
             <Method name="_log">
               <interface>
                 <returnType><BOOL /></returnType>
@@ -1286,20 +991,11 @@ oilLevelTooHigh_ro := oilLevelTooHigh;
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.parts.circulationPumpRelay._log(
-    name := &#39;circulationPumpRelay&#39;,
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.parts.timing._log(
+    name := &#39;timing&#39;,
     buffer := subBuffer);
-THIS^.parts.pumpsPowerRelay._log(
-    name := &#39;pumpsPowerRelay&#39;,
-    buffer := subBuffer);
-THIS^.parts.top._log(
-    name := &#39;top&#39;,
-    buffer := subBuffer);
-THIS^.parts.bottom._log(
-    name := &#39;bottom&#39;,
-    buffer := subBuffer);
-THIS^.parts.io._log(
-    name := &#39;io&#39;,
+THIS^.parts.mercatorMeteo._log(
+    name := &#39;mercatorMeteo&#39;,
     buffer := subBuffer);
 THIS^.parts.configManager._log(
     name := &#39;configManager&#39;,
@@ -1316,12 +1012,6 @@ THIS^.processes.unlock._log(
 THIS^.processes.changeOperatingState._log(
     name := &#39;processes.changeOperatingState&#39;,
     buffer := subBuffer);
-THIS^.processes.startUpPumps._log(
-    name := &#39;processes.startUpPumps&#39;,
-    buffer := subBuffer);
-THIS^.processes.stopPumps._log(
-    name := &#39;processes.stopPumps&#39;,
-    buffer := subBuffer);
 LOGGER(
     name := name,
     actualStatus := THIS^.actualStatus,
@@ -1337,11 +1027,11 @@ LOGGER(
           </data>
         </addData>
       </pou>
-      <pou name="SM_HydraulicsSide" pouType="functionBlock">
+      <pou name="SM_ServicesTiming" pouType="functionBlock">
         <interface>
           <inputVars>
-            <variable name="entranceFilter1OK" address="%I*">
-              <type><BOOL /></type>
+            <variable name="ntpExtTime" address="%I*">
+              <type><LINT /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1352,10 +1042,10 @@ LOGGER(
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if there is no overpressure for entrance filter 1</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TcCOM object nExtTime variable</xhtml>
               </documentation>
             </variable>
-            <variable name="entranceFilter2OK" address="%I*">
+            <variable name="isNtpConnected" address="%I*">
               <type><BOOL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -1367,10 +1057,10 @@ LOGGER(
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if there is no overpressure for entrance filter 2</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if NTP is connected</xhtml>
               </documentation>
             </variable>
-            <variable name="entranceFilter3OK" address="%I*">
+            <variable name="isNtpSynchronized" address="%I*">
               <type><BOOL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -1382,22 +1072,7 @@ LOGGER(
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if there is no overpressure for entrance filter 3</xhtml>
-              </documentation>
-            </variable>
-            <variable name="entranceFilter4OK" address="%I*">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if there is no overpressure for entrance filter 4</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if NTP is synchronized</xhtml>
               </documentation>
             </variable>
           </inputVars>
@@ -1431,8 +1106,8 @@ LOGGER(
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Previous status description</xhtml>
               </documentation>
             </variable>
-            <variable name="driveTripOK">
-              <type><BOOL /></type>
+            <variable name="utcDateString">
+              <type><string /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1443,11 +1118,11 @@ LOGGER(
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRIP output of the drive, as copied from the safety system</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">UTC date as a string of format YYYY-MM-DD</xhtml>
               </documentation>
             </variable>
-            <variable name="driveRelease">
-              <type><BOOL /></type>
+            <variable name="utcTimeString">
+              <type><string /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1458,101 +1133,11 @@ LOGGER(
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Release output of the drive (ReglerFreigabe RFR), as copied from the safety system</xhtml>
-              </documentation>
-            </variable>
-            <variable name="driveMinFrequency">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Minimum frequency output of the drive (QMIN), as copied from the safety system</xhtml>
-              </documentation>
-            </variable>
-            <variable name="pressureMeasurement">
-              <type><derived name="PressureMeasurement" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Pressure measurement</xhtml>
-              </documentation>
-            </variable>
-            <variable name="frequencyMeasurement">
-              <type><derived name="FrequencyMeasurement" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Frequency measurement</xhtml>
-              </documentation>
-            </variable>
-            <variable name="driveSetpoint">
-              <type><derived name="Frequency" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Frequency setpoint actually used</xhtml>
-              </documentation>
-            </variable>
-            <variable name="driveSetpointSignal" address="%Q*">
-              <type><INT /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Raw signal value of the frequency setpoint</xhtml>
-              </documentation>
-            </variable>
-            <variable name="resetDriveSignal" address="%Q*">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Output to reset the drive</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">UTC time as a string of format HH-MM-SS.SSS</xhtml>
               </documentation>
             </variable>
             <variable name="statuses">
-              <type><derived name="HydraulicsSideStatuses" /></type>
+              <type><derived name="ServicesTimingStatuses" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1565,7 +1150,7 @@ LOGGER(
               </documentation>
             </variable>
             <variable name="processes">
-              <type><derived name="HydraulicsSideProcesses" /></type>
+              <type><derived name="ServicesTimingProcesses" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1591,41 +1176,11 @@ LOGGER(
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-            <variable name="operatingStatus">
-              <type><derived name="OperatingStatus" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                    <Attribute Name="OPC.UA.DA" Value="0" />
-                    <Attribute Name="TcHmiSymbol.Hide" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-            <variable name="safetyHydraulics">
-              <type><derived name="SafetyHydraulics" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                    <Attribute Name="OPC.UA.DA" Value="0" />
-                    <Attribute Name="TcHmiSymbol.Hide" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Shared operator status</xhtml>
               </documentation>
             </variable>
             <variable name="config">
-              <type><derived name="HydraulicsSideConfig" /></type>
+              <type><derived name="ServicesTimingConfig" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1636,27 +1191,27 @@ LOGGER(
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-            <variable name="hydraulicsConfig">
-              <type><derived name="HydraulicsConfig" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                    <Attribute Name="OPC.UA.DA" Value="0" />
-                    <Attribute Name="TcHmiSymbol.Hide" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The config</xhtml>
               </documentation>
             </variable>
           </inOutVars>
           <localVars>
-            <variable name="entranceFilter1OK_ro">
+            <variable name="ntpExtTime_ro">
+              <type><LINT /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="isNtpConnected_ro">
               <type><BOOL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -1671,37 +1226,7 @@ LOGGER(
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="entranceFilter2OK_ro">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-            <variable name="entranceFilter3OK_ro">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-            <variable name="entranceFilter4OK_ro">
+            <variable name="isNtpSynchronized_ro">
               <type><BOOL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -1720,263 +1245,10 @@ LOGGER(
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">pressureMeasurement(
-    config := config.pressureMeasurement,
-    conversionFactor := config.pressureSensorFullScale / 32768.0);
-frequencyMeasurement(
-    config := config.frequencyMeasurement,
-    conversionFactor := config.frequencyMeasurementFullScale / 32768.0);
-statuses.healthStatus(
-    isGood := (processes.resetDrive.statuses.healthStatus.isGood AND processes.changeFrequencySetpoint.statuses.healthStatus.isGood) AND ((pressureMeasurement.statuses.healthStatus.isGood OR pressureMeasurement.statuses.enabledStatus.disabled) AND ((frequencyMeasurement.statuses.healthStatus.isGood OR frequencyMeasurement.statuses.enabledStatus.disabled) AND (entranceFilter1OK AND (entranceFilter2OK AND (entranceFilter3OK AND (entranceFilter4OK AND driveTripOK)))))),
-    hasWarning := processes.changeFrequencySetpoint.statuses.healthStatus.hasWarning OR (pressureMeasurement.statuses.healthStatus.hasWarning OR frequencyMeasurement.statuses.healthStatus.hasWarning));
-statuses.busyStatus( isBusy := processes.changeFrequencySetpoint.statuses.busyStatus.busy OR processes.resetDrive.statuses.busyStatus.busy );
-processes.resetDrive( isEnabled := statuses.busyStatus.idle AND operatorStatus.tech );
-processes.changeFrequencySetpoint( isEnabled := statuses.busyStatus.idle AND (operatingStatus.manual AND operatorStatus.tech) );
-entranceFilter1OK_ro := entranceFilter1OK;
-entranceFilter2OK_ro := entranceFilter2OK;
-entranceFilter3OK_ro := entranceFilter3OK;
-entranceFilter4OK_ro := entranceFilter4OK;
-</xhtml>
-          </ST>
-        </body>
-        <addData>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="resetDrive">
-              <interface>
-                <returnType><derived name="RequestResults" /></returnType>
-                <inputVars>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                </inOutVars>
-                <localVars>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                      <Attribute Name="TcRpcEnable" Value="1" />
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">resetDrive := THIS^.processes.resetDrive.request();
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="changeFrequencySetpoint">
-              <interface>
-                <returnType><derived name="RequestResults" /></returnType>
-                <inputVars>
-                  <variable name="setpoint">
-                    <type><LREAL /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                </inOutVars>
-                <localVars>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                      <Attribute Name="TcRpcEnable" Value="1" />
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">changeFrequencySetpoint := THIS^.processes.changeFrequencySetpoint.request( setpoint := setpoint );
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_log">
-              <interface>
-                <returnType><BOOL /></returnType>
-                <inputVars>
-                  <variable name="name">
-                    <type><string /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                  <variable name="buffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
-                    </documentation>
-                  </variable>
-                </inOutVars>
-                <localVars>
-                  <variable name="subBuffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
-                    </documentation>
-                  </variable>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.processes.resetDrive._log(
-    name := &#39;processes.resetDrive&#39;,
-    buffer := subBuffer);
-THIS^.processes.changeFrequencySetpoint._log(
-    name := &#39;processes.changeFrequencySetpoint&#39;,
-    buffer := subBuffer);
-LOGGER(
-    name := name,
-    actualStatus := THIS^.actualStatus,
-    previousStatus := THIS^.previousStatus,
-    buffer := buffer,
-    subBuffer := subBuffer,
-    pHealthStatus := ADR(THIS^.statuses.healthStatus),
-    pBusyStatus := ADR(THIS^.statuses.busyStatus));
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
-        </addData>
-      </pou>
-      <pou name="SM_HydraulicsIO" pouType="functionBlock">
-        <interface>
-          <inputVars>
-          </inputVars>
-          <outputVars>
-            <variable name="actualStatus">
-              <type><string /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Current status description</xhtml>
-              </documentation>
-            </variable>
-            <variable name="previousStatus">
-              <type><string /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Hide" Value="" />
-                    <Attribute Name="OPC.UA.DA" Value="0" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Previous status description</xhtml>
-              </documentation>
-            </variable>
-            <variable name="statuses">
-              <type><derived name="HydraulicsIOStatuses" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Statuses of the state machine</xhtml>
-              </documentation>
-            </variable>
-            <variable name="parts">
-              <type><derived name="HydraulicsIOParts" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Parts of the state machine</xhtml>
-              </documentation>
-            </variable>
-          </outputVars>
-          <inOutVars>
-            <variable name="safetyIO">
-              <type><derived name="SafetyIO" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                    <Attribute Name="OPC.UA.DA" Value="0" />
-                    <Attribute Name="TcHmiSymbol.Hide" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">The safety I/O</xhtml>
-              </documentation>
-            </variable>
-          </inOutVars>
-          <localVars>
-          </localVars>
-        </interface>
-        <body>
-          <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">parts.pumpsGroup();
-statuses.healthStatus(
-    isGood := safetyIO.statuses.healthStatus.isGood AND parts.pumpsGroup.statuses.healthStatus.isGood,
-    hasWarning := safetyIO.statuses.healthStatus.hasWarning OR parts.pumpsGroup.statuses.healthStatus.hasWarning);
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">statuses.healthStatus( isGood := isNtpConnected AND isNtpSynchronized );
+ntpExtTime_ro := ntpExtTime;
+isNtpConnected_ro := isNtpConnected;
+isNtpSynchronized_ro := isNtpSynchronized;
 </xhtml>
           </ST>
         </body>
@@ -2041,10 +1313,7 @@ statuses.healthStatus(
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.parts.pumpsGroup._log(
-    name := &#39;pumpsGroup&#39;,
-    buffer := subBuffer);
-LOGGER(
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
     name := name,
     actualStatus := THIS^.actualStatus,
     previousStatus := THIS^.previousStatus,
@@ -2058,9 +1327,39 @@ LOGGER(
           </data>
         </addData>
       </pou>
-      <pou name="SM_HydraulicsPumpsGroupIO" pouType="functionBlock">
+      <pou name="SM_ServicesMercatorMeteoMeasurement" pouType="functionBlock">
         <interface>
           <inputVars>
+            <variable name="data">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The measured data</xhtml>
+              </documentation>
+            </variable>
+            <variable name="valid">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if the data is valid</xhtml>
+              </documentation>
+            </variable>
           </inputVars>
           <outputVars>
             <variable name="actualStatus">
@@ -2093,7 +1392,7 @@ LOGGER(
               </documentation>
             </variable>
             <variable name="statuses">
-              <type><derived name="HydraulicsPumpsGroupIOStatuses" /></type>
+              <type><derived name="ServicesMercatorMeteoMeasurementStatuses" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -2105,48 +1404,38 @@ LOGGER(
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Statuses of the state machine</xhtml>
               </documentation>
             </variable>
-            <variable name="parts">
-              <type><derived name="HydraulicsPumpsGroupIOParts" /></type>
+          </outputVars>
+          <inOutVars>
+            <variable name="config">
+              <type><derived name="MeasurementConfig" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
                     <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                    <Attribute Name="TcHmiSymbol.Hide" Value="" />
                   </Attributes>
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Parts of the state machine</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Reference to the config</xhtml>
               </documentation>
             </variable>
-          </outputVars>
-          <inOutVars>
           </inOutVars>
           <localVars>
           </localVars>
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">parts.COU(
-    id := &#39;PG:COU&#39;,
-    typeId := &#39;EK1101&#39;);
-parts.DI1(
-    id := &#39;PG:DI1&#39;,
-    typeId := &#39;EL1008&#39;);
-parts.SI1(
-    id := &#39;PG:SI1&#39;,
-    typeId := &#39;EL1904&#39;);
-parts.SI2(
-    id := &#39;PG:SI2&#39;,
-    typeId := &#39;EL1904&#39;);
-parts.SI3(
-    id := &#39;PG:SI3&#39;,
-    typeId := &#39;EL1904&#39;);
-parts.DI2(
-    id := &#39;PG:DI2&#39;,
-    typeId := &#39;EL1008&#39;);
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">statuses.enabledStatus( isEnabled := config.enabled );
 statuses.healthStatus(
-    isGood := parts.COU.statuses.healthStatus.isGood AND (parts.DI1.statuses.healthStatus.isGood AND (parts.SI1.statuses.healthStatus.isGood AND (parts.SI2.statuses.healthStatus.isGood AND (parts.SI3.statuses.healthStatus.isGood AND parts.DI2.statuses.healthStatus.isGood)))),
-    hasWarning := parts.COU.statuses.healthStatus.hasWarning OR (parts.DI1.statuses.healthStatus.hasWarning OR (parts.SI1.statuses.healthStatus.hasWarning OR (parts.SI2.statuses.healthStatus.hasWarning OR (parts.SI3.statuses.healthStatus.hasWarning OR parts.DI2.statuses.healthStatus.hasWarning)))));
+    superState := statuses.enabledStatus.enabled,
+    isGood := NOT((NOT(valid)) OR (statuses.alarmStatus.hiHi OR statuses.alarmStatus.loLo)),
+    hasWarning := statuses.alarmStatus.hi OR statuses.alarmStatus.lo);
+statuses.alarmStatus(
+    superState := statuses.enabledStatus.enabled,
+    config := config.alarms,
+    value := data);
 </xhtml>
           </ST>
         </body>
@@ -2211,25 +1500,729 @@ statuses.healthStatus(
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.parts.COU._log(
-    name := &#39;COU&#39;,
-    buffer := subBuffer);
-THIS^.parts.DI1._log(
-    name := &#39;DI1&#39;,
-    buffer := subBuffer);
-THIS^.parts.SI1._log(
-    name := &#39;SI1&#39;,
-    buffer := subBuffer);
-THIS^.parts.SI2._log(
-    name := &#39;SI2&#39;,
-    buffer := subBuffer);
-THIS^.parts.SI3._log(
-    name := &#39;SI3&#39;,
-    buffer := subBuffer);
-THIS^.parts.DI2._log(
-    name := &#39;DI2&#39;,
-    buffer := subBuffer);
-LOGGER(
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
+    name := name,
+    actualStatus := THIS^.actualStatus,
+    previousStatus := THIS^.previousStatus,
+    buffer := buffer,
+    subBuffer := subBuffer,
+    pHealthStatus := ADR(THIS^.statuses.healthStatus));
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+        </addData>
+      </pou>
+      <pou name="SM_ServicesMercatorMeteo" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="windSpeedMinimum">
+              <type><derived name="ServicesMercatorMeteoMeasurement" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Wind speed minimum</xhtml>
+              </documentation>
+            </variable>
+            <variable name="windSpeedAverage">
+              <type><derived name="ServicesMercatorMeteoMeasurement" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Wind speed average</xhtml>
+              </documentation>
+            </variable>
+            <variable name="windSpeedMaximum">
+              <type><derived name="ServicesMercatorMeteoMeasurement" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Wind speed maximum</xhtml>
+              </documentation>
+            </variable>
+            <variable name="windDirectionMinimum">
+              <type><derived name="ServicesMercatorMeteoMeasurement" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Wind direction minimum</xhtml>
+              </documentation>
+            </variable>
+            <variable name="windDirectionAverage">
+              <type><derived name="ServicesMercatorMeteoMeasurement" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Wind direction average</xhtml>
+              </documentation>
+            </variable>
+            <variable name="windDirectionMaximum">
+              <type><derived name="ServicesMercatorMeteoMeasurement" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Wind direction maximum</xhtml>
+              </documentation>
+            </variable>
+            <variable name="airPressure">
+              <type><derived name="ServicesMercatorMeteoMeasurement" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Air pressure</xhtml>
+              </documentation>
+            </variable>
+            <variable name="airTemperature">
+              <type><derived name="ServicesMercatorMeteoMeasurement" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Air temperature</xhtml>
+              </documentation>
+            </variable>
+            <variable name="internalTemperature">
+              <type><derived name="ServicesMercatorMeteoMeasurement" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Internal temperature</xhtml>
+              </documentation>
+            </variable>
+            <variable name="relativeHumidity">
+              <type><derived name="ServicesMercatorMeteoMeasurement" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Relative humidity</xhtml>
+              </documentation>
+            </variable>
+            <variable name="rainAccumulation">
+              <type><derived name="ServicesMercatorMeteoMeasurement" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Rain accumulation</xhtml>
+              </documentation>
+            </variable>
+            <variable name="rainDuration">
+              <type><derived name="ServicesMercatorMeteoMeasurement" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Rain duration</xhtml>
+              </documentation>
+            </variable>
+            <variable name="rainIntensity">
+              <type><derived name="ServicesMercatorMeteoMeasurement" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Rain intensity</xhtml>
+              </documentation>
+            </variable>
+            <variable name="rainPeakIntensity">
+              <type><derived name="ServicesMercatorMeteoMeasurement" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Rain peak intensity</xhtml>
+              </documentation>
+            </variable>
+            <variable name="hailAccumulation">
+              <type><derived name="ServicesMercatorMeteoMeasurement" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Hail accumulation</xhtml>
+              </documentation>
+            </variable>
+            <variable name="hailDuration">
+              <type><derived name="ServicesMercatorMeteoMeasurement" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Hail duration</xhtml>
+              </documentation>
+            </variable>
+            <variable name="hailIntensity">
+              <type><derived name="ServicesMercatorMeteoMeasurement" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Hail intensity</xhtml>
+              </documentation>
+            </variable>
+            <variable name="hailPeakIntensity">
+              <type><derived name="ServicesMercatorMeteoMeasurement" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Hail peak intensity</xhtml>
+              </documentation>
+            </variable>
+            <variable name="heatingTemperature">
+              <type><derived name="ServicesMercatorMeteoMeasurement" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Heating temperature</xhtml>
+              </documentation>
+            </variable>
+            <variable name="heatingVoltage">
+              <type><derived name="ServicesMercatorMeteoMeasurement" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Heating voltage</xhtml>
+              </documentation>
+            </variable>
+            <variable name="supplyVoltage">
+              <type><derived name="ServicesMercatorMeteoMeasurement" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Supply voltage</xhtml>
+              </documentation>
+            </variable>
+            <variable name="referenceVoltage">
+              <type><derived name="ServicesMercatorMeteoMeasurement" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Reference voltage</xhtml>
+              </documentation>
+            </variable>
+            <variable name="dewpoint">
+              <type><derived name="ServicesMercatorMeteoMeasurement" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Calculated dew point temperature</xhtml>
+              </documentation>
+            </variable>
+            <variable name="durationOK">
+              <type><derived name="Duration" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Duration that the meteo is OK</xhtml>
+              </documentation>
+            </variable>
+            <variable name="wet">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Wet if (rainIntensity+hailIntensity) &gt; config.wetLimit</xhtml>
+              </documentation>
+            </variable>
+            <variable name="heating">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Heating or not?</xhtml>
+              </documentation>
+            </variable>
+            <variable name="windDirectionMinimumString">
+              <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Average direction of the wind as a string</xhtml>
+              </documentation>
+            </variable>
+            <variable name="windDirectionAverageString">
+              <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Average direction of the wind as a string</xhtml>
+              </documentation>
+            </variable>
+            <variable name="windDirectionMaximumString">
+              <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Average direction of the wind as a string</xhtml>
+              </documentation>
+            </variable>
+            <variable name="fromMercator" address="%I*">
+              <type><derived name="MercatorMeteoExchange" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                    <Attribute Name="TcHmiSymbol.Hide" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The data exchanged by the Mercator telescope</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="actualStatus">
+              <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Current status description</xhtml>
+              </documentation>
+            </variable>
+            <variable name="previousStatus">
+              <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Hide" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Previous status description</xhtml>
+              </documentation>
+            </variable>
+            <variable name="statuses">
+              <type><derived name="ServicesMercatorMeteoStatuses" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Statuses of the state machine</xhtml>
+              </documentation>
+            </variable>
+            <variable name="processes">
+              <type><derived name="ServicesMercatorMeteoProcesses" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Processes of the state machine</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <inOutVars>
+            <variable name="config">
+              <type><derived name="ServicesMercatorMeteoConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                    <Attribute Name="TcHmiSymbol.Hide" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The config</xhtml>
+              </documentation>
+            </variable>
+          </inOutVars>
+          <localVars>
+            <variable name="fromMercator_ro">
+              <type><derived name="MercatorMeteoExchange" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                    <Attribute Name="TcHmiSymbol.Hide" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">windSpeedMinimum(
+    config := config.windSpeedMinimum,
+    data := fromMercator.windSpeedMinimum,
+    valid := fromMercator.windSpeedMinimumValid);
+windSpeedAverage(
+    config := config.windSpeedAverage,
+    data := fromMercator.windSpeedAverage,
+    valid := fromMercator.windSpeedAverageValid);
+windSpeedMaximum(
+    config := config.windSpeedMaximum,
+    data := fromMercator.windSpeedMaximum,
+    valid := fromMercator.windSpeedMaximumValid);
+windDirectionMinimum(
+    config := config.windDirectionMinimum,
+    data := fromMercator.windDirectionMinimum,
+    valid := fromMercator.windDirectionMinimumValid);
+windDirectionAverage(
+    config := config.windDirectionAverage,
+    data := fromMercator.windDirectionAverage,
+    valid := fromMercator.windDirectionAverageValid);
+windDirectionMaximum(
+    config := config.windDirectionMaximum,
+    data := fromMercator.windDirectionMaximum,
+    valid := fromMercator.windDirectionMaximumValid);
+airPressure(
+    config := config.airPressure,
+    data := fromMercator.airPressure,
+    valid := fromMercator.airPressureValid);
+airTemperature(
+    config := config.airTemperature,
+    data := fromMercator.airTemperature,
+    valid := fromMercator.airTemperatureValid);
+internalTemperature(
+    config := config.internalTemperature,
+    data := fromMercator.internalTemperature,
+    valid := fromMercator.internalTemperatureValid);
+relativeHumidity(
+    config := config.relativeHumidity,
+    data := fromMercator.relativeHumidity,
+    valid := fromMercator.relativeHumidityValid);
+rainAccumulation(
+    config := config.rainAccumulation,
+    data := fromMercator.rainAccumulation,
+    valid := fromMercator.rainAccumulationValid);
+rainDuration(
+    config := config.rainDuration,
+    data := fromMercator.rainDuration,
+    valid := fromMercator.rainDurationValid);
+rainIntensity(
+    config := config.rainIntensity,
+    data := fromMercator.rainIntensity,
+    valid := fromMercator.rainIntensityValid);
+rainPeakIntensity(
+    config := config.rainPeakIntensity,
+    data := fromMercator.rainPeakIntensity,
+    valid := fromMercator.rainPeakIntensityValid);
+hailAccumulation(
+    config := config.hailAccumulation,
+    data := fromMercator.hailAccumulation,
+    valid := fromMercator.hailAccumulationValid);
+hailDuration(
+    config := config.hailDuration,
+    data := fromMercator.hailDuration,
+    valid := fromMercator.hailDurationValid);
+hailIntensity(
+    config := config.hailIntensity,
+    data := fromMercator.hailIntensity,
+    valid := fromMercator.hailIntensityValid);
+hailPeakIntensity(
+    config := config.hailPeakIntensity,
+    data := fromMercator.hailPeakIntensity,
+    valid := fromMercator.hailPeakIntensityValid);
+heatingTemperature(
+    config := config.heatingTemperature,
+    data := fromMercator.heatingTemperature,
+    valid := fromMercator.heatingTemperatureValid);
+heatingVoltage(
+    config := config.heatingVoltage,
+    data := fromMercator.heatingVoltage,
+    valid := fromMercator.heatingVoltageValid);
+supplyVoltage(
+    config := config.supplyVoltage,
+    data := fromMercator.supplyVoltage,
+    valid := fromMercator.supplyVoltageValid);
+referenceVoltage(
+    config := config.referenceVoltage,
+    data := fromMercator.referenceVoltage,
+    valid := fromMercator.referenceVoltageValid);
+dewpoint(
+    config := dewpoint,
+    data := fromMercator.dewpoint,
+    valid := fromMercator.dewpointValid);
+statuses.meteoHealthStatus(
+    superState := statuses.healthStatus.good,
+    isGood := (windSpeedMinimum.statuses.healthStatus.isGood OR windSpeedMinimum.statuses.enabledStatus.disabled) AND ((windSpeedAverage.statuses.healthStatus.isGood OR windSpeedAverage.statuses.enabledStatus.disabled) AND ((windSpeedMaximum.statuses.healthStatus.isGood OR windSpeedMaximum.statuses.enabledStatus.disabled) AND ((windDirectionMinimum.statuses.healthStatus.isGood OR windDirectionMinimum.statuses.enabledStatus.disabled) AND ((windDirectionAverage.statuses.healthStatus.isGood OR windDirectionAverage.statuses.enabledStatus.disabled) AND ((windDirectionMaximum.statuses.healthStatus.isGood OR windDirectionMaximum.statuses.enabledStatus.disabled) AND ((airPressure.statuses.healthStatus.isGood OR airPressure.statuses.enabledStatus.disabled) AND ((airTemperature.statuses.healthStatus.isGood OR airTemperature.statuses.enabledStatus.disabled) AND ((internalTemperature.statuses.healthStatus.isGood OR internalTemperature.statuses.enabledStatus.disabled) AND ((relativeHumidity.statuses.healthStatus.isGood OR relativeHumidity.statuses.enabledStatus.disabled) AND ((rainAccumulation.statuses.healthStatus.isGood OR rainAccumulation.statuses.enabledStatus.disabled) AND ((rainDuration.statuses.healthStatus.isGood OR rainDuration.statuses.enabledStatus.disabled) AND ((rainIntensity.statuses.healthStatus.isGood OR rainIntensity.statuses.enabledStatus.disabled) AND ((rainPeakIntensity.statuses.healthStatus.isGood OR rainPeakIntensity.statuses.enabledStatus.disabled) AND ((hailAccumulation.statuses.healthStatus.isGood OR hailAccumulation.statuses.enabledStatus.disabled) AND ((hailDuration.statuses.healthStatus.isGood OR hailDuration.statuses.enabledStatus.disabled) AND ((hailIntensity.statuses.healthStatus.isGood OR hailIntensity.statuses.enabledStatus.disabled) AND ((hailPeakIntensity.statuses.healthStatus.isGood OR hailPeakIntensity.statuses.enabledStatus.disabled) AND ((heatingTemperature.statuses.healthStatus.isGood OR heatingTemperature.statuses.enabledStatus.disabled) AND ((heatingVoltage.statuses.healthStatus.isGood OR heatingVoltage.statuses.enabledStatus.disabled) AND ((supplyVoltage.statuses.healthStatus.isGood OR supplyVoltage.statuses.enabledStatus.disabled) AND ((referenceVoltage.statuses.healthStatus.isGood OR referenceVoltage.statuses.enabledStatus.disabled) AND (dewpoint.statuses.healthStatus.isGood OR dewpoint.statuses.enabledStatus.disabled)))))))))))))))))))))),
+    hasWarning := windSpeedMinimum.statuses.healthStatus.hasWarning OR (windSpeedAverage.statuses.healthStatus.hasWarning OR (windSpeedMaximum.statuses.healthStatus.hasWarning OR (windDirectionMinimum.statuses.healthStatus.hasWarning OR (windDirectionAverage.statuses.healthStatus.hasWarning OR (windDirectionMaximum.statuses.healthStatus.hasWarning OR (airPressure.statuses.healthStatus.hasWarning OR (airTemperature.statuses.healthStatus.hasWarning OR (internalTemperature.statuses.healthStatus.hasWarning OR (relativeHumidity.statuses.healthStatus.hasWarning OR (rainAccumulation.statuses.healthStatus.hasWarning OR (rainDuration.statuses.healthStatus.hasWarning OR (rainIntensity.statuses.healthStatus.hasWarning OR (rainPeakIntensity.statuses.healthStatus.hasWarning OR (hailAccumulation.statuses.healthStatus.hasWarning OR (hailDuration.statuses.healthStatus.hasWarning OR (hailIntensity.statuses.healthStatus.hasWarning OR (hailPeakIntensity.statuses.healthStatus.hasWarning OR (heatingTemperature.statuses.healthStatus.hasWarning OR (heatingVoltage.statuses.healthStatus.hasWarning OR (supplyVoltage.statuses.healthStatus.hasWarning OR (referenceVoltage.statuses.healthStatus.hasWarning OR dewpoint.statuses.healthStatus.hasWarning))))))))))))))))))))));
+statuses.healthStatus( isGood := fromMercator.mercatorServiceHealthy );
+fromMercator_ro := fromMercator;
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_log">
+              <interface>
+                <returnType><BOOL /></returnType>
+                <inputVars>
+                  <variable name="name">
+                    <type><string /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="TcHmiSymbol.Show" Value="" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="buffer">
+                    <type><derived name="LogBuffer" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="TcHmiSymbol.Show" Value="" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                  <variable name="subBuffer">
+                    <type><derived name="LogBuffer" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="TcHmiSymbol.Show" Value="" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
+                    </documentation>
+                  </variable>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
     name := name,
     actualStatus := THIS^.actualStatus,
     previousStatus := THIS^.previousStatus,
@@ -2251,63 +2244,57 @@ LOGGER(
   <addData>
     <data name="http://www.3s-software.com/plcopenxml/projectstructure" handleUnknown="discard">
       <ProjectStructure>
-        <Folder Name="mtcs_hydraulics">
+        <Folder Name="marvel_services">
           <Folder Name="Enums">
-            <Object Name="HydraulicsPumpsStates">
-            </Object>
           </Folder>
           <Folder Name="Statuses">
           </Folder>
           <Folder Name="StateMachines">
             <Folder Name="Parts">
-              <Object Name="HydraulicsParts">
-              </Object>
-              <Object Name="HydraulicsIOParts">
-              </Object>
-              <Object Name="HydraulicsPumpsGroupIOParts">
+              <Object Name="ServicesParts">
               </Object>
             </Folder>
             <Folder Name="Processes">
-              <Object Name="HydraulicsProcesses">
+              <Object Name="ServicesProcesses">
               </Object>
-              <Object Name="HydraulicsSideProcesses">
+              <Object Name="ServicesTimingProcesses">
+              </Object>
+              <Object Name="ServicesMercatorMeteoProcesses">
               </Object>
             </Folder>
             <Folder Name="Statuses">
-              <Object Name="HydraulicsStatuses">
+              <Object Name="ServicesStatuses">
               </Object>
-              <Object Name="HydraulicsSideStatuses">
+              <Object Name="ServicesTimingStatuses">
               </Object>
-              <Object Name="HydraulicsIOStatuses">
+              <Object Name="ServicesMercatorMeteoMeasurementStatuses">
               </Object>
-              <Object Name="HydraulicsPumpsGroupIOStatuses">
+              <Object Name="ServicesMercatorMeteoStatuses">
               </Object>
             </Folder>
-            <Object Name="SM_Hydraulics">
+            <Object Name="SM_Services">
               <Object Name="initialize" />
               <Object Name="lock" />
               <Object Name="unlock" />
               <Object Name="changeOperatingState" />
-              <Object Name="startUpPumps" />
-              <Object Name="stopPumps" />
               <Object Name="_log" />
             </Object>
-            <Object Name="SM_HydraulicsSide">
-              <Object Name="resetDrive" />
-              <Object Name="changeFrequencySetpoint" />
+            <Object Name="SM_ServicesTiming">
               <Object Name="_log" />
             </Object>
-            <Object Name="SM_HydraulicsIO">
+            <Object Name="SM_ServicesMercatorMeteoMeasurement">
               <Object Name="_log" />
             </Object>
-            <Object Name="SM_HydraulicsPumpsGroupIO">
+            <Object Name="SM_ServicesMercatorMeteo">
               <Object Name="_log" />
             </Object>
           </Folder>
           <Folder Name="Configs">
-            <Object Name="HydraulicsConfig">
+            <Object Name="ServicesTimingConfig">
             </Object>
-            <Object Name="HydraulicsSideConfig">
+            <Object Name="ServicesMercatorMeteoConfig">
+            </Object>
+            <Object Name="ServicesConfig">
             </Object>
           </Folder>
           <Folder Name="Structs">

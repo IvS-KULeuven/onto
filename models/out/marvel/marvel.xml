@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
-  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-04-10T16:56:59.318796" />
-  <contentHeader name="marvel" modificationDateTime="2025-04-10T16:56:59.318796">
+  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-04-10T22:08:01.496228" />
+  <contentHeader name="marvel" modificationDateTime="2025-04-10T22:08:01.496228">
     <coordinateInfo>
       <fbd>
         <scaling x="1" y="1" />
@@ -74,6 +74,19 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Unit 4</xhtml>
+              </documentation>
+            </variable>
+            <variable name="services">
+              <type><derived name="Services" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Services</xhtml>
               </documentation>
             </variable>
           </struct>
@@ -581,14 +594,15 @@ parts.u4(
     number := 4,
     operatorStatus := statuses.operatorStatus,
     activityStatus := statuses.activityStatus);
+parts.services( operatorStatus := statuses.operatorStatus );
 statuses.initializationStatus();
 statuses.healthStatus(
     superState := NOT(statuses.initializationStatus.shutdown),
-    isGood := parts.u1.statuses.healthStatus.isGood AND (parts.u2.statuses.healthStatus.isGood AND (parts.u3.statuses.healthStatus.isGood AND parts.u4.statuses.healthStatus.isGood)),
-    hasWarning := parts.u1.statuses.healthStatus.hasWarning OR (parts.u2.statuses.healthStatus.hasWarning OR (parts.u3.statuses.healthStatus.hasWarning OR parts.u4.statuses.healthStatus.hasWarning)));
+    isGood := parts.u1.statuses.healthStatus.isGood AND (parts.u2.statuses.healthStatus.isGood AND (parts.u3.statuses.healthStatus.isGood AND (parts.u4.statuses.healthStatus.isGood AND parts.services.statuses.healthStatus.isGood))),
+    hasWarning := parts.u1.statuses.healthStatus.hasWarning OR (parts.u2.statuses.healthStatus.hasWarning OR (parts.u3.statuses.healthStatus.hasWarning OR (parts.u4.statuses.healthStatus.hasWarning OR parts.services.statuses.healthStatus.hasWarning))));
 statuses.busyStatus(
     superState := NOT(statuses.initializationStatus.shutdown),
-    isBusy := parts.u1.statuses.busyStatus.busy OR (parts.u2.statuses.busyStatus.busy OR (parts.u3.statuses.busyStatus.busy OR parts.u4.statuses.busyStatus.busy)));
+    isBusy := parts.u1.statuses.busyStatus.busy OR (parts.u2.statuses.busyStatus.busy OR (parts.u3.statuses.busyStatus.busy OR (parts.u4.statuses.busyStatus.busy OR parts.services.statuses.busyStatus.busy))));
 statuses.operatorStatus();
 statuses.passwordHealthStatus( superState := statuses.operatorStatus.observer );
 statuses.activityStatus();
@@ -1323,6 +1337,9 @@ THIS^.parts.u3._log(
     buffer := subBuffer);
 THIS^.parts.u4._log(
     name := &#39;u4&#39;,
+    buffer := subBuffer);
+THIS^.parts.services._log(
+    name := &#39;services&#39;,
     buffer := subBuffer);
 THIS^.processes.initialize._log(
     name := &#39;processes.initialize&#39;,
