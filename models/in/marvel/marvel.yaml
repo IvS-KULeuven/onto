@@ -72,6 +72,7 @@
                   number                  : { type: t_uint8 }
                   operatorStatus          : { type: mtcs_common.OperatorStatus          , expand: false }
                   activityStatus          : { type: mtcs_common.ActivityStatus          , expand: false }
+                  services                : { type: marvel_services.Services            , expand: false }
               attributes:
                   parts:
                     attributes:
@@ -104,6 +105,7 @@
                   number                  : { type: t_uint8 }
                   operatorStatus          : { type: mtcs_common.OperatorStatus          , expand: false }
                   activityStatus          : { type: mtcs_common.ActivityStatus          , expand: false }
+                  services                : { type: marvel_services.Services            , expand: false }
               attributes:
                   parts:
                     attributes:
@@ -136,6 +138,7 @@
                   number                  : { type: t_uint8 }
                   operatorStatus          : { type: mtcs_common.OperatorStatus          , expand: false }
                   activityStatus          : { type: mtcs_common.ActivityStatus          , expand: false }
+                  services                : { type: marvel_services.Services            , expand: false }
               attributes:
                   parts:
                     attributes:
@@ -168,6 +171,7 @@
                   number                  : { type: t_uint8 }
                   operatorStatus          : { type: mtcs_common.OperatorStatus          , expand: false }
                   activityStatus          : { type: mtcs_common.ActivityStatus          , expand: false }
+                  services                : { type: marvel_services.Services            , expand: false }
               attributes:
                   parts:
                     attributes:
@@ -261,24 +265,28 @@
                                           parts.u2.parts.dome.parts.shutter.processes.stop.isEnabled,
                                           parts.u3.parts.dome.parts.shutter.processes.stop.isEnabled,
                                           parts.u4.parts.dome.parts.shutter.processes.stop.isEnabled ]
+          services:
+              operatorStatus      : statuses.operatorStatus
           u1:
               number              : !UINT8 1
               operatorStatus      : statuses.operatorStatus
               activityStatus      : statuses.activityStatus
+              services            : parts.services
           u2:
               number              : !UINT8 2
               operatorStatus      : statuses.operatorStatus
               activityStatus      : statuses.activityStatus
+              services            : parts.services
           u3:
               number              : !UINT8 3
               operatorStatus      : statuses.operatorStatus
               activityStatus      : statuses.activityStatus
+              services            : parts.services
           u4:
               number              : !UINT8 4
               operatorStatus      : statuses.operatorStatus
               activityStatus      : statuses.activityStatus
-          services:
-              operatorStatus      : statuses.operatorStatus
+              services            : parts.services
           configManager:
              isEnabled            : statuses.operatorStatus.tech
           emergencyClose:

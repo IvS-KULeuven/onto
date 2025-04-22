@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
-  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-04-10T22:08:01.496228" />
-  <contentHeader name="marvel_dome" modificationDateTime="2025-04-10T22:08:01.496228">
+  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-04-22T09:13:24.485565" />
+  <contentHeader name="marvel_dome" modificationDateTime="2025-04-22T09:13:24.485565">
     <coordinateInfo>
       <fbd>
         <scaling x="1" y="1" />
@@ -1317,6 +1317,21 @@ unknownDriveLogicError := (shutterValue = DomeShutterMotionStates.UNKNOWN_DRIVE_
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Shared activity status</xhtml>
               </documentation>
             </variable>
+            <variable name="services">
+              <type><derived name="Services" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                    <Attribute Name="TcHmiSymbol.Hide" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Shared services</xhtml>
+              </documentation>
+            </variable>
             <variable name="config">
               <type><derived name="DomeConfig" /></type>
               <addData>
@@ -1358,7 +1373,8 @@ unknownDriveLogicError := (shutterValue = DomeShutterMotionStates.UNKNOWN_DRIVE_
     operatorStatus := operatorStatus,
     operatingStatus := statuses.operatingStatus,
     activityStatus := activityStatus,
-    config := config.shutter);
+    config := config.shutter,
+    services := services);
 parts.rotation(
     initializationStatus := statuses.initializationStatus,
     operatorStatus := operatorStatus,
@@ -2206,6 +2222,21 @@ LOGGER(
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">The shutter config</xhtml>
+              </documentation>
+            </variable>
+            <variable name="services">
+              <type><derived name="Services" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                    <Attribute Name="TcHmiSymbol.Hide" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Shared services</xhtml>
               </documentation>
             </variable>
           </inOutVars>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
-  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-04-10T22:08:01.496228" />
-  <contentHeader name="marvel_services" modificationDateTime="2025-04-10T22:08:01.496228">
+  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-04-22T09:13:24.485565" />
+  <contentHeader name="marvel_services" modificationDateTime="2025-04-22T09:13:24.485565">
     <coordinateInfo>
       <fbd>
         <scaling x="1" y="1" />
@@ -21,6 +21,19 @@
   </contentHeader>
   <types>
     <dataTypes>
+      <dataType name="ServicesMeteoSimulation">
+        <baseType>
+          <enum>
+            <values>
+              <value name="PHOTOMETRIC" value="0" />
+              <value name="DRY_WINDY" value="1" />
+              <value name="DRY_TOO_WINDY" value="2" />
+              <value name="WET_WINDY" value="3" />
+            </values>
+            <baseType><BYTE /></baseType>
+          </enum>
+        </baseType>
+      </dataType>
       <dataType name="ServicesParts">
         <baseType>
           <struct>
@@ -312,6 +325,19 @@
       <dataType name="ServicesMercatorMeteoConfig">
         <baseType>
           <struct>
+            <variable name="simulated">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE to simulate the Mercator weather station data</xhtml>
+              </documentation>
+            </variable>
             <variable name="enableWeatherMonitoring">
               <type><BOOL /></type>
               <addData>
@@ -622,6 +648,19 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for the 3.5 V reference voltage</xhtml>
+              </documentation>
+            </variable>
+            <variable name="dewpoint">
+              <type><derived name="MeasurementConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for the dew point</xhtml>
               </documentation>
             </variable>
           </struct>
@@ -1952,6 +1991,21 @@ statuses.alarmStatus(
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Average direction of the wind as a string</xhtml>
               </documentation>
             </variable>
+            <variable name="fromSimulation">
+              <type><derived name="MercatorMeteoExchange" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The simulated data (if config.simulated is TRUE)</xhtml>
+              </documentation>
+            </variable>
             <variable name="fromMercator" address="%I*">
               <type><derived name="MercatorMeteoExchange" /></type>
               <addData>
@@ -2149,7 +2203,7 @@ referenceVoltage(
     data := fromMercator.referenceVoltage,
     valid := fromMercator.referenceVoltageValid);
 dewpoint(
-    config := dewpoint,
+    config := config.dewpoint,
     data := fromMercator.dewpoint,
     valid := fromMercator.dewpointValid);
 statuses.meteoHealthStatus(
@@ -2246,6 +2300,8 @@ fromMercator_ro := fromMercator;
       <ProjectStructure>
         <Folder Name="marvel_services">
           <Folder Name="Enums">
+            <Object Name="ServicesMeteoSimulation">
+            </Object>
           </Folder>
           <Folder Name="Statuses">
           </Folder>

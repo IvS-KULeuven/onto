@@ -8,6 +8,7 @@
 !IMPORT models/in/marvel/marvel_dome.yaml:
 !IMPORT models/in/marvel/marvel_telescope.yaml:
 !IMPORT models/in/marvel/marvel_common.yaml:
+!IMPORT models/in/marvel/marvel_services.yaml:
 
 
 ########################################################################################################################
@@ -43,6 +44,7 @@
       references:
         operatorStatus              : { type: mtcs_common.OperatorStatus        , comment: "Reference to the operator (observer/tech)"}
         activityStatus              : { type: mtcs_common.ActivityStatus        , comment: "Shared activity status"}
+        services                    : { type: marvel_services.Services          , comment: "Shared services", expand: false}
       parts:
           dome:
               type : marvel_dome.Dome
@@ -51,6 +53,7 @@
               arguments:
                   operatorStatus          : { type: mtcs_common.OperatorStatus          , expand: false }
                   activityStatus          : { type: mtcs_common.ActivityStatus          , expand: false }
+                  services                : { type: marvel_services.Services            , expand: false }
                   config                  : { type: marvel_dome.DomeConfig              , expand: false }
                   telescopeAzi            : { type: mtcs_common.AngularPosition         , expand: false }
               attributes:
@@ -113,6 +116,7 @@
           dome:
               operatorStatus      : operatorStatus
               activityStatus      : activityStatus
+              services            : services
               config              : config.dome
               telescopeAzi        : parts.telescope.actAzi
           telescope:

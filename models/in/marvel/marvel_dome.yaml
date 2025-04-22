@@ -7,6 +7,7 @@
 
 !IMPORT models/in/mercator/mtcs_common.yaml:
 !IMPORT models/in/marvel/marvel_common.yaml:
+!IMPORT models/in/marvel/marvel_services.yaml:
 !IMPORT models/in/marvel/marvel_shutterplc.yaml:
 
 
@@ -168,6 +169,7 @@
     references:
       operatorStatus              : { type: mtcs_common.OperatorStatus        , comment: "Reference to the operator (observer/tech)"}
       activityStatus              : { type: mtcs_common.ActivityStatus        , comment: "Shared activity status"}
+      services                    : { type: marvel_services.Services          , comment: "Shared services", expand: false}
       config                      : { type: DomeConfig                        , comment: "Active configuration of the cover" }
       telescopeAzi                : { type: mtcs_common.AngularPosition       , comment: "Azimuth target position of the telescope Axes"}
     variables_read_only:
@@ -184,6 +186,7 @@
           operatingStatus         : { comment: "Dome operating status (manual/auto)" }
           activityStatus          : { comment: "Shared activity status"}
           config                  : { comment: "The shutter config" }
+          services                : { comment: "Shared services"}
         attributes:
           statuses:
             attributes:
@@ -276,6 +279,7 @@
         operatingStatus           : statuses.operatingStatus
         activityStatus            : activityStatus
         config                    : config.shutter
+        services                  : services
       rotation:
         initializationStatus      : statuses.initializationStatus
         operatorStatus            : operatorStatus
@@ -371,6 +375,7 @@
       operatingStatus         : { type: mtcs_common.OperatingStatus         , comment: "Dome operating status (manual/auto)"}
       activityStatus          : { type: mtcs_common.ActivityStatus          , comment: "Shared activity status"}
       config                  : { type: DomeShutterConfig                   , comment: "The shutter config"}
+      services                : { type: marvel_services.Services            , comment: "Shared services", expand: false}
     statuses:
       apertureStatus          : { type: mtcs_common.ApertureStatus          , comment: "Combined aperture status (i.e. of both panels)" }
       motionStatus            : { type: DomeShutterOpeningStatus            , comment: "Motion status" }

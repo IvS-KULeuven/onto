@@ -25,12 +25,29 @@
               type: t_bool
               comment: "If TRUE, then the local clock (source=LOCAL_CLOCK) will be used even if an external (more accurate!) clock is available"
 
+  ##########################################################################
+  # DomeShutterMotionStates
+  ##########################################################################
+  
+  !ENUMERATION ServicesMeteoSimulation:
+    comment: "The types of weather that can be simulated"
+    type: t_byte
+    items: [
+      PHOTOMETRIC,
+      DRY_WINDY,
+      DRY_TOO_WINDY,
+      WET_WINDY,
+    ]
+
   ########################################################################################################################
   # ServicesMeteoConfig
   ########################################################################################################################
   
   !CONFIG ServicesMercatorMeteoConfig:
       items:
+          simulated:
+              type: t_bool
+              comment: "TRUE to simulate the Mercator weather station data"
           enableWeatherMonitoring:
               type: t_bool
               comment: "Enable weather monitoring and emergency closing"
@@ -124,6 +141,10 @@
           referenceVoltage:
               type: mtcs_common.MeasurementConfig
               comment: "Config for the 3.5 V reference voltage"
+              expand: false
+          dewpoint:
+              type: mtcs_common.MeasurementConfig
+              comment: "Config for the dew point"
               expand: false
   
   ########################################################################################################################
@@ -308,6 +329,8 @@
           windDirectionMinimumString  : { type: t_string                          , comment: "Average direction of the wind as a string"}
           windDirectionAverageString  : { type: t_string                          , comment: "Average direction of the wind as a string"}
           windDirectionMaximumString  : { type: t_string                          , comment: "Average direction of the wind as a string"}
+          # simulation
+          fromSimulation              : { type: mtcs_common.MercatorMeteoExchange , comment: "The simulated data (if config.simulated is TRUE)", expand: false }
       references:
           config                      : { type: ServicesMercatorMeteoConfig       , comment: "The config" }
       statuses:
