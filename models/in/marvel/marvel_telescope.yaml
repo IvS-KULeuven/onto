@@ -110,6 +110,14 @@
   
 
   ########################################################################################################################
+  # TelescopeMoveProcess
+  ########################################################################################################################
+  !PROCESS TelescopeMoveProcess:
+      extends: mtcs_common.BaseProcess
+      arguments:
+          position               : { type: t_double                            , comment: "New position" }
+
+  ########################################################################################################################
   # Telescope
   ########################################################################################################################
   
@@ -151,6 +159,9 @@
           powerOff                        : { type: mtcs_common.Process                         , comment: "Power off the axes" }
           moveKnownPosition               : { type: TelescopeMoveKnownPositionProcess           , comment: "Move the telescope to the given known position" }
           setTracking                     : { type: TelescopeSetTrackingProcess                 , comment: "Power on the axes" }
+          moveM2                          : { type: TelescopeMoveProcess                        , comment: "Move M2 to the given position in mm"}
+          openCover                       : { type: mtcs_common.Process                         , comment: "Open the telescope cover" }
+          closeCover                      : { type: mtcs_common.Process                         , comment: "Close the telescope cover" }
       calls:
           # processes
           initialize:
@@ -191,6 +202,15 @@
                                                    statuses.poweredStatus.enabled ]
           setTracking:
               isEnabled                   : statuses.initializationStatus.initialized
+          openCover:
+              isEnabled                   : !AND [ statuses.initializationStatus.initialized,
+                                                   processes.openCover.statuses.busyStatus.idle ]
+          closeCover:
+              isEnabled                   : !AND [ statuses.initializationStatus.initialized,
+                                                   processes.closeCover.statuses.busyStatus.idle ]
+          moveM2:
+              isEnabled                   : !AND [ statuses.initializationStatus.initialized,
+                                                   processes.moveM2.statuses.busyStatus.idle ]
           # statuses
           healthStatus:
               superState                  : !NOT [ statuses.initializationStatus.shutdown ]
@@ -206,7 +226,10 @@
                                                        processes.powerOn,
                                                        processes.powerOff,
                                                        processes.moveKnownPosition,
-                                                       processes.setTracking ]
+                                                       processes.setTracking,
+                                                       processes.moveM2,
+                                                       processes.openCover,
+                                                       processes.closeCover ]
                                             ]
               hasWarning                  : !MTCS_SUMMARIZE_WARN [
                                                        processes.initialize,
@@ -217,7 +240,10 @@
                                                        processes.powerOn,
                                                        processes.powerOff,
                                                        processes.moveKnownPosition,
-                                                       processes.setTracking ]
+                                                       processes.setTracking,
+                                                       processes.moveM2,
+                                                       processes.openCover,
+                                                       processes.closeCover ]
           busyStatus:
               superState                  : !NOT [ statuses.initializationStatus.shutdown ]
               isBusy                      : !MTCS_SUMMARIZE_BUSY [
@@ -229,7 +255,10 @@
                                                        processes.powerOn,
                                                        processes.powerOff,
                                                        processes.moveKnownPosition,
-                                                       processes.setTracking ]
+                                                       processes.setTracking,
+                                                       processes.moveM2,
+                                                       processes.openCover,
+                                                       processes.closeCover ]
           operatingStatus:
               superState                  : statuses.initializationStatus.initialized
   

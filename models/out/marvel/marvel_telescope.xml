@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
-  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-04-22T09:13:24.485565" />
-  <contentHeader name="marvel_telescope" modificationDateTime="2025-04-22T09:13:24.485565">
+  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-04-26T00:17:03.997292" />
+  <contentHeader name="marvel_telescope" modificationDateTime="2025-04-26T00:17:03.997292">
     <coordinateInfo>
       <fbd>
         <scaling x="1" y="1" />
@@ -178,6 +178,45 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Power on the axes</xhtml>
+              </documentation>
+            </variable>
+            <variable name="moveM2">
+              <type><derived name="TelescopeMoveProcess" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Move M2 to the given position in mm</xhtml>
+              </documentation>
+            </variable>
+            <variable name="openCover">
+              <type><derived name="Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Open the telescope cover</xhtml>
+              </documentation>
+            </variable>
+            <variable name="closeCover">
+              <type><derived name="Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Close the telescope cover</xhtml>
               </documentation>
             </variable>
           </struct>
@@ -693,6 +732,25 @@
           </struct>
         </baseType>
       </dataType>
+      <dataType name="TelescopeMoveProcessArgs">
+        <baseType>
+          <struct>
+            <variable name="position">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">New position</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
     </dataTypes>
     <pous>
       <pou name="SM_Telescope" pouType="functionBlock">
@@ -991,11 +1049,11 @@
             <xhtml xmlns="http://www.w3.org/1999/xhtml">statuses.initializationStatus();
 statuses.healthStatus(
     superState := NOT(statuses.initializationStatus.shutdown),
-    isGood := (NOT(statuses.initializationStatus.initializingFailed)) AND (isTelConnected AND (isAccConnected AND (processes.initialize.statuses.healthStatus.isGood AND (processes.changeOperatingState.statuses.healthStatus.isGood AND (processes.slewToCoordinates.statuses.healthStatus.isGood AND (processes.slewToAziEle.statuses.healthStatus.isGood AND (processes.abortSlew.statuses.healthStatus.isGood AND (processes.powerOn.statuses.healthStatus.isGood AND (processes.powerOff.statuses.healthStatus.isGood AND (processes.moveKnownPosition.statuses.healthStatus.isGood AND processes.setTracking.statuses.healthStatus.isGood)))))))))),
-    hasWarning := processes.initialize.statuses.healthStatus.hasWarning OR (processes.changeOperatingState.statuses.healthStatus.hasWarning OR (processes.slewToCoordinates.statuses.healthStatus.hasWarning OR (processes.slewToAziEle.statuses.healthStatus.hasWarning OR (processes.abortSlew.statuses.healthStatus.hasWarning OR (processes.powerOn.statuses.healthStatus.hasWarning OR (processes.powerOff.statuses.healthStatus.hasWarning OR (processes.moveKnownPosition.statuses.healthStatus.hasWarning OR processes.setTracking.statuses.healthStatus.hasWarning))))))));
+    isGood := (NOT(statuses.initializationStatus.initializingFailed)) AND (isTelConnected AND (isAccConnected AND (processes.initialize.statuses.healthStatus.isGood AND (processes.changeOperatingState.statuses.healthStatus.isGood AND (processes.slewToCoordinates.statuses.healthStatus.isGood AND (processes.slewToAziEle.statuses.healthStatus.isGood AND (processes.abortSlew.statuses.healthStatus.isGood AND (processes.powerOn.statuses.healthStatus.isGood AND (processes.powerOff.statuses.healthStatus.isGood AND (processes.moveKnownPosition.statuses.healthStatus.isGood AND (processes.setTracking.statuses.healthStatus.isGood AND (processes.moveM2.statuses.healthStatus.isGood AND (processes.openCover.statuses.healthStatus.isGood AND processes.closeCover.statuses.healthStatus.isGood))))))))))))),
+    hasWarning := processes.initialize.statuses.healthStatus.hasWarning OR (processes.changeOperatingState.statuses.healthStatus.hasWarning OR (processes.slewToCoordinates.statuses.healthStatus.hasWarning OR (processes.slewToAziEle.statuses.healthStatus.hasWarning OR (processes.abortSlew.statuses.healthStatus.hasWarning OR (processes.powerOn.statuses.healthStatus.hasWarning OR (processes.powerOff.statuses.healthStatus.hasWarning OR (processes.moveKnownPosition.statuses.healthStatus.hasWarning OR (processes.setTracking.statuses.healthStatus.hasWarning OR (processes.moveM2.statuses.healthStatus.hasWarning OR (processes.openCover.statuses.healthStatus.hasWarning OR processes.closeCover.statuses.healthStatus.hasWarning)))))))))));
 statuses.busyStatus(
     superState := NOT(statuses.initializationStatus.shutdown),
-    isBusy := processes.initialize.statuses.busyStatus.busy OR (processes.changeOperatingState.statuses.busyStatus.busy OR (processes.slewToCoordinates.statuses.busyStatus.busy OR (processes.slewToAziEle.statuses.busyStatus.busy OR (processes.abortSlew.statuses.busyStatus.busy OR (processes.powerOn.statuses.busyStatus.busy OR (processes.powerOff.statuses.busyStatus.busy OR (processes.moveKnownPosition.statuses.busyStatus.busy OR processes.setTracking.statuses.busyStatus.busy))))))));
+    isBusy := processes.initialize.statuses.busyStatus.busy OR (processes.changeOperatingState.statuses.busyStatus.busy OR (processes.slewToCoordinates.statuses.busyStatus.busy OR (processes.slewToAziEle.statuses.busyStatus.busy OR (processes.abortSlew.statuses.busyStatus.busy OR (processes.powerOn.statuses.busyStatus.busy OR (processes.powerOff.statuses.busyStatus.busy OR (processes.moveKnownPosition.statuses.busyStatus.busy OR (processes.setTracking.statuses.busyStatus.busy OR (processes.moveM2.statuses.busyStatus.busy OR (processes.openCover.statuses.busyStatus.busy OR processes.closeCover.statuses.busyStatus.busy)))))))))));
 statuses.operatingStatus( superState := statuses.initializationStatus.initialized );
 statuses.poweredStatus();
 processes.initialize( isEnabled := (NOT(statuses.initializationStatus.locked)) AND (statuses.initializationStatus.shutdown OR (statuses.initializationStatus.initializingFailed OR statuses.initializationStatus.initialized)) );
@@ -1010,6 +1068,9 @@ processes.powerOn( isEnabled := (NOT(statuses.initializationStatus.locked)) AND 
 processes.powerOff( isEnabled := statuses.initializationStatus.initialized AND processes.powerOff.statuses.busyStatus.idle );
 processes.moveKnownPosition( isEnabled := statuses.initializationStatus.initialized AND (statuses.busyStatus.idle AND statuses.poweredStatus.enabled) );
 processes.setTracking( isEnabled := statuses.initializationStatus.initialized );
+processes.moveM2( isEnabled := statuses.initializationStatus.initialized AND processes.moveM2.statuses.busyStatus.idle );
+processes.openCover( isEnabled := statuses.initializationStatus.initialized AND processes.openCover.statuses.busyStatus.idle );
+processes.closeCover( isEnabled := statuses.initializationStatus.initialized AND processes.closeCover.statuses.busyStatus.idle );
 </xhtml>
           </ST>
         </body>
@@ -1446,6 +1507,103 @@ processes.setTracking( isEnabled := statuses.initializationStatus.initialized );
             </Method>
           </data>
           <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="moveM2">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                  <variable name="position">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="TcHmiSymbol.Show" Value="" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">moveM2 := THIS^.processes.moveM2.request( position := position );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="openCover">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">openCover := THIS^.processes.openCover.request();
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="closeCover">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">closeCover := THIS^.processes.closeCover.request();
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
             <Method name="_log">
               <interface>
                 <returnType><BOOL /></returnType>
@@ -1540,6 +1698,15 @@ THIS^.processes.moveKnownPosition._log(
     buffer := subBuffer);
 THIS^.processes.setTracking._log(
     name := &#39;processes.setTracking&#39;,
+    buffer := subBuffer);
+THIS^.processes.moveM2._log(
+    name := &#39;processes.moveM2&#39;,
+    buffer := subBuffer);
+THIS^.processes.openCover._log(
+    name := &#39;processes.openCover&#39;,
+    buffer := subBuffer);
+THIS^.processes.closeCover._log(
+    name := &#39;processes.closeCover&#39;,
     buffer := subBuffer);
 LOGGER(
     name := name,
@@ -2031,6 +2198,154 @@ END_IF;
           </data>
         </addData>
       </pou>
+      <pou name="TelescopeMoveProcess" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="set">
+              <type><derived name="TelescopeMoveProcessArgs" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Arguments to be set, before writing do_request TRUE</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="get">
+              <type><derived name="TelescopeMoveProcessArgs" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Arguments in use by the process, if do_request was accepted</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <inOutVars>
+          </inOutVars>
+          <localVars>
+          </localVars>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/pouinheritance" handleUnknown="implementation">
+              <Inheritance>
+                <Extends>BaseProcess</Extends>
+              </Inheritance>
+            </data>
+          </addData>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+    do_request_result := request( position := set.position );
+    do_request := FALSE;
+END_IF;
+SUPER^();
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="start">
+              <interface>
+                <inputVars>
+                  <variable name="position">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="TcHmiSymbol.Show" Value="" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">New position</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.position := position;
+THIS^.statuses.busyStatus( isBusy := TRUE );
+THIS^.statuses.healthStatus( isGood := TRUE );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="request">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                  <variable name="position">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="TcHmiSymbol.Show" Value="" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">New position</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF THIS^.statuses.enabledStatus.enabled THEN
+    request := RequestResults.ACCEPTED;
+    THIS^.start( position := position );
+ELSE
+    request := RequestResults.REJECTED;
+END_IF;
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+        </addData>
+      </pou>
     </pous>
   </types>
   <instances>
@@ -2068,6 +2383,9 @@ END_IF;
               <Object Name="powerOff" />
               <Object Name="moveKnownPosition" />
               <Object Name="setTracking" />
+              <Object Name="moveM2" />
+              <Object Name="openCover" />
+              <Object Name="closeCover" />
               <Object Name="_log" />
             </Object>
           </Folder>
@@ -2089,6 +2407,8 @@ END_IF;
               </Object>
               <Object Name="TelescopeMoveKnownPositionProcessArgs">
               </Object>
+              <Object Name="TelescopeMoveProcessArgs">
+              </Object>
             </Folder>
             <Object Name="TelescopeSlewToAziEleProcess">
               <Object Name="start" />
@@ -2099,6 +2419,10 @@ END_IF;
               <Object Name="request" />
             </Object>
             <Object Name="TelescopeMoveKnownPositionProcess">
+              <Object Name="start" />
+              <Object Name="request" />
+            </Object>
+            <Object Name="TelescopeMoveProcess">
               <Object Name="start" />
               <Object Name="request" />
             </Object>
