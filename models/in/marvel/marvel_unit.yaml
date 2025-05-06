@@ -78,6 +78,8 @@
                   operatorStatus          : { type: mtcs_common.OperatorStatus          , expand: false }
                   activityStatus          : { type: mtcs_common.ActivityStatus          , expand: false }
                   config                  : { type: marvel_telescope.TelescopeConfig    , expand: false }
+                  longitude               : { type: t_double }
+                  latitude                : { type: t_double }
               attributes:
                   # isTracking              : { type: t_bool }
                   actAzi                  : { type: mtcs_common.AngularPosition         , expand: false }
@@ -123,6 +125,8 @@
               operatorStatus      : operatorStatus
               activityStatus      : activityStatus
               config              : config.telescope
+              longitude           : config.longitude
+              latitude            : config.latitude
           configManager:
              isEnabled            : operatorStatus.tech
           healthStatus:
