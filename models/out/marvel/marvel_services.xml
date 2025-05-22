@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
-  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-05-06T14:59:44.773808" />
-  <contentHeader name="marvel_services" modificationDateTime="2025-05-06T14:59:44.773808">
+  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-05-10T23:40:38.533942" />
+  <contentHeader name="marvel_services" modificationDateTime="2025-05-10T23:40:38.533942">
     <coordinateInfo>
       <fbd>
         <scaling x="1" y="1" />
@@ -1399,6 +1399,21 @@ isNtpSynchronized_ro := isNtpSynchronized;
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if the data is valid</xhtml>
               </documentation>
             </variable>
+            <variable name="disconnected">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if the data provider is disconnected</xhtml>
+              </documentation>
+            </variable>
           </inputVars>
           <outputVars>
             <variable name="actualStatus">
@@ -1469,7 +1484,7 @@ isNtpSynchronized_ro := isNtpSynchronized;
             <xhtml xmlns="http://www.w3.org/1999/xhtml">statuses.enabledStatus( isEnabled := config.enabled );
 statuses.healthStatus(
     superState := statuses.enabledStatus.enabled,
-    isGood := NOT((NOT(valid)) OR (statuses.alarmStatus.hiHi OR statuses.alarmStatus.loLo)),
+    isGood := NOT((NOT(valid)) OR (disconnected OR (statuses.alarmStatus.hiHi OR statuses.alarmStatus.loLo))),
     hasWarning := statuses.alarmStatus.hi OR statuses.alarmStatus.lo);
 statuses.alarmStatus(
     superState := statuses.enabledStatus.enabled,
@@ -1556,6 +1571,21 @@ statuses.alarmStatus(
       <pou name="SM_ServicesMercatorMeteo" pouType="functionBlock">
         <interface>
           <inputVars>
+            <variable name="weatherStatus">
+              <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Weather status as a string</xhtml>
+              </documentation>
+            </variable>
             <variable name="windSpeedMinimum">
               <type><derived name="ServicesMercatorMeteoMeasurement" /></type>
               <addData>
@@ -2020,6 +2050,20 @@ statuses.alarmStatus(
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">The data exchanged by the Mercator telescope</xhtml>
               </documentation>
             </variable>
+            <variable name="mercatorDisconnected" address="%I*">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                    <Attribute Name="TcHmiSymbol.Hide" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The data exchanged by the Mercator telescope is invalid</xhtml>
+              </documentation>
+            </variable>
           </inputVars>
           <outputVars>
             <variable name="actualStatus">
@@ -2110,6 +2154,20 @@ statuses.alarmStatus(
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
+            <variable name="mercatorDisconnected_ro">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                    <Attribute Name="TcHmiSymbol.Hide" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
           </localVars>
         </interface>
         <body>
@@ -2117,101 +2175,125 @@ statuses.alarmStatus(
             <xhtml xmlns="http://www.w3.org/1999/xhtml">windSpeedMinimum(
     config := config.windSpeedMinimum,
     data := fromMercator.windSpeedMinimum,
-    valid := fromMercator.windSpeedMinimumValid);
+    valid := fromMercator.windSpeedMinimumValid,
+    disconnected := mercatorDisconnected);
 windSpeedAverage(
     config := config.windSpeedAverage,
     data := fromMercator.windSpeedAverage,
-    valid := fromMercator.windSpeedAverageValid);
+    valid := fromMercator.windSpeedAverageValid,
+    disconnected := mercatorDisconnected);
 windSpeedMaximum(
     config := config.windSpeedMaximum,
     data := fromMercator.windSpeedMaximum,
-    valid := fromMercator.windSpeedMaximumValid);
+    valid := fromMercator.windSpeedMaximumValid,
+    disconnected := mercatorDisconnected);
 windDirectionMinimum(
     config := config.windDirectionMinimum,
     data := fromMercator.windDirectionMinimum,
-    valid := fromMercator.windDirectionMinimumValid);
+    valid := fromMercator.windDirectionMinimumValid,
+    disconnected := mercatorDisconnected);
 windDirectionAverage(
     config := config.windDirectionAverage,
     data := fromMercator.windDirectionAverage,
-    valid := fromMercator.windDirectionAverageValid);
+    valid := fromMercator.windDirectionAverageValid,
+    disconnected := mercatorDisconnected);
 windDirectionMaximum(
     config := config.windDirectionMaximum,
     data := fromMercator.windDirectionMaximum,
-    valid := fromMercator.windDirectionMaximumValid);
+    valid := fromMercator.windDirectionMaximumValid,
+    disconnected := mercatorDisconnected);
 airPressure(
     config := config.airPressure,
     data := fromMercator.airPressure,
-    valid := fromMercator.airPressureValid);
+    valid := fromMercator.airPressureValid,
+    disconnected := mercatorDisconnected);
 airTemperature(
     config := config.airTemperature,
     data := fromMercator.airTemperature,
-    valid := fromMercator.airTemperatureValid);
+    valid := fromMercator.airTemperatureValid,
+    disconnected := mercatorDisconnected);
 internalTemperature(
     config := config.internalTemperature,
     data := fromMercator.internalTemperature,
-    valid := fromMercator.internalTemperatureValid);
+    valid := fromMercator.internalTemperatureValid,
+    disconnected := mercatorDisconnected);
 relativeHumidity(
     config := config.relativeHumidity,
     data := fromMercator.relativeHumidity,
-    valid := fromMercator.relativeHumidityValid);
+    valid := fromMercator.relativeHumidityValid,
+    disconnected := mercatorDisconnected);
 rainAccumulation(
     config := config.rainAccumulation,
     data := fromMercator.rainAccumulation,
-    valid := fromMercator.rainAccumulationValid);
+    valid := fromMercator.rainAccumulationValid,
+    disconnected := mercatorDisconnected);
 rainDuration(
     config := config.rainDuration,
     data := fromMercator.rainDuration,
-    valid := fromMercator.rainDurationValid);
+    valid := fromMercator.rainDurationValid,
+    disconnected := mercatorDisconnected);
 rainIntensity(
     config := config.rainIntensity,
     data := fromMercator.rainIntensity,
-    valid := fromMercator.rainIntensityValid);
+    valid := fromMercator.rainIntensityValid,
+    disconnected := mercatorDisconnected);
 rainPeakIntensity(
     config := config.rainPeakIntensity,
     data := fromMercator.rainPeakIntensity,
-    valid := fromMercator.rainPeakIntensityValid);
+    valid := fromMercator.rainPeakIntensityValid,
+    disconnected := mercatorDisconnected);
 hailAccumulation(
     config := config.hailAccumulation,
     data := fromMercator.hailAccumulation,
-    valid := fromMercator.hailAccumulationValid);
+    valid := fromMercator.hailAccumulationValid,
+    disconnected := mercatorDisconnected);
 hailDuration(
     config := config.hailDuration,
     data := fromMercator.hailDuration,
-    valid := fromMercator.hailDurationValid);
+    valid := fromMercator.hailDurationValid,
+    disconnected := mercatorDisconnected);
 hailIntensity(
     config := config.hailIntensity,
     data := fromMercator.hailIntensity,
-    valid := fromMercator.hailIntensityValid);
+    valid := fromMercator.hailIntensityValid,
+    disconnected := mercatorDisconnected);
 hailPeakIntensity(
     config := config.hailPeakIntensity,
     data := fromMercator.hailPeakIntensity,
-    valid := fromMercator.hailPeakIntensityValid);
+    valid := fromMercator.hailPeakIntensityValid,
+    disconnected := mercatorDisconnected);
 heatingTemperature(
     config := config.heatingTemperature,
     data := fromMercator.heatingTemperature,
-    valid := fromMercator.heatingTemperatureValid);
+    valid := fromMercator.heatingTemperatureValid,
+    disconnected := mercatorDisconnected);
 heatingVoltage(
     config := config.heatingVoltage,
     data := fromMercator.heatingVoltage,
-    valid := fromMercator.heatingVoltageValid);
+    valid := fromMercator.heatingVoltageValid,
+    disconnected := mercatorDisconnected);
 supplyVoltage(
     config := config.supplyVoltage,
     data := fromMercator.supplyVoltage,
-    valid := fromMercator.supplyVoltageValid);
+    valid := fromMercator.supplyVoltageValid,
+    disconnected := mercatorDisconnected);
 referenceVoltage(
     config := config.referenceVoltage,
     data := fromMercator.referenceVoltage,
-    valid := fromMercator.referenceVoltageValid);
+    valid := fromMercator.referenceVoltageValid,
+    disconnected := mercatorDisconnected);
 dewpoint(
     config := config.dewpoint,
     data := fromMercator.dewpoint,
-    valid := fromMercator.dewpointValid);
+    valid := fromMercator.dewpointValid,
+    disconnected := mercatorDisconnected);
 statuses.meteoHealthStatus(
     superState := statuses.healthStatus.good,
     isGood := (windSpeedMinimum.statuses.healthStatus.isGood OR windSpeedMinimum.statuses.enabledStatus.disabled) AND ((windSpeedAverage.statuses.healthStatus.isGood OR windSpeedAverage.statuses.enabledStatus.disabled) AND ((windSpeedMaximum.statuses.healthStatus.isGood OR windSpeedMaximum.statuses.enabledStatus.disabled) AND ((windDirectionMinimum.statuses.healthStatus.isGood OR windDirectionMinimum.statuses.enabledStatus.disabled) AND ((windDirectionAverage.statuses.healthStatus.isGood OR windDirectionAverage.statuses.enabledStatus.disabled) AND ((windDirectionMaximum.statuses.healthStatus.isGood OR windDirectionMaximum.statuses.enabledStatus.disabled) AND ((airPressure.statuses.healthStatus.isGood OR airPressure.statuses.enabledStatus.disabled) AND ((airTemperature.statuses.healthStatus.isGood OR airTemperature.statuses.enabledStatus.disabled) AND ((internalTemperature.statuses.healthStatus.isGood OR internalTemperature.statuses.enabledStatus.disabled) AND ((relativeHumidity.statuses.healthStatus.isGood OR relativeHumidity.statuses.enabledStatus.disabled) AND ((rainAccumulation.statuses.healthStatus.isGood OR rainAccumulation.statuses.enabledStatus.disabled) AND ((rainDuration.statuses.healthStatus.isGood OR rainDuration.statuses.enabledStatus.disabled) AND ((rainIntensity.statuses.healthStatus.isGood OR rainIntensity.statuses.enabledStatus.disabled) AND ((rainPeakIntensity.statuses.healthStatus.isGood OR rainPeakIntensity.statuses.enabledStatus.disabled) AND ((hailAccumulation.statuses.healthStatus.isGood OR hailAccumulation.statuses.enabledStatus.disabled) AND ((hailDuration.statuses.healthStatus.isGood OR hailDuration.statuses.enabledStatus.disabled) AND ((hailIntensity.statuses.healthStatus.isGood OR hailIntensity.statuses.enabledStatus.disabled) AND ((hailPeakIntensity.statuses.healthStatus.isGood OR hailPeakIntensity.statuses.enabledStatus.disabled) AND ((heatingTemperature.statuses.healthStatus.isGood OR heatingTemperature.statuses.enabledStatus.disabled) AND ((heatingVoltage.statuses.healthStatus.isGood OR heatingVoltage.statuses.enabledStatus.disabled) AND ((supplyVoltage.statuses.healthStatus.isGood OR supplyVoltage.statuses.enabledStatus.disabled) AND ((referenceVoltage.statuses.healthStatus.isGood OR referenceVoltage.statuses.enabledStatus.disabled) AND (dewpoint.statuses.healthStatus.isGood OR dewpoint.statuses.enabledStatus.disabled)))))))))))))))))))))),
     hasWarning := windSpeedMinimum.statuses.healthStatus.hasWarning OR (windSpeedAverage.statuses.healthStatus.hasWarning OR (windSpeedMaximum.statuses.healthStatus.hasWarning OR (windDirectionMinimum.statuses.healthStatus.hasWarning OR (windDirectionAverage.statuses.healthStatus.hasWarning OR (windDirectionMaximum.statuses.healthStatus.hasWarning OR (airPressure.statuses.healthStatus.hasWarning OR (airTemperature.statuses.healthStatus.hasWarning OR (internalTemperature.statuses.healthStatus.hasWarning OR (relativeHumidity.statuses.healthStatus.hasWarning OR (rainAccumulation.statuses.healthStatus.hasWarning OR (rainDuration.statuses.healthStatus.hasWarning OR (rainIntensity.statuses.healthStatus.hasWarning OR (rainPeakIntensity.statuses.healthStatus.hasWarning OR (hailAccumulation.statuses.healthStatus.hasWarning OR (hailDuration.statuses.healthStatus.hasWarning OR (hailIntensity.statuses.healthStatus.hasWarning OR (hailPeakIntensity.statuses.healthStatus.hasWarning OR (heatingTemperature.statuses.healthStatus.hasWarning OR (heatingVoltage.statuses.healthStatus.hasWarning OR (supplyVoltage.statuses.healthStatus.hasWarning OR (referenceVoltage.statuses.healthStatus.hasWarning OR dewpoint.statuses.healthStatus.hasWarning))))))))))))))))))))));
-statuses.healthStatus( isGood := fromMercator.mercatorServiceHealthy );
+statuses.healthStatus( isGood := fromMercator.mercatorServiceHealthy AND (NOT(mercatorDisconnected)) );
 fromMercator_ro := fromMercator;
+mercatorDisconnected_ro := mercatorDisconnected;
 </xhtml>
           </ST>
         </body>

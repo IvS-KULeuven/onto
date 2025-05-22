@@ -53,7 +53,7 @@
               comment: "Enable weather monitoring and emergency closing"
           wetLimit:
               type: t_double
-              comment: "Wet if (rainIntensity+hailIntrelaensity)>wetLimit"
+              comment: "Wet if (rainIntensity+hailIntensity)>wetLimit"
           windSpeedMinimum:
               type: mtcs_common.MeasurementConfig
               comment: "Config for the wind speed minimum"
@@ -270,6 +270,7 @@
       variables:
           data            : { type: t_double                        , comment: "The measured data" }
           valid           : { type: t_bool                          , comment: "TRUE if the data is valid" }
+          disconnected    : { type: t_bool                          , comment: "TRUE if the data provider is disconnected" }
       statuses:
           enabledStatus   : { type: mtcs_common.EnabledStatus       , comment: "Is the temperature being measured?" }
           healthStatus    : { type: mtcs_common.HealthStatus        , comment: "Is the data valid and within range?" }
@@ -284,6 +285,7 @@
           healthStatus:
               superState   : statuses.enabledStatus.enabled
               isGood       : !NOT [ !OR [ !NOT [ valid ],
+                                          disconnected,
                                           statuses.alarmStatus.hiHi,
                                           statuses.alarmStatus.loLo ] ]
               hasWarning   : !OR [ statuses.alarmStatus.hi,
@@ -297,7 +299,9 @@
       typeOf                          : [ ServicesParts.mercatorMeteo ]
       variables_hidden:
           fromMercator                : { type: mtcs_common.MercatorMeteoExchange , address: "%I*" , comment: "The data exchanged by the Mercator telescope" }
+          mercatorDisconnected        : { type: t_bool                            , address: "%I*" , comment: "The data exchanged by the Mercator telescope is invalid" }
       variables:
+          weatherStatus               : { type: t_string                          , comment: "Weather status as a string" }
           # measurements
           windSpeedMinimum            : { type: ServicesMercatorMeteoMeasurement  , comment: "Wind speed minimum" }
           windSpeedAverage            : { type: ServicesMercatorMeteoMeasurement  , comment: "Wind speed average" }
@@ -343,96 +347,120 @@
               config                  : config.windSpeedMinimum
               data                    : fromMercator.windSpeedMinimum
               valid                   : fromMercator.windSpeedMinimumValid
+              disconnected            : mercatorDisconnected
           windSpeedAverage:
               config                  : config.windSpeedAverage
               data                    : fromMercator.windSpeedAverage
               valid                   : fromMercator.windSpeedAverageValid
+              disconnected            : mercatorDisconnected
           windSpeedMaximum:
               config                  : config.windSpeedMaximum
               data                    : fromMercator.windSpeedMaximum
               valid                   : fromMercator.windSpeedMaximumValid
+              disconnected            : mercatorDisconnected
           windDirectionMinimum:
               config                  : config.windDirectionMinimum
               data                    : fromMercator.windDirectionMinimum
               valid                   : fromMercator.windDirectionMinimumValid
+              disconnected            : mercatorDisconnected
           windDirectionAverage:
               config                  : config.windDirectionAverage
               data                    : fromMercator.windDirectionAverage
               valid                   : fromMercator.windDirectionAverageValid
+              disconnected            : mercatorDisconnected
           windDirectionMaximum:
               config                  : config.windDirectionMaximum
               data                    : fromMercator.windDirectionMaximum
               valid                   : fromMercator.windDirectionMaximumValid
+              disconnected            : mercatorDisconnected
           airPressure:
               config                  : config.airPressure
               data                    : fromMercator.airPressure
               valid                   : fromMercator.airPressureValid
+              disconnected            : mercatorDisconnected
           airTemperature:
               config                  : config.airTemperature
               data                    : fromMercator.airTemperature
               valid                   : fromMercator.airTemperatureValid
+              disconnected            : mercatorDisconnected
           internalTemperature:
               config                  : config.internalTemperature
               data                    : fromMercator.internalTemperature
               valid                   : fromMercator.internalTemperatureValid
+              disconnected            : mercatorDisconnected
           relativeHumidity:
               config                  : config.relativeHumidity
               data                    : fromMercator.relativeHumidity
               valid                   : fromMercator.relativeHumidityValid
+              disconnected            : mercatorDisconnected
           rainAccumulation:
               config                  : config.rainAccumulation
               data                    : fromMercator.rainAccumulation
               valid                   : fromMercator.rainAccumulationValid
+              disconnected            : mercatorDisconnected
           rainDuration:
               config                  : config.rainDuration
               data                    : fromMercator.rainDuration
               valid                   : fromMercator.rainDurationValid
+              disconnected            : mercatorDisconnected
           rainIntensity:
               config                  : config.rainIntensity
               data                    : fromMercator.rainIntensity
               valid                   : fromMercator.rainIntensityValid
+              disconnected            : mercatorDisconnected
           rainPeakIntensity:
               config                  : config.rainPeakIntensity
               data                    : fromMercator.rainPeakIntensity
               valid                   : fromMercator.rainPeakIntensityValid
+              disconnected            : mercatorDisconnected
           hailAccumulation:
               config                  : config.hailAccumulation
               data                    : fromMercator.hailAccumulation
               valid                   : fromMercator.hailAccumulationValid
+              disconnected            : mercatorDisconnected
           hailDuration:
               config                  : config.hailDuration
               data                    : fromMercator.hailDuration
               valid                   : fromMercator.hailDurationValid
+              disconnected            : mercatorDisconnected
           hailIntensity:
               config                  : config.hailIntensity
               data                    : fromMercator.hailIntensity
               valid                   : fromMercator.hailIntensityValid
+              disconnected            : mercatorDisconnected
           hailPeakIntensity:
               config                  : config.hailPeakIntensity
               data                    : fromMercator.hailPeakIntensity
               valid                   : fromMercator.hailPeakIntensityValid
+              disconnected            : mercatorDisconnected
           heatingTemperature:
               config                  : config.heatingTemperature
               data                    : fromMercator.heatingTemperature
               valid                   : fromMercator.heatingTemperatureValid
+              disconnected            : mercatorDisconnected
           heatingVoltage:
               config                  : config.heatingVoltage
               data                    : fromMercator.heatingVoltage
               valid                   : fromMercator.heatingVoltageValid
+              disconnected            : mercatorDisconnected
           supplyVoltage:
               config                  : config.supplyVoltage
               data                    : fromMercator.supplyVoltage
               valid                   : fromMercator.supplyVoltageValid
+              disconnected            : mercatorDisconnected
           referenceVoltage:
               config                  : config.referenceVoltage
               data                    : fromMercator.referenceVoltage
               valid                   : fromMercator.referenceVoltageValid
+              disconnected            : mercatorDisconnected
           dewpoint:
               config                  : config.dewpoint
               data                    : fromMercator.dewpoint
               valid                   : fromMercator.dewpointValid
+              disconnected            : mercatorDisconnected
           healthStatus:
-              isGood                  : fromMercator.mercatorServiceHealthy
+              isGood                  : !AND [ fromMercator.mercatorServiceHealthy,
+                                               !NOT [ mercatorDisconnected ] ]
           meteoHealthStatus:
               superState              : statuses.healthStatus.good
               isGood                  : !MTCS_SUMMARIZE_GOOD_OR_DISABLED [
