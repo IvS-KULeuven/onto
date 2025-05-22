@@ -116,8 +116,8 @@
 <% info(f"Rendering project {lib.name}") %>\
 <?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
-  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="${timeNow}" />
-  <contentHeader name="${lib.name}" modificationDateTime="${timeNow}">
+  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-01-01T00:00:00.0" />
+  <contentHeader name="${lib.name}" modificationDateTime="2025-01-01T00:00:00.0">
     <coordinateInfo>
       <fbd>
         <scaling x="1" y="1" />
