@@ -9,10 +9,9 @@ try:
     from yaml import CLoader as Loader, CDumper as Dumper
 except ImportError:
     from yaml import Loader, Dumper
-from util import expressions, mathematics, factories
+from util import expressions, mathematics, factories, versions
 from util.logger import info, debug, error, setLevel
 import logging
-
 
 class ImportNeeded(Exception):
     def __init__(self, name) -> None:
@@ -29,11 +28,20 @@ def IMPORT_constructor(loader: Loader, node):
     else:
         raise ImportNeeded(filename)
 
+def VERSION_constructor(loader: Loader, node):
+    version = loader.construct_scalar(node)
+    if str(version.upper()) == "MARVEL":
+        versions.CODEGEN_VERSION = versions.CodeGenVersion.MARVEL
+    elif str(version.upper()) == "MTCS":
+        versions.CODEGEN_VERSION = versions.CodeGenVersion.MTCS
+    else:
+        raise Exception(f"Invalid argument for VERSION ({version})")
 
 
 def get_loader():
     """Return a yaml loader."""
     loader = yaml.SafeLoader
+    loader.add_constructor('!VERSION', VERSION_constructor)
     loader.add_constructor('!IMPORT', IMPORT_constructor)
     loader.add_constructor('!ASSIGN', expressions.ASSIGN_constructor)
     loader.add_constructor('!ADR', expressions.ADR_constructor)

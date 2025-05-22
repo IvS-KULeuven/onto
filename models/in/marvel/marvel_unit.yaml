@@ -4,10 +4,11 @@
 #                                                                                                                      #
 ########################################################################################################################
 
+!VERSION marvel:
 
+!IMPORT models/in/marvel/marvel_common.yaml:
 !IMPORT models/in/marvel/marvel_dome.yaml:
 !IMPORT models/in/marvel/marvel_telescope.yaml:
-!IMPORT models/in/marvel/marvel_common.yaml:
 !IMPORT models/in/marvel/marvel_services.yaml:
 
 
@@ -39,11 +40,11 @@
           editableConfig            : { type: UnitConfig                        , comment: "Editable configuration of the unit" , expand: false }
       variables_read_only:
           config                    : { type: UnitConfig                        , comment: "Active configuration of the unit" }
-          targetAlpha               : { type: mtcs_common.AngularPosition       , comment: "The target alpha coordinate (Right Ascention)" , expand: false}
-          targetDelta               : { type: mtcs_common.AngularPosition       , comment: "The target delta coordinate (Declination)" , expand: false }
+          targetAlpha               : { type: marvel_common.AngularPosition       , comment: "The target alpha coordinate (Right Ascention)" , expand: false}
+          targetDelta               : { type: marvel_common.AngularPosition       , comment: "The target delta coordinate (Declination)" , expand: false }
       references:
-        operatorStatus              : { type: mtcs_common.OperatorStatus        , comment: "Reference to the operator (observer/tech)"}
-        activityStatus              : { type: mtcs_common.ActivityStatus        , comment: "Shared activity status"}
+        operatorStatus              : { type: marvel_common.OperatorStatus        , comment: "Reference to the operator (observer/tech)"}
+        activityStatus              : { type: marvel_common.ActivityStatus        , comment: "Shared activity status"}
         services                    : { type: marvel_services.Services          , comment: "Shared services", expand: false}
       parts:
           dome:
@@ -51,17 +52,17 @@
               comment: "The dome"
               expand: false
               arguments:
-                  operatorStatus          : { type: mtcs_common.OperatorStatus          , expand: false }
-                  activityStatus          : { type: mtcs_common.ActivityStatus          , expand: false }
+                  operatorStatus          : { type: marvel_common.OperatorStatus          , expand: false }
+                  activityStatus          : { type: marvel_common.ActivityStatus          , expand: false }
                   services                : { type: marvel_services.Services            , expand: false }
                   config                  : { type: marvel_dome.DomeConfig              , expand: false }
-                  telescopeAzi            : { type: mtcs_common.AngularPosition         , expand: false }
+                  telescopeAzi            : { type: marvel_common.AngularPosition         , expand: false }
               attributes:
                   # isTracking              : { type: t_bool }
                   statuses:
                       attributes:
-                          healthStatus    : { type: mtcs_common.HealthStatus }
-                          busyStatus      : { type: mtcs_common.BusyStatus }
+                          healthStatus    : { type: marvel_common.HealthStatus }
+                          busyStatus      : { type: marvel_common.BusyStatus }
                   processes:
                       attributes:
                         syncWithAxes:
@@ -75,18 +76,18 @@
               comment: "The telescope"
               expand: false
               arguments:
-                  operatorStatus          : { type: mtcs_common.OperatorStatus          , expand: false }
-                  activityStatus          : { type: mtcs_common.ActivityStatus          , expand: false }
+                  operatorStatus          : { type: marvel_common.OperatorStatus          , expand: false }
+                  activityStatus          : { type: marvel_common.ActivityStatus          , expand: false }
                   config                  : { type: marvel_telescope.TelescopeConfig    , expand: false }
                   longitude               : { type: t_double }
                   latitude                : { type: t_double }
               attributes:
                   # isTracking              : { type: t_bool }
-                  actAzi                  : { type: mtcs_common.AngularPosition         , expand: false }
+                  actAzi                  : { type: marvel_common.AngularPosition         , expand: false }
                   statuses:
                       attributes:
-                          healthStatus    : { type: mtcs_common.HealthStatus }
-                          busyStatus      : { type: mtcs_common.BusyStatus }
+                          healthStatus    : { type: marvel_common.HealthStatus }
+                          busyStatus      : { type: marvel_common.BusyStatus }
                   processes:
                       attributes:
                         slewToCoordinates:
@@ -97,15 +98,15 @@
                                 isEnabled : { type: t_bool }
           configManager:
               comment                     : "The config manager (to load/save/activate configuration data)"
-              type                        : mtcs_common.ConfigManager
+              type                        : marvel_common.ConfigManager
       statuses:
-          initializationStatus        : { type: mtcs_common.InitializationStatus }
-          healthStatus                : { type: mtcs_common.HealthStatus }
-          busyStatus                  : { type: mtcs_common.BusyStatus }
+          initializationStatus        : { type: marvel_common.InitializationStatus }
+          healthStatus                : { type: marvel_common.HealthStatus }
+          busyStatus                  : { type: marvel_common.BusyStatus }
       processes:
-          initialize                  : { type: mtcs_common.Process                     , comment: "Start initializing the unit" }   
+          initialize                  : { type: marvel_common.Process                     , comment: "Start initializing the unit" }   
           point                       : { type: marvel_common.PointAlphaDeltaProcess    , comment: "Point the telescope and dome"}     
-          stop                        : { type: mtcs_common.Process                     , comment: "Stop the rotation movement and/or tracking" }
+          stop                        : { type: marvel_common.Process                     , comment: "Stop the rotation movement and/or tracking" }
       calls:
           initialize:
               isEnabled           : !NOT [ statuses.initializationStatus.initializing ]

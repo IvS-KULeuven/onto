@@ -9,6 +9,7 @@ except ImportError:
 from util.expressions import *
 from util.objects import add_global, get_global, Object, resolve
 from util import logger
+from util import versions
 
 
 class Primitive(Object):
@@ -490,7 +491,7 @@ class Struct(Object):
     def __init__(self, name, parent, args={}) -> None:
         super().__init__(name, parent)
 
-        logger.info(f"Creating Struct {name}")
+        logger.info(f"Creating {versions.CODEGEN_VERSION} Struct {name}")
 
         self.items = None
         self.plc_symbol = None
@@ -593,7 +594,7 @@ class FunctionBlock(Object):
     """
     
     def __init__(self, name, parent, args={}) -> None:
-        logger.info(f"Creating FunctionBlock {name}")
+        logger.info(f"Creating {versions.CODEGEN_VERSION} FunctionBlock {name}")
 
         super().__init__(name, parent)
         
@@ -651,7 +652,7 @@ class Status(FunctionBlock):
     """
     
     def __init__(self, name, parent, args={}) -> None:
-        logger.info(f"Creating Status {name}")
+        logger.info(f"Creating {versions.CODEGEN_VERSION} Status {name}")
 
         super().__init__(name, parent)
         check_args("Status", args, ["typeOf", "variables", "states", "render"])
@@ -710,7 +711,7 @@ class Config(Struct):
     """
     
     def __init__(self, name, parent, args={}) -> None:
-        logger.info(f"Creating Config {name}")
+        logger.info(f"Creating {versions.CODEGEN_VERSION} Config {name}")
         super().__init__(name, parent, args)
 
 
@@ -740,7 +741,7 @@ class Statemachine(FunctionBlock):
     """
 
     def __init__(self, name, parent, args={}) -> None:
-        logger.info(f"Creating StateMachine {name}")
+        logger.info(f"Creating {versions.CODEGEN_VERSION} StateMachine {name}")
         if "extends" in args:
             super().__init__(f"SM_{name}", parent, { "extends" : args["extends"] } )
         else:
@@ -909,7 +910,7 @@ class Statemachine(FunctionBlock):
                     parent = self,
                     args = {
                         "comment": process_args["comment"],
-                        "returnType": "mtcs_common.RequestResults",
+                        "returnType": f"{get_common_lib()}.RequestResults",
                         "inputArgs": input_args
                     })
                 
@@ -1112,17 +1113,26 @@ add_global("LOGGER", GlobalVariable(name="LOGGER",
                                     }))
 
 
+def get_common_lib():
+    if versions.CODEGEN_VERSION == versions.CodeGenVersion.MARVEL:
+        return "marvel_common"
+    elif versions.CODEGEN_VERSION == versions.CodeGenVersion.MTCS:
+        return "mtcs_common"
+    else:
+        raise Exception(f"Trying to get common_lib from version")
+
+
 class Process(FunctionBlock):
     """
     Class respresenting a Process.
     """
 
     def __init__(self, name, parent, args={}) -> None:
-        logger.info(f"Creating Process {name}")
+        logger.info(f"Creating {versions.CODEGEN_VERSION} Process {name}")
         if "extends" in args:
             super().__init__(name, parent, { "extends" : args["extends"] } )
         else:
-            super().__init__(name, parent, { "extends" : "mtcs_common.BaseProcess" })
+            super().__init__(name, parent, { "extends" : f"{get_common_lib()}.BaseProcess" })
         
         check_args("Process", args,
                    ["extends", "arguments", "variables", "variables_hidden", "references"])
@@ -1222,7 +1232,7 @@ class Process(FunctionBlock):
                 args = {
                     "comment": "Request the start of this process",
                     "inputArgs": args["arguments"],
-                    "returnType": "mtcs_common.RequestResults"
+                    "returnType": f"{get_common_lib()}.RequestResults"
                 })
         else:
             self.request = Method(
@@ -1230,7 +1240,7 @@ class Process(FunctionBlock):
                 parent = self,
                 args = {
                     "comment": "Request the start of this process",
-                    "returnType": "mtcs_common.RequestResults"
+                    "returnType": f"{get_common_lib()}.RequestResults"
                 })
             
         self.methods["request"] = self.request
@@ -1248,11 +1258,11 @@ class Process(FunctionBlock):
                 parent = self.request, 
                 if_ = self.children["statuses"].children["enabledStatus"].children["enabled"],
                 then_ = [
-                    ASSIGN([self.request, resolve("mtcs_common.RequestResults.ACCEPTED", self.parent)]),
+                    ASSIGN([self.request, resolve(f"{get_common_lib()}.RequestResults.ACCEPTED", self.parent)]),
                     start_call
                 ],
                 else_ = [
-                    ASSIGN([self.request, resolve("mtcs_common.RequestResults.REJECTED", self.parent)])
+                    ASSIGN([self.request, resolve(f"{get_common_lib()}.RequestResults.REJECTED", self.parent)])
                 ])
         ]
         

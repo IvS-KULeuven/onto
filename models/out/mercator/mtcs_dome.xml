@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
-  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-05-10T23:40:38.533942" />
-  <contentHeader name="mtcs_dome" modificationDateTime="2025-05-10T23:40:38.533942">
+  <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-05-22T16:59:14.648330" />
+  <contentHeader name="mtcs_dome" modificationDateTime="2025-05-22T16:59:14.648330">
     <coordinateInfo>
       <fbd>
         <scaling x="1" y="1" />
@@ -1413,6 +1413,32 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Closing timeout of the upper panel, in seconds</xhtml>
               </documentation>
             </variable>
+            <variable name="upperOpenRangeLimitByTime">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Limit the apperture range of the upper panel by time, True to enable</xhtml>
+              </documentation>
+            </variable>
+            <variable name="upperOpenRangeLimitTime">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Time to set the apperture limit, in seconds</xhtml>
+              </documentation>
+            </variable>
             <variable name="timeAfterStop">
               <type><LREAL /></type>
               <addData>
@@ -2666,6 +2692,21 @@ LOGGER(
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">The number of times that the lower panel has been closed automatically, by monitoring</xhtml>
               </documentation>
             </variable>
+            <variable name="upperOpenRangeLimitFlag">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Flag for the openning range limit when it is controlled by time</xhtml>
+              </documentation>
+            </variable>
             <variable name="manualOpenUpper" address="%I*">
               <type><BOOL /></type>
               <addData>
@@ -3029,7 +3070,7 @@ statuses.lowerApertureStatus(
     isClosed := lowerClosedSignal);
 statuses.upperApertureStatus(
     superState := NOT(wirelessTimeout OR wirelessError),
-    isOpen := upperOpenSignal,
+    isOpen := upperOpenSignal OR (config.upperOpenRangeLimitByTime AND upperOpenRangeLimitFlag),
     isClosed := upperClosedSignal);
 statuses.healthStatus(
     isGood := (NOT(wirelessTimeout OR wirelessError)) AND (processes.reset.statuses.healthStatus.isGood AND (processes.open.statuses.healthStatus.isGood AND (processes.close.statuses.healthStatus.isGood AND (processes.stop.statuses.healthStatus.isGood AND (processes.lowerOpen.statuses.healthStatus.isGood AND (processes.lowerClose.statuses.healthStatus.isGood AND (processes.upperOpen.statuses.healthStatus.isGood AND processes.upperClose.statuses.healthStatus.isGood))))))),

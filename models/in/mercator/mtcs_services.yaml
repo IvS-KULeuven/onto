@@ -8,6 +8,8 @@
 !IMPORT models/in/mercator/mtcs_common.yaml:
 !IMPORT models/in/mercator/mtcs_tmc.yaml:
 
+!VERSION mtcs:
+
 
 ########################################################################################################################
 # Define the containing PLC library
@@ -364,17 +366,20 @@
           ambientTemperature:       { type: t_uint16, initial: !UINT16 272, comment: "Ambient temperature" }
           waterPumpChassisTemp:     { type: t_uint16, initial: !UINT16 274, comment: "Water Pump chassis temperature" }        
           #Logical Area 2. Digital input. Read only. Words 16bits
-          digitalInputStatus1:      { type: t_uint16, initial: !UINT16 512, comment: "Flow switch status" }
-          digitalInputStatus2:      { type: t_uint16, initial: !UINT16 513, comment: "Digital input status 2" }
-          digitalInputStatus3:      { type: t_uint16, initial: !UINT16 514, comment: "Digital input status 3" }
-          digitalInputStatus4:      { type: t_uint16, initial: !UINT16 515, comment: "Digital input status 4" }
+          digitalInputStatus1:      { type: t_uint16, initial: !UINT16 512, comment: "Digital input status 1st" }
+          digitalInputStatus2:      { type: t_uint16, initial: !UINT16 513, comment: "Digital input status 2nd" }
+          digitalInputStatus3:      { type: t_uint16, initial: !UINT16 514, comment: "Digital input status 3rd" }
+          digitalInputStatus4:      { type: t_uint16, initial: !UINT16 515, comment: "Digital input status 4th" }
           #Logical Area 3. Data. R/W. Words 16bits
           setpoint:                 { type: t_uint16, initial: !UINT16 768, comment: "Setpoint parameter address" }
           minSetpoint:              { type: t_uint16, initial: !UINT16 769, comment: "Minimal Setpoint parameter address" }
           maxSetpoint:              { type: t_uint16, initial: !UINT16 770, comment: "Maximal Setpoint parameter address" }
           trippingBand:             { type: t_uint16, initial: !UINT16 774, comment: "Tripping Band parameter address" }
+          #Logical Area 4. Configuration. R/W. Words 16bits
+          FanCondensingCircuits:    { type: t_uint16, initial: !UINT16 959, comment: "Number of fan condensing circuits parameter address" }
           #Logical Area 5. Unit Status. R/W. Words 16bits
           unitStatus:               { type: t_uint16, initial: !UINT16 1280, comment: "Unit Status parameter address" }
+          unitCircuitsStatus:       { type: t_uint16, initial: !UINT16 1281, comment: "Unit Circuits status parameter address" }
           unitControllerReset:      { type: t_uint16, initial: !UINT16 1282, comment: "Unit Controlelr reset parameter address" }
           #Logical Area 8. Digital output status. Read only. Words 16bits
           relayOutputStatus1:       { type: t_uint16, initial: !UINT16 2048, comment: "Relay output status 1" }
@@ -603,6 +608,22 @@
           compressor2Mask: { type: t_uint16, initial: !UINT16 int(0b0001000000010000) , comment: "Word to check if Compressor2 is ON" }
           compressor3Mask: { type: t_uint16, initial: !UINT16 int(0b0000100000001000) , comment: "Word to check if Compressor3 is ON" }
           compressor4Mask: { type: t_uint16, initial: !UINT16 int(0b0000010000000100) , comment: "Word to check if Compressor4 is ON" }
+          circ1CondFanOverMask: { type: t_uint16, initial: !UINT16 int(0b1000000000000000), comment: "Word to check if Circ1 condensing fan overload" }
+          circ2CondFanOverMask: { type: t_uint16, initial: !UINT16 int(0b0000000000000001), comment: "Word to check if Circ2 condensing fan overload" }
+          CondFanComOverMask:   { type: t_uint16, initial: !UINT16 int(0b0000000000000010), comment: "Word to check if Circ2 condensing fan overload" }
+          #Words for masks and commands over Unit Status II register. Words 16bits
+          disableCirc1Mask: { type: t_uint16, initial: !UINT16 int(0b0100000001000000), comment: "Word to disable Circuit 1" }
+          disableCirc2Mask: { type: t_uint16, initial: !UINT16 int(0b1000000010000000), comment: "Word to disable Circuit 2" }
+          disableComp1Mask: { type: t_uint16, initial: !UINT16 int(0b0000000100000001), comment: "Word to disable Compressor 1" }
+          disableComp2Mask: { type: t_uint16, initial: !UINT16 int(0b0000001000000010), comment: "Word to disable Compressor 2" }
+          disableComp3Mask: { type: t_uint16, initial: !UINT16 int(0b0000010000000100), comment: "Word to disable Compressor 3" }
+          disableComp4Mask: { type: t_uint16, initial: !UINT16 int(0b0000100000001000), comment: "Word to disable Compressor 4" }
+          enableCirc1Mask:  { type: t_uint16, initial: !UINT16 int(0b0000000001000000), comment: "Word to enable Circuit 1" }
+          enableCirc2Mask:  { type: t_uint16, initial: !UINT16 int(0b0000000010000000), comment: "Word to enable Circuit 2" }
+          enableComp1Mask:  { type: t_uint16, initial: !UINT16 int(0b0000000000000001), comment: "Word to enable Compressor 1" }
+          enableComp2Mask:  { type: t_uint16, initial: !UINT16 int(0b0000000000000010), comment: "Word to enable Compressor 2" }
+          enableComp3Mask:  { type: t_uint16, initial: !UINT16 int(0b0000000000000100), comment: "Word to enable Compressor 3" }
+          enableComp4Mask:  { type: t_uint16, initial: !UINT16 int(0b0000000000001000), comment: "Word to enable Compressor 4" }
           #Masks for bitwise checking in 16 bit registers
           bit0:            { type: t_uint16, initial: !UINT16 int(0b0000000000000001) , comment: "Word mask to check bit0" }
           bit1:            { type: t_uint16, initial: !UINT16 int(0b0000000000000010) , comment: "Word mask to check bit1" }
@@ -1369,9 +1390,13 @@
           minSetpoint          : { type: mtcs_common.QuantityValue, comment: "The minimun setpoint" }
           maxSetpoint          : { type: mtcs_common.QuantityValue, comment: "The maximal setpoint" }
           trippingBand         : { type: mtcs_common.QuantityValue, comment: "The tripping band" }
+          #Logical Area 4. Configuration. R/W. Words 16bits
+          condensingFanCircuits : { type: mtcs_common.QuantityValue, comment: "Condensing Fan circuits" }
+          condensingFanOpStatus : { type: t_bool, comment: "Condensing Fan Op status True=Single / False=Dual" }
           #Logical Area 5. Unit Status. R/W. Words 16bits
           unitStatus           : { type: mtcs_common.QuantityValue, comment: "The unit status" }
           unitResetRegister    : { type: mtcs_common.QuantityValue, comment: "The unit reset register" }
+          unitStatusII         : { type: mtcs_common.QuantityValue, comment: "The unit status II" }
           #Logical Area 14. Load hours. R/W. Words 16bits
           hoursCompressor1     : { type: mtcs_common.QuantityValue, comment: "Operation hours of compressor 1" }
           hoursCompressor2     : { type: mtcs_common.QuantityValue, comment: "Operation hours of compressor 2" }
@@ -1396,6 +1421,9 @@
           digitalInputStatus2  : { type: t_bool, comment: "Digital input status 2" }
           digitalInputStatus3  : { type: t_bool, comment: "Digital input status 3" }
           digitalInputStatus4  : { type: t_bool, comment: "Digital input status 4" }
+          circ1CondFanOverStatus : { type: t_bool, comment: "Circ1 condensing fan overload. Digital input status 15" }
+          circ2CondFanOverStatus : { type: t_bool, comment: "Circ2 condensing fan overload. Digital input status 16" }
+          condFanComOverStatus   : { type: t_bool, comment: "Condensing fan common overload. Digital input status 17" }
           #Logical Area 8. Digital output status. Read only. Words 16bits
           alarmRelayOutput     : { type: t_bool, comment: "Alarm output relay output status 1" }
           waterPumpRelayOutput : { type: t_bool, comment: "Water pump output relay output status 1" }
@@ -1405,6 +1433,13 @@
           compressorStatus2    : { type: t_bool, comment: "Compressor 2 status. ON/OFF" }
           compressorStatus3    : { type: t_bool, comment: "Compressor 3 status. ON/OFF" }
           compressorStatus4    : { type: t_bool, comment: "Compressor 4 status. ON/OFF" }
+          #Logical Area 5. Unit Status II. Words 16bits
+          circuit1Disabled      : { type: t_bool, comment: "Circuit 1 disabled" }
+          circuit2Disabled      : { type: t_bool, comment: "Circuit 2 disabled" }
+          compressor1Disabled   : { type: t_bool, comment: "Compressor 1 disabled" }
+          compressor2Disabled   : { type: t_bool, comment: "Compressor 2 disabled" }
+          compressor3Disabled   : { type: t_bool, comment: "Compressor 3 disabled" }
+          compressor4Disabled   : { type: t_bool, comment: "Compressor 4 disabled" }
           #Logical Area 9. Analog output status. Read only. Words 16bits
           fanCondenser1Output  : { type: mtcs_common.QuantityValue, comment: "Fan condenser 1 analog output 1" }
           fanCondenser2Output  : { type: mtcs_common.QuantityValue, comment: "Fan condenser 2 analog output 2" }
@@ -1440,6 +1475,20 @@
           switchChillerOFF          : { type: mtcs_common.Process, comment: "Switch OFF the Chiller"}
           resetUnitController       : { type: mtcs_common.Process, comment: "Reset Unit controller of the Chiller"}
           resetAlarms               : { type: mtcs_common.Process, comment: "Reset all activated alarms"}
+          disableCircuit1           : { type: mtcs_common.Process, comment: "Disable the Circuit 1"}
+          disableCircuit2           : { type: mtcs_common.Process, comment: "Disable the Circuit 2"}
+          enableCircuit1            : { type: mtcs_common.Process, comment: "Enable the Circuit 1"}
+          enableCircuit2            : { type: mtcs_common.Process, comment: "Enable the Circuit 2"}
+          disableCompressor1        : { type: mtcs_common.Process, comment: "Disable the Compressor 1"}
+          disableCompressor2        : { type: mtcs_common.Process, comment: "Disable the Compressor 2"}
+          disableCompressor3        : { type: mtcs_common.Process, comment: "Disable the Compressor 3"}
+          disableCompressor4        : { type: mtcs_common.Process, comment: "Disable the Compressor 4"}
+          enableCompressor1         : { type: mtcs_common.Process, comment: "Enable the Compressor 1"}
+          enableCompressor2         : { type: mtcs_common.Process, comment: "Enable the Compressor 2"}
+          enableCompressor3         : { type: mtcs_common.Process, comment: "Enable the Compressor 3"}
+          enableCompressor4         : { type: mtcs_common.Process, comment: "Enable the Compressor 4"}
+          setCondFansSingleOp       : { type: mtcs_common.Process, comment: "Set Condensing Fans to Single operation"}
+          setCondFansDualOp         : { type: mtcs_common.Process, comment: "Set Condensing Fans to Dual operation"}
       statuses:
           healthStatus                      : { type: mtcs_common.HealthStatus        , comment: "Is the data valid and within range?" }
           alarmStatusWatertemperature       : { type: mtcs_common.HiHiLoLoAlarmStatus , comment: "Alarm status about Water temperature"}
@@ -1464,6 +1513,14 @@
                                           statuses.alarmStatusWaterPumpSupervisor.loLo ] ]
               hasWarning   : !OR [ !NOT [ chillerOn ],
                                     flowSwitchStatus,
+                                    circ1CondFanOverStatus,
+                                    circ2CondFanOverStatus,
+                                    circuit1Disabled,
+                                    circuit2Disabled,
+                                    compressor1Disabled,
+                                    compressor2Disabled,
+                                    compressor3Disabled,
+                                    compressor4Disabled,
                                     statuses.alarmStatusWatertemperature.hi,
                                     statuses.alarmStatusWatertemperature.lo,
                                     statuses.alarmStatusWaterPumpSupervisor.hi,
@@ -1481,6 +1538,36 @@
           switchChillerOFF:
               isEnabled    : isEnabled
           resetAlarms:
+              isEnabled    : isEnabled
+          resetUnitController:
+              isEnabled    : isEnabled
+          disableCircuit1:
+              isEnabled    : isEnabled
+          disableCircuit2:
+              isEnabled    : isEnabled
+          enableCircuit1:
+              isEnabled    : isEnabled
+          enableCircuit2:
+              isEnabled    : isEnabled
+          disableCompressor1:
+              isEnabled    : isEnabled
+          disableCompressor2:
+              isEnabled    : isEnabled
+          disableCompressor3:
+              isEnabled    : isEnabled
+          disableCompressor4:
+              isEnabled    : isEnabled
+          enableCompressor1:
+              isEnabled    : isEnabled
+          enableCompressor2:
+              isEnabled    : isEnabled
+          enableCompressor3:
+              isEnabled    : isEnabled
+          enableCompressor4:
+              isEnabled    : isEnabled
+          setCondFansSingleOp:
+              isEnabled    : isEnabled
+          setCondFansDualOp:
               isEnabled    : isEnabled
   
   

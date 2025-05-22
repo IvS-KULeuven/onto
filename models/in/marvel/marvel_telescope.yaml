@@ -4,8 +4,8 @@
 #                                                                                                                      #
 ########################################################################################################################
 
+!VERSION marvel:
 
-!IMPORT models/in/mercator/mtcs_common.yaml:
 !IMPORT models/in/marvel/marvel_common.yaml:
 
 
@@ -86,7 +86,7 @@
   # TelescopeSlewToAziEleProcess
   ########################################################################################################################
   !PROCESS TelescopeSlewToAziEleProcess:
-      extends: mtcs_common.BaseProcess
+      extends: marvel_common.BaseProcess
       arguments:
           azimuth               : { type: t_double                            , comment: "Azimuth, in degrees" }
           elevation             : { type: t_double                            , comment: "Elevation, in degrees" }
@@ -96,7 +96,7 @@
   # TelescopeSetTrackingProcess
   ########################################################################################################################
   !PROCESS TelescopeSetTrackingProcess:
-      extends: mtcs_common.BaseProcess
+      extends: marvel_common.BaseProcess
       arguments:
           tracking              : { type: t_bool                              , comment: "Switch tracking on (TRUE) or off (FALSE)" }
   
@@ -105,7 +105,7 @@
   # TelescopeMoveKnownPositionProcess
   ########################################################################################################################
   !PROCESS TelescopeMoveKnownPositionProcess:
-      extends: mtcs_common.BaseProcess
+      extends: marvel_common.BaseProcess
       arguments:
           name        : { type: t_string                        , comment: "Name of the position to move to"}
   
@@ -114,7 +114,7 @@
   # TelescopeMoveProcess
   ########################################################################################################################
   !PROCESS TelescopeMoveProcess:
-      extends: mtcs_common.BaseProcess
+      extends: marvel_common.BaseProcess
       arguments:
           position               : { type: t_double                            , comment: "New position" }
 
@@ -124,8 +124,8 @@
   
   !STATEMACHINE Telescope:
       references:
-          operatorStatus                  : { type: mtcs_common.OperatorStatus              , comment: "Shared operator status" }
-          activityStatus                  : { type: mtcs_common.ActivityStatus              , comment: "Shared activity status"}
+          operatorStatus                  : { type: marvel_common.OperatorStatus              , comment: "Shared operator status" }
+          activityStatus                  : { type: marvel_common.ActivityStatus              , comment: "Shared activity status"}
           config                          : { type: TelescopeConfig                         , comment: "Active configuration of the telescope" }
           longitude                       : { type: t_double }
           latitude                        : { type: t_double }
@@ -135,36 +135,36 @@
           isSlewing                       : { type: t_bool                                  , comment: "True if the telescope is slewing" }
           isTracking                      : { type: t_bool                                  , comment: "True if the telescope is tracking" }
           # actual position
-          actAlpha                        : { type: mtcs_common.AngularPosition             , comment: "The actual alpha coordinate (Right Ascention)" , expand: false}
-          actDelta                        : { type: mtcs_common.AngularPosition             , comment: "The actual delta coordinate (Declination)" , expand: false }
-          actAzi                          : { type: mtcs_common.AngularPosition             , comment: "The actual azimuth" , expand: false}
-          actEle                          : { type: mtcs_common.AngularPosition             , comment: "The actual elevation" , expand: false }
-          targetAlpha                     : { type: mtcs_common.AngularPosition             , comment: "The target alpha coordinate (Right Ascention)" , expand: false}
-          targetDelta                     : { type: mtcs_common.AngularPosition             , comment: "The target delta coordinate (Declination)" , expand: false }
+          actAlpha                        : { type: marvel_common.AngularPosition             , comment: "The actual alpha coordinate (Right Ascention)" , expand: false}
+          actDelta                        : { type: marvel_common.AngularPosition             , comment: "The actual delta coordinate (Declination)" , expand: false }
+          actAzi                          : { type: marvel_common.AngularPosition             , comment: "The actual azimuth" , expand: false}
+          actEle                          : { type: marvel_common.AngularPosition             , comment: "The actual elevation" , expand: false }
+          targetAlpha                     : { type: marvel_common.AngularPosition             , comment: "The target alpha coordinate (Right Ascention)" , expand: false}
+          targetDelta                     : { type: marvel_common.AngularPosition             , comment: "The target delta coordinate (Declination)" , expand: false }
           isAtKnownPosition               : { type: t_bool                                  , comment: "True if the telescope is at a known position" }
           actualKnownPositionName         : { type: t_string                                , comment: "Name of the known position if isAtKnownPosition is True" }
       statuses:
-          initializationStatus            : { type: mtcs_common.InitializationStatus }
-          healthStatus                    : { type: mtcs_common.HealthStatus }
-          busyStatus                      : { type: mtcs_common.BusyStatus }
-          operatingStatus                 : { type: mtcs_common.OperatingStatus }
-          poweredStatus                   : { type: mtcs_common.PoweredStatus }
+          initializationStatus            : { type: marvel_common.InitializationStatus }
+          healthStatus                    : { type: marvel_common.HealthStatus }
+          busyStatus                      : { type: marvel_common.BusyStatus }
+          operatingStatus                 : { type: marvel_common.OperatingStatus }
+          poweredStatus                   : { type: marvel_common.PoweredStatus }
       processes:
-          initialize                      : { type: mtcs_common.Process                         , comment: "Start initializing" }
-          lock                            : { type: mtcs_common.Process                         , comment: "Lock the cover" }
-          unlock                          : { type: mtcs_common.Process                         , comment: "Unlock the cover" }
-          changeOperatingState            : { type: mtcs_common.ChangeOperatingStateProcess     , comment: "Change the operating state (e.g. AUTO, MANUAL, ...)" }
+          initialize                      : { type: marvel_common.Process                         , comment: "Start initializing" }
+          lock                            : { type: marvel_common.Process                         , comment: "Lock the cover" }
+          unlock                          : { type: marvel_common.Process                         , comment: "Unlock the cover" }
+          changeOperatingState            : { type: marvel_common.ChangeOperatingStateProcess     , comment: "Change the operating state (e.g. AUTO, MANUAL, ...)" }
           slewToCoordinates               : { type: marvel_common.PointAlphaDeltaProcess        , comment: "Slew to the given equatorial coordinates" }
           slewToAziEle                    : { type: TelescopeSlewToAziEleProcess                , comment: "Slew to the given horizontal coordinates" }
-          abortSlew                       : { type: mtcs_common.Process                         , comment: "Stop the slewing" }
-          reset                           : { type: mtcs_common.Process                         , comment: "Reset any errors" }
-          powerOn                         : { type: mtcs_common.Process                         , comment: "Power on the axes" }
-          powerOff                        : { type: mtcs_common.Process                         , comment: "Power off the axes" }
+          abortSlew                       : { type: marvel_common.Process                         , comment: "Stop the slewing" }
+          reset                           : { type: marvel_common.Process                         , comment: "Reset any errors" }
+          powerOn                         : { type: marvel_common.Process                         , comment: "Power on the axes" }
+          powerOff                        : { type: marvel_common.Process                         , comment: "Power off the axes" }
           moveKnownPosition               : { type: TelescopeMoveKnownPositionProcess           , comment: "Move the telescope to the given known position" }
           setTracking                     : { type: TelescopeSetTrackingProcess                 , comment: "Power on the axes" }
           moveM2                          : { type: TelescopeMoveProcess                        , comment: "Move M2 to the given position in mm"}
-          openCover                       : { type: mtcs_common.Process                         , comment: "Open the telescope cover" }
-          closeCover                      : { type: mtcs_common.Process                         , comment: "Close the telescope cover" }
+          openCover                       : { type: marvel_common.Process                         , comment: "Open the telescope cover" }
+          closeCover                      : { type: marvel_common.Process                         , comment: "Close the telescope cover" }
       calls:
           # processes
           initialize:

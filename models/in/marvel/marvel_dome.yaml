@@ -4,8 +4,8 @@
 #                                                                        #
 ##########################################################################
 
+!VERSION marvel:
 
-!IMPORT models/in/mercator/mtcs_common.yaml:
 !IMPORT models/in/marvel/marvel_common.yaml:
 !IMPORT models/in/marvel/marvel_services.yaml:
 !IMPORT models/in/marvel/marvel_shutterplc.yaml:
@@ -146,7 +146,7 @@
   # DomeMoveKnownPositionProcess
   ########################################################################################################################
   !PROCESS DomeMoveKnownPositionProcess:
-      extends: mtcs_common.BaseProcess
+      extends: marvel_common.BaseProcess
       arguments:
           name        : { type: t_string  , comment: "Name of the position to move to"}
   
@@ -155,7 +155,7 @@
   # DomeMoveProcess
   ########################################################################################################################
   !PROCESS DomeMoveProcess:
-      extends: mtcs_common.BaseProcess
+      extends: marvel_common.BaseProcess
       arguments:
           position     : { type: t_double, comment: "New absolute or relative position value in degrees" }
   
@@ -167,22 +167,22 @@
   
   !STATEMACHINE Dome:
     references:
-      operatorStatus              : { type: mtcs_common.OperatorStatus        , comment: "Reference to the operator (observer/tech)"}
-      activityStatus              : { type: mtcs_common.ActivityStatus        , comment: "Shared activity status"}
+      operatorStatus              : { type: marvel_common.OperatorStatus        , comment: "Reference to the operator (observer/tech)"}
+      activityStatus              : { type: marvel_common.ActivityStatus        , comment: "Shared activity status"}
       services                    : { type: marvel_services.Services          , comment: "Shared services", expand: false}
       config                      : { type: DomeConfig                        , comment: "Active configuration of the cover" }
-      telescopeAzi                : { type: mtcs_common.AngularPosition       , comment: "Azimuth target position of the telescope Axes"}
+      telescopeAzi                : { type: marvel_common.AngularPosition       , comment: "Azimuth target position of the telescope Axes"}
     variables_read_only:
       isTrackingTelescope         : { type: t_bool                            , comment: "True if the dome is tracking the telescope" }
       isAtKnownPosition           : { type: t_bool                            , comment: "True if the dome is at a known position" }
       actualKnownPositionName     : { type: t_string                          , comment: "Name of the known position if isAtKnownPosition is True" }
-      telescopeDistance           : { type: mtcs_common.AngularPosition       , comment: "Distance to the telescope azi"}
+      telescopeDistance           : { type: marvel_common.AngularPosition       , comment: "Distance to the telescope azi"}
     parts:
       shutter:
         comment                   : "Shutter mechanism"
         arguments:
           initializationStatus    : { comment: "Dome initialization status (initialized/initializing/...)" }
-          operatorStatus          : { comment: "MTCS operator (observer/tech)" }
+          operatorStatus          : { comment: "marvel operator (observer/tech)" }
           operatingStatus         : { comment: "Dome operating status (manual/auto)" }
           activityStatus          : { comment: "Shared activity status"}
           config                  : { comment: "The shutter config" }
@@ -190,25 +190,25 @@
         attributes:
           statuses:
             attributes:
-              healthStatus        : { type: mtcs_common.HealthStatus }
-              busyStatus          : { type: mtcs_common.BusyStatus }
+              healthStatus        : { type: marvel_common.HealthStatus }
+              busyStatus          : { type: marvel_common.BusyStatus }
       rotation:
         comment                   : "Rotation mechanism"
         arguments:
           initializationStatus    : { comment: "Dome initialization status (initialized/initializing/...)"}
-          operatorStatus          : { comment: "MTCS operator (observer/tech)"}
+          operatorStatus          : { comment: "marvel operator (observer/tech)"}
           operatingStatus         : { comment: "Dome operating status (manual/auto)"}
           config                  : { comment: "The rotation config"}
         attributes:
           statuses:
             attributes:
-              healthStatus        : { type: mtcs_common.HealthStatus }
-              busyStatus          : { type: mtcs_common.BusyStatus }
+              healthStatus        : { type: marvel_common.HealthStatus }
+              busyStatus          : { type: marvel_common.BusyStatus }
       # light:
       #   comment                   : "Light in dome"
       #   arguments:
       #     initializationStatus    : { comment: "Dome initialization status (initialized/initializing/...)" }
-      #     operatorStatus          : { comment: "MTCS operator (observer/tech)" }
+      #     operatorStatus          : { comment: "marvel operator (observer/tech)" }
       #     operatingStatus         : { comment: "Dome operating status (manual/auto)" }
       #     activityStatus          : { comment: "Shared activity status"}
       #     config                  : { comment: "The light config" }
@@ -216,30 +216,30 @@
       #   attributes:
       #     statuses:
       #       attributes:
-      #         healthStatus        : { type: mtcs_common.HealthStatus }
-      #         busyStatus          : { type: mtcs_common.BusyStatus }      
+      #         healthStatus        : { type: marvel_common.HealthStatus }
+      #         busyStatus          : { type: marvel_common.BusyStatus }      
       # io:
       #   comment                   : "EtherCAT devices"
       #   attributes:
       #     statuses:
       #       attributes:
-      #         healthStatus        : { type: mtcs_common.HealthStatus }
+      #         healthStatus        : { type: marvel_common.HealthStatus }
     statuses:
-      initializationStatus        : { type: mtcs_common.InitializationStatus }
-      healthStatus                : { type: mtcs_common.HealthStatus }
-      busyStatus                  : { type: mtcs_common.BusyStatus }
-      operatingStatus             : { type: mtcs_common.OperatingStatus }
+      initializationStatus        : { type: marvel_common.InitializationStatus }
+      healthStatus                : { type: marvel_common.HealthStatus }
+      busyStatus                  : { type: marvel_common.BusyStatus }
+      operatingStatus             : { type: marvel_common.OperatingStatus }
     processes:
-      initialize                  : { type: mtcs_common.Process                     , comment: "Start initializing" }
-      changeOperatingState        : { type: mtcs_common.ChangeOperatingStateProcess , comment: "Change the operating state (e.g. AUTO, MANUAL, ...)" }
-      lock                        : { type: mtcs_common.Process                     , comment: "Lock the cover" }
-      unlock                      : { type: mtcs_common.Process                     , comment: "Unlock the cover" }
-      reset                       : { type: mtcs_common.Process                     , comment: "Reset any errors" }
-      syncWithAxes                : { type: mtcs_common.Process                     , comment: "Synchronize the dome once with the axes" }
-      startTrackingTelescope      : { type: mtcs_common.Process                     , comment: "Start tracking the telescope azimuth" }
-      stopTrackingTelescope       : { type: mtcs_common.Process                     , comment: "Stop tracking the telescope" }
+      initialize                  : { type: marvel_common.Process                     , comment: "Start initializing" }
+      changeOperatingState        : { type: marvel_common.ChangeOperatingStateProcess , comment: "Change the operating state (e.g. AUTO, MANUAL, ...)" }
+      lock                        : { type: marvel_common.Process                     , comment: "Lock the cover" }
+      unlock                      : { type: marvel_common.Process                     , comment: "Unlock the cover" }
+      reset                       : { type: marvel_common.Process                     , comment: "Reset any errors" }
+      syncWithAxes                : { type: marvel_common.Process                     , comment: "Synchronize the dome once with the axes" }
+      startTrackingTelescope      : { type: marvel_common.Process                     , comment: "Start tracking the telescope azimuth" }
+      stopTrackingTelescope       : { type: marvel_common.Process                     , comment: "Stop tracking the telescope" }
       moveAbsolute                : { type: DomeMoveProcess                         , comment: "Move absolute" }
-      stop                        : { type: mtcs_common.Process                     , comment: "Stop the rotation movement and/or tracking" }
+      stop                        : { type: marvel_common.Process                     , comment: "Stop the rotation movement and/or tracking" }
       moveKnownPosition           : { type: DomeMoveKnownPositionProcess            , comment: "Move the dome to the given known position" }
     calls:
       # processes
@@ -334,7 +334,7 @@
   # DomeShutterSendProcess
   ########################################################################################################################
   !PROCESS DomeShutterSendProcess:
-      extends: mtcs_common.BaseProcess
+      extends: marvel_common.BaseProcess
       arguments:
           command     : { type: marvel_shutterplc.DomeShutterCommands , comment: "Command to send" }
           arg         : { type: t_int16                               , comment: "The int16 argument belonging to the command (optional)" }
@@ -361,30 +361,30 @@
       adsWriteError            : { type: t_bool                            , comment: "True if the ADS Read communication to the shutter PLC is in error" }
       adsWriteErrorId          : { type: t_uint32                          , comment: "The error id if adsReadError is true" }
       # temperature sensor
-      temperature              : { type: mtcs_common.Temperature           , comment: "The measured temperature" }
-      temperatureHealthStatus  : { type: mtcs_common.HealthStatus          , comment: "The temperature sensor health" }
+      temperature              : { type: marvel_common.Temperature           , comment: "The measured temperature" }
+      temperatureHealthStatus  : { type: marvel_common.HealthStatus          , comment: "The temperature sensor health" }
       temperatureActualStatus  : { type: t_string                          , comment: "The temperature sensor status as a string" }
       # humidity sensor
-      humidity                 : { type: mtcs_common.Fraction              , comment: "The measured humidity" }
-      humidityHealthStatus     : { type: mtcs_common.HealthStatus          , comment: "The humidity sensor health" }
+      humidity                 : { type: marvel_common.Fraction              , comment: "The measured humidity" }
+      humidityHealthStatus     : { type: marvel_common.HealthStatus          , comment: "The humidity sensor health" }
       humidityActualStatus     : { type: t_string                          , comment: "The humidity sensor status as a string" }
-      humidityLimit            : { type: mtcs_common.Fraction              , comment: "The humidity limit" }
+      humidityLimit            : { type: marvel_common.Fraction              , comment: "The humidity limit" }
     references:
-      initializationStatus    : { type: mtcs_common.InitializationStatus    , comment: "Dome initialization status (initialized/initializing/...)"}
-      operatorStatus          : { type: mtcs_common.OperatorStatus          , comment: "MTCS operator (observer/tech)"}
-      operatingStatus         : { type: mtcs_common.OperatingStatus         , comment: "Dome operating status (manual/auto)"}
-      activityStatus          : { type: mtcs_common.ActivityStatus          , comment: "Shared activity status"}
+      initializationStatus    : { type: marvel_common.InitializationStatus    , comment: "Dome initialization status (initialized/initializing/...)"}
+      operatorStatus          : { type: marvel_common.OperatorStatus          , comment: "marvel operator (observer/tech)"}
+      operatingStatus         : { type: marvel_common.OperatingStatus         , comment: "Dome operating status (manual/auto)"}
+      activityStatus          : { type: marvel_common.ActivityStatus          , comment: "Shared activity status"}
       config                  : { type: DomeShutterConfig                   , comment: "The shutter config"}
       services                : { type: marvel_services.Services            , comment: "Shared services", expand: false}
     statuses:
-      apertureStatus          : { type: mtcs_common.ApertureStatus          , comment: "Combined aperture status (i.e. of both panels)" }
+      apertureStatus          : { type: marvel_common.ApertureStatus          , comment: "Combined aperture status (i.e. of both panels)" }
       motionStatus            : { type: DomeShutterOpeningStatus            , comment: "Motion status" }
-      healthStatus            : { type: mtcs_common.HealthStatus            , comment: "Health status" }
-      busyStatus              : { type: mtcs_common.BusyStatus              , comment: "Busy status"  }
+      healthStatus            : { type: marvel_common.HealthStatus            , comment: "Health status" }
+      busyStatus              : { type: marvel_common.BusyStatus              , comment: "Busy status"  }
     processes:
-      open                    : { type: mtcs_common.Process                 , comment: "Open both panels" }
-      close                   : { type: mtcs_common.Process                 , comment: "Close both panels" }
-      stop                    : { type: mtcs_common.Process                 , comment: "Stop the panels" }
+      open                    : { type: marvel_common.Process                 , comment: "Open both panels" }
+      close                   : { type: marvel_common.Process                 , comment: "Close both panels" }
+      stop                    : { type: marvel_common.Process                 , comment: "Stop the panels" }
       send                    : { type: DomeShutterSendProcess              , comment: "Send a raw command" }
     calls:
       # processes
@@ -441,24 +441,24 @@
     typeOf: DomeParts.rotation
     variables_read_only:
       isSimulated                 : { type: t_bool                              , comment: "True if the rotation is being simulated" }
-      targetPos                   : { type: mtcs_common.AngularPosition         , comment: "Target azimuth"}
-      targetDistance              : { type: mtcs_common.AngularPosition         , comment: "Distance to the setpoint"}
-      actPos                      : { type: mtcs_common.AngularPosition         , comment: "The actual position (same as parts.masterAxis!)", expand: false }
-      actVelo                     : { type: mtcs_common.AngularVelocity         , comment: "The actual velocity (same as parts.masterAxis!)", expand: false }
+      targetPos                   : { type: marvel_common.AngularPosition         , comment: "Target azimuth"}
+      targetDistance              : { type: marvel_common.AngularPosition         , comment: "Distance to the setpoint"}
+      actPos                      : { type: marvel_common.AngularPosition         , comment: "The actual position (same as parts.masterAxis!)", expand: false }
+      actVelo                     : { type: marvel_common.AngularVelocity         , comment: "The actual velocity (same as parts.masterAxis!)", expand: false }
     references:
-      initializationStatus        : { type: mtcs_common.InitializationStatus    , comment: "Reference to the MTCS initialization status"}
-      operatorStatus              : { type: mtcs_common.OperatorStatus          , comment: "Reference to the MTCS operator status"}
-      operatingStatus             : { type: mtcs_common.OperatingStatus         , comment: "Reference to the Dome operating status"}
+      initializationStatus        : { type: marvel_common.InitializationStatus    , comment: "Reference to the marvel initialization status"}
+      operatorStatus              : { type: marvel_common.OperatorStatus          , comment: "Reference to the marvel operator status"}
+      operatingStatus             : { type: marvel_common.OperatingStatus         , comment: "Reference to the Dome operating status"}
       config                      : { type: DomeRotationConfig                  , comment: "Reference to the rotation config"}
     parts:
-      motorAxis                   : { type: mtcs_common.AngularAxis             , comment: "Motor axis" }
-      encoderAxis                 : { type: mtcs_common.AngularAxis             , comment: "Encoder axis" }
+      motorAxis                   : { type: marvel_common.AngularAxis             , comment: "Motor axis" }
+      encoderAxis                 : { type: marvel_common.AngularAxis             , comment: "Encoder axis" }
     statuses:
-      healthStatus                : { type: mtcs_common.HealthStatus            , comment: "Health status"}
-      busyStatus                  : { type: mtcs_common.BusyStatus              , comment: "Busy status" }
+      healthStatus                : { type: marvel_common.HealthStatus            , comment: "Health status"}
+      busyStatus                  : { type: marvel_common.BusyStatus              , comment: "Busy status" }
     processes:
-      reset                       : { type: mtcs_common.Process                 , comment: "Reset errors" }
-      stop                        : { type: mtcs_common.Process                 , comment: "Stop the rotation" }
+      reset                       : { type: marvel_common.Process                 , comment: "Reset errors" }
+      stop                        : { type: marvel_common.Process                 , comment: "Stop the rotation" }
       moveAbsolute                : { type: DomeMoveProcess                     , comment: "Move absolute" }
     calls:
       reset:
@@ -509,20 +509,20 @@
   
   
   #   references:
-  #     initializationStatus    : { type: mtcs_common.InitializationStatus    , comment: "Dome initialization status (initialized/initializing/...)"}
-  #     operatorStatus          : { type: mtcs_common.OperatorStatus          , comment: "MTCS operator (observer/tech)"}
-  #     operatingStatus         : { type: mtcs_common.OperatingStatus         , comment: "Dome operating status (manual/auto)"}
-  #     activityStatus          : { type: mtcs_common.ActivityStatus          , comment: "Shared activity status"}
+  #     initializationStatus    : { type: marvel_common.InitializationStatus    , comment: "Dome initialization status (initialized/initializing/...)"}
+  #     operatorStatus          : { type: marvel_common.OperatorStatus          , comment: "marvel operator (observer/tech)"}
+  #     operatingStatus         : { type: marvel_common.OperatingStatus         , comment: "Dome operating status (manual/auto)"}
+  #     activityStatus          : { type: marvel_common.ActivityStatus          , comment: "Shared activity status"}
   #     config                  : { type: DomeLightConfig                     , comment: "The light config"}
   #   parts:
-  #     switchOnRelay           : { type: mtcs_common.SimpleRelay             , comment: "Relay to switch on the light" }
+  #     switchOnRelay           : { type: marvel_common.SimpleRelay             , comment: "Relay to switch on the light" }
   #   statuses:
-  #     healthStatus            : { type: mtcs_common.HealthStatus            , comment: "Health status"}
-  #     busyStatus              : { type: mtcs_common.BusyStatus              , comment: "Busy status" }
+  #     healthStatus            : { type: marvel_common.HealthStatus            , comment: "Health status"}
+  #     busyStatus              : { type: marvel_common.BusyStatus              , comment: "Busy status" }
   #   processes:
-  #     reset                   : { type: mtcs_common.Process                 , comment: "Reset errors" }
-  #     switchLightOn           : { type: mtcs_common.Process                 , comment: "Turn On the light in the dome" }
-  #     switchLightOff          : { type: mtcs_common.Process                 , comment: "Turn Off the light in the dome" }
+  #     reset                   : { type: marvel_common.Process                 , comment: "Reset errors" }
+  #     switchLightOn           : { type: marvel_common.Process                 , comment: "Turn On the light in the dome" }
+  #     switchLightOff          : { type: marvel_common.Process                 , comment: "Turn Off the light in the dome" }
   #   calls:
   #     # processes
   #     reset:
@@ -555,14 +555,14 @@
   # !STATEMACHINE DomeIO:
   #   typeOf        : [ DomeParts.io ]
   #   statuses:
-  #     healthStatus  : { type: mtcs_common.HealthStatus   , comment: "Is the I/O in a healthy state?"  }
+  #     healthStatus  : { type: marvel_common.HealthStatus   , comment: "Is the I/O in a healthy state?"  }
   #   parts:
-  #     coupler     : { type: mtcs_common.EtherCatDevice , comment: "Coupler" }
-  #     slot1       : { type: mtcs_common.EtherCatDevice , comment: "Slot 1" }
-  #     slot2       : { type: mtcs_common.EtherCatDevice , comment: "Slot 2" }
-  #     slot3       : { type: mtcs_common.EtherCatDevice , comment: "Slot 3" }
-  #     slot4       : { type: mtcs_common.EtherCatDevice , comment: "Slot 4" }    
-  #     drive       : { type: mtcs_common.EtherCatDevice , comment: "Drive" }
+  #     coupler     : { type: marvel_common.EtherCatDevice , comment: "Coupler" }
+  #     slot1       : { type: marvel_common.EtherCatDevice , comment: "Slot 1" }
+  #     slot2       : { type: marvel_common.EtherCatDevice , comment: "Slot 2" }
+  #     slot3       : { type: marvel_common.EtherCatDevice , comment: "Slot 3" }
+  #     slot4       : { type: marvel_common.EtherCatDevice , comment: "Slot 4" }    
+  #     drive       : { type: marvel_common.EtherCatDevice , comment: "Drive" }
   #   calls:
   #     coupler:
   #       id        : !STRING "110A1"

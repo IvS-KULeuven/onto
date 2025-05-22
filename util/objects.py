@@ -2,6 +2,12 @@ from __future__ import annotations # needed to enable circular type hints.
 from util import logger
 
 
+class VERSION:
+    UNKNOWN = -1
+    MTCS = 0
+    MARVEL = 1
+
+
 class Object:
     """A generic object has a name, a parent and 0 or more children."""
 
