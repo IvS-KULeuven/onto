@@ -244,34 +244,34 @@
     calls:
       # processes
       initialize:
-        isEnabled                 : !AND [ !NOT [ statuses.initializationStatus.locked ],
-                                           !OR [ statuses.initializationStatus.shutdown,
-                                                 statuses.initializationStatus.initializingFailed,
-                                                 statuses.initializationStatus.initialized ] ]
+        isEnabled                 : !AND [ !NOT [ !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.locked ] ],
+                                           !OR [ !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.shutdown ],
+                                                 !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initializingFailed ],
+                                                 !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initialized ] ] ]
       lock:
-        isEnabled                 : operatorStatus.tech
+        isEnabled                 : !EQ [ operatorStatus, marvel_common.OperatorStatus.tech ]
       unlock:
-        isEnabled                 : !AND [ operatorStatus.tech,
-                                           statuses.initializationStatus.locked ]
+        isEnabled                 : !AND [ !EQ [ operatorStatus, marvel_common.OperatorStatus.tech ],
+                                           !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.locked ] ]
       changeOperatingState:
         isEnabled                 : !BOOL FALSE # we currently don't use AUTO/MANUAL
       reset:
-        isEnabled                 : !AND [ statuses.busyStatus.idle,
-                                           statuses.initializationStatus.initialized ]
+        isEnabled                 : !AND [ !EQ [ statuses.busyStatus, marvel_common.BusyStatus.idle ],
+                                           !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initialized ] ]
       stop:
-        isEnabled                 : !OR [ statuses.busyStatus.busy, isTrackingTelescope,  operatorStatus.tech ]
+        isEnabled                 : !OR [ !EQ [ statuses.busyStatus, marvel_common.BusyStatus.busy ], isTrackingTelescope,  !EQ [ operatorStatus, marvel_common.OperatorStatus.tech ] ]
       moveAbsolute:
-        isEnabled                 : statuses.initializationStatus.initialized
+        isEnabled                 : !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initialized ]
       startTrackingTelescope:
         isEnabled                 : !NOT [isTrackingTelescope]
       stopTrackingTelescope:
         isEnabled                 : isTrackingTelescope
       moveKnownPosition:
-          isEnabled               : !AND [ statuses.initializationStatus.initialized,
-                                           statuses.busyStatus.idle ]
+          isEnabled               : !AND [ !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initialized ],
+                                           !EQ [ statuses.busyStatus, marvel_common.BusyStatus.idle ] ]
       syncWithAxes:
-          isEnabled               : !AND [ statuses.initializationStatus.initialized,
-                                           statuses.busyStatus.idle ]
+          isEnabled               : !AND [ !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initialized ],
+                                           !EQ [ statuses.busyStatus, marvel_common.BusyStatus.idle ] ]
       # parts
       shutter:
         initializationStatus      : statuses.initializationStatus
@@ -293,8 +293,9 @@
       #   config                    : config.light
       # statuses
       operatingStatus:
-        superState                : statuses.initializationStatus.initialized
+        superState                : !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initialized ]
       healthStatus:
+        superState                : !BOOL True
         isGood                    : !MTCS_SUMMARIZE_GOOD [ parts.shutter,
                                                            parts.rotation,
                                                            # parts.light,
@@ -319,6 +320,7 @@
                                                            processes.stop,
                                                            processes.moveKnownPosition ]
       busyStatus:
+        superState                : !BOOL TRUE
         isBusy                    : !MTCS_SUMMARIZE_BUSY [ parts.shutter,
                                                            parts.rotation,
                                                            processes.reset,
@@ -389,21 +391,22 @@
     calls:
       # processes
       stop:
-        isEnabled             : statuses.busyStatus.busy
+        isEnabled             : !EQ [ statuses.busyStatus, marvel_common.BusyStatus.busy ]
       open:
-        isEnabled             : !AND [ statuses.healthStatus.isGood, 
-                                       !NOT [ initializationStatus.locked ], 
-                                       !OR [ operatorStatus.tech, 
-                                             !AND [ statuses.busyStatus.idle, 
-                                                    initializationStatus.initialized, 
-                                                    !OR [ activityStatus.awake, activityStatus.moving ] ] ] ]
+        isEnabled             : !AND [ !EQ [statuses.healthStatus, marvel_common.HealthStatus.good], 
+                                       !NOT [ !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.locked ] ], 
+                                       !OR [ !EQ [ operatorStatus, marvel_common.OperatorStatus.tech ], 
+                                             !AND [ !EQ [ statuses.busyStatus, marvel_common.BusyStatus.idle ], 
+                                                    !EQ [ initializationStatus, marvel_common.InitializationStatus.initialized ], 
+                                                    !OR [ !EQ [ activityStatus, marvel_common.ActivityStatus.awake ], 
+                                                          !EQ [ activityStatus, marvel_common.ActivityStatus.moving ] ] ] ] ]
       close:
-        isEnabled             : !OR [ operatorStatus.tech,
-                                      !AND [ !NOT [ initializationStatus.locked ], 
-                                             statuses.busyStatus.idle, 
-                                             initializationStatus.initialized ] ]
+        isEnabled             : !OR [ !EQ [ operatorStatus, marvel_common.OperatorStatus.tech ],
+                                      !AND [ !NOT [ !EQ [ initializationStatus, marvel_common.InitializationStatus.locked ] ], 
+                                             !EQ [ statuses.busyStatus, marvel_common.BusyStatus.idle ], 
+                                             !EQ [ initializationStatus, marvel_common.InitializationStatus.initialized ] ] ]
       send:
-        isEnabled             : !OR [ operatorStatus.tech, isConnected ]
+        isEnabled             : !OR [ !EQ [ operatorStatus, marvel_common.OperatorStatus.tech ], isConnected ]
       # statuses
       apertureStatus:
         superState            : !NOT [ !OR [ !EQ [ dataRead.apertureState, marvel_shutterplc.DomeShutterApertureStates.UNKNOWN ], 
@@ -411,6 +414,7 @@
         isOpen                : !EQ [ dataRead.apertureState, marvel_shutterplc.DomeShutterApertureStates.FULLY_OPEN ]
         isClosed              : !EQ [ dataRead.apertureState, marvel_shutterplc.DomeShutterApertureStates.FULLY_CLOSED ]
       motionStatus:
+        superState            : !BOOL TRUE
         shutterValue          : dataRead.motionState
       healthStatus:
         superState            : !NOT [ statuses.initializationStatus.shutdown ]
@@ -423,7 +427,7 @@
                                       !MTCS_SUMMARIZE_WARN [ processes.open,
                                                              processes.close,
                                                              processes.stop ],
-                                      !AND [ statuses.busyStatus.idle, statuses.apertureStatus.partiallyOpen ]
+                                      !AND [ !EQ [ statuses.busyStatus, marvel_common.BusyStatus.idle ], statuses.apertureStatus.partiallyOpen ]
                                       #,
                                       #!NOT [ automaticOperation ] 
                                       ]
@@ -462,18 +466,19 @@
       moveAbsolute                : { type: DomeMoveProcess                     , comment: "Move absolute" }
     calls:
       reset:
-        isEnabled                 : statuses.busyStatus.idle
+        isEnabled                 : !EQ [ statuses.busyStatus, marvel_common.BusyStatus.idle ]
       stop:
-        isEnabled                 : !OR [ statuses.busyStatus.busy, operatorStatus.tech ]
+        isEnabled                 : !OR [ !EQ [ statuses.busyStatus, marvel_common.BusyStatus.busy ], !EQ [ operatorStatus, marvel_common.OperatorStatus.tech ] ]
       moveAbsolute:
-        isEnabled                 : statuses.busyStatus.idle
+        isEnabled                 : !EQ [ statuses.busyStatus, marvel_common.BusyStatus.idle ]
       # parts
       motorAxis:
-        isEnabled                 : !AND [ !NOT [ initializationStatus.locked ], operatorStatus.tech ]
+        isEnabled                 : !AND [ !NOT [ !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.locked ] ], !EQ [ operatorStatus, marvel_common.OperatorStatus.tech ] ]
       encoderAxis:
-        isEnabled                 : !AND [ !NOT [ initializationStatus.locked ], operatorStatus.tech ]
+        isEnabled                 : !AND [ !NOT [ !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.locked ] ], !EQ [ operatorStatus, marvel_common.OperatorStatus.tech ] ]
       # statuses
       healthStatus:
+        superState                : !BOOL TRUE
         isGood                    : !MTCS_SUMMARIZE_GOOD [ parts.motorAxis,
                                                            parts.encoderAxis,
                                                            processes.moveAbsolute,
@@ -486,6 +491,7 @@
                                                        processes.reset,
                                                        processes.stop ]
       busyStatus:
+        superState            : !BOOL TRUE
         isBusy                : !MTCS_SUMMARIZE_BUSY [ parts.motorAxis,
                                                        parts.encoderAxis,
                                                        processes.moveAbsolute,
@@ -533,7 +539,7 @@
   #       isEnabled             : !BOOL TRUE
   #     # relays
   #     switchOnRelay:
-  #       isEnabled             : operatorStatus.tech
+  #       isEnabled             : !EQ [ operatorStatus, marvel_common.OperatorStatus.tech ]
   #     # statuses
   #     healthStatus:
   #       isGood                : !MTCS_SUMMARIZE_GOOD [ processes.reset,

@@ -1089,31 +1089,28 @@
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">statuses.initializationStatus();
-statuses.healthStatus(
-    superState := NOT(statuses.initializationStatus.shutdown),
-    isGood := (NOT(statuses.initializationStatus.initializingFailed)) AND (isTelConnected AND (isAccConnected AND (processes.initialize.statuses.healthStatus.isGood AND (processes.changeOperatingState.statuses.healthStatus.isGood AND (processes.slewToCoordinates.statuses.healthStatus.isGood AND (processes.slewToAziEle.statuses.healthStatus.isGood AND (processes.abortSlew.statuses.healthStatus.isGood AND (processes.powerOn.statuses.healthStatus.isGood AND (processes.powerOff.statuses.healthStatus.isGood AND (processes.moveKnownPosition.statuses.healthStatus.isGood AND (processes.setTracking.statuses.healthStatus.isGood AND (processes.moveM2.statuses.healthStatus.isGood AND (processes.openCover.statuses.healthStatus.isGood AND processes.closeCover.statuses.healthStatus.isGood))))))))))))),
-    hasWarning := processes.initialize.statuses.healthStatus.hasWarning OR (processes.changeOperatingState.statuses.healthStatus.hasWarning OR (processes.slewToCoordinates.statuses.healthStatus.hasWarning OR (processes.slewToAziEle.statuses.healthStatus.hasWarning OR (processes.abortSlew.statuses.healthStatus.hasWarning OR (processes.powerOn.statuses.healthStatus.hasWarning OR (processes.powerOff.statuses.healthStatus.hasWarning OR (processes.moveKnownPosition.statuses.healthStatus.hasWarning OR (processes.setTracking.statuses.healthStatus.hasWarning OR (processes.moveM2.statuses.healthStatus.hasWarning OR (processes.openCover.statuses.healthStatus.hasWarning OR processes.closeCover.statuses.healthStatus.hasWarning)))))))))));
-statuses.busyStatus(
-    superState := NOT(statuses.initializationStatus.shutdown),
-    isBusy := processes.initialize.statuses.busyStatus.busy OR (processes.changeOperatingState.statuses.busyStatus.busy OR (processes.slewToCoordinates.statuses.busyStatus.busy OR (processes.slewToAziEle.statuses.busyStatus.busy OR (processes.abortSlew.statuses.busyStatus.busy OR (processes.powerOn.statuses.busyStatus.busy OR (processes.powerOff.statuses.busyStatus.busy OR (processes.moveKnownPosition.statuses.busyStatus.busy OR (processes.setTracking.statuses.busyStatus.busy OR (processes.moveM2.statuses.busyStatus.busy OR (processes.openCover.statuses.busyStatus.busy OR processes.closeCover.statuses.busyStatus.busy)))))))))));
-statuses.operatingStatus( superState := statuses.initializationStatus.initialized );
-statuses.poweredStatus();
-processes.initialize( isEnabled := (NOT(statuses.initializationStatus.locked)) AND (statuses.initializationStatus.shutdown OR (statuses.initializationStatus.initializingFailed OR statuses.initializationStatus.initialized)) );
-processes.lock( isEnabled := operatorStatus.tech );
-processes.unlock( isEnabled := operatorStatus.tech AND statuses.initializationStatus.locked );
-processes.changeOperatingState( isEnabled := statuses.busyStatus.idle AND (statuses.initializationStatus.initialized AND operatorStatus.tech) );
-processes.slewToCoordinates( isEnabled := statuses.initializationStatus.initialized AND (statuses.busyStatus.idle AND statuses.poweredStatus.enabled) );
-processes.slewToAziEle( isEnabled := statuses.initializationStatus.initialized AND (statuses.busyStatus.idle AND statuses.poweredStatus.enabled) );
-processes.abortSlew( isEnabled := statuses.initializationStatus.initialized );
-processes.reset( isEnabled := statuses.busyStatus.idle AND statuses.initializationStatus.initialized );
-processes.powerOn( isEnabled := (NOT(statuses.initializationStatus.locked)) AND (statuses.initializationStatus.initialized AND processes.powerOn.statuses.busyStatus.idle) );
-processes.powerOff( isEnabled := statuses.initializationStatus.initialized AND processes.powerOff.statuses.busyStatus.idle );
-processes.moveKnownPosition( isEnabled := statuses.initializationStatus.initialized AND (statuses.busyStatus.idle AND statuses.poweredStatus.enabled) );
-processes.setTracking( isEnabled := statuses.initializationStatus.initialized );
-processes.moveM2( isEnabled := statuses.initializationStatus.initialized AND processes.moveM2.statuses.busyStatus.idle );
-processes.openCover( isEnabled := statuses.initializationStatus.initialized AND processes.openCover.statuses.busyStatus.idle );
-processes.closeCover( isEnabled := statuses.initializationStatus.initialized AND processes.closeCover.statuses.busyStatus.idle );
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">statuses.healthStatus := F_HealthStatus(
+    superState := NOT(statuses.initializationStatus = InitializationStatus.shutdown),
+    isGood := (NOT(statuses.initializationStatus = InitializationStatus.initializingFailed)) AND (isTelConnected AND (isAccConnected AND ((processes.initialize.statuses.healthStatus = HealthStatus.good) AND ((processes.changeOperatingState.statuses.healthStatus = HealthStatus.good) AND ((processes.slewToCoordinates.statuses.healthStatus = HealthStatus.good) AND ((processes.slewToAziEle.statuses.healthStatus = HealthStatus.good) AND ((processes.abortSlew.statuses.healthStatus = HealthStatus.good) AND ((processes.powerOn.statuses.healthStatus = HealthStatus.good) AND ((processes.powerOff.statuses.healthStatus = HealthStatus.good) AND ((processes.moveKnownPosition.statuses.healthStatus = HealthStatus.good) AND ((processes.setTracking.statuses.healthStatus = HealthStatus.good) AND ((processes.moveM2.statuses.healthStatus = HealthStatus.good) AND ((processes.openCover.statuses.healthStatus = HealthStatus.good) AND (processes.closeCover.statuses.healthStatus = HealthStatus.good)))))))))))))),
+    hasWarning := (processes.initialize.statuses.healthStatus = HealthStatus.warning) OR ((processes.changeOperatingState.statuses.healthStatus = HealthStatus.warning) OR ((processes.slewToCoordinates.statuses.healthStatus = HealthStatus.warning) OR ((processes.slewToAziEle.statuses.healthStatus = HealthStatus.warning) OR ((processes.abortSlew.statuses.healthStatus = HealthStatus.warning) OR ((processes.powerOn.statuses.healthStatus = HealthStatus.warning) OR ((processes.powerOff.statuses.healthStatus = HealthStatus.warning) OR ((processes.moveKnownPosition.statuses.healthStatus = HealthStatus.warning) OR ((processes.setTracking.statuses.healthStatus = HealthStatus.warning) OR ((processes.moveM2.statuses.healthStatus = HealthStatus.warning) OR ((processes.openCover.statuses.healthStatus = HealthStatus.warning) OR (processes.closeCover.statuses.healthStatus = HealthStatus.warning))))))))))));
+statuses.busyStatus := F_BusyStatus(
+    superState := NOT(statuses.initializationStatus = InitializationStatus.shutdown),
+    isBusy := (processes.initialize.statuses.busyStatus = BusyStatus.busy) OR ((processes.changeOperatingState.statuses.busyStatus = BusyStatus.busy) OR ((processes.slewToCoordinates.statuses.busyStatus = BusyStatus.busy) OR ((processes.slewToAziEle.statuses.busyStatus = BusyStatus.busy) OR ((processes.abortSlew.statuses.busyStatus = BusyStatus.busy) OR ((processes.powerOn.statuses.busyStatus = BusyStatus.busy) OR ((processes.powerOff.statuses.busyStatus = BusyStatus.busy) OR ((processes.moveKnownPosition.statuses.busyStatus = BusyStatus.busy) OR ((processes.setTracking.statuses.busyStatus = BusyStatus.busy) OR ((processes.moveM2.statuses.busyStatus = BusyStatus.busy) OR ((processes.openCover.statuses.busyStatus = BusyStatus.busy) OR (processes.closeCover.statuses.busyStatus = BusyStatus.busy))))))))))));
+processes.initialize( isEnabled := (NOT(statuses.initializationStatus = InitializationStatus.locked)) AND ((statuses.initializationStatus = InitializationStatus.shutdown) OR ((statuses.initializationStatus = InitializationStatus.initializingFailed) OR (statuses.initializationStatus = InitializationStatus.initialized))) );
+processes.lock( isEnabled := operatorStatus = OperatorStatus.tech );
+processes.unlock( isEnabled := (operatorStatus = OperatorStatus.tech) AND (statuses.initializationStatus = InitializationStatus.locked) );
+processes.changeOperatingState( isEnabled := (statuses.busyStatus = BusyStatus.idle) AND ((statuses.initializationStatus = InitializationStatus.initialized) AND (operatorStatus = OperatorStatus.tech)) );
+processes.slewToCoordinates( isEnabled := (statuses.initializationStatus = InitializationStatus.initialized) AND ((statuses.busyStatus = BusyStatus.idle) AND (statuses.poweredStatus = PoweredStatus.enabled)) );
+processes.slewToAziEle( isEnabled := (statuses.initializationStatus = InitializationStatus.initialized) AND ((statuses.busyStatus = BusyStatus.idle) AND (statuses.poweredStatus = PoweredStatus.enabled)) );
+processes.abortSlew( isEnabled := statuses.initializationStatus = InitializationStatus.initialized );
+processes.reset( isEnabled := (statuses.busyStatus = BusyStatus.idle) AND (statuses.initializationStatus = InitializationStatus.initialized) );
+processes.powerOn( isEnabled := (NOT(statuses.initializationStatus = InitializationStatus.locked)) AND ((statuses.initializationStatus = InitializationStatus.initialized) AND (processes.powerOn.statuses.busyStatus = BusyStatus.idle)) );
+processes.powerOff( isEnabled := (statuses.initializationStatus = InitializationStatus.initialized) AND (processes.powerOff.statuses.busyStatus = BusyStatus.idle) );
+processes.moveKnownPosition( isEnabled := (statuses.initializationStatus = InitializationStatus.initialized) AND ((statuses.busyStatus = BusyStatus.idle) AND (statuses.poweredStatus = PoweredStatus.enabled)) );
+processes.setTracking( isEnabled := statuses.initializationStatus = InitializationStatus.initialized );
+processes.moveM2( isEnabled := (statuses.initializationStatus = InitializationStatus.initialized) AND (processes.moveM2.statuses.busyStatus = BusyStatus.idle) );
+processes.openCover( isEnabled := (statuses.initializationStatus = InitializationStatus.initialized) AND (processes.openCover.statuses.busyStatus = BusyStatus.idle) );
+processes.closeCover( isEnabled := (statuses.initializationStatus = InitializationStatus.initialized) AND (processes.closeCover.statuses.busyStatus = BusyStatus.idle) );
 </xhtml>
           </ST>
         </body>
@@ -1875,8 +1872,8 @@ SUPER^();
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.azimuth := azimuth;
 THIS^.get.elevation := elevation;
-THIS^.statuses.busyStatus( isBusy := TRUE );
-THIS^.statuses.healthStatus( isGood := TRUE );
+THIS^.statuses.busyStatus := BusyStatus.busy;
+THIS^.statuses.healthStatus := HealthStatus.good;
 </xhtml>
                 </ST>
               </body>
@@ -1930,7 +1927,7 @@ THIS^.statuses.healthStatus( isGood := TRUE );
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF THIS^.statuses.enabledStatus.enabled THEN
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF THIS^.statuses.enabledStatus = EnabledStatus.enabled THEN
     request := RequestResults.ACCEPTED;
     THIS^.start(
         azimuth := azimuth,
@@ -2038,8 +2035,8 @@ SUPER^();
               <body>
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.tracking := tracking;
-THIS^.statuses.busyStatus( isBusy := TRUE );
-THIS^.statuses.healthStatus( isGood := TRUE );
+THIS^.statuses.busyStatus := BusyStatus.busy;
+THIS^.statuses.healthStatus := HealthStatus.good;
 </xhtml>
                 </ST>
               </body>
@@ -2080,7 +2077,7 @@ THIS^.statuses.healthStatus( isGood := TRUE );
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF THIS^.statuses.enabledStatus.enabled THEN
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF THIS^.statuses.enabledStatus = EnabledStatus.enabled THEN
     request := RequestResults.ACCEPTED;
     THIS^.start( tracking := tracking );
 ELSE
@@ -2186,8 +2183,8 @@ SUPER^();
               <body>
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.name := name;
-THIS^.statuses.busyStatus( isBusy := TRUE );
-THIS^.statuses.healthStatus( isGood := TRUE );
+THIS^.statuses.busyStatus := BusyStatus.busy;
+THIS^.statuses.healthStatus := HealthStatus.good;
 </xhtml>
                 </ST>
               </body>
@@ -2228,7 +2225,7 @@ THIS^.statuses.healthStatus( isGood := TRUE );
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF THIS^.statuses.enabledStatus.enabled THEN
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF THIS^.statuses.enabledStatus = EnabledStatus.enabled THEN
     request := RequestResults.ACCEPTED;
     THIS^.start( name := name );
 ELSE
@@ -2334,8 +2331,8 @@ SUPER^();
               <body>
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.position := position;
-THIS^.statuses.busyStatus( isBusy := TRUE );
-THIS^.statuses.healthStatus( isGood := TRUE );
+THIS^.statuses.busyStatus := BusyStatus.busy;
+THIS^.statuses.healthStatus := HealthStatus.good;
 </xhtml>
                 </ST>
               </body>
@@ -2376,7 +2373,7 @@ THIS^.statuses.healthStatus( isGood := TRUE );
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF THIS^.statuses.enabledStatus.enabled THEN
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF THIS^.statuses.enabledStatus = EnabledStatus.enabled THEN
     request := RequestResults.ACCEPTED;
     THIS^.start( position := position );
 ELSE
@@ -2471,6 +2468,8 @@ END_IF;
             </Object>
           </Folder>
           <Folder Name="Functionblocks">
+          </Folder>
+          <Folder Name="Functions">
           </Folder>
         </Folder>
       </ProjectStructure>

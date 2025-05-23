@@ -80,7 +80,12 @@ def resolve(subject: str | Object, context: Object):
         if subject in OBJECTS:
             return OBJECTS[subject]
         
-        raise KeyError(f"Subject '{subject}' was not declared before!")
+        try:
+            err = f"Subject '{subject}' was not declared before! (Context: {context.name})"
+        except:
+            err = f"Subject '{subject}' was not declared before!"
+        
+        raise KeyError(err)
     
     elif isinstance(subject, Object):
         subject.resolve_children(context)

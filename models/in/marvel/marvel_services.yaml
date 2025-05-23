@@ -208,26 +208,28 @@
           changeOperatingState            : { type: marvel_common.ChangeOperatingStateProcess   , comment: "Change the operating state (e.g. AUTO, MANUAL, ...)" }
       calls:
           initialize:
-              isEnabled                   : !OR [ statuses.initializationStatus.shutdown,
-                                                  statuses.initializationStatus.initializingFailed,
-                                                  statuses.initializationStatus.initialized ]
+              isEnabled                   : !OR [ !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.shutdown ],
+                                                  !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initializingFailed ],
+                                                  !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initialized ] ]
           lock:
-              isEnabled                   : !AND [ operatorStatus.tech, statuses.initializationStatus.initialized ]
+              isEnabled                   : !AND [ operatorStatus.tech, !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initialized ] ]
           unlock:
-              isEnabled                   : !AND [ operatorStatus.tech, statuses.initializationStatus.locked ]
+              isEnabled                   : !AND [ operatorStatus.tech, !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.locked ] ]
           changeOperatingState:
               isEnabled                   : !BOOL FALSE # there is no MANUAL mode
-          operatingStatus:
-              superState                  : statuses.initializationStatus.initialized
+        #   operatingStatus:
+        #       superState                  : !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initialized ]
           healthStatus:
+              superState                  : !BOOL TRUE
               isGood                      : !MTCS_SUMMARIZE_GOOD [ parts.timing, 
                                                                    parts.mercatorMeteo ]
               hasWarning                  : !MTCS_SUMMARIZE_WARN [ parts.timing,
                                                                    parts.mercatorMeteo ]
           busyStatus:
-              isBusy                      : statuses.initializationStatus.initializing
+              superState                  : !BOOL TRUE
+              isBusy                      : !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initializing ]
           configManager:
-              isEnabled                   : operatorStatus.tech
+              isEnabled                   : !EQ [ operatorStatus, marvel_common.OperatorStatus.tech ]
           timing:
               operatorStatus              : operatorStatus
               config                      : config.timing
@@ -258,6 +260,8 @@
           {}
       calls:
           healthStatus:
+              superState                  : !BOOL TRUE
+              hasWarning                  : !BOOL FALSE
               isGood                      : !AND [ isNtpConnected, isNtpSynchronized ]
   
   
@@ -278,19 +282,20 @@
           alarmStatus     : { type: marvel_common.HiHiLoLoAlarmStatus , comment: "Alarm status"}
       calls:
           enabledStatus:
+              superState   : !BOOL TRUE
               isEnabled    : config.enabled
           alarmStatus:
-              superState   : statuses.enabledStatus.enabled
+              superState   : !EQ [ statuses.enabledStatus, marvel_common.EnabledStatus.enabled ]
               config       : config.alarms
               value        : data
           healthStatus:
-              superState   : statuses.enabledStatus.enabled
+              superState   : !EQ [ statuses.enabledStatus, marvel_common.EnabledStatus.enabled ]
               isGood       : !NOT [ !OR [ !NOT [ valid ],
                                           disconnected,
-                                          statuses.alarmStatus.hiHi,
-                                          statuses.alarmStatus.loLo ] ]
-              hasWarning   : !OR [ statuses.alarmStatus.hi,
-                                   statuses.alarmStatus.lo ]
+                                          !EQ [ statuses.alarmStatus, marvel_common.HiHiLoLoAlarmStatus.hiHi ],
+                                          !EQ [ statuses.alarmStatus, marvel_common.HiHiLoLoAlarmStatus.loLo ] ] ]
+              hasWarning   : !OR [ !EQ [ statuses.alarmStatus, marvel_common.HiHiLoLoAlarmStatus.hi ],
+                                   !EQ [ statuses.alarmStatus, marvel_common.HiHiLoLoAlarmStatus.lo ] ]
   
   ########################################################################################################################
   # ServicesMercatorMeteo
@@ -463,7 +468,7 @@
               isGood                  : !AND [ fromMercator.mercatorServiceHealthy,
                                                !NOT [ mercatorDisconnected ] ]
           meteoHealthStatus:
-              superState              : statuses.healthStatus.good
+              superState              : !EQ [ statuses.healthStatus, marvel_common.HealthStatus.good ]
               isGood                  : !MTCS_SUMMARIZE_GOOD_OR_DISABLED [
                                                   windSpeedMinimum,
                                                   windSpeedAverage,

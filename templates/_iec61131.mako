@@ -2,7 +2,7 @@
 <%! 
     import pprint
     from util.expressions import IfThen, BinaryOperation, UnaryOperation, Primitive, Bool, String
-    from util.factories import Variable, Method, Call, EnumItem, FunctionBlock, GlobalVariable
+    from util.factories import Variable, Method, Call, EnumItem, FunctionBlock, GlobalVariable, Function
     from xml.sax.saxutils import escape as sax_escape
     from util.logger import debug, info
 
@@ -16,6 +16,10 @@
 
     def getPrefixAndPath(dest, scope = []):
         #debug(f" --- getPrefixAndPath({dest.name})")
+
+        if isinstance(dest, Function) and not isinstance(dest, Method):
+            return dest.name, []
+
         e = None
         for head in scope:
             if isinstance(dest, EnumItem):
@@ -40,6 +44,11 @@
                         return dest.name, []
                     else:
                         return None, getPathToSubVariable(dest, head)
+                elif isinstance(head, Function):
+                    if id(dest) == id(head):
+                        return dest.name, []
+                    else:
+                        return None, getPathToSubVariable(dest, head)
 
             except EOFError as eof:
                 e = eof
@@ -51,6 +60,8 @@
 
         if isinstance(dest, GlobalVariable):
             return [dest]
+        elif isinstance(dest, Function) and not isinstance(dest, Method):
+            return []
 
         # below is a hack-ish way to determine if dest and type are the same object
         # We cannot compare the ids (id(<obj>)), nor say "if dest is head" because of some intricacies of
@@ -140,9 +151,11 @@
 <% 
     enums = []
     fbs = []
+    functions = []
     structs = []
     lib.get_enums(recursive=True, enums=enums) 
     lib.get_fbs(recursive=True, fbs=fbs) 
+    lib.get_functions(recursive=True, functions=functions)
     lib.get_structs(recursive=True, structs=structs) 
 %>\
     % for enum in enums:
@@ -153,6 +166,11 @@
     % endfor
     </dataTypes>
     <pous>
+    % for function in functions:
+      % if function.render:
+      ${xml_pou_function(function, '      ')}
+      % endif
+    % endfor
     % for fb in fbs:
       % if fb.render:
       ${xml_pou_functionBlock(fb, '      ')}
@@ -177,16 +195,21 @@
 <%
     namespaces = []
     fbs = []
+    functions = []
     structs = []
     enums = []
     node.get_namespaces(recursive=False, namespaces=namespaces)
     node.get_enums(recursive=False, enums=enums)
     node.get_fbs(recursive=False, fbs=fbs)
+    node.get_functions(recursive=False, functions=functions)
     node.get_structs(recursive=False, structs=structs)
     types = []
     for fb in fbs:
         if fb.render:
             types.append(fb)
+    for function in functions:
+        if function.render:
+            types.append(function)
     types += structs + enums
 %>\
 <Folder Name="${node.name}">
@@ -230,9 +253,50 @@ ${indent}      <baseType>${xml_type_element(enum.type)}</baseType>
     % endif
 ${indent}    </enum>
 ${indent}  </baseType>
+    % if enum.qualifiers is not None:
+${indent}  <addData>
+${indent}    <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+    % for qualifier in enum.qualifiers:
+${indent}      <Attributes>
+${indent}        <Attribute Name="${qualifier.plc_symbol}" Value="${qualifier.value}" />
+${indent}      </Attributes>
+    % endfor
+${indent}    </data>
+${indent}  </addData>
+    % endif
 ${indent}</dataType>\
 </%def>
 
+<%def name="xml_pou_function(node, indent='')">\
+<% info(f"Rendering Function {node.name}") %>\
+<pou name="${node.name}" pouType="function">
+${indent}    <interface>
+% if node.return_type is not None:
+${indent}      ${xml_return_type(node.return_type)}
+% endif
+${indent}      ${xml_variables("input" , node.var_in.values()     , indent+'      ')}
+${indent}      ${xml_variables("output", node.var_out.values()    , indent+'      ')}
+${indent}      ${xml_variables("inOut" , node.var_inout.values()  , indent+'      ')}
+${indent}      ${xml_variables("local" , node.var_local.values()  , indent+'      ')}
+${indent}      <addData>
+${indent}        <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+${indent}          <Attributes>
+% if not node.name.startswith('_'):
+${indent}            <Attribute Name="TcRpcEnable" Value="1" />
+% endif
+${indent}          </Attributes>
+${indent}        </data>
+${indent}      </addData>
+${indent}    </interface>
+${indent}    <body>
+${indent}      <ST>
+% if node.implementation is not None:
+${indent}        ${xml_implementation(node.implementation, [ node, owner ], indent+'        ')}
+% endif
+${indent}      </ST>
+${indent}    </body>
+${indent}</pou>\
+</%def>
 
 <%def name="xml_pou_functionBlock(fb, indent='')">\
 <% info(f"Rendering FunctionBlock {fb.name}") %>\
@@ -373,6 +437,8 @@ ${layoutUnaryOperation(e, scope, indent=indent)}\
 ${layoutVariable(e, scope, indent=indent)}\
     %elif isinstance(e, Method):
 ${layoutMethod(e, scope, indent=indent)}\
+    %elif isinstance(e, Function):
+${layoutMethod(e, scope, indent=indent)}\
     %elif isinstance(e, Primitive):
 ${render_value(e, scope, indent=indent)}\
     %elif isinstance(e, Call):
@@ -398,6 +464,12 @@ ${render_path(m, scope)}\
 <% debug("layoutIfThen") %>\
 IF ${layoutExpression(node.if_, scope)} THEN
 ${indent+more}${layoutExpressions(node.then_, scope, indent=indent+more)}\
+    %if node.elif_expr is not None:
+        %for elif_index, elif_expr in enumerate(node.elif_expr):
+${indent}ELSIF ${layoutExpression(elif_expr, scope)} THEN
+${indent+more}${layoutExpressions(node.elif_then[elif_index], scope)}\
+        %endfor
+    %endif
     %if node.else_ is not None:
 ${indent}ELSE
 ${indent+more}${layoutExpressions(node.else_, scope, indent=indent+more)}\
@@ -451,6 +523,7 @@ ${layoutExpression(node.right, scope)}\
 
 <%def name="render_path(dest, scope)">\
 <% 
+    debug(f"!!!!! render_path -- dest: {dest}, scope: {str(scope)}")
     prefix, path = getPrefixAndPath(dest, scope) 
     debug(f"render_path -- prefix: {prefix}, path: {str(path)}")
 %>\

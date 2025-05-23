@@ -91,6 +91,7 @@ class QUALIFIERS:
     HMI_SHOW = PlcOpenAttribute(symbol = 'TcHmiSymbol.Show', value = '')
     HMI_SHOWRECURSIVELY = PlcOpenAttribute(symbol = 'TcHmiSymbol.ShowRecursively', value = '')
     HMI_HIDE = PlcOpenAttribute(symbol = 'TcHmiSymbol.Hide', value = '')
+    QUALIFIED_ONLY = PlcOpenAttribute(symbol = 'qualified_only', value = '')
 
 
 class Namespace(Object):
@@ -133,6 +134,14 @@ class Namespace(Object):
                 if child not in fbs:
                     fbs.append(child)
     
+    def get_functions(self, recursive: bool, functions: list):
+        for child in self.children.values():
+            if isinstance(child, Namespace) and recursive:
+                child.get_functions(recursive, functions)
+            elif isinstance(child, Function) and not isinstance(child, Method):
+                if child not in functions:
+                    functions.append(child)
+    
     def get_structs(self, recursive: bool, structs: list):
         for child in self.children.values():
             if isinstance(child, Namespace) and recursive:
@@ -173,6 +182,7 @@ class Library(Namespace):
         self.structs = Namespace("Structs", self)
         self.processes = Library.ProcessesNamespace("Processes", self)   
         self.functionblocks = Namespace("Functionblocks", self)
+        self.functions = Namespace("Functions", self)
 
         # add the items
         for arg_k, arg_v in args.items():
@@ -182,8 +192,13 @@ class Library(Namespace):
                 sm = Statemachine(arg_k.name, self, arg_v)
                 self.statemachines[arg_k.name] = sm
             elif isinstance(arg_k, STATUS):
-                sts = Status(arg_k.name, self, arg_v) 
-                self.statuses[arg_k.name] = sts
+                if versions.CODEGEN_VERSION == versions.CodeGenVersion.MTCS:
+                    sts = Status(arg_k.name, self, arg_v) 
+                    self.statuses[arg_k.name] = sts
+                elif versions.CODEGEN_VERSION == versions.CodeGenVersion.MARVEL:
+                    enum, function = make_marvel_status(arg_k.name, self, arg_v)
+                    self.functions[function.name] = function
+                    self.enums[enum.name] = enum
             elif isinstance(arg_k, FB):
                 fb = FunctionBlock(arg_k.name, self, arg_v) 
                 self.functionblocks[arg_k.name] = fb
@@ -220,6 +235,13 @@ class Enum(Object):
         self.comment = None
         self.plc_symbol = None
         self.is_ref = False
+        self.calulcated_by = None
+        self.items_by_name = {}
+        self.qualifiers = None
+
+        if is_marvel():
+            self.qualifiers = [ QUALIFIERS.QUALIFIED_ONLY ]
+
 
         if 'comment' in args:
             self.comment = args['comment']
@@ -229,7 +251,9 @@ class Enum(Object):
 
         if 'items' in args:
             for item_number, item_name in enumerate(args['items']):
-                self.items.append(EnumItem(item_name, self, item_number))
+                item = EnumItem(item_name, self, item_number)
+                self.items.append(item)
+                self.items_by_name[item_name] = item
 
 
 def ENUM_constructor(loader: Loader, node):
@@ -541,14 +565,13 @@ class Call:
             self.assignments = args["assigns"]
       
 
-class Method(Object):
+class Function(Object):
     """
-    Class respresenting a PLCopen method.
+    Class respresenting a PLCopen function.
     """
-
     def __init__(self, name, parent, args={}) -> None:
         super().__init__(name, parent)
-        check_args("Method", args, 
+        check_args("Function", args, 
             ["inputArgs", "inOutArgs", "localArgs", "returnType", 
              "comment", "implementation"])
         
@@ -586,6 +609,16 @@ class Method(Object):
         
         if "implementation" in args:
             raise NotImplementedError()
+
+
+class Method(Function):
+    """
+    Class respresenting a PLCopen method.
+    """
+
+    def __init__(self, name, parent, args={}) -> None:
+        super().__init__(name, parent, args)
+
 
 
 class FunctionBlock(Object):
@@ -953,9 +986,55 @@ class Statemachine(FunctionBlock):
         for part_name, part in self.parts.items():
             if part_name not in self.disabledCallNames:
                 objects_to_call[part_name] = part
-        for status_name, status in self.statuses.items():
-            if status_name not in self.disabledCallNames:
-                objects_to_call[status_name] = status
+
+        if self.implementation is None:
+            self.implementation = []
+         
+        for child_name, child in objects_to_call.items():
+            c = Call(f"call_{child_name}", self)
+            c.calls = child
+            c.assignments = []
+            if "calls" in args:
+                if child_name in args["calls"]:
+                    for k, v in args["calls"][child_name].items():
+                        # k should be a child of the callee (c.calls)!
+                        assignment = ASSIGN([c.calls.get_child(k, recursive=False), v])
+                        assignment.resolve_children(self)
+                        c.assignments.append(assignment)
+
+            self.implementation.append(c)
+
+        objects_to_call = {}
+
+
+        if versions.CODEGEN_VERSION == versions.CodeGenVersion.MARVEL:
+            for status_name, status in self.statuses.items():
+                if "calls" in args:
+                    if status_name in args["calls"]:
+                        function = status.type.calculated_by
+
+                        c = Call(f"call_{status_name}", function.parent)
+                        c.calls = function
+                        c.assignments = []
+
+                        for k, v in args["calls"][status_name].items():
+                            # k should be a child of the callee (c.calls)!
+                            assignment = ASSIGN([c.calls.get_child(k, recursive=False), v])
+                            assignment.resolve_children(self)
+                            c.assignments.append(assignment)
+                                    
+                        function_assign = ASSIGN([self.statuses[status_name], c])
+                        self.implementation.append(function_assign)
+
+
+
+        elif versions.CODEGEN_VERSION == versions.CodeGenVersion.MTCS:
+            for status_name, status in self.statuses.items():
+                if status_name not in self.disabledCallNames:
+                    objects_to_call[status_name] = status
+        else:
+            raise Exception("Invalid version")
+        
         for process_name, process in self.processes.items():
             if process_name not in self.disabledCallNames:
                 objects_to_call[process_name] = process
@@ -971,10 +1050,7 @@ class Statemachine(FunctionBlock):
                         assignment = ASSIGN([c.calls.get_child(k, recursive=False), v])
                         assignment.resolve_children(self)
                         c.assignments.append(assignment)
-
-            if self.implementation is None:
-                self.implementation = []
-
+            
             self.implementation.append(c)
         
 
@@ -1218,11 +1294,19 @@ class Process(FunctionBlock):
                     start.get_child(arg_name)])
                 assignment.resolve_children(self)
                 start.implementation.append(assignment)
-        start.implementation.append(
-            Call("setBusy", start, { "calls": self.get_child("statuses").get_child("busyStatus"), "assigns": [ ASSIGN([self.get_child("statuses").get_child("busyStatus").get_child("isBusy"), Bool("TRUE")]) ] }))
-        start.implementation.append(
-            Call("setGood", start, { "calls": self.get_child("statuses").get_child("healthStatus"), "assigns": [ ASSIGN([self.get_child("statuses").get_child("healthStatus").get_child("isGood"), Bool("TRUE")]) ] }))
 
+        if versions.CODEGEN_VERSION == versions.CodeGenVersion.MARVEL:        
+            start.implementation.append(
+                ASSIGN([self.get_child("statuses").get_child("busyStatus"), resolve("marvel_common.BusyStatus.busy", context=parent)]))
+            start.implementation.append(
+                ASSIGN([self.get_child("statuses").get_child("healthStatus"), resolve("marvel_common.HealthStatus.good", context=parent)]))
+        elif versions.CODEGEN_VERSION == versions.CodeGenVersion.MTCS:
+            start.implementation.append(
+                Call("setBusy", start, { "calls": self.get_child("statuses").get_child("busyStatus"), "assigns": [ ASSIGN([self.get_child("statuses").get_child("busyStatus").get_child("isBusy"), Bool("TRUE")]) ] }))
+            start.implementation.append(
+                Call("setGood", start, { "calls": self.get_child("statuses").get_child("healthStatus"), "assigns": [ ASSIGN([self.get_child("statuses").get_child("healthStatus").get_child("isGood"), Bool("TRUE")]) ] }))
+        else:
+            raise Exception("Invalid version")
 
         # add a request(...) method
         if "arguments" in args:
@@ -1251,12 +1335,20 @@ class Process(FunctionBlock):
         if "arguments" in args:
             for arg_name in args["arguments"]:
                 start_call.assignments.append(ASSIGN([start.get_child(arg_name, False),  self.request.get_child(arg_name, False)]))
-            
+        
+        if is_marvel():
+            req_if = EQ( [self.children["statuses"].children["enabledStatus"], 
+                          resolve(f"{get_common_lib()}.EnabledStatus.enabled", self.parent)] )
+        elif is_mtcs():
+            req_if = self.children["statuses"].children["enabledStatus"].children["enabled"]
+        else:
+            raise Exception("Invalid version")
+
         self.request.implementation = [
             IfThen(
                 name = "ifthen", 
                 parent = self.request, 
-                if_ = self.children["statuses"].children["enabledStatus"].children["enabled"],
+                if_ = req_if,
                 then_ = [
                     ASSIGN([self.request, resolve(f"{get_common_lib()}.RequestResults.ACCEPTED", self.parent)]),
                     start_call
@@ -1284,3 +1376,60 @@ class Process(FunctionBlock):
             Call("callSuper", self, { "calls": PLC_DEREF(self.children["SUPER"]) })
             
         ]
+
+
+def make_marvel_status(name, parent, args={}):
+    
+    enum_items = [var_name for var_name in args["states"]]
+    enum_items.insert(0, "invalid_model")
+    enum_items.insert(0, "unknown")
+    enum = Enum(name, parent=parent, args={ "items": enum_items })
+
+    function = Function(f"F_{name}", parent=parent, args={})
+    function.return_type = enum
+
+    if "render" in args:
+        function.render = args["render"]
+    else:
+        function.render = True
+    
+    function.var_in["superState"] = Variable(
+        "superState", 
+        function, 
+        {
+            "comment": "Super state (TRUE if the super state is active, or if there is no super state)",
+            "type": "t_bool",
+            "initial": Bool(True)
+        })
+
+    if "variables" in args:
+        for var_name, var_args in args["variables"].items():
+            function.var_in[var_name] = Variable(var_name, function, var_args)
+    
+    function.implementation = []
+    elif_expr_list = []
+    elif_then_list = []
+    for state_name, state_args in args["states"].items():
+        expr = resolve(state_args['expr'], function)
+        expr.resolve_children(function)
+        elif_expr_list.append(expr)
+        assignment = ASSIGN([function, enum.items_by_name[state_name] ])
+        assignment.resolve_children(function)
+        elif_then_list.append([ assignment ])
+
+    function.implementation = [
+        IfThen(
+            name = "ifthen",
+            parent = function, 
+            if_ = NOT(function.var_in["superState"]),
+            #then_ = ASSIGN([function, resolve(f"{name}.unknown", enum)]),
+            then_ = [ ASSIGN([function, enum.items_by_name["unknown"]]) ],
+            elif_expr = elif_expr_list,
+            elif_then = elif_then_list,
+            else_ = [ ASSIGN([function, enum.items_by_name["invalid_model"]]) ]
+            )
+    ]
+
+    enum.calculated_by = function
+
+    return enum, function

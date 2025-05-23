@@ -1,4 +1,5 @@
 from util.objects import Object
+from util.versions import is_marvel, is_mtcs
 
 class Operator:
     """
@@ -63,12 +64,16 @@ class IfThen(Object):
                  name: str, 
                  parent: Object, 
                  if_: Expression, 
-                 then_: list[Expression], 
+                 then_: list[Expression],
+                 elif_expr : list[list[Expression]] = None,
+                 elif_then : list[list[Expression]] = None,
                  else_: list[Expression] = None) -> None:
         super().__init__(name, parent)
         # the _ suffix is just to avoid Python literals
         self.if_ = if_
         self.then_ = then_
+        self.elif_expr = elif_expr
+        self.elif_then = elif_then
         self.else_ = else_
 
 
@@ -335,30 +340,58 @@ def String_constructor(loader, node):
 class MTCS_SUMMARIZE_BUSY(BinaryOperation):
     def __init__(self, operands) -> None:
         new_operands = []
-        for operand in operands:
-            new_operands.append(operand + ".statuses.busyStatus.busy")
+        if is_mtcs():
+            for operand in operands:
+                new_operands.append(operand + ".statuses.busyStatus.busy")
+        elif is_marvel():
+            for operand in operands:
+                new_operands.append(EQ([operand + ".statuses.busyStatus", "marvel_common.BusyStatus.busy"]))
+        else:
+            raise Exception("Invalid version")
+
         super().__init__(new_operands, OPERATORS.OR)
 
 class MTCS_SUMMARIZE_GOOD(BinaryOperation):
     def __init__(self, operands) -> None:
         new_operands = []
-        for operand in operands:
-            new_operands.append(operand + ".statuses.healthStatus.isGood")
+        if is_mtcs():
+            for operand in operands:
+                new_operands.append(operand + ".statuses.healthStatus.isGood")
+        elif is_marvel():
+            for operand in operands:
+                new_operands.append(EQ([operand + ".statuses.healthStatus", "marvel_common.HealthStatus.good"]))
+        else:
+            raise Exception("Invalid version")
+
         super().__init__(new_operands, OPERATORS.AND)
 
 class MTCS_SUMMARIZE_WARN(BinaryOperation):
     def __init__(self, operands) -> None:
         new_operands = []
-        for operand in operands:
-            new_operands.append(operand + ".statuses.healthStatus.hasWarning")
+        if is_mtcs():
+            for operand in operands:
+                new_operands.append(operand + ".statuses.healthStatus.hasWarning")
+        elif is_marvel():
+            for operand in operands:
+                new_operands.append(EQ([operand + ".statuses.healthStatus", "marvel_common.HealthStatus.warning"]))
+        else:
+            raise Exception("Invalid version")
         super().__init__(new_operands, OPERATORS.OR)
 
 class MTCS_SUMMARIZE_GOOD_OR_DISABLED(BinaryOperation):
     def __init__(self, operands) -> None:
         new_operands = []
-        for operand in operands:
-            new_operands.append(OR([operand + ".statuses.healthStatus.isGood", 
-                                     operand + ".statuses.enabledStatus.disabled"]))
+        if is_mtcs():
+            for operand in operands:
+                new_operands.append(OR([operand + ".statuses.healthStatus.isGood", 
+                                        operand + ".statuses.enabledStatus.disabled"]))
+        elif is_marvel():
+            for operand in operands:
+                new_operands.append(OR([EQ([operand + ".statuses.healthStatus", "marvel_common.HealthStatus.good"]), 
+                                        EQ([operand + ".statuses.enabledStatus", "marvel_common.EnabledStatus.enabled"])]))
+        else:
+            raise Exception("Invalid version")
+        
         super().__init__(new_operands, OPERATORS.AND)
 
 

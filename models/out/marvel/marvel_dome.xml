@@ -21,6 +21,31 @@
   </contentHeader>
   <types>
     <dataTypes>
+      <dataType name="DomeShutterOpeningStatus">
+        <baseType>
+          <enum>
+            <values>
+              <value name="unknown" value="0" />
+              <value name="invalid_model" value="1" />
+              <value name="standstill" value="2" />
+              <value name="opening" value="3" />
+              <value name="closing" value="4" />
+              <value name="stopping" value="5" />
+              <value name="timeoutError" value="6" />
+              <value name="retryOpening" value="7" />
+              <value name="retryClosing" value="8" />
+              <value name="unknownDriveLogicError" value="9" />
+            </values>
+          </enum>
+        </baseType>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+            <Attributes>
+              <Attribute Name="qualified_only" Value="" />
+            </Attributes>
+          </data>
+        </addData>
+      </dataType>
       <dataType name="DomeParts">
         <baseType>
           <struct>
@@ -978,179 +1003,78 @@
       </dataType>
     </dataTypes>
     <pous>
-      <pou name="DomeShutterOpeningStatus" pouType="functionBlock">
-        <interface>
-          <inputVars>
-            <variable name="superState">
-              <type><BOOL /></type>
-              <initialValue><simpleValue value="TRUE" /></initialValue>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Super state (TRUE if the super state is active, or if there is no super state)</xhtml>
-              </documentation>
-            </variable>
-            <variable name="shutterValue">
-              <type><derived name="DomeShutterMotionStates" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Enum from mini PLC</xhtml>
-              </documentation>
-            </variable>
-          </inputVars>
-          <outputVars>
-            <variable name="standstill">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Standstill</xhtml>
-              </documentation>
-            </variable>
-            <variable name="opening">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Opening</xhtml>
-              </documentation>
-            </variable>
-            <variable name="closing">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Closing</xhtml>
-              </documentation>
-            </variable>
-            <variable name="stopping">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Stopping</xhtml>
-              </documentation>
-            </variable>
-            <variable name="timeoutError">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Timeout error</xhtml>
-              </documentation>
-            </variable>
-            <variable name="retryOpening">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Retry opening</xhtml>
-              </documentation>
-            </variable>
-            <variable name="retryClosing">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Retry closing</xhtml>
-              </documentation>
-            </variable>
-            <variable name="unknownDriveLogicError">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Drive logic (edge based or dead-man switch) was not configured yet</xhtml>
-              </documentation>
-            </variable>
-          </outputVars>
-          <inOutVars>
-          </inOutVars>
-          <localVars>
-          </localVars>
-        </interface>
-        <body>
-          <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">standstill := (shutterValue = DomeShutterMotionStates.STANDSTILL) AND superState;
-opening := (shutterValue = DomeShutterMotionStates.OPENING) AND superState;
-closing := (shutterValue = DomeShutterMotionStates.CLOSING) AND superState;
-stopping := (shutterValue = DomeShutterMotionStates.STOPPING) AND superState;
-timeoutError := (shutterValue = DomeShutterMotionStates.TIMEOUT_ERROR) AND superState;
-retryOpening := (shutterValue = DomeShutterMotionStates.RETRY_OPENING) AND superState;
-retryClosing := (shutterValue = DomeShutterMotionStates.RETRY_CLOSING) AND superState;
-unknownDriveLogicError := (shutterValue = DomeShutterMotionStates.UNKNOWN_DRIVE_LOGIC_ERROR) AND superState;
+      <pou name="F_DomeShutterOpeningStatus" pouType="function">
+          <interface>
+            <returnType><derived name="DomeShutterOpeningStatus" /></returnType>
+            <inputVars>
+              <variable name="superState">
+                <type><BOOL /></type>
+                <initialValue><simpleValue value="TRUE" /></initialValue>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    </Attributes>
+                  </data>
+                </addData>
+                <documentation>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">Super state (TRUE if the super state is active, or if there is no super state)</xhtml>
+                </documentation>
+              </variable>
+              <variable name="shutterValue">
+                <type><derived name="DomeShutterMotionStates" /></type>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    </Attributes>
+                  </data>
+                </addData>
+                <documentation>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">Enum from mini PLC</xhtml>
+                </documentation>
+              </variable>
+            </inputVars>
+            <outputVars>
+            </outputVars>
+            <inOutVars>
+            </inOutVars>
+            <localVars>
+            </localVars>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                <Attributes>
+                  <Attribute Name="TcRpcEnable" Value="1" />
+                </Attributes>
+              </data>
+            </addData>
+          </interface>
+          <body>
+            <ST>
+              <xhtml xmlns="http://www.w3.org/1999/xhtml">IF NOT(superState) THEN
+    F_DomeShutterOpeningStatus := DomeShutterOpeningStatus.unknown;
+ELSIF shutterValue = DomeShutterMotionStates.STANDSTILL THEN
+    F_DomeShutterOpeningStatus := DomeShutterOpeningStatus.standstill;
+ELSIF shutterValue = DomeShutterMotionStates.OPENING THEN
+    F_DomeShutterOpeningStatus := DomeShutterOpeningStatus.opening;
+ELSIF shutterValue = DomeShutterMotionStates.CLOSING THEN
+    F_DomeShutterOpeningStatus := DomeShutterOpeningStatus.closing;
+ELSIF shutterValue = DomeShutterMotionStates.STOPPING THEN
+    F_DomeShutterOpeningStatus := DomeShutterOpeningStatus.stopping;
+ELSIF shutterValue = DomeShutterMotionStates.TIMEOUT_ERROR THEN
+    F_DomeShutterOpeningStatus := DomeShutterOpeningStatus.timeoutError;
+ELSIF shutterValue = DomeShutterMotionStates.RETRY_OPENING THEN
+    F_DomeShutterOpeningStatus := DomeShutterOpeningStatus.retryOpening;
+ELSIF shutterValue = DomeShutterMotionStates.RETRY_CLOSING THEN
+    F_DomeShutterOpeningStatus := DomeShutterOpeningStatus.retryClosing;
+ELSIF shutterValue = DomeShutterMotionStates.UNKNOWN_DRIVE_LOGIC_ERROR THEN
+    F_DomeShutterOpeningStatus := DomeShutterOpeningStatus.unknownDriveLogicError;
+ELSE
+    F_DomeShutterOpeningStatus := DomeShutterOpeningStatus.invalid_model;
+END_IF;
 </xhtml>
-          </ST>
-        </body>
-        <addData>
-        </addData>
+            </ST>
+          </body>
       </pou>
       <pou name="SM_Dome" pouType="functionBlock">
         <interface>
@@ -1380,23 +1304,25 @@ parts.rotation(
     operatorStatus := operatorStatus,
     operatingStatus := statuses.operatingStatus,
     config := config.rotation);
-statuses.initializationStatus();
-statuses.healthStatus(
-    isGood := parts.shutter.statuses.healthStatus.isGood AND (parts.rotation.statuses.healthStatus.isGood AND (processes.reset.statuses.healthStatus.isGood AND (processes.initialize.statuses.healthStatus.isGood AND (processes.syncWithAxes.statuses.healthStatus.isGood AND (processes.startTrackingTelescope.statuses.healthStatus.isGood AND (processes.stopTrackingTelescope.statuses.healthStatus.isGood AND (processes.stop.statuses.healthStatus.isGood AND processes.moveKnownPosition.statuses.healthStatus.isGood))))))),
-    hasWarning := parts.shutter.statuses.healthStatus.hasWarning OR (parts.rotation.statuses.healthStatus.hasWarning OR (processes.reset.statuses.healthStatus.hasWarning OR (processes.initialize.statuses.healthStatus.hasWarning OR (processes.syncWithAxes.statuses.healthStatus.hasWarning OR (processes.startTrackingTelescope.statuses.healthStatus.hasWarning OR (processes.stopTrackingTelescope.statuses.healthStatus.hasWarning OR (processes.stop.statuses.healthStatus.hasWarning OR processes.moveKnownPosition.statuses.healthStatus.hasWarning))))))));
-statuses.busyStatus( isBusy := parts.shutter.statuses.busyStatus.busy OR (parts.rotation.statuses.busyStatus.busy OR (processes.reset.statuses.busyStatus.busy OR (processes.initialize.statuses.busyStatus.busy OR (processes.syncWithAxes.statuses.busyStatus.busy OR (processes.startTrackingTelescope.statuses.busyStatus.busy OR (processes.stopTrackingTelescope.statuses.busyStatus.busy OR (processes.stop.statuses.busyStatus.busy OR processes.moveKnownPosition.statuses.busyStatus.busy))))))) );
-statuses.operatingStatus( superState := statuses.initializationStatus.initialized );
-processes.initialize( isEnabled := (NOT(statuses.initializationStatus.locked)) AND (statuses.initializationStatus.shutdown OR (statuses.initializationStatus.initializingFailed OR statuses.initializationStatus.initialized)) );
+statuses.healthStatus := F_HealthStatus(
+    superState := TRUE,
+    isGood := (parts.shutter.statuses.healthStatus = HealthStatus.good) AND ((parts.rotation.statuses.healthStatus = HealthStatus.good) AND ((processes.reset.statuses.healthStatus = HealthStatus.good) AND ((processes.initialize.statuses.healthStatus = HealthStatus.good) AND ((processes.syncWithAxes.statuses.healthStatus = HealthStatus.good) AND ((processes.startTrackingTelescope.statuses.healthStatus = HealthStatus.good) AND ((processes.stopTrackingTelescope.statuses.healthStatus = HealthStatus.good) AND ((processes.stop.statuses.healthStatus = HealthStatus.good) AND (processes.moveKnownPosition.statuses.healthStatus = HealthStatus.good)))))))),
+    hasWarning := (parts.shutter.statuses.healthStatus = HealthStatus.warning) OR ((parts.rotation.statuses.healthStatus = HealthStatus.warning) OR ((processes.reset.statuses.healthStatus = HealthStatus.warning) OR ((processes.initialize.statuses.healthStatus = HealthStatus.warning) OR ((processes.syncWithAxes.statuses.healthStatus = HealthStatus.warning) OR ((processes.startTrackingTelescope.statuses.healthStatus = HealthStatus.warning) OR ((processes.stopTrackingTelescope.statuses.healthStatus = HealthStatus.warning) OR ((processes.stop.statuses.healthStatus = HealthStatus.warning) OR (processes.moveKnownPosition.statuses.healthStatus = HealthStatus.warning)))))))));
+statuses.busyStatus := F_BusyStatus(
+    superState := TRUE,
+    isBusy := (parts.shutter.statuses.busyStatus = BusyStatus.busy) OR ((parts.rotation.statuses.busyStatus = BusyStatus.busy) OR ((processes.reset.statuses.busyStatus = BusyStatus.busy) OR ((processes.initialize.statuses.busyStatus = BusyStatus.busy) OR ((processes.syncWithAxes.statuses.busyStatus = BusyStatus.busy) OR ((processes.startTrackingTelescope.statuses.busyStatus = BusyStatus.busy) OR ((processes.stopTrackingTelescope.statuses.busyStatus = BusyStatus.busy) OR ((processes.stop.statuses.busyStatus = BusyStatus.busy) OR (processes.moveKnownPosition.statuses.busyStatus = BusyStatus.busy)))))))));
+statuses.operatingStatus := F_OperatingStatus( superState := statuses.initializationStatus = InitializationStatus.initialized );
+processes.initialize( isEnabled := (NOT(statuses.initializationStatus = InitializationStatus.locked)) AND ((statuses.initializationStatus = InitializationStatus.shutdown) OR ((statuses.initializationStatus = InitializationStatus.initializingFailed) OR (statuses.initializationStatus = InitializationStatus.initialized))) );
 processes.changeOperatingState( isEnabled := FALSE );
-processes.lock( isEnabled := operatorStatus.tech );
-processes.unlock( isEnabled := operatorStatus.tech AND statuses.initializationStatus.locked );
-processes.reset( isEnabled := statuses.busyStatus.idle AND statuses.initializationStatus.initialized );
-processes.syncWithAxes( isEnabled := statuses.initializationStatus.initialized AND statuses.busyStatus.idle );
+processes.lock( isEnabled := operatorStatus = OperatorStatus.tech );
+processes.unlock( isEnabled := (operatorStatus = OperatorStatus.tech) AND (statuses.initializationStatus = InitializationStatus.locked) );
+processes.reset( isEnabled := (statuses.busyStatus = BusyStatus.idle) AND (statuses.initializationStatus = InitializationStatus.initialized) );
+processes.syncWithAxes( isEnabled := (statuses.initializationStatus = InitializationStatus.initialized) AND (statuses.busyStatus = BusyStatus.idle) );
 processes.startTrackingTelescope( isEnabled := NOT(isTrackingTelescope) );
 processes.stopTrackingTelescope( isEnabled := isTrackingTelescope );
-processes.moveAbsolute( isEnabled := statuses.initializationStatus.initialized );
-processes.stop( isEnabled := statuses.busyStatus.busy OR (isTrackingTelescope OR operatorStatus.tech) );
-processes.moveKnownPosition( isEnabled := statuses.initializationStatus.initialized AND statuses.busyStatus.idle );
+processes.moveAbsolute( isEnabled := statuses.initializationStatus = InitializationStatus.initialized );
+processes.stop( isEnabled := (statuses.busyStatus = BusyStatus.busy) OR (isTrackingTelescope OR (operatorStatus = OperatorStatus.tech)) );
+processes.moveKnownPosition( isEnabled := (statuses.initializationStatus = InitializationStatus.initialized) AND (statuses.busyStatus = BusyStatus.idle) );
 </xhtml>
           </ST>
         </body>
@@ -2245,22 +2171,24 @@ LOGGER(
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">statuses.apertureStatus(
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">statuses.apertureStatus := F_ApertureStatus(
     superState := NOT((dataRead.apertureState = DomeShutterApertureStates.UNKNOWN) OR (dataRead.apertureState = DomeShutterApertureStates.INVALID)),
     isOpen := dataRead.apertureState = DomeShutterApertureStates.FULLY_OPEN,
     isClosed := dataRead.apertureState = DomeShutterApertureStates.FULLY_CLOSED);
-statuses.motionStatus( shutterValue := dataRead.motionState );
-statuses.healthStatus(
+statuses.motionStatus := F_DomeShutterOpeningStatus(
+    superState := TRUE,
+    shutterValue := dataRead.motionState);
+statuses.healthStatus := F_HealthStatus(
     superState := NOT(initializationStatus.shutdown),
-    isGood := isConnected AND (processes.open.statuses.healthStatus.isGood AND (processes.close.statuses.healthStatus.isGood AND processes.stop.statuses.healthStatus.isGood)),
-    hasWarning := (processes.open.statuses.healthStatus.hasWarning OR (processes.close.statuses.healthStatus.hasWarning OR processes.stop.statuses.healthStatus.hasWarning)) OR (statuses.busyStatus.idle AND statuses.apertureStatus.partiallyOpen));
-statuses.busyStatus(
+    isGood := isConnected AND ((processes.open.statuses.healthStatus = HealthStatus.good) AND ((processes.close.statuses.healthStatus = HealthStatus.good) AND (processes.stop.statuses.healthStatus = HealthStatus.good))),
+    hasWarning := ((processes.open.statuses.healthStatus = HealthStatus.warning) OR ((processes.close.statuses.healthStatus = HealthStatus.warning) OR (processes.stop.statuses.healthStatus = HealthStatus.warning))) OR ((statuses.busyStatus = BusyStatus.idle) AND statuses.apertureStatus.partiallyOpen));
+statuses.busyStatus := F_BusyStatus(
     superState := NOT(initializationStatus.shutdown),
-    isBusy := processes.open.statuses.busyStatus.busy OR (processes.close.statuses.busyStatus.busy OR processes.stop.statuses.busyStatus.busy));
-processes.open( isEnabled := statuses.healthStatus.isGood AND ((NOT(initializationStatus.locked)) AND (operatorStatus.tech OR (statuses.busyStatus.idle AND (initializationStatus.initialized AND (activityStatus.awake OR activityStatus.moving))))) );
-processes.close( isEnabled := operatorStatus.tech OR ((NOT(initializationStatus.locked)) AND (statuses.busyStatus.idle AND initializationStatus.initialized)) );
-processes.stop( isEnabled := statuses.busyStatus.busy );
-processes.send( isEnabled := operatorStatus.tech OR isConnected );
+    isBusy := (processes.open.statuses.busyStatus = BusyStatus.busy) OR ((processes.close.statuses.busyStatus = BusyStatus.busy) OR (processes.stop.statuses.busyStatus = BusyStatus.busy)));
+processes.open( isEnabled := (statuses.healthStatus = HealthStatus.good) AND ((NOT(initializationStatus = InitializationStatus.locked)) AND ((operatorStatus = OperatorStatus.tech) OR ((statuses.busyStatus = BusyStatus.idle) AND ((initializationStatus = InitializationStatus.initialized) AND ((activityStatus = ActivityStatus.awake) OR (activityStatus = ActivityStatus.moving)))))) );
+processes.close( isEnabled := (operatorStatus = OperatorStatus.tech) OR ((NOT(initializationStatus = InitializationStatus.locked)) AND ((statuses.busyStatus = BusyStatus.idle) AND (initializationStatus = InitializationStatus.initialized))) );
+processes.stop( isEnabled := statuses.busyStatus = BusyStatus.busy );
+processes.send( isEnabled := (operatorStatus = OperatorStatus.tech) OR isConnected );
 </xhtml>
           </ST>
         </body>
@@ -2708,15 +2636,18 @@ LOGGER(
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">parts.motorAxis( isEnabled := (NOT(initializationStatus.locked)) AND operatorStatus.tech );
-parts.encoderAxis( isEnabled := (NOT(initializationStatus.locked)) AND operatorStatus.tech );
-statuses.healthStatus(
-    isGood := parts.motorAxis.statuses.healthStatus.isGood AND (parts.encoderAxis.statuses.healthStatus.isGood AND (processes.moveAbsolute.statuses.healthStatus.isGood AND (processes.reset.statuses.healthStatus.isGood AND processes.stop.statuses.healthStatus.isGood))),
-    hasWarning := parts.motorAxis.statuses.healthStatus.hasWarning OR (parts.encoderAxis.statuses.healthStatus.hasWarning OR (processes.moveAbsolute.statuses.healthStatus.hasWarning OR (processes.reset.statuses.healthStatus.hasWarning OR processes.stop.statuses.healthStatus.hasWarning))));
-statuses.busyStatus( isBusy := parts.motorAxis.statuses.busyStatus.busy OR (parts.encoderAxis.statuses.busyStatus.busy OR (processes.moveAbsolute.statuses.busyStatus.busy OR (processes.reset.statuses.busyStatus.busy OR processes.stop.statuses.busyStatus.busy))) );
-processes.reset( isEnabled := statuses.busyStatus.idle );
-processes.stop( isEnabled := statuses.busyStatus.busy OR operatorStatus.tech );
-processes.moveAbsolute( isEnabled := statuses.busyStatus.idle );
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">parts.motorAxis( isEnabled := (NOT(initializationStatus = InitializationStatus.locked)) AND (operatorStatus = OperatorStatus.tech) );
+parts.encoderAxis( isEnabled := (NOT(initializationStatus = InitializationStatus.locked)) AND (operatorStatus = OperatorStatus.tech) );
+statuses.healthStatus := F_HealthStatus(
+    superState := TRUE,
+    isGood := (parts.motorAxis.statuses.healthStatus = HealthStatus.good) AND ((parts.encoderAxis.statuses.healthStatus = HealthStatus.good) AND ((processes.moveAbsolute.statuses.healthStatus = HealthStatus.good) AND ((processes.reset.statuses.healthStatus = HealthStatus.good) AND (processes.stop.statuses.healthStatus = HealthStatus.good)))),
+    hasWarning := (parts.motorAxis.statuses.healthStatus = HealthStatus.warning) OR ((parts.encoderAxis.statuses.healthStatus = HealthStatus.warning) OR ((processes.moveAbsolute.statuses.healthStatus = HealthStatus.warning) OR ((processes.reset.statuses.healthStatus = HealthStatus.warning) OR (processes.stop.statuses.healthStatus = HealthStatus.warning)))));
+statuses.busyStatus := F_BusyStatus(
+    superState := TRUE,
+    isBusy := (parts.motorAxis.statuses.busyStatus = BusyStatus.busy) OR ((parts.encoderAxis.statuses.busyStatus = BusyStatus.busy) OR ((processes.moveAbsolute.statuses.busyStatus = BusyStatus.busy) OR ((processes.reset.statuses.busyStatus = BusyStatus.busy) OR (processes.stop.statuses.busyStatus = BusyStatus.busy)))));
+processes.reset( isEnabled := statuses.busyStatus = BusyStatus.idle );
+processes.stop( isEnabled := (statuses.busyStatus = BusyStatus.busy) OR (operatorStatus = OperatorStatus.tech) );
+processes.moveAbsolute( isEnabled := statuses.busyStatus = BusyStatus.idle );
 </xhtml>
           </ST>
         </body>
@@ -3001,8 +2932,8 @@ SUPER^();
               <body>
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.name := name;
-THIS^.statuses.busyStatus( isBusy := TRUE );
-THIS^.statuses.healthStatus( isGood := TRUE );
+THIS^.statuses.busyStatus := BusyStatus.busy;
+THIS^.statuses.healthStatus := HealthStatus.good;
 </xhtml>
                 </ST>
               </body>
@@ -3043,7 +2974,7 @@ THIS^.statuses.healthStatus( isGood := TRUE );
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF THIS^.statuses.enabledStatus.enabled THEN
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF THIS^.statuses.enabledStatus = EnabledStatus.enabled THEN
     request := RequestResults.ACCEPTED;
     THIS^.start( name := name );
 ELSE
@@ -3149,8 +3080,8 @@ SUPER^();
               <body>
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.position := position;
-THIS^.statuses.busyStatus( isBusy := TRUE );
-THIS^.statuses.healthStatus( isGood := TRUE );
+THIS^.statuses.busyStatus := BusyStatus.busy;
+THIS^.statuses.healthStatus := HealthStatus.good;
 </xhtml>
                 </ST>
               </body>
@@ -3191,7 +3122,7 @@ THIS^.statuses.healthStatus( isGood := TRUE );
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF THIS^.statuses.enabledStatus.enabled THEN
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF THIS^.statuses.enabledStatus = EnabledStatus.enabled THEN
     request := RequestResults.ACCEPTED;
     THIS^.start( position := position );
 ELSE
@@ -3313,8 +3244,8 @@ SUPER^();
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.command := command;
 THIS^.get.arg := arg;
-THIS^.statuses.busyStatus( isBusy := TRUE );
-THIS^.statuses.healthStatus( isGood := TRUE );
+THIS^.statuses.busyStatus := BusyStatus.busy;
+THIS^.statuses.healthStatus := HealthStatus.good;
 </xhtml>
                 </ST>
               </body>
@@ -3368,7 +3299,7 @@ THIS^.statuses.healthStatus( isGood := TRUE );
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF THIS^.statuses.enabledStatus.enabled THEN
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF THIS^.statuses.enabledStatus = EnabledStatus.enabled THEN
     request := RequestResults.ACCEPTED;
     THIS^.start(
         command := command,
@@ -3393,10 +3324,10 @@ END_IF;
       <ProjectStructure>
         <Folder Name="marvel_dome">
           <Folder Name="Enums">
-          </Folder>
-          <Folder Name="Statuses">
             <Object Name="DomeShutterOpeningStatus">
             </Object>
+          </Folder>
+          <Folder Name="Statuses">
           </Folder>
           <Folder Name="StateMachines">
             <Folder Name="Parts">
@@ -3486,6 +3417,10 @@ END_IF;
             </Object>
           </Folder>
           <Folder Name="Functionblocks">
+          </Folder>
+          <Folder Name="Functions">
+            <Object Name="F_DomeShutterOpeningStatus">
+            </Object>
           </Folder>
         </Folder>
       </ProjectStructure>

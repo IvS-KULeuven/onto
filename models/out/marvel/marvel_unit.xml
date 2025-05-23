@@ -443,15 +443,14 @@ parts.telescope(
     longitude := config.longitude,
     latitude := config.latitude);
 parts.configManager( isEnabled := operatorStatus.tech );
-statuses.initializationStatus();
-statuses.healthStatus(
-    superState := NOT(statuses.initializationStatus.shutdown),
-    isGood := parts.dome.statuses.healthStatus.isGood AND (parts.telescope.statuses.healthStatus.isGood AND parts.configManager.statuses.healthStatus.isGood),
-    hasWarning := parts.dome.statuses.healthStatus.hasWarning OR (parts.telescope.statuses.healthStatus.hasWarning OR parts.configManager.statuses.healthStatus.hasWarning));
-statuses.busyStatus(
-    superState := NOT(statuses.initializationStatus.shutdown),
-    isBusy := parts.dome.statuses.busyStatus.busy OR (parts.telescope.statuses.busyStatus.busy OR parts.configManager.statuses.busyStatus.busy));
-processes.initialize( isEnabled := NOT(statuses.initializationStatus.initializing) );
+statuses.healthStatus := F_HealthStatus(
+    superState := NOT(statuses.initializationStatus = InitializationStatus.shutdown),
+    isGood := (parts.dome.statuses.healthStatus = HealthStatus.good) AND ((parts.telescope.statuses.healthStatus = HealthStatus.good) AND (parts.configManager.statuses.healthStatus = HealthStatus.good)),
+    hasWarning := (parts.dome.statuses.healthStatus = HealthStatus.warning) OR ((parts.telescope.statuses.healthStatus = HealthStatus.warning) OR (parts.configManager.statuses.healthStatus = HealthStatus.warning)));
+statuses.busyStatus := F_BusyStatus(
+    superState := NOT(statuses.initializationStatus = InitializationStatus.shutdown),
+    isBusy := (parts.dome.statuses.busyStatus = BusyStatus.busy) OR ((parts.telescope.statuses.busyStatus = BusyStatus.busy) OR (parts.configManager.statuses.busyStatus = BusyStatus.busy)));
+processes.initialize( isEnabled := NOT(statuses.initializationStatus = InitializationStatus.initializing) );
 processes.point( isEnabled := parts.telescope.processes.slewToCoordinates.isEnabled AND parts.dome.processes.syncWithAxes.isEnabled );
 processes.stop( isEnabled := parts.telescope.processes.abortSlew.isEnabled OR parts.dome.processes.stop.isEnabled );
 </xhtml>
@@ -707,6 +706,8 @@ LOGGER(
             </Folder>
           </Folder>
           <Folder Name="Functionblocks">
+          </Folder>
+          <Folder Name="Functions">
           </Folder>
         </Folder>
       </ProjectStructure>

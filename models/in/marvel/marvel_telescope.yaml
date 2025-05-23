@@ -168,56 +168,58 @@
       calls:
           # processes
           initialize:
-              isEnabled                   : !AND [ !NOT [ statuses.initializationStatus.locked ],
-                                                   !OR [ statuses.initializationStatus.shutdown,
-                                                         statuses.initializationStatus.initializingFailed,
-                                                         statuses.initializationStatus.initialized ] ]
+              isEnabled                   : !AND [ !NOT [ !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.locked ] ],
+                                                   !OR [ !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.shutdown ],
+                                                         !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initializingFailed ],
+                                                         !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initialized ] ] ]
           lock:
-              isEnabled                   : operatorStatus.tech
+              isEnabled                   : !EQ [ operatorStatus, marvel_common.OperatorStatus.tech ]
           unlock:
-              isEnabled                   : !AND [ operatorStatus.tech,
-                                                   statuses.initializationStatus.locked ]
+              isEnabled                   : !AND [ !EQ [ operatorStatus, marvel_common.OperatorStatus.tech ],
+                                                   !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.locked ] ]
           changeOperatingState:
-              isEnabled                   : !AND [ statuses.busyStatus.idle, statuses.initializationStatus.initialized, operatorStatus.tech ]
+              isEnabled                   : !AND [ !EQ [ statuses.busyStatus, marvel_common.BusyStatus.idle], 
+                                                   !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initialized], 
+                                                   !EQ [ operatorStatus, marvel_common.OperatorStatus.tech ] ]
           reset:
-              isEnabled                   : !AND [ statuses.busyStatus.idle,
-                                                   statuses.initializationStatus.initialized ]
+              isEnabled                   : !AND [ !EQ [ statuses.busyStatus, marvel_common.BusyStatus.idle],
+                                                   !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initialized ] ]
           slewToCoordinates:
-              isEnabled                   : !AND [ statuses.initializationStatus.initialized,
-                                                   statuses.busyStatus.idle,
-                                                   statuses.poweredStatus.enabled ]
+              isEnabled                   : !AND [ !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initialized ],
+                                                   !EQ [ statuses.busyStatus, marvel_common.BusyStatus.idle],
+                                                   !EQ [ statuses.poweredStatus, marvel_common.PoweredStatus.enabled ] ]
           slewToAziEle:
-              isEnabled                   : !AND [ statuses.initializationStatus.initialized,
-                                                   statuses.busyStatus.idle,
-                                                   statuses.poweredStatus.enabled ]
+              isEnabled                   : !AND [ !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initialized ],
+                                                   !EQ [ statuses.busyStatus, marvel_common.BusyStatus.idle],
+                                                   !EQ [ statuses.poweredStatus, marvel_common.PoweredStatus.enabled ] ]
           abortSlew:
-              isEnabled                   : statuses.initializationStatus.initialized
+              isEnabled                   : !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initialized ]
           powerOn:
-              isEnabled                   : !AND [  !NOT [ statuses.initializationStatus.locked ],
-                                                    statuses.initializationStatus.initialized,
-                                                    processes.powerOn.statuses.busyStatus.idle ]
+              isEnabled                   : !AND [  !NOT [ !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.locked] ],
+                                                    !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initialized ],
+                                                    !EQ [ processes.powerOn.statuses.busyStatus, marvel_common.BusyStatus.idle] ]
           powerOff:
-              isEnabled                   : !AND [ statuses.initializationStatus.initialized,
-                                                   processes.powerOff.statuses.busyStatus.idle ]
+              isEnabled                   : !AND [ !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initialized ],
+                                                   !EQ [ processes.powerOff.statuses.busyStatus, marvel_common.BusyStatus.idle] ]
           moveKnownPosition:
-              isEnabled                   : !AND [ statuses.initializationStatus.initialized,
-                                                   statuses.busyStatus.idle,
-                                                   statuses.poweredStatus.enabled ]
+              isEnabled                   : !AND [ !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initialized ],
+                                                   !EQ [ statuses.busyStatus, marvel_common.BusyStatus.idle],
+                                                   !EQ [ statuses.poweredStatus, marvel_common.PoweredStatus.enabled ] ]
           setTracking:
-              isEnabled                   : statuses.initializationStatus.initialized
+              isEnabled                   : !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initialized ]
           openCover:
-              isEnabled                   : !AND [ statuses.initializationStatus.initialized,
-                                                   processes.openCover.statuses.busyStatus.idle ]
+              isEnabled                   : !AND [ !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initialized ],
+                                                   !EQ [ processes.openCover.statuses.busyStatus, marvel_common.BusyStatus.idle] ]
           closeCover:
-              isEnabled                   : !AND [ statuses.initializationStatus.initialized,
-                                                   processes.closeCover.statuses.busyStatus.idle ]
+              isEnabled                   : !AND [ !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initialized ],
+                                                   !EQ [ processes.closeCover.statuses.busyStatus, marvel_common.BusyStatus.idle] ]
           moveM2:
-              isEnabled                   : !AND [ statuses.initializationStatus.initialized,
-                                                   processes.moveM2.statuses.busyStatus.idle ]
+              isEnabled                   : !AND [ !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initialized ],
+                                                   !EQ [ processes.moveM2.statuses.busyStatus, marvel_common.BusyStatus.idle] ]
           # statuses
           healthStatus:
-              superState                  : !NOT [ statuses.initializationStatus.shutdown ]
-              isGood                      : !AND [  !NOT [ statuses.initializationStatus.initializingFailed ],
+              superState                  : !NOT [ !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.shutdown] ]
+              isGood                      : !AND [  !NOT [ !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initializingFailed] ],
                                                     isTelConnected,
                                                     isAccConnected,
                                                     !MTCS_SUMMARIZE_GOOD [
@@ -248,7 +250,7 @@
                                                        processes.openCover,
                                                        processes.closeCover ]
           busyStatus:
-              superState                  : !NOT [ statuses.initializationStatus.shutdown ]
+              superState                  : !NOT [ !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.shutdown] ]
               isBusy                      : !MTCS_SUMMARIZE_BUSY [
                                                        processes.initialize,
                                                        processes.changeOperatingState,
@@ -262,7 +264,7 @@
                                                        processes.moveM2,
                                                        processes.openCover,
                                                        processes.closeCover ]
-          operatingStatus:
-              superState                  : statuses.initializationStatus.initialized
+        #   operatingStatus:
+        #       superState                  : !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initialized ]
   
   

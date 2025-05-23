@@ -599,25 +599,21 @@ parts.u4(
     activityStatus := statuses.activityStatus,
     services := parts.services);
 parts.services( operatorStatus := statuses.operatorStatus );
-statuses.initializationStatus();
-statuses.healthStatus(
-    superState := NOT(statuses.initializationStatus.shutdown),
-    isGood := parts.u1.statuses.healthStatus.isGood AND (parts.u2.statuses.healthStatus.isGood AND (parts.u3.statuses.healthStatus.isGood AND (parts.u4.statuses.healthStatus.isGood AND parts.services.statuses.healthStatus.isGood))),
-    hasWarning := parts.u1.statuses.healthStatus.hasWarning OR (parts.u2.statuses.healthStatus.hasWarning OR (parts.u3.statuses.healthStatus.hasWarning OR (parts.u4.statuses.healthStatus.hasWarning OR parts.services.statuses.healthStatus.hasWarning))));
-statuses.busyStatus(
-    superState := NOT(statuses.initializationStatus.shutdown),
-    isBusy := parts.u1.statuses.busyStatus.busy OR (parts.u2.statuses.busyStatus.busy OR (parts.u3.statuses.busyStatus.busy OR (parts.u4.statuses.busyStatus.busy OR parts.services.statuses.busyStatus.busy))));
-statuses.operatorStatus();
-statuses.passwordHealthStatus( superState := statuses.operatorStatus.observer );
-statuses.activityStatus();
-processes.initialize( isEnabled := NOT(statuses.initializationStatus.initializing) );
-processes.lock( isEnabled := statuses.operatorStatus.tech AND statuses.initializationStatus.initialized );
-processes.unlock( isEnabled := statuses.operatorStatus.tech AND statuses.initializationStatus.locked );
+statuses.healthStatus := F_HealthStatus(
+    superState := NOT(statuses.initializationStatus = InitializationStatus.shutdown),
+    isGood := (parts.u1.statuses.healthStatus = HealthStatus.good) AND ((parts.u2.statuses.healthStatus = HealthStatus.good) AND ((parts.u3.statuses.healthStatus = HealthStatus.good) AND ((parts.u4.statuses.healthStatus = HealthStatus.good) AND (parts.services.statuses.healthStatus = HealthStatus.good)))),
+    hasWarning := (parts.u1.statuses.healthStatus = HealthStatus.warning) OR ((parts.u2.statuses.healthStatus = HealthStatus.warning) OR ((parts.u3.statuses.healthStatus = HealthStatus.warning) OR ((parts.u4.statuses.healthStatus = HealthStatus.warning) OR (parts.services.statuses.healthStatus = HealthStatus.warning)))));
+statuses.busyStatus := F_BusyStatus(
+    superState := NOT(statuses.initializationStatus = InitializationStatus.shutdown),
+    isBusy := (parts.u1.statuses.busyStatus = BusyStatus.busy) OR ((parts.u2.statuses.busyStatus = BusyStatus.busy) OR ((parts.u3.statuses.busyStatus = BusyStatus.busy) OR ((parts.u4.statuses.busyStatus = BusyStatus.busy) OR (parts.services.statuses.busyStatus = BusyStatus.busy)))));
+processes.initialize( isEnabled := NOT(statuses.initializationStatus = InitializationStatus.initializing) );
+processes.lock( isEnabled := (statuses.operatorStatus = OperatorStatus.tech) AND (statuses.initializationStatus = InitializationStatus.initialized) );
+processes.unlock( isEnabled := (statuses.operatorStatus = OperatorStatus.tech) AND (statuses.initializationStatus = InitializationStatus.locked) );
 processes.changeOperator( isEnabled := TRUE );
 processes.verifyPassword( isEnabled := TRUE );
 processes.wakeUp( isEnabled := TRUE );
 processes.goToSleep( isEnabled := TRUE );
-processes.emergencyClose( isEnabled := NOT(parts.u1.parts.dome.parts.shutter.statuses.apertureStatus.closed AND (parts.u1.parts.dome.parts.shutter.statuses.apertureStatus.closed AND (parts.u1.parts.dome.parts.shutter.statuses.apertureStatus.closed AND parts.u1.parts.dome.parts.shutter.statuses.apertureStatus.closed))) );
+processes.emergencyClose( isEnabled := NOT((parts.u1.parts.dome.parts.shutter.statuses.apertureStatus = ApertureStatus.closed) AND ((parts.u1.parts.dome.parts.shutter.statuses.apertureStatus = ApertureStatus.closed) AND ((parts.u1.parts.dome.parts.shutter.statuses.apertureStatus = ApertureStatus.closed) AND (parts.u1.parts.dome.parts.shutter.statuses.apertureStatus = ApertureStatus.closed)))) );
 processes.point( isEnabled := parts.u1.processes.point.isEnabled OR (parts.u2.processes.point.isEnabled OR (parts.u3.processes.point.isEnabled OR parts.u4.processes.point.isEnabled)) );
 processes.openDomes( isEnabled := parts.u1.parts.dome.parts.shutter.processes.open.isEnabled OR (parts.u2.parts.dome.parts.shutter.processes.open.isEnabled OR (parts.u3.parts.dome.parts.shutter.processes.open.isEnabled OR parts.u4.parts.dome.parts.shutter.processes.open.isEnabled)) );
 processes.closeDomes( isEnabled := parts.u1.parts.dome.parts.shutter.processes.close.isEnabled OR (parts.u2.parts.dome.parts.shutter.processes.close.isEnabled OR (parts.u3.parts.dome.parts.shutter.processes.close.isEnabled OR parts.u4.parts.dome.parts.shutter.processes.close.isEnabled)) );
@@ -1565,8 +1561,8 @@ THIS^.get.u1 := u1;
 THIS^.get.u2 := u2;
 THIS^.get.u3 := u3;
 THIS^.get.u4 := u4;
-THIS^.statuses.busyStatus( isBusy := TRUE );
-THIS^.statuses.healthStatus( isGood := TRUE );
+THIS^.statuses.busyStatus := BusyStatus.busy;
+THIS^.statuses.healthStatus := HealthStatus.good;
 </xhtml>
                 </ST>
               </body>
@@ -1672,7 +1668,7 @@ THIS^.statuses.healthStatus( isGood := TRUE );
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF THIS^.statuses.enabledStatus.enabled THEN
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF THIS^.statuses.enabledStatus = EnabledStatus.enabled THEN
     request := RequestResults.ACCEPTED;
     THIS^.start(
         alpha := alpha,
@@ -1830,8 +1826,8 @@ SUPER^();
 THIS^.get.u2 := u2;
 THIS^.get.u3 := u3;
 THIS^.get.u4 := u4;
-THIS^.statuses.busyStatus( isBusy := TRUE );
-THIS^.statuses.healthStatus( isGood := TRUE );
+THIS^.statuses.busyStatus := BusyStatus.busy;
+THIS^.statuses.healthStatus := HealthStatus.good;
 </xhtml>
                 </ST>
               </body>
@@ -1911,7 +1907,7 @@ THIS^.statuses.healthStatus( isGood := TRUE );
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF THIS^.statuses.enabledStatus.enabled THEN
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF THIS^.statuses.enabledStatus = EnabledStatus.enabled THEN
     request := RequestResults.ACCEPTED;
     THIS^.start(
         u1 := u1,
@@ -1991,6 +1987,8 @@ END_IF;
             </Object>
           </Folder>
           <Folder Name="Functionblocks">
+          </Folder>
+          <Folder Name="Functions">
           </Folder>
         </Folder>
       </ProjectStructure>

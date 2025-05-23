@@ -234,11 +234,13 @@
           stopDomes                   : { type: MarvelMultiUnitProcess                      , comment: "Stop the dome of multiple units at once"}
       calls:
           initialize:
-              isEnabled           : !NOT [ statuses.initializationStatus.initializing ]
+              isEnabled           : !NOT [ !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initializing ] ]
           lock:
-              isEnabled           : !AND [ statuses.operatorStatus.tech, statuses.initializationStatus.initialized ]
+              isEnabled           : !AND [ !EQ [ statuses.operatorStatus, marvel_common.OperatorStatus.tech ],
+                                           !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initialized ] ]
           unlock:
-              isEnabled           : !AND [ statuses.operatorStatus.tech, statuses.initializationStatus.locked ]
+              isEnabled           : !AND [ !EQ [ statuses.operatorStatus, marvel_common.OperatorStatus.tech ], 
+                                           !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.locked ] ]
           changeOperator:
               isEnabled           : !BOOL TRUE
           verifyPassword:
@@ -290,18 +292,16 @@
               activityStatus      : statuses.activityStatus
               services            : parts.services
           configManager:
-             isEnabled            : statuses.operatorStatus.tech
+             isEnabled            : !EQ [ statuses.operatorStatus, marvel_common.OperatorStatus.tech ]
           emergencyClose:
-              isEnabled           : !NOT [ !AND [ parts.u1.parts.dome.parts.shutter.statuses.apertureStatus.closed ,
-                                                  parts.u1.parts.dome.parts.shutter.statuses.apertureStatus.closed ,
-                                                  parts.u1.parts.dome.parts.shutter.statuses.apertureStatus.closed ,
-                                                  parts.u1.parts.dome.parts.shutter.statuses.apertureStatus.closed ] ]
+              isEnabled           : !NOT [ !AND [ !EQ [ parts.u1.parts.dome.parts.shutter.statuses.apertureStatus, marvel_common.ApertureStatus.closed ],
+                                                  !EQ [ parts.u1.parts.dome.parts.shutter.statuses.apertureStatus, marvel_common.ApertureStatus.closed ] ,
+                                                  !EQ [ parts.u1.parts.dome.parts.shutter.statuses.apertureStatus, marvel_common.ApertureStatus.closed ] ,
+                                                  !EQ [ parts.u1.parts.dome.parts.shutter.statuses.apertureStatus, marvel_common.ApertureStatus.closed ] ] ]
           healthStatus:
-              superState          : !NOT [ statuses.initializationStatus.shutdown ]
+              superState          : !NOT [ !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.shutdown ] ]
               isGood              : !MTCS_SUMMARIZE_GOOD [ parts.u1, parts.u2, parts.u3, parts.u4, parts.services ]
               hasWarning          : !MTCS_SUMMARIZE_WARN [ parts.u1, parts.u2, parts.u3, parts.u4, parts.services ]
           busyStatus:
-              superState          : !NOT [ statuses.initializationStatus.shutdown ]
+              superState          : !NOT [ !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.shutdown ] ]
               isBusy              : !MTCS_SUMMARIZE_BUSY [ parts.u1, parts.u2, parts.u3, parts.u4, parts.services ]
-          passwordHealthStatus:
-              superState          : statuses.operatorStatus.observer
