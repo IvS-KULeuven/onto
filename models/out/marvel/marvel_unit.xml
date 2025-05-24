@@ -379,7 +379,7 @@
             </variable>
           </outputVars>
           <inOutVars>
-            <variable name="operatorStatus">
+            <variable name="operatorStatus_ref">
               <type><derived name="OperatorStatus" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -394,7 +394,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Reference to the operator (observer/tech)</xhtml>
               </documentation>
             </variable>
-            <variable name="activityStatus">
+            <variable name="activityStatus_ref">
               <type><derived name="ActivityStatus" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -409,7 +409,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Shared activity status</xhtml>
               </documentation>
             </variable>
-            <variable name="services">
+            <variable name="services_ref">
               <type><derived name="Services" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -431,18 +431,18 @@
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">parts.dome(
-    operatorStatus := operatorStatus,
-    activityStatus := activityStatus,
-    services := services,
-    config := config.dome,
-    telescopeAzi := parts.telescope.actAzi);
+    operatorStatus_ref := operatorStatus_ref,
+    activityStatus_ref := activityStatus_ref,
+    services_ref := services_ref,
+    config_ref := config.dome,
+    telescopeAzi_ref := parts.telescope.actAzi);
 parts.telescope(
-    operatorStatus := operatorStatus,
-    activityStatus := activityStatus,
-    config := config.telescope,
-    longitude := config.longitude,
-    latitude := config.latitude);
-parts.configManager( isEnabled := operatorStatus.tech );
+    operatorStatus_ref := operatorStatus_ref,
+    activityStatus_ref := activityStatus_ref,
+    config_ref := config.telescope,
+    longitude_ref := config.longitude,
+    latitude_ref := config.latitude);
+parts.configManager( isEnabled := operatorStatus_ref = OperatorStatus.tech );
 statuses.healthStatus := F_HealthStatus(
     superState := NOT(statuses.initializationStatus = InitializationStatus.shutdown),
     isGood := (parts.dome.statuses.healthStatus = HealthStatus.good) AND ((parts.telescope.statuses.healthStatus = HealthStatus.good) AND (parts.configManager.statuses.healthStatus = HealthStatus.good)),

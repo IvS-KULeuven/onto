@@ -7692,7 +7692,7 @@ percent(
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">statuses.busyStatus := F_BusyStatus(
     superState := TRUE,
-    isBusy := processes.moveAbsolute.statuses.busyStatus.busy OR (processes.moveRelative.statuses.busyStatus.busy OR (processes.reset.statuses.busyStatus.busy OR (processes.power.statuses.busyStatus.busy OR (processes.gearIn.statuses.busyStatus.busy OR (processes.gearOut.statuses.busyStatus.busy OR (processes.initialize.statuses.busyStatus.busy OR (processes.setPosition.statuses.busyStatus.busy OR (processes.enableExtSetGen.statuses.busyStatus.busy OR (processes.disableExtSetGen.statuses.busyStatus.busy OR (processes.forceCalibration.statuses.busyStatus.busy OR (processes.resetCalibration.statuses.busyStatus.busy OR (processes.readParameter.statuses.busyStatus.busy OR (processes.readBoolParameter.statuses.busyStatus.busy OR (processes.writeParameter.statuses.busyStatus.busy OR (processes.writeBoolParameter.statuses.busyStatus.busy OR processes.probeAbort.statuses.busyStatus.busy))))))))))))))));
+    isBusy := (processes.moveAbsolute.statuses.busyStatus = BusyStatus.busy) OR ((processes.moveRelative.statuses.busyStatus = BusyStatus.busy) OR ((processes.reset.statuses.busyStatus = BusyStatus.busy) OR ((processes.power.statuses.busyStatus = BusyStatus.busy) OR ((processes.gearIn.statuses.busyStatus = BusyStatus.busy) OR ((processes.gearOut.statuses.busyStatus = BusyStatus.busy) OR ((processes.initialize.statuses.busyStatus = BusyStatus.busy) OR ((processes.setPosition.statuses.busyStatus = BusyStatus.busy) OR ((processes.enableExtSetGen.statuses.busyStatus = BusyStatus.busy) OR ((processes.disableExtSetGen.statuses.busyStatus = BusyStatus.busy) OR ((processes.forceCalibration.statuses.busyStatus = BusyStatus.busy) OR ((processes.resetCalibration.statuses.busyStatus = BusyStatus.busy) OR ((processes.readParameter.statuses.busyStatus = BusyStatus.busy) OR ((processes.readBoolParameter.statuses.busyStatus = BusyStatus.busy) OR ((processes.writeParameter.statuses.busyStatus = BusyStatus.busy) OR ((processes.writeBoolParameter.statuses.busyStatus = BusyStatus.busy) OR (processes.probeAbort.statuses.busyStatus = BusyStatus.busy)))))))))))))))));
 statuses.healthStatus := F_HealthStatus(
     superState := TRUE,
     isGood := NOT(_axis_ref.Status.Error),
@@ -13603,7 +13603,7 @@ LOGGER(
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">statuses.busyStatus := F_BusyStatus(
     superState := TRUE,
-    isBusy := processes.save.statuses.busyStatus.busy OR (processes.load.statuses.busyStatus.busy OR processes.activate.statuses.busyStatus.busy));
+    isBusy := (processes.save.statuses.busyStatus = BusyStatus.busy) OR ((processes.load.statuses.busyStatus = BusyStatus.busy) OR (processes.activate.statuses.busyStatus = BusyStatus.busy)));
 statuses.healthStatus := F_HealthStatus(
     superState := TRUE,
     isGood := (processes.save.statuses.healthStatus = HealthStatus.good) AND ((processes.load.statuses.healthStatus = HealthStatus.good) AND (processes.activate.statuses.healthStatus = HealthStatus.good)),

@@ -992,23 +992,24 @@
     calls:
         busyStatus:
             superState                  : !BOOL TRUE
-            isBusy                      : !OR [ processes.moveAbsolute.statuses.busyStatus.busy,
-                                                processes.moveRelative.statuses.busyStatus.busy,
-                                                processes.reset.statuses.busyStatus.busy,
-                                                processes.power.statuses.busyStatus.busy,
-                                                processes.gearIn.statuses.busyStatus.busy,
-                                                processes.gearOut.statuses.busyStatus.busy,
-                                                processes.initialize.statuses.busyStatus.busy,
-                                                processes.setPosition.statuses.busyStatus.busy,
-                                                processes.enableExtSetGen.statuses.busyStatus.busy,
-                                                processes.disableExtSetGen.statuses.busyStatus.busy,
-                                                processes.forceCalibration.statuses.busyStatus.busy,
-                                                processes.resetCalibration.statuses.busyStatus.busy,
-                                                processes.readParameter.statuses.busyStatus.busy,
-                                                processes.readBoolParameter.statuses.busyStatus.busy,
-                                                processes.writeParameter.statuses.busyStatus.busy,
-                                                processes.writeBoolParameter.statuses.busyStatus.busy,
-                                                processes.probeAbort.statuses.busyStatus.busy ]
+            isBusy                      : !MTCS_SUMMARIZE_BUSY [ 
+                                                processes.moveAbsolute,
+                                                processes.moveRelative,
+                                                processes.reset,
+                                                processes.power,
+                                                processes.gearIn,
+                                                processes.gearOut,
+                                                processes.initialize,
+                                                processes.setPosition,
+                                                processes.enableExtSetGen,
+                                                processes.disableExtSetGen,
+                                                processes.forceCalibration,
+                                                processes.resetCalibration,
+                                                processes.readParameter,
+                                                processes.readBoolParameter,
+                                                processes.writeParameter,
+                                                processes.writeBoolParameter,
+                                                processes.probeAbort ]
         healthStatus:
             superState                  : !BOOL TRUE
             isGood                      : !NOT [_axis_ref.Status.Error]
@@ -1702,9 +1703,7 @@
         # statuses
         busyStatus:
             superState  : !BOOL TRUE
-            isBusy      : !OR [ processes.save.statuses.busyStatus.busy,
-                                processes.load.statuses.busyStatus.busy,
-                                processes.activate.statuses.busyStatus.busy ]
+            isBusy      : !MTCS_SUMMARIZE_BUSY [ processes.save, processes.load, processes.activate ]
         healthStatus:
             superState  : !BOOL TRUE
             isGood      : !MTCS_SUMMARIZE_GOOD [ processes.save, processes.load, processes.activate ]

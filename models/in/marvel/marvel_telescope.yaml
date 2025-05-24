@@ -124,11 +124,11 @@
   
   !STATEMACHINE Telescope:
       references:
-          operatorStatus                  : { type: marvel_common.OperatorStatus              , comment: "Shared operator status" }
-          activityStatus                  : { type: marvel_common.ActivityStatus              , comment: "Shared activity status"}
-          config                          : { type: TelescopeConfig                         , comment: "Active configuration of the telescope" }
-          longitude                       : { type: t_double }
-          latitude                        : { type: t_double }
+          operatorStatus_ref              : { type: marvel_common.OperatorStatus              , comment: "Shared operator status" }
+          activityStatus_ref              : { type: marvel_common.ActivityStatus              , comment: "Shared activity status"}
+          config_ref                      : { type: TelescopeConfig                         , comment: "Active configuration of the telescope" }
+          longitude_ref                   : { type: t_double }
+          latitude_ref                    : { type: t_double }
       variables_read_only:
           isTelConnected                  : { type: t_bool                                  , comment: "True if the TEL server is connected" }
           isAccConnected                  : { type: t_bool                                  , comment: "True if the ACC server is connected" }
@@ -173,14 +173,14 @@
                                                          !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initializingFailed ],
                                                          !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initialized ] ] ]
           lock:
-              isEnabled                   : !EQ [ operatorStatus, marvel_common.OperatorStatus.tech ]
+              isEnabled                   : !EQ [ operatorStatus_ref, marvel_common.OperatorStatus.tech ]
           unlock:
-              isEnabled                   : !AND [ !EQ [ operatorStatus, marvel_common.OperatorStatus.tech ],
+              isEnabled                   : !AND [ !EQ [ operatorStatus_ref, marvel_common.OperatorStatus.tech ],
                                                    !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.locked ] ]
           changeOperatingState:
               isEnabled                   : !AND [ !EQ [ statuses.busyStatus, marvel_common.BusyStatus.idle], 
                                                    !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initialized], 
-                                                   !EQ [ operatorStatus, marvel_common.OperatorStatus.tech ] ]
+                                                   !EQ [ operatorStatus_ref, marvel_common.OperatorStatus.tech ] ]
           reset:
               isEnabled                   : !AND [ !EQ [ statuses.busyStatus, marvel_common.BusyStatus.idle],
                                                    !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initialized ] ]

@@ -43,20 +43,20 @@
           targetAlpha               : { type: marvel_common.AngularPosition       , comment: "The target alpha coordinate (Right Ascention)" , expand: false}
           targetDelta               : { type: marvel_common.AngularPosition       , comment: "The target delta coordinate (Declination)" , expand: false }
       references:
-        operatorStatus              : { type: marvel_common.OperatorStatus        , comment: "Reference to the operator (observer/tech)"}
-        activityStatus              : { type: marvel_common.ActivityStatus        , comment: "Shared activity status"}
-        services                    : { type: marvel_services.Services          , comment: "Shared services", expand: false}
+        operatorStatus_ref          : { type: marvel_common.OperatorStatus        , comment: "Reference to the operator (observer/tech)"}
+        activityStatus_ref          : { type: marvel_common.ActivityStatus        , comment: "Shared activity status"}
+        services_ref                : { type: marvel_services.Services          , comment: "Shared services", expand: false}
       parts:
           dome:
               type : marvel_dome.Dome
               comment: "The dome"
               expand: false
               arguments:
-                  operatorStatus          : { type: marvel_common.OperatorStatus          , expand: false }
-                  activityStatus          : { type: marvel_common.ActivityStatus          , expand: false }
-                  services                : { type: marvel_services.Services            , expand: false }
-                  config                  : { type: marvel_dome.DomeConfig              , expand: false }
-                  telescopeAzi            : { type: marvel_common.AngularPosition         , expand: false }
+                  operatorStatus_ref        : { type: marvel_common.OperatorStatus          , expand: false }
+                  activityStatus_ref        : { type: marvel_common.ActivityStatus          , expand: false }
+                  services_ref              : { type: marvel_services.Services              , expand: false }
+                  config_ref                : { type: marvel_dome.DomeConfig                , expand: false }
+                  telescopeAzi              : { type: marvel_common.AngularPosition         , expand: false }
               attributes:
                   # isTracking              : { type: t_bool }
                   statuses:
@@ -76,11 +76,11 @@
               comment: "The telescope"
               expand: false
               arguments:
-                  operatorStatus          : { type: marvel_common.OperatorStatus          , expand: false }
-                  activityStatus          : { type: marvel_common.ActivityStatus          , expand: false }
-                  config                  : { type: marvel_telescope.TelescopeConfig    , expand: false }
-                  longitude               : { type: t_double }
-                  latitude                : { type: t_double }
+                  operatorStatus_ref      : { type: marvel_common.OperatorStatus          , expand: false }
+                  activityStatus_ref      : { type: marvel_common.ActivityStatus          , expand: false }
+                  config_ref              : { type: marvel_telescope.TelescopeConfig    , expand: false }
+                  longitude_ref           : { type: t_double }
+                  latitude_ref            : { type: t_double }
               attributes:
                   # isTracking              : { type: t_bool }
                   actAzi                  : { type: marvel_common.AngularPosition         , expand: false }
@@ -117,19 +117,19 @@
               isEnabled           : !OR  [ parts.telescope.processes.abortSlew.isEnabled,
                                            parts.dome.processes.stop.isEnabled ]
           dome:
-              operatorStatus      : operatorStatus
-              activityStatus      : activityStatus
-              services            : services
-              config              : config.dome
-              telescopeAzi        : parts.telescope.actAzi
+              operatorStatus_ref  : operatorStatus_ref
+              activityStatus_ref  : activityStatus_ref
+              services_ref        : services_ref
+              config_ref          : config.dome
+              telescopeAzi_ref    : parts.telescope.actAzi
           telescope:
-              operatorStatus      : operatorStatus
-              activityStatus      : activityStatus
-              config              : config.telescope
-              longitude           : config.longitude
-              latitude            : config.latitude
+              operatorStatus_ref  : operatorStatus_ref
+              activityStatus_ref  : activityStatus_ref
+              config_ref          : config.telescope
+              longitude_ref       : config.longitude
+              latitude_ref        : config.latitude
           configManager:
-             isEnabled            : operatorStatus.tech
+             isEnabled            : !EQ [ operatorStatus_ref, marvel_common.OperatorStatus.tech ]
           healthStatus:
               superState          : !NOT [ !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.shutdown ] ]
               isGood              : !MTCS_SUMMARIZE_GOOD [ parts.dome, parts.telescope, parts.configManager ]

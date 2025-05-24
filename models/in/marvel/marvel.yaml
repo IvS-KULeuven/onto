@@ -72,9 +72,9 @@
               expand: false
               arguments:
                   number                  : { type: t_uint8 }
-                  operatorStatus          : { type: marvel_common.OperatorStatus          , expand: false }
-                  activityStatus          : { type: marvel_common.ActivityStatus          , expand: false }
-                  services                : { type: marvel_services.Services            , expand: false }
+                  operatorStatus_ref      : { type: marvel_common.OperatorStatus          , expand: false }
+                  activityStatus_ref      : { type: marvel_common.ActivityStatus          , expand: false }
+                  services_ref            : { type: marvel_services.Services              , expand: false }
               attributes:
                   parts:
                     attributes:
@@ -105,9 +105,9 @@
               expand: false
               arguments:
                   number                  : { type: t_uint8 }
-                  operatorStatus          : { type: marvel_common.OperatorStatus          , expand: false }
-                  activityStatus          : { type: marvel_common.ActivityStatus          , expand: false }
-                  services                : { type: marvel_services.Services            , expand: false }
+                  operatorStatus_ref      : { type: marvel_common.OperatorStatus          , expand: false }
+                  activityStatus_ref      : { type: marvel_common.ActivityStatus          , expand: false }
+                  services_ref            : { type: marvel_services.Services              , expand: false }
               attributes:
                   parts:
                     attributes:
@@ -138,9 +138,9 @@
               expand: false
               arguments:
                   number                  : { type: t_uint8 }
-                  operatorStatus          : { type: marvel_common.OperatorStatus          , expand: false }
-                  activityStatus          : { type: marvel_common.ActivityStatus          , expand: false }
-                  services                : { type: marvel_services.Services            , expand: false }
+                  operatorStatus_ref      : { type: marvel_common.OperatorStatus          , expand: false }
+                  activityStatus_ref      : { type: marvel_common.ActivityStatus          , expand: false }
+                  services_ref            : { type: marvel_services.Services              , expand: false }
               attributes:
                   parts:
                     attributes:
@@ -171,9 +171,9 @@
               expand: false
               arguments:
                   number                  : { type: t_uint8 }
-                  operatorStatus          : { type: marvel_common.OperatorStatus          , expand: false }
-                  activityStatus          : { type: marvel_common.ActivityStatus          , expand: false }
-                  services                : { type: marvel_services.Services            , expand: false }
+                  operatorStatus_ref      : { type: marvel_common.OperatorStatus          , expand: false }
+                  activityStatus_ref      : { type: marvel_common.ActivityStatus          , expand: false }
+                  services_ref            : { type: marvel_services.Services              , expand: false }
               attributes:
                   parts:
                     attributes:
@@ -203,7 +203,7 @@
               comment: "Services"
               expand: false
               arguments:
-                  operatorStatus          : { type: marvel_common.OperatorStatus, expand: false }
+                  operatorStatus_ref      : { type: marvel_common.OperatorStatus, expand: false }
               attributes:
                   statuses:
                       attributes:
@@ -270,27 +270,27 @@
                                           parts.u3.parts.dome.parts.shutter.processes.stop.isEnabled,
                                           parts.u4.parts.dome.parts.shutter.processes.stop.isEnabled ]
           services:
-              operatorStatus      : statuses.operatorStatus
+              operatorStatus_ref  : statuses.operatorStatus
           u1:
               number              : !UINT8 1
-              operatorStatus      : statuses.operatorStatus
-              activityStatus      : statuses.activityStatus
-              services            : parts.services
+              operatorStatus_ref  : statuses.operatorStatus
+              activityStatus_ref  : statuses.activityStatus
+              services_ref        : parts.services
           u2:
               number              : !UINT8 2
-              operatorStatus      : statuses.operatorStatus
-              activityStatus      : statuses.activityStatus
-              services            : parts.services
+              operatorStatus_ref  : statuses.operatorStatus
+              activityStatus_ref  : statuses.activityStatus
+              services_ref        : parts.services
           u3:
               number              : !UINT8 3
-              operatorStatus      : statuses.operatorStatus
-              activityStatus      : statuses.activityStatus
-              services            : parts.services
+              operatorStatus_ref  : statuses.operatorStatus
+              activityStatus_ref  : statuses.activityStatus
+              services_ref        : parts.services
           u4:
               number              : !UINT8 4
-              operatorStatus      : statuses.operatorStatus
-              activityStatus      : statuses.activityStatus
-              services            : parts.services
+              operatorStatus_ref  : statuses.operatorStatus
+              activityStatus_ref  : statuses.activityStatus
+              services_ref        : parts.services
           configManager:
              isEnabled            : !EQ [ statuses.operatorStatus, marvel_common.OperatorStatus.tech ]
           emergencyClose:

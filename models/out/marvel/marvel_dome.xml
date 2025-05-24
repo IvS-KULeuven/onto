@@ -1211,7 +1211,7 @@ END_IF;
             </variable>
           </outputVars>
           <inOutVars>
-            <variable name="operatorStatus">
+            <variable name="operatorStatus_ref">
               <type><derived name="OperatorStatus" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -1226,7 +1226,7 @@ END_IF;
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Reference to the operator (observer/tech)</xhtml>
               </documentation>
             </variable>
-            <variable name="activityStatus">
+            <variable name="activityStatus_ref">
               <type><derived name="ActivityStatus" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -1241,7 +1241,7 @@ END_IF;
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Shared activity status</xhtml>
               </documentation>
             </variable>
-            <variable name="services">
+            <variable name="services_ref">
               <type><derived name="Services" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -1256,7 +1256,7 @@ END_IF;
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Shared services</xhtml>
               </documentation>
             </variable>
-            <variable name="config">
+            <variable name="config_ref">
               <type><derived name="DomeConfig" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -1271,7 +1271,7 @@ END_IF;
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Active configuration of the cover</xhtml>
               </documentation>
             </variable>
-            <variable name="telescopeAzi">
+            <variable name="telescopeAzi_ref">
               <type><derived name="AngularPosition" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -1293,17 +1293,17 @@ END_IF;
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">parts.shutter(
-    initializationStatus := statuses.initializationStatus,
-    operatorStatus := operatorStatus,
-    operatingStatus := statuses.operatingStatus,
-    activityStatus := activityStatus,
-    config := config.shutter,
-    services := services);
+    initializationStatus_ref := statuses.initializationStatus,
+    operatorStatus_ref := operatorStatus_ref,
+    operatingStatus_ref := statuses.operatingStatus,
+    activityStatus_ref := activityStatus_ref,
+    config_ref := config_ref.shutter,
+    services_ref := services_ref);
 parts.rotation(
-    initializationStatus := statuses.initializationStatus,
-    operatorStatus := operatorStatus,
-    operatingStatus := statuses.operatingStatus,
-    config := config.rotation);
+    initializationStatus_ref := statuses.initializationStatus,
+    operatorStatus_ref := operatorStatus_ref,
+    operatingStatus_ref := statuses.operatingStatus,
+    config_ref := config_ref.rotation);
 statuses.healthStatus := F_HealthStatus(
     superState := TRUE,
     isGood := (parts.shutter.statuses.healthStatus = HealthStatus.good) AND ((parts.rotation.statuses.healthStatus = HealthStatus.good) AND ((processes.reset.statuses.healthStatus = HealthStatus.good) AND ((processes.initialize.statuses.healthStatus = HealthStatus.good) AND ((processes.syncWithAxes.statuses.healthStatus = HealthStatus.good) AND ((processes.startTrackingTelescope.statuses.healthStatus = HealthStatus.good) AND ((processes.stopTrackingTelescope.statuses.healthStatus = HealthStatus.good) AND ((processes.stop.statuses.healthStatus = HealthStatus.good) AND (processes.moveKnownPosition.statuses.healthStatus = HealthStatus.good)))))))),
@@ -1311,17 +1311,16 @@ statuses.healthStatus := F_HealthStatus(
 statuses.busyStatus := F_BusyStatus(
     superState := TRUE,
     isBusy := (parts.shutter.statuses.busyStatus = BusyStatus.busy) OR ((parts.rotation.statuses.busyStatus = BusyStatus.busy) OR ((processes.reset.statuses.busyStatus = BusyStatus.busy) OR ((processes.initialize.statuses.busyStatus = BusyStatus.busy) OR ((processes.syncWithAxes.statuses.busyStatus = BusyStatus.busy) OR ((processes.startTrackingTelescope.statuses.busyStatus = BusyStatus.busy) OR ((processes.stopTrackingTelescope.statuses.busyStatus = BusyStatus.busy) OR ((processes.stop.statuses.busyStatus = BusyStatus.busy) OR (processes.moveKnownPosition.statuses.busyStatus = BusyStatus.busy)))))))));
-statuses.operatingStatus := F_OperatingStatus( superState := statuses.initializationStatus = InitializationStatus.initialized );
 processes.initialize( isEnabled := (NOT(statuses.initializationStatus = InitializationStatus.locked)) AND ((statuses.initializationStatus = InitializationStatus.shutdown) OR ((statuses.initializationStatus = InitializationStatus.initializingFailed) OR (statuses.initializationStatus = InitializationStatus.initialized))) );
 processes.changeOperatingState( isEnabled := FALSE );
-processes.lock( isEnabled := operatorStatus = OperatorStatus.tech );
-processes.unlock( isEnabled := (operatorStatus = OperatorStatus.tech) AND (statuses.initializationStatus = InitializationStatus.locked) );
+processes.lock( isEnabled := operatorStatus_ref = OperatorStatus.tech );
+processes.unlock( isEnabled := (operatorStatus_ref = OperatorStatus.tech) AND (statuses.initializationStatus = InitializationStatus.locked) );
 processes.reset( isEnabled := (statuses.busyStatus = BusyStatus.idle) AND (statuses.initializationStatus = InitializationStatus.initialized) );
 processes.syncWithAxes( isEnabled := (statuses.initializationStatus = InitializationStatus.initialized) AND (statuses.busyStatus = BusyStatus.idle) );
 processes.startTrackingTelescope( isEnabled := NOT(isTrackingTelescope) );
 processes.stopTrackingTelescope( isEnabled := isTrackingTelescope );
 processes.moveAbsolute( isEnabled := statuses.initializationStatus = InitializationStatus.initialized );
-processes.stop( isEnabled := (statuses.busyStatus = BusyStatus.busy) OR (isTrackingTelescope OR (operatorStatus = OperatorStatus.tech)) );
+processes.stop( isEnabled := (statuses.busyStatus = BusyStatus.busy) OR (isTrackingTelescope OR (operatorStatus_ref = OperatorStatus.tech)) );
 processes.moveKnownPosition( isEnabled := (statuses.initializationStatus = InitializationStatus.initialized) AND (statuses.busyStatus = BusyStatus.idle) );
 </xhtml>
           </ST>
@@ -2075,7 +2074,7 @@ LOGGER(
             </variable>
           </outputVars>
           <inOutVars>
-            <variable name="initializationStatus">
+            <variable name="initializationStatus_ref">
               <type><derived name="InitializationStatus" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -2090,7 +2089,7 @@ LOGGER(
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Dome initialization status (initialized/initializing/...)</xhtml>
               </documentation>
             </variable>
-            <variable name="operatorStatus">
+            <variable name="operatorStatus_ref">
               <type><derived name="OperatorStatus" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -2105,7 +2104,7 @@ LOGGER(
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">marvel operator (observer/tech)</xhtml>
               </documentation>
             </variable>
-            <variable name="operatingStatus">
+            <variable name="operatingStatus_ref">
               <type><derived name="OperatingStatus" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -2120,7 +2119,7 @@ LOGGER(
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Dome operating status (manual/auto)</xhtml>
               </documentation>
             </variable>
-            <variable name="activityStatus">
+            <variable name="activityStatus_ref">
               <type><derived name="ActivityStatus" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -2135,7 +2134,7 @@ LOGGER(
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Shared activity status</xhtml>
               </documentation>
             </variable>
-            <variable name="config">
+            <variable name="config_ref">
               <type><derived name="DomeShutterConfig" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -2150,7 +2149,7 @@ LOGGER(
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">The shutter config</xhtml>
               </documentation>
             </variable>
-            <variable name="services">
+            <variable name="services_ref">
               <type><derived name="Services" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -2179,16 +2178,16 @@ statuses.motionStatus := F_DomeShutterOpeningStatus(
     superState := TRUE,
     shutterValue := dataRead.motionState);
 statuses.healthStatus := F_HealthStatus(
-    superState := NOT(initializationStatus.shutdown),
+    superState := NOT(initializationStatus_ref = InitializationStatus.shutdown),
     isGood := isConnected AND ((processes.open.statuses.healthStatus = HealthStatus.good) AND ((processes.close.statuses.healthStatus = HealthStatus.good) AND (processes.stop.statuses.healthStatus = HealthStatus.good))),
-    hasWarning := ((processes.open.statuses.healthStatus = HealthStatus.warning) OR ((processes.close.statuses.healthStatus = HealthStatus.warning) OR (processes.stop.statuses.healthStatus = HealthStatus.warning))) OR ((statuses.busyStatus = BusyStatus.idle) AND statuses.apertureStatus.partiallyOpen));
+    hasWarning := ((processes.open.statuses.healthStatus = HealthStatus.warning) OR ((processes.close.statuses.healthStatus = HealthStatus.warning) OR (processes.stop.statuses.healthStatus = HealthStatus.warning))) OR ((statuses.busyStatus = BusyStatus.idle) AND (statuses.apertureStatus = ApertureStatus.partiallyOpen)));
 statuses.busyStatus := F_BusyStatus(
-    superState := NOT(initializationStatus.shutdown),
+    superState := NOT(initializationStatus_ref = InitializationStatus.shutdown),
     isBusy := (processes.open.statuses.busyStatus = BusyStatus.busy) OR ((processes.close.statuses.busyStatus = BusyStatus.busy) OR (processes.stop.statuses.busyStatus = BusyStatus.busy)));
-processes.open( isEnabled := (statuses.healthStatus = HealthStatus.good) AND ((NOT(initializationStatus = InitializationStatus.locked)) AND ((operatorStatus = OperatorStatus.tech) OR ((statuses.busyStatus = BusyStatus.idle) AND ((initializationStatus = InitializationStatus.initialized) AND ((activityStatus = ActivityStatus.awake) OR (activityStatus = ActivityStatus.moving)))))) );
-processes.close( isEnabled := (operatorStatus = OperatorStatus.tech) OR ((NOT(initializationStatus = InitializationStatus.locked)) AND ((statuses.busyStatus = BusyStatus.idle) AND (initializationStatus = InitializationStatus.initialized))) );
+processes.open( isEnabled := (statuses.healthStatus = HealthStatus.good) AND ((NOT(initializationStatus_ref = InitializationStatus.locked)) AND ((operatorStatus_ref = OperatorStatus.tech) OR ((statuses.busyStatus = BusyStatus.idle) AND ((initializationStatus_ref = InitializationStatus.initialized) AND ((activityStatus_ref = ActivityStatus.awake) OR (activityStatus_ref = ActivityStatus.moving)))))) );
+processes.close( isEnabled := (operatorStatus_ref = OperatorStatus.tech) OR ((NOT(initializationStatus_ref = InitializationStatus.locked)) AND ((statuses.busyStatus = BusyStatus.idle) AND (initializationStatus_ref = InitializationStatus.initialized))) );
 processes.stop( isEnabled := statuses.busyStatus = BusyStatus.busy );
-processes.send( isEnabled := (operatorStatus = OperatorStatus.tech) OR isConnected );
+processes.send( isEnabled := (operatorStatus_ref = OperatorStatus.tech) OR isConnected );
 </xhtml>
           </ST>
         </body>
@@ -2570,7 +2569,7 @@ LOGGER(
             </variable>
           </outputVars>
           <inOutVars>
-            <variable name="initializationStatus">
+            <variable name="initializationStatus_ref">
               <type><derived name="InitializationStatus" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -2585,7 +2584,7 @@ LOGGER(
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Reference to the marvel initialization status</xhtml>
               </documentation>
             </variable>
-            <variable name="operatorStatus">
+            <variable name="operatorStatus_ref">
               <type><derived name="OperatorStatus" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -2600,7 +2599,7 @@ LOGGER(
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Reference to the marvel operator status</xhtml>
               </documentation>
             </variable>
-            <variable name="operatingStatus">
+            <variable name="operatingStatus_ref">
               <type><derived name="OperatingStatus" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -2615,7 +2614,7 @@ LOGGER(
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Reference to the Dome operating status</xhtml>
               </documentation>
             </variable>
-            <variable name="config">
+            <variable name="config_ref">
               <type><derived name="DomeRotationConfig" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -2636,8 +2635,8 @@ LOGGER(
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">parts.motorAxis( isEnabled := (NOT(initializationStatus = InitializationStatus.locked)) AND (operatorStatus = OperatorStatus.tech) );
-parts.encoderAxis( isEnabled := (NOT(initializationStatus = InitializationStatus.locked)) AND (operatorStatus = OperatorStatus.tech) );
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">parts.motorAxis( isEnabled := (NOT(initializationStatus_ref = InitializationStatus.locked)) AND (operatorStatus_ref = OperatorStatus.tech) );
+parts.encoderAxis( isEnabled := (NOT(initializationStatus_ref = InitializationStatus.locked)) AND (operatorStatus_ref = OperatorStatus.tech) );
 statuses.healthStatus := F_HealthStatus(
     superState := TRUE,
     isGood := (parts.motorAxis.statuses.healthStatus = HealthStatus.good) AND ((parts.encoderAxis.statuses.healthStatus = HealthStatus.good) AND ((processes.moveAbsolute.statuses.healthStatus = HealthStatus.good) AND ((processes.reset.statuses.healthStatus = HealthStatus.good) AND (processes.stop.statuses.healthStatus = HealthStatus.good)))),
@@ -2646,7 +2645,7 @@ statuses.busyStatus := F_BusyStatus(
     superState := TRUE,
     isBusy := (parts.motorAxis.statuses.busyStatus = BusyStatus.busy) OR ((parts.encoderAxis.statuses.busyStatus = BusyStatus.busy) OR ((processes.moveAbsolute.statuses.busyStatus = BusyStatus.busy) OR ((processes.reset.statuses.busyStatus = BusyStatus.busy) OR (processes.stop.statuses.busyStatus = BusyStatus.busy)))));
 processes.reset( isEnabled := statuses.busyStatus = BusyStatus.idle );
-processes.stop( isEnabled := (statuses.busyStatus = BusyStatus.busy) OR (operatorStatus = OperatorStatus.tech) );
+processes.stop( isEnabled := (statuses.busyStatus = BusyStatus.busy) OR (operatorStatus_ref = OperatorStatus.tech) );
 processes.moveAbsolute( isEnabled := statuses.busyStatus = BusyStatus.idle );
 </xhtml>
           </ST>

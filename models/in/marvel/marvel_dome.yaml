@@ -167,11 +167,11 @@
   
   !STATEMACHINE Dome:
     references:
-      operatorStatus              : { type: marvel_common.OperatorStatus        , comment: "Reference to the operator (observer/tech)"}
-      activityStatus              : { type: marvel_common.ActivityStatus        , comment: "Shared activity status"}
-      services                    : { type: marvel_services.Services          , comment: "Shared services", expand: false}
-      config                      : { type: DomeConfig                        , comment: "Active configuration of the cover" }
-      telescopeAzi                : { type: marvel_common.AngularPosition       , comment: "Azimuth target position of the telescope Axes"}
+      operatorStatus_ref      : { type: marvel_common.OperatorStatus        , comment: "Reference to the operator (observer/tech)"}
+      activityStatus_ref      : { type: marvel_common.ActivityStatus        , comment: "Shared activity status"}
+      services_ref            : { type: marvel_services.Services          , comment: "Shared services", expand: false}
+      config_ref              : { type: DomeConfig                        , comment: "Active configuration of the cover" }
+      telescopeAzi_ref        : { type: marvel_common.AngularPosition       , comment: "Azimuth target position of the telescope Axes"}
     variables_read_only:
       isTrackingTelescope         : { type: t_bool                            , comment: "True if the dome is tracking the telescope" }
       isAtKnownPosition           : { type: t_bool                            , comment: "True if the dome is at a known position" }
@@ -181,12 +181,12 @@
       shutter:
         comment                   : "Shutter mechanism"
         arguments:
-          initializationStatus    : { comment: "Dome initialization status (initialized/initializing/...)" }
-          operatorStatus          : { comment: "marvel operator (observer/tech)" }
-          operatingStatus         : { comment: "Dome operating status (manual/auto)" }
-          activityStatus          : { comment: "Shared activity status"}
-          config                  : { comment: "The shutter config" }
-          services                : { comment: "Shared services"}
+          initializationStatus_ref: { comment: "Dome initialization status (initialized/initializing/...)" }
+          operatorStatus_ref      : { comment: "marvel operator (observer/tech)" }
+          operatingStatus_ref     : { comment: "Dome operating status (manual/auto)" }
+          activityStatus_ref      : { comment: "Shared activity status"}
+          config_ref              : { comment: "The shutter config" }
+          services_ref            : { comment: "Shared services"}
         attributes:
           statuses:
             attributes:
@@ -195,10 +195,10 @@
       rotation:
         comment                   : "Rotation mechanism"
         arguments:
-          initializationStatus    : { comment: "Dome initialization status (initialized/initializing/...)"}
-          operatorStatus          : { comment: "marvel operator (observer/tech)"}
-          operatingStatus         : { comment: "Dome operating status (manual/auto)"}
-          config                  : { comment: "The rotation config"}
+          initializationStatus_ref: { comment: "Dome initialization status (initialized/initializing/...)"}
+          operatorStatus_ref      : { comment: "marvel operator (observer/tech)"}
+          operatingStatus_ref     : { comment: "Dome operating status (manual/auto)"}
+          config_ref              : { comment: "The rotation config"}
         attributes:
           statuses:
             attributes:
@@ -249,9 +249,9 @@
                                                  !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initializingFailed ],
                                                  !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initialized ] ] ]
       lock:
-        isEnabled                 : !EQ [ operatorStatus, marvel_common.OperatorStatus.tech ]
+        isEnabled                 : !EQ [ operatorStatus_ref, marvel_common.OperatorStatus.tech ]
       unlock:
-        isEnabled                 : !AND [ !EQ [ operatorStatus, marvel_common.OperatorStatus.tech ],
+        isEnabled                 : !AND [ !EQ [ operatorStatus_ref, marvel_common.OperatorStatus.tech ],
                                            !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.locked ] ]
       changeOperatingState:
         isEnabled                 : !BOOL FALSE # we currently don't use AUTO/MANUAL
@@ -259,7 +259,7 @@
         isEnabled                 : !AND [ !EQ [ statuses.busyStatus, marvel_common.BusyStatus.idle ],
                                            !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initialized ] ]
       stop:
-        isEnabled                 : !OR [ !EQ [ statuses.busyStatus, marvel_common.BusyStatus.busy ], isTrackingTelescope,  !EQ [ operatorStatus, marvel_common.OperatorStatus.tech ] ]
+        isEnabled                 : !OR [ !EQ [ statuses.busyStatus, marvel_common.BusyStatus.busy ], isTrackingTelescope,  !EQ [ operatorStatus_ref, marvel_common.OperatorStatus.tech ] ]
       moveAbsolute:
         isEnabled                 : !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initialized ]
       startTrackingTelescope:
@@ -274,26 +274,26 @@
                                            !EQ [ statuses.busyStatus, marvel_common.BusyStatus.idle ] ]
       # parts
       shutter:
-        initializationStatus      : statuses.initializationStatus
-        operatorStatus            : operatorStatus
-        operatingStatus           : statuses.operatingStatus
-        activityStatus            : activityStatus
-        config                    : config.shutter
-        services                  : services
+        initializationStatus_ref  : statuses.initializationStatus
+        operatorStatus_ref        : operatorStatus_ref
+        operatingStatus_ref       : statuses.operatingStatus
+        activityStatus_ref        : activityStatus_ref
+        config_ref                : config_ref.shutter
+        services_ref              : services_ref
       rotation:
-        initializationStatus      : statuses.initializationStatus
-        operatorStatus            : operatorStatus
-        operatingStatus           : statuses.operatingStatus
-        config                    : config.rotation
+        initializationStatus_ref  : statuses.initializationStatus
+        operatorStatus_ref        : operatorStatus_ref
+        operatingStatus_ref       : statuses.operatingStatus
+        config_ref                : config_ref.rotation
       # light:
       #   initializationStatus      : statuses.initializationStatus
       #   operatorStatus            : operatorStatus
       #   operatingStatus           : statuses.operatingStatus
       #   activityStatus            : activityStatus
-      #   config                    : config.light
+      #   config                    : config_ref.light
       # statuses
-      operatingStatus:
-        superState                : !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initialized ]
+      # operatingStatus:
+      #   superState                : !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initialized ]
       healthStatus:
         superState                : !BOOL True
         isGood                    : !MTCS_SUMMARIZE_GOOD [ parts.shutter,
@@ -372,12 +372,12 @@
       humidityActualStatus     : { type: t_string                          , comment: "The humidity sensor status as a string" }
       humidityLimit            : { type: marvel_common.Fraction              , comment: "The humidity limit" }
     references:
-      initializationStatus    : { type: marvel_common.InitializationStatus    , comment: "Dome initialization status (initialized/initializing/...)"}
-      operatorStatus          : { type: marvel_common.OperatorStatus          , comment: "marvel operator (observer/tech)"}
-      operatingStatus         : { type: marvel_common.OperatingStatus         , comment: "Dome operating status (manual/auto)"}
-      activityStatus          : { type: marvel_common.ActivityStatus          , comment: "Shared activity status"}
-      config                  : { type: DomeShutterConfig                   , comment: "The shutter config"}
-      services                : { type: marvel_services.Services            , comment: "Shared services", expand: false}
+      initializationStatus_ref : { type: marvel_common.InitializationStatus    , comment: "Dome initialization status (initialized/initializing/...)"}
+      operatorStatus_ref       : { type: marvel_common.OperatorStatus          , comment: "marvel operator (observer/tech)"}
+      operatingStatus_ref      : { type: marvel_common.OperatingStatus         , comment: "Dome operating status (manual/auto)"}
+      activityStatus_ref       : { type: marvel_common.ActivityStatus          , comment: "Shared activity status"}
+      config_ref               : { type: DomeShutterConfig                   , comment: "The shutter config"}
+      services_ref             : { type: marvel_services.Services            , comment: "Shared services", expand: false}
     statuses:
       apertureStatus          : { type: marvel_common.ApertureStatus          , comment: "Combined aperture status (i.e. of both panels)" }
       motionStatus            : { type: DomeShutterOpeningStatus            , comment: "Motion status" }
@@ -394,19 +394,19 @@
         isEnabled             : !EQ [ statuses.busyStatus, marvel_common.BusyStatus.busy ]
       open:
         isEnabled             : !AND [ !EQ [statuses.healthStatus, marvel_common.HealthStatus.good], 
-                                       !NOT [ !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.locked ] ], 
-                                       !OR [ !EQ [ operatorStatus, marvel_common.OperatorStatus.tech ], 
+                                       !NOT [ !EQ [ initializationStatus_ref, marvel_common.InitializationStatus.locked ] ], 
+                                       !OR [ !EQ [ operatorStatus_ref, marvel_common.OperatorStatus.tech ], 
                                              !AND [ !EQ [ statuses.busyStatus, marvel_common.BusyStatus.idle ], 
-                                                    !EQ [ initializationStatus, marvel_common.InitializationStatus.initialized ], 
-                                                    !OR [ !EQ [ activityStatus, marvel_common.ActivityStatus.awake ], 
-                                                          !EQ [ activityStatus, marvel_common.ActivityStatus.moving ] ] ] ] ]
+                                                    !EQ [ initializationStatus_ref, marvel_common.InitializationStatus.initialized ], 
+                                                    !OR [ !EQ [ activityStatus_ref, marvel_common.ActivityStatus.awake ], 
+                                                          !EQ [ activityStatus_ref, marvel_common.ActivityStatus.moving ] ] ] ] ]
       close:
-        isEnabled             : !OR [ !EQ [ operatorStatus, marvel_common.OperatorStatus.tech ],
-                                      !AND [ !NOT [ !EQ [ initializationStatus, marvel_common.InitializationStatus.locked ] ], 
+        isEnabled             : !OR [ !EQ [ operatorStatus_ref, marvel_common.OperatorStatus.tech ],
+                                      !AND [ !NOT [ !EQ [ initializationStatus_ref, marvel_common.InitializationStatus.locked ] ], 
                                              !EQ [ statuses.busyStatus, marvel_common.BusyStatus.idle ], 
-                                             !EQ [ initializationStatus, marvel_common.InitializationStatus.initialized ] ] ]
+                                             !EQ [ initializationStatus_ref, marvel_common.InitializationStatus.initialized ] ] ]
       send:
-        isEnabled             : !OR [ !EQ [ operatorStatus, marvel_common.OperatorStatus.tech ], isConnected ]
+        isEnabled             : !OR [ !EQ [ operatorStatus_ref, marvel_common.OperatorStatus.tech ], isConnected ]
       # statuses
       apertureStatus:
         superState            : !NOT [ !OR [ !EQ [ dataRead.apertureState, marvel_shutterplc.DomeShutterApertureStates.UNKNOWN ], 
@@ -417,7 +417,7 @@
         superState            : !BOOL TRUE
         shutterValue          : dataRead.motionState
       healthStatus:
-        superState            : !NOT [ statuses.initializationStatus.shutdown ]
+        superState            : !NOT [ !EQ [ initializationStatus_ref, marvel_common.InitializationStatus.shutdown ] ]
         isGood                : !AND [ 
                                       isConnected,
                                       !MTCS_SUMMARIZE_GOOD [ processes.open,
@@ -427,12 +427,13 @@
                                       !MTCS_SUMMARIZE_WARN [ processes.open,
                                                              processes.close,
                                                              processes.stop ],
-                                      !AND [ !EQ [ statuses.busyStatus, marvel_common.BusyStatus.idle ], statuses.apertureStatus.partiallyOpen ]
+                                      !AND [ !EQ [ statuses.busyStatus, marvel_common.BusyStatus.idle ], 
+                                             !EQ [ statuses.apertureStatus, marvel_common.ApertureStatus.partiallyOpen ] ]
                                       #,
                                       #!NOT [ automaticOperation ] 
                                       ]
       busyStatus:
-        superState            : !NOT [ statuses.initializationStatus.shutdown ]
+        superState            : !NOT [ !EQ [ initializationStatus_ref, marvel_common.InitializationStatus.shutdown ] ]
         isBusy                : !MTCS_SUMMARIZE_BUSY [ processes.open,
                                                        processes.close,
                                                        processes.stop ]
@@ -450,10 +451,10 @@
       actPos                      : { type: marvel_common.AngularPosition         , comment: "The actual position (same as parts.masterAxis!)", expand: false }
       actVelo                     : { type: marvel_common.AngularVelocity         , comment: "The actual velocity (same as parts.masterAxis!)", expand: false }
     references:
-      initializationStatus        : { type: marvel_common.InitializationStatus    , comment: "Reference to the marvel initialization status"}
-      operatorStatus              : { type: marvel_common.OperatorStatus          , comment: "Reference to the marvel operator status"}
-      operatingStatus             : { type: marvel_common.OperatingStatus         , comment: "Reference to the Dome operating status"}
-      config                      : { type: DomeRotationConfig                  , comment: "Reference to the rotation config"}
+      initializationStatus_ref    : { type: marvel_common.InitializationStatus    , comment: "Reference to the marvel initialization status"}
+      operatorStatus_ref          : { type: marvel_common.OperatorStatus          , comment: "Reference to the marvel operator status"}
+      operatingStatus_ref         : { type: marvel_common.OperatingStatus         , comment: "Reference to the Dome operating status"}
+      config_ref                  : { type: DomeRotationConfig                  , comment: "Reference to the rotation config"}
     parts:
       motorAxis                   : { type: marvel_common.AngularAxis             , comment: "Motor axis" }
       encoderAxis                 : { type: marvel_common.AngularAxis             , comment: "Encoder axis" }
@@ -468,14 +469,17 @@
       reset:
         isEnabled                 : !EQ [ statuses.busyStatus, marvel_common.BusyStatus.idle ]
       stop:
-        isEnabled                 : !OR [ !EQ [ statuses.busyStatus, marvel_common.BusyStatus.busy ], !EQ [ operatorStatus, marvel_common.OperatorStatus.tech ] ]
+        isEnabled                 : !OR [ !EQ [ statuses.busyStatus, marvel_common.BusyStatus.busy ], 
+                                          !EQ [ operatorStatus_ref, marvel_common.OperatorStatus.tech ] ]
       moveAbsolute:
         isEnabled                 : !EQ [ statuses.busyStatus, marvel_common.BusyStatus.idle ]
       # parts
       motorAxis:
-        isEnabled                 : !AND [ !NOT [ !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.locked ] ], !EQ [ operatorStatus, marvel_common.OperatorStatus.tech ] ]
+        isEnabled                 : !AND [ !NOT [ !EQ [ initializationStatus_ref, marvel_common.InitializationStatus.locked ] ], 
+                                                  !EQ [ operatorStatus_ref, marvel_common.OperatorStatus.tech ] ]
       encoderAxis:
-        isEnabled                 : !AND [ !NOT [ !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.locked ] ], !EQ [ operatorStatus, marvel_common.OperatorStatus.tech ] ]
+        isEnabled                 : !AND [ !NOT [ !EQ [ initializationStatus_ref, marvel_common.InitializationStatus.locked ] ], 
+                                           !EQ [ operatorStatus_ref, marvel_common.OperatorStatus.tech ] ]
       # statuses
       healthStatus:
         superState                : !BOOL TRUE

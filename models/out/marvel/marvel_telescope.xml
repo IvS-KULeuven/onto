@@ -1008,7 +1008,7 @@
             </variable>
           </outputVars>
           <inOutVars>
-            <variable name="operatorStatus">
+            <variable name="operatorStatus_ref">
               <type><derived name="OperatorStatus" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -1023,7 +1023,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Shared operator status</xhtml>
               </documentation>
             </variable>
-            <variable name="activityStatus">
+            <variable name="activityStatus_ref">
               <type><derived name="ActivityStatus" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -1038,7 +1038,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Shared activity status</xhtml>
               </documentation>
             </variable>
-            <variable name="config">
+            <variable name="config_ref">
               <type><derived name="TelescopeConfig" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -1053,7 +1053,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Active configuration of the telescope</xhtml>
               </documentation>
             </variable>
-            <variable name="longitude">
+            <variable name="longitude_ref">
               <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -1068,7 +1068,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="latitude">
+            <variable name="latitude_ref">
               <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -1097,9 +1097,9 @@ statuses.busyStatus := F_BusyStatus(
     superState := NOT(statuses.initializationStatus = InitializationStatus.shutdown),
     isBusy := (processes.initialize.statuses.busyStatus = BusyStatus.busy) OR ((processes.changeOperatingState.statuses.busyStatus = BusyStatus.busy) OR ((processes.slewToCoordinates.statuses.busyStatus = BusyStatus.busy) OR ((processes.slewToAziEle.statuses.busyStatus = BusyStatus.busy) OR ((processes.abortSlew.statuses.busyStatus = BusyStatus.busy) OR ((processes.powerOn.statuses.busyStatus = BusyStatus.busy) OR ((processes.powerOff.statuses.busyStatus = BusyStatus.busy) OR ((processes.moveKnownPosition.statuses.busyStatus = BusyStatus.busy) OR ((processes.setTracking.statuses.busyStatus = BusyStatus.busy) OR ((processes.moveM2.statuses.busyStatus = BusyStatus.busy) OR ((processes.openCover.statuses.busyStatus = BusyStatus.busy) OR (processes.closeCover.statuses.busyStatus = BusyStatus.busy))))))))))));
 processes.initialize( isEnabled := (NOT(statuses.initializationStatus = InitializationStatus.locked)) AND ((statuses.initializationStatus = InitializationStatus.shutdown) OR ((statuses.initializationStatus = InitializationStatus.initializingFailed) OR (statuses.initializationStatus = InitializationStatus.initialized))) );
-processes.lock( isEnabled := operatorStatus = OperatorStatus.tech );
-processes.unlock( isEnabled := (operatorStatus = OperatorStatus.tech) AND (statuses.initializationStatus = InitializationStatus.locked) );
-processes.changeOperatingState( isEnabled := (statuses.busyStatus = BusyStatus.idle) AND ((statuses.initializationStatus = InitializationStatus.initialized) AND (operatorStatus = OperatorStatus.tech)) );
+processes.lock( isEnabled := operatorStatus_ref = OperatorStatus.tech );
+processes.unlock( isEnabled := (operatorStatus_ref = OperatorStatus.tech) AND (statuses.initializationStatus = InitializationStatus.locked) );
+processes.changeOperatingState( isEnabled := (statuses.busyStatus = BusyStatus.idle) AND ((statuses.initializationStatus = InitializationStatus.initialized) AND (operatorStatus_ref = OperatorStatus.tech)) );
 processes.slewToCoordinates( isEnabled := (statuses.initializationStatus = InitializationStatus.initialized) AND ((statuses.busyStatus = BusyStatus.idle) AND (statuses.poweredStatus = PoweredStatus.enabled)) );
 processes.slewToAziEle( isEnabled := (statuses.initializationStatus = InitializationStatus.initialized) AND ((statuses.busyStatus = BusyStatus.idle) AND (statuses.poweredStatus = PoweredStatus.enabled)) );
 processes.abortSlew( isEnabled := statuses.initializationStatus = InitializationStatus.initialized );

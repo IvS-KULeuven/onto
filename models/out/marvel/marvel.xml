@@ -580,25 +580,25 @@
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">parts.u1(
     number := 1,
-    operatorStatus := statuses.operatorStatus,
-    activityStatus := statuses.activityStatus,
-    services := parts.services);
+    operatorStatus_ref := statuses.operatorStatus,
+    activityStatus_ref := statuses.activityStatus,
+    services_ref := parts.services);
 parts.u2(
     number := 2,
-    operatorStatus := statuses.operatorStatus,
-    activityStatus := statuses.activityStatus,
-    services := parts.services);
+    operatorStatus_ref := statuses.operatorStatus,
+    activityStatus_ref := statuses.activityStatus,
+    services_ref := parts.services);
 parts.u3(
     number := 3,
-    operatorStatus := statuses.operatorStatus,
-    activityStatus := statuses.activityStatus,
-    services := parts.services);
+    operatorStatus_ref := statuses.operatorStatus,
+    activityStatus_ref := statuses.activityStatus,
+    services_ref := parts.services);
 parts.u4(
     number := 4,
-    operatorStatus := statuses.operatorStatus,
-    activityStatus := statuses.activityStatus,
-    services := parts.services);
-parts.services( operatorStatus := statuses.operatorStatus );
+    operatorStatus_ref := statuses.operatorStatus,
+    activityStatus_ref := statuses.activityStatus,
+    services_ref := parts.services);
+parts.services( operatorStatus_ref := statuses.operatorStatus );
 statuses.healthStatus := F_HealthStatus(
     superState := NOT(statuses.initializationStatus = InitializationStatus.shutdown),
     isGood := (parts.u1.statuses.healthStatus = HealthStatus.good) AND ((parts.u2.statuses.healthStatus = HealthStatus.good) AND ((parts.u3.statuses.healthStatus = HealthStatus.good) AND ((parts.u4.statuses.healthStatus = HealthStatus.good) AND (parts.services.statuses.healthStatus = HealthStatus.good)))),

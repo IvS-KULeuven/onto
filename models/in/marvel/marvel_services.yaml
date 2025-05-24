@@ -171,15 +171,15 @@
       variables:
           editableConfig                  : { type: ServicesConfig              , comment: "Editable configuration of the Services subsystem", expand: false }
       references:
-          operatorStatus                  : { type: marvel_common.OperatorStatus  , comment: "Shared operator status" }
+          operatorStatus_ref              : { type: marvel_common.OperatorStatus  , comment: "Shared operator status" }
       variables_read_only:
           config                          : { type: ServicesConfig              , comment: "Active configuration of the Services subsystem" }
       parts:
           timing:
               comment                     : "Timing service"
               arguments:
-                  config                  : {}
-                  operatorStatus          : {}
+                  config_ref              : {}
+                  operatorStatus_ref      : {}
               attributes:
                   statuses:
                       attributes:
@@ -187,7 +187,7 @@
           mercatorMeteo:
               comment                     : "Mercator meteo service"
               arguments:
-                  config                  : {}
+                  config_ref              : {}
               attributes:
                   airTemperature          : {}
                   statuses:
@@ -212,9 +212,11 @@
                                                   !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initializingFailed ],
                                                   !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initialized ] ]
           lock:
-              isEnabled                   : !AND [ operatorStatus.tech, !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initialized ] ]
+              isEnabled                   : !AND [ !EQ [ operatorStatus_ref,  marvel_common.OperatorStatus.tech ],
+                                                   !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initialized ] ]
           unlock:
-              isEnabled                   : !AND [ operatorStatus.tech, !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.locked ] ]
+              isEnabled                   : !AND [ !EQ [ operatorStatus_ref,  marvel_common.OperatorStatus.tech ], 
+                                                   !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.locked ] ]
           changeOperatingState:
               isEnabled                   : !BOOL FALSE # there is no MANUAL mode
         #   operatingStatus:
@@ -229,12 +231,12 @@
               superState                  : !BOOL TRUE
               isBusy                      : !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initializing ]
           configManager:
-              isEnabled                   : !EQ [ operatorStatus, marvel_common.OperatorStatus.tech ]
+              isEnabled                   : !EQ [ operatorStatus_ref, marvel_common.OperatorStatus.tech ]
           timing:
-              operatorStatus              : operatorStatus
-              config                      : config.timing
+              operatorStatus_ref          : operatorStatus_ref
+              config_ref                  : config.timing
           mercatorMeteo:
-              config                      : config.mercatorMeteo
+              config_ref                  : config.mercatorMeteo
 
 
   ########################################################################################################################
@@ -244,8 +246,8 @@
   !STATEMACHINE ServicesTiming:
       typeOf                              : [ ServicesParts.timing ]
       references:
-          operatorStatus                  : { type: marvel_common.OperatorStatus    , comment: "Shared operator status"}
-          config                          : { type: ServicesTimingConfig          , comment: "The config" }
+          operatorStatus_ref              : { type: marvel_common.OperatorStatus    , comment: "Shared operator status"}
+          config_ref                      : { type: ServicesTimingConfig          , comment: "The config" }
       variables:
           ntpExtTime                      : { type: t_int64 , address: "%I*"       , comment: "TcCOM object nExtTime variable" }
           isNtpConnected                  : { type: t_bool  , address: "%I*"       , comment: "TRUE if NTP is connected" }
@@ -271,7 +273,7 @@
   ########################################################################################################################
   !STATEMACHINE ServicesMercatorMeteoMeasurement:
       references:
-          config          : { type: marvel_common.MeasurementConfig   , comment: "Reference to the config" }
+          config_ref      : { type: marvel_common.MeasurementConfig   , comment: "Reference to the config" }
       variables:
           data            : { type: t_double                        , comment: "The measured data" }
           valid           : { type: t_bool                          , comment: "TRUE if the data is valid" }
@@ -283,10 +285,10 @@
       calls:
           enabledStatus:
               superState   : !BOOL TRUE
-              isEnabled    : config.enabled
+              isEnabled    : config_ref.enabled
           alarmStatus:
               superState   : !EQ [ statuses.enabledStatus, marvel_common.EnabledStatus.enabled ]
-              config       : config.alarms
+              config       : config_ref.alarms
               value        : data
           healthStatus:
               superState   : !EQ [ statuses.enabledStatus, marvel_common.EnabledStatus.enabled ]
@@ -342,7 +344,7 @@
           # simulation
           fromSimulation              : { type: marvel_common.MercatorMeteoExchange , comment: "The simulated data (if config.simulated is TRUE)", expand: false }
       references:
-          config                      : { type: ServicesMercatorMeteoConfig       , comment: "The config" }
+          config_ref                  : { type: ServicesMercatorMeteoConfig       , comment: "The config" }
       statuses:
           meteoHealthStatus           : { type: marvel_common.HealthStatus }
           healthStatus                : { type: marvel_common.HealthStatus }
@@ -350,121 +352,123 @@
           {}
       calls:
           windSpeedMinimum:
-              config                  : config.windSpeedMinimum
+              config_ref              : config_ref.windSpeedMinimum
               data                    : fromMercator.windSpeedMinimum
               valid                   : fromMercator.windSpeedMinimumValid
               disconnected            : mercatorDisconnected
           windSpeedAverage:
-              config                  : config.windSpeedAverage
+              config_ref              : config_ref.windSpeedAverage
               data                    : fromMercator.windSpeedAverage
               valid                   : fromMercator.windSpeedAverageValid
               disconnected            : mercatorDisconnected
           windSpeedMaximum:
-              config                  : config.windSpeedMaximum
+              config_ref              : config_ref.windSpeedMaximum
               data                    : fromMercator.windSpeedMaximum
               valid                   : fromMercator.windSpeedMaximumValid
               disconnected            : mercatorDisconnected
           windDirectionMinimum:
-              config                  : config.windDirectionMinimum
+              config_ref              : config_ref.windDirectionMinimum
               data                    : fromMercator.windDirectionMinimum
               valid                   : fromMercator.windDirectionMinimumValid
               disconnected            : mercatorDisconnected
           windDirectionAverage:
-              config                  : config.windDirectionAverage
+              config_ref              : config_ref.windDirectionAverage
               data                    : fromMercator.windDirectionAverage
               valid                   : fromMercator.windDirectionAverageValid
               disconnected            : mercatorDisconnected
           windDirectionMaximum:
-              config                  : config.windDirectionMaximum
+              config_ref              : config_ref.windDirectionMaximum
               data                    : fromMercator.windDirectionMaximum
               valid                   : fromMercator.windDirectionMaximumValid
               disconnected            : mercatorDisconnected
           airPressure:
-              config                  : config.airPressure
+              config_ref              : config_ref.airPressure
               data                    : fromMercator.airPressure
               valid                   : fromMercator.airPressureValid
               disconnected            : mercatorDisconnected
           airTemperature:
-              config                  : config.airTemperature
+              config_ref              : config_ref.airTemperature
               data                    : fromMercator.airTemperature
               valid                   : fromMercator.airTemperatureValid
               disconnected            : mercatorDisconnected
           internalTemperature:
-              config                  : config.internalTemperature
+              config_ref              : config_ref.internalTemperature
               data                    : fromMercator.internalTemperature
               valid                   : fromMercator.internalTemperatureValid
               disconnected            : mercatorDisconnected
           relativeHumidity:
-              config                  : config.relativeHumidity
+              config_ref              : config_ref.relativeHumidity
               data                    : fromMercator.relativeHumidity
               valid                   : fromMercator.relativeHumidityValid
               disconnected            : mercatorDisconnected
           rainAccumulation:
-              config                  : config.rainAccumulation
+              config_ref              : config_ref.rainAccumulation
               data                    : fromMercator.rainAccumulation
               valid                   : fromMercator.rainAccumulationValid
               disconnected            : mercatorDisconnected
           rainDuration:
-              config                  : config.rainDuration
+              config_ref              : config_ref.rainDuration
               data                    : fromMercator.rainDuration
               valid                   : fromMercator.rainDurationValid
               disconnected            : mercatorDisconnected
           rainIntensity:
-              config                  : config.rainIntensity
+              config_ref              : config_ref.rainIntensity
               data                    : fromMercator.rainIntensity
               valid                   : fromMercator.rainIntensityValid
               disconnected            : mercatorDisconnected
           rainPeakIntensity:
-              config                  : config.rainPeakIntensity
+              config_ref              : config_ref.rainPeakIntensity
               data                    : fromMercator.rainPeakIntensity
               valid                   : fromMercator.rainPeakIntensityValid
               disconnected            : mercatorDisconnected
           hailAccumulation:
-              config                  : config.hailAccumulation
+              config_ref              : config_ref.hailAccumulation
               data                    : fromMercator.hailAccumulation
               valid                   : fromMercator.hailAccumulationValid
               disconnected            : mercatorDisconnected
           hailDuration:
-              config                  : config.hailDuration
+              config_ref              : config_ref.hailDuration
               data                    : fromMercator.hailDuration
               valid                   : fromMercator.hailDurationValid
               disconnected            : mercatorDisconnected
           hailIntensity:
-              config                  : config.hailIntensity
+              config_ref              : config_ref.hailIntensity
               data                    : fromMercator.hailIntensity
               valid                   : fromMercator.hailIntensityValid
               disconnected            : mercatorDisconnected
           hailPeakIntensity:
-              config                  : config.hailPeakIntensity
+              config_ref              : config_ref.hailPeakIntensity
               data                    : fromMercator.hailPeakIntensity
               valid                   : fromMercator.hailPeakIntensityValid
               disconnected            : mercatorDisconnected
           heatingTemperature:
-              config                  : config.heatingTemperature
+              config_ref              : config_ref.heatingTemperature
               data                    : fromMercator.heatingTemperature
               valid                   : fromMercator.heatingTemperatureValid
               disconnected            : mercatorDisconnected
           heatingVoltage:
-              config                  : config.heatingVoltage
+              config_ref              : config_ref.heatingVoltage
               data                    : fromMercator.heatingVoltage
               valid                   : fromMercator.heatingVoltageValid
               disconnected            : mercatorDisconnected
           supplyVoltage:
-              config                  : config.supplyVoltage
+              config_ref              : config_ref.supplyVoltage
               data                    : fromMercator.supplyVoltage
               valid                   : fromMercator.supplyVoltageValid
               disconnected            : mercatorDisconnected
           referenceVoltage:
-              config                  : config.referenceVoltage
+              config_ref              : config_ref.referenceVoltage
               data                    : fromMercator.referenceVoltage
               valid                   : fromMercator.referenceVoltageValid
               disconnected            : mercatorDisconnected
           dewpoint:
-              config                  : config.dewpoint
+              config_ref              : config_ref.dewpoint
               data                    : fromMercator.dewpoint
               valid                   : fromMercator.dewpointValid
               disconnected            : mercatorDisconnected
           healthStatus:
+              superState              : !BOOL TRUE
+              hasWarning              : !BOOL FALSE
               isGood                  : !AND [ fromMercator.mercatorServiceHealthy,
                                                !NOT [ mercatorDisconnected ] ]
           meteoHealthStatus:
