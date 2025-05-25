@@ -190,6 +190,7 @@
               <value name="partiallyOpen" value="4" />
               <value name="undefined" value="5" />
             </values>
+            <baseType><BYTE /></baseType>
           </enum>
         </baseType>
         <addData>
@@ -209,6 +210,7 @@
               <value name="idle" value="2" />
               <value name="busy" value="3" />
             </values>
+            <baseType><BYTE /></baseType>
           </enum>
         </baseType>
         <addData>
@@ -228,6 +230,7 @@
               <value name="started" value="2" />
               <value name="notStarted" value="3" />
             </values>
+            <baseType><BYTE /></baseType>
           </enum>
         </baseType>
         <addData>
@@ -247,6 +250,7 @@
               <value name="enabled" value="2" />
               <value name="disabled" value="3" />
             </values>
+            <baseType><BYTE /></baseType>
           </enum>
         </baseType>
         <addData>
@@ -266,6 +270,7 @@
               <value name="enabled" value="2" />
               <value name="disabled" value="3" />
             </values>
+            <baseType><BYTE /></baseType>
           </enum>
         </baseType>
         <addData>
@@ -286,6 +291,7 @@
               <value name="warning" value="3" />
               <value name="bad" value="4" />
             </values>
+            <baseType><BYTE /></baseType>
           </enum>
         </baseType>
         <addData>
@@ -308,6 +314,7 @@
               <value name="initialized" value="5" />
               <value name="locked" value="6" />
             </values>
+            <baseType><BYTE /></baseType>
           </enum>
         </baseType>
         <addData>
@@ -328,6 +335,7 @@
               <value name="backward" value="3" />
               <value name="standstill" value="4" />
             </values>
+            <baseType><BYTE /></baseType>
           </enum>
         </baseType>
         <addData>
@@ -351,6 +359,7 @@
               <value name="lo" value="6" />
               <value name="loLo" value="7" />
             </values>
+            <baseType><BYTE /></baseType>
           </enum>
         </baseType>
         <addData>
@@ -371,6 +380,7 @@
               <value name="closing" value="3" />
               <value name="standstill" value="4" />
             </values>
+            <baseType><BYTE /></baseType>
           </enum>
         </baseType>
         <addData>
@@ -391,6 +401,7 @@
               <value name="tech" value="3" />
               <value name="observer" value="4" />
             </values>
+            <baseType><BYTE /></baseType>
           </enum>
         </baseType>
         <addData>
@@ -410,6 +421,7 @@
               <value name="auto" value="2" />
               <value name="manual" value="3" />
             </values>
+            <baseType><BYTE /></baseType>
           </enum>
         </baseType>
         <addData>
@@ -429,6 +441,7 @@
               <value name="local" value="2" />
               <value name="remote" value="3" />
             </values>
+            <baseType><BYTE /></baseType>
           </enum>
         </baseType>
         <addData>
@@ -449,6 +462,7 @@
               <value name="awake" value="3" />
               <value name="sleeping" value="4" />
             </values>
+            <baseType><BYTE /></baseType>
           </enum>
         </baseType>
         <addData>
@@ -4241,77 +4255,6 @@ END_IF;
           </ST>
         </body>
         <addData>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_log">
-              <interface>
-                <returnType><BOOL /></returnType>
-                <inputVars>
-                  <variable name="name">
-                    <type><string /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                  <variable name="buffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
-                    </documentation>
-                  </variable>
-                </inOutVars>
-                <localVars>
-                  <variable name="subBuffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
-                    </documentation>
-                  </variable>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
-    name := name,
-    actualStatus := THIS^.actualStatus,
-    previousStatus := THIS^.previousStatus,
-    buffer := buffer,
-    subBuffer := subBuffer);
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
         </addData>
       </pou>
       <pou name="SM_AngularPosition" pouType="functionBlock">
@@ -4428,77 +4371,6 @@ arcseconds(
           </ST>
         </body>
         <addData>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_log">
-              <interface>
-                <returnType><BOOL /></returnType>
-                <inputVars>
-                  <variable name="name">
-                    <type><string /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                  <variable name="buffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
-                    </documentation>
-                  </variable>
-                </inOutVars>
-                <localVars>
-                  <variable name="subBuffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
-                    </documentation>
-                  </variable>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
-    name := name,
-    actualStatus := THIS^.actualStatus,
-    previousStatus := THIS^.previousStatus,
-    buffer := buffer,
-    subBuffer := subBuffer);
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
         </addData>
       </pou>
       <pou name="SM_LinearPosition" pouType="functionBlock">
@@ -4597,77 +4469,6 @@ micrometers(
           </ST>
         </body>
         <addData>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_log">
-              <interface>
-                <returnType><BOOL /></returnType>
-                <inputVars>
-                  <variable name="name">
-                    <type><string /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                  <variable name="buffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
-                    </documentation>
-                  </variable>
-                </inOutVars>
-                <localVars>
-                  <variable name="subBuffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
-                    </documentation>
-                  </variable>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
-    name := name,
-    actualStatus := THIS^.actualStatus,
-    previousStatus := THIS^.previousStatus,
-    buffer := buffer,
-    subBuffer := subBuffer);
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
         </addData>
       </pou>
       <pou name="SM_AngularVelocity" pouType="functionBlock">
@@ -4784,77 +4585,6 @@ arcsecondsPerSecond(
           </ST>
         </body>
         <addData>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_log">
-              <interface>
-                <returnType><BOOL /></returnType>
-                <inputVars>
-                  <variable name="name">
-                    <type><string /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                  <variable name="buffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
-                    </documentation>
-                  </variable>
-                </inOutVars>
-                <localVars>
-                  <variable name="subBuffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
-                    </documentation>
-                  </variable>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
-    name := name,
-    actualStatus := THIS^.actualStatus,
-    previousStatus := THIS^.previousStatus,
-    buffer := buffer,
-    subBuffer := subBuffer);
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
         </addData>
       </pou>
       <pou name="SM_AngularAcceleration" pouType="functionBlock">
@@ -4971,77 +4701,6 @@ arcsecondsPerSquareSecond(
           </ST>
         </body>
         <addData>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_log">
-              <interface>
-                <returnType><BOOL /></returnType>
-                <inputVars>
-                  <variable name="name">
-                    <type><string /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                  <variable name="buffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
-                    </documentation>
-                  </variable>
-                </inOutVars>
-                <localVars>
-                  <variable name="subBuffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
-                    </documentation>
-                  </variable>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
-    name := name,
-    actualStatus := THIS^.actualStatus,
-    previousStatus := THIS^.previousStatus,
-    buffer := buffer,
-    subBuffer := subBuffer);
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
         </addData>
       </pou>
       <pou name="SM_LinearVelocity" pouType="functionBlock">
@@ -5122,77 +4781,6 @@ arcsecondsPerSquareSecond(
           </ST>
         </body>
         <addData>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_log">
-              <interface>
-                <returnType><BOOL /></returnType>
-                <inputVars>
-                  <variable name="name">
-                    <type><string /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                  <variable name="buffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
-                    </documentation>
-                  </variable>
-                </inOutVars>
-                <localVars>
-                  <variable name="subBuffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
-                    </documentation>
-                  </variable>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
-    name := name,
-    actualStatus := THIS^.actualStatus,
-    previousStatus := THIS^.previousStatus,
-    buffer := buffer,
-    subBuffer := subBuffer);
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
         </addData>
       </pou>
       <pou name="SM_Voltage" pouType="functionBlock">
@@ -5291,77 +4879,6 @@ milliVolt(
           </ST>
         </body>
         <addData>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_log">
-              <interface>
-                <returnType><BOOL /></returnType>
-                <inputVars>
-                  <variable name="name">
-                    <type><string /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                  <variable name="buffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
-                    </documentation>
-                  </variable>
-                </inOutVars>
-                <localVars>
-                  <variable name="subBuffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
-                    </documentation>
-                  </variable>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
-    name := name,
-    actualStatus := THIS^.actualStatus,
-    previousStatus := THIS^.previousStatus,
-    buffer := buffer,
-    subBuffer := subBuffer);
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
         </addData>
       </pou>
       <pou name="SM_GForce" pouType="functionBlock">
@@ -5460,77 +4977,6 @@ milliG(
           </ST>
         </body>
         <addData>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_log">
-              <interface>
-                <returnType><BOOL /></returnType>
-                <inputVars>
-                  <variable name="name">
-                    <type><string /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                  <variable name="buffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
-                    </documentation>
-                  </variable>
-                </inOutVars>
-                <localVars>
-                  <variable name="subBuffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
-                    </documentation>
-                  </variable>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
-    name := name,
-    actualStatus := THIS^.actualStatus,
-    previousStatus := THIS^.previousStatus,
-    buffer := buffer,
-    subBuffer := subBuffer);
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
         </addData>
       </pou>
       <pou name="SM_Current" pouType="functionBlock">
@@ -5629,77 +5075,6 @@ milliAmps(
           </ST>
         </body>
         <addData>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_log">
-              <interface>
-                <returnType><BOOL /></returnType>
-                <inputVars>
-                  <variable name="name">
-                    <type><string /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                  <variable name="buffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
-                    </documentation>
-                  </variable>
-                </inOutVars>
-                <localVars>
-                  <variable name="subBuffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
-                    </documentation>
-                  </variable>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
-    name := name,
-    actualStatus := THIS^.actualStatus,
-    previousStatus := THIS^.previousStatus,
-    buffer := buffer,
-    subBuffer := subBuffer);
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
         </addData>
       </pou>
       <pou name="SM_Torque" pouType="functionBlock">
@@ -5780,77 +5155,6 @@ milliAmps(
           </ST>
         </body>
         <addData>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_log">
-              <interface>
-                <returnType><BOOL /></returnType>
-                <inputVars>
-                  <variable name="name">
-                    <type><string /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                  <variable name="buffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
-                    </documentation>
-                  </variable>
-                </inOutVars>
-                <localVars>
-                  <variable name="subBuffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
-                    </documentation>
-                  </variable>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
-    name := name,
-    actualStatus := THIS^.actualStatus,
-    previousStatus := THIS^.previousStatus,
-    buffer := buffer,
-    subBuffer := subBuffer);
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
         </addData>
       </pou>
       <pou name="SM_TorqueLimit" pouType="functionBlock">
@@ -5981,77 +5285,6 @@ newtonmeter(
           </ST>
         </body>
         <addData>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_log">
-              <interface>
-                <returnType><BOOL /></returnType>
-                <inputVars>
-                  <variable name="name">
-                    <type><string /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                  <variable name="buffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
-                    </documentation>
-                  </variable>
-                </inOutVars>
-                <localVars>
-                  <variable name="subBuffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
-                    </documentation>
-                  </variable>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
-    name := name,
-    actualStatus := THIS^.actualStatus,
-    previousStatus := THIS^.previousStatus,
-    buffer := buffer,
-    subBuffer := subBuffer);
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
         </addData>
       </pou>
       <pou name="SM_AverageCurrent" pouType="functionBlock">
@@ -6177,77 +5410,6 @@ minutes(
           </ST>
         </body>
         <addData>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_log">
-              <interface>
-                <returnType><BOOL /></returnType>
-                <inputVars>
-                  <variable name="name">
-                    <type><string /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                  <variable name="buffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
-                    </documentation>
-                  </variable>
-                </inOutVars>
-                <localVars>
-                  <variable name="subBuffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
-                    </documentation>
-                  </variable>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
-    name := name,
-    actualStatus := THIS^.actualStatus,
-    previousStatus := THIS^.previousStatus,
-    buffer := buffer,
-    subBuffer := subBuffer);
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
         </addData>
       </pou>
       <pou name="SM_Temperature" pouType="functionBlock">
@@ -6346,77 +5508,6 @@ kelvin(
           </ST>
         </body>
         <addData>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_log">
-              <interface>
-                <returnType><BOOL /></returnType>
-                <inputVars>
-                  <variable name="name">
-                    <type><string /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                  <variable name="buffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
-                    </documentation>
-                  </variable>
-                </inOutVars>
-                <localVars>
-                  <variable name="subBuffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
-                    </documentation>
-                  </variable>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
-    name := name,
-    actualStatus := THIS^.actualStatus,
-    previousStatus := THIS^.previousStatus,
-    buffer := buffer,
-    subBuffer := subBuffer);
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
         </addData>
       </pou>
       <pou name="SM_Pressure" pouType="functionBlock">
@@ -6530,77 +5621,6 @@ pascal(
           </ST>
         </body>
         <addData>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_log">
-              <interface>
-                <returnType><BOOL /></returnType>
-                <inputVars>
-                  <variable name="name">
-                    <type><string /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                  <variable name="buffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
-                    </documentation>
-                  </variable>
-                </inOutVars>
-                <localVars>
-                  <variable name="subBuffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
-                    </documentation>
-                  </variable>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
-    name := name,
-    actualStatus := THIS^.actualStatus,
-    previousStatus := THIS^.previousStatus,
-    buffer := buffer,
-    subBuffer := subBuffer);
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
         </addData>
       </pou>
       <pou name="SM_Frequency" pouType="functionBlock">
@@ -6681,77 +5701,6 @@ pascal(
           </ST>
         </body>
         <addData>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_log">
-              <interface>
-                <returnType><BOOL /></returnType>
-                <inputVars>
-                  <variable name="name">
-                    <type><string /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                  <variable name="buffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
-                    </documentation>
-                  </variable>
-                </inOutVars>
-                <localVars>
-                  <variable name="subBuffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
-                    </documentation>
-                  </variable>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
-    name := name,
-    actualStatus := THIS^.actualStatus,
-    previousStatus := THIS^.previousStatus,
-    buffer := buffer,
-    subBuffer := subBuffer);
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
         </addData>
       </pou>
       <pou name="SM_Force" pouType="functionBlock">
@@ -6850,77 +5799,6 @@ decaNewton(
           </ST>
         </body>
         <addData>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_log">
-              <interface>
-                <returnType><BOOL /></returnType>
-                <inputVars>
-                  <variable name="name">
-                    <type><string /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                  <variable name="buffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
-                    </documentation>
-                  </variable>
-                </inOutVars>
-                <localVars>
-                  <variable name="subBuffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
-                    </documentation>
-                  </variable>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
-    name := name,
-    actualStatus := THIS^.actualStatus,
-    previousStatus := THIS^.previousStatus,
-    buffer := buffer,
-    subBuffer := subBuffer);
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
         </addData>
       </pou>
       <pou name="SM_Fraction" pouType="functionBlock">
@@ -7019,77 +5897,6 @@ percent(
           </ST>
         </body>
         <addData>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_log">
-              <interface>
-                <returnType><BOOL /></returnType>
-                <inputVars>
-                  <variable name="name">
-                    <type><string /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                  <variable name="buffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
-                    </documentation>
-                  </variable>
-                </inOutVars>
-                <localVars>
-                  <variable name="subBuffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
-                    </documentation>
-                  </variable>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
-    name := name,
-    actualStatus := THIS^.actualStatus,
-    previousStatus := THIS^.previousStatus,
-    buffer := buffer,
-    subBuffer := subBuffer);
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
         </addData>
       </pou>
       <pou name="SM_BaseProcess" pouType="functionBlock">
@@ -7196,79 +6003,6 @@ percent(
           </ST>
         </body>
         <addData>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_log">
-              <interface>
-                <returnType><BOOL /></returnType>
-                <inputVars>
-                  <variable name="name">
-                    <type><string /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                  <variable name="buffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
-                    </documentation>
-                  </variable>
-                </inOutVars>
-                <localVars>
-                  <variable name="subBuffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
-                    </documentation>
-                  </variable>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
-    name := name,
-    actualStatus := THIS^.actualStatus,
-    previousStatus := THIS^.previousStatus,
-    buffer := buffer,
-    subBuffer := subBuffer,
-    pHealthStatus := ADR(THIS^.statuses.healthStatus),
-    pBusyStatus := ADR(THIS^.statuses.busyStatus));
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
         </addData>
       </pou>
       <pou name="SM_BaseMcProcess" pouType="functionBlock">
@@ -7404,77 +6138,6 @@ percent(
           </ST>
         </body>
         <addData>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_log">
-              <interface>
-                <returnType><BOOL /></returnType>
-                <inputVars>
-                  <variable name="name">
-                    <type><string /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                  <variable name="buffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
-                    </documentation>
-                  </variable>
-                </inOutVars>
-                <localVars>
-                  <variable name="subBuffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
-                    </documentation>
-                  </variable>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
-    name := name,
-    actualStatus := THIS^.actualStatus,
-    previousStatus := THIS^.previousStatus,
-    buffer := buffer,
-    subBuffer := subBuffer);
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
         </addData>
       </pou>
       <pou name="SM_BaseXmlDataSrvProcess" pouType="functionBlock">
@@ -7732,963 +6395,6 @@ processes.probeAbort( isEnabled := isEnabled AND (statuses.busyStatus = BusyStat
           </ST>
         </body>
         <addData>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="moveAbsolute">
-              <interface>
-                <returnType><derived name="RequestResults" /></returnType>
-                <inputVars>
-                  <variable name="position">
-                    <type><LREAL /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-                    </documentation>
-                  </variable>
-                  <variable name="maxVelocity">
-                    <type><LREAL /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                </inOutVars>
-                <localVars>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                      <Attribute Name="TcRpcEnable" Value="1" />
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">moveAbsolute := THIS^.processes.moveAbsolute.request(
-    position := position,
-    maxVelocity := maxVelocity);
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="moveRelative">
-              <interface>
-                <returnType><derived name="RequestResults" /></returnType>
-                <inputVars>
-                  <variable name="distance">
-                    <type><LREAL /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-                    </documentation>
-                  </variable>
-                  <variable name="maxVelocity">
-                    <type><LREAL /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                </inOutVars>
-                <localVars>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                      <Attribute Name="TcRpcEnable" Value="1" />
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">moveRelative := THIS^.processes.moveRelative.request(
-    distance := distance,
-    maxVelocity := maxVelocity);
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="moveVelocity">
-              <interface>
-                <returnType><derived name="RequestResults" /></returnType>
-                <inputVars>
-                  <variable name="value">
-                    <type><LREAL /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                </inOutVars>
-                <localVars>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                      <Attribute Name="TcRpcEnable" Value="1" />
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">moveVelocity := THIS^.processes.moveVelocity.request( value := value );
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="reset">
-              <interface>
-                <returnType><derived name="RequestResults" /></returnType>
-                <inputVars>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                </inOutVars>
-                <localVars>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                      <Attribute Name="TcRpcEnable" Value="1" />
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">reset := THIS^.processes.reset.request();
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="stop">
-              <interface>
-                <returnType><derived name="RequestResults" /></returnType>
-                <inputVars>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                </inOutVars>
-                <localVars>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                      <Attribute Name="TcRpcEnable" Value="1" />
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">stop := THIS^.processes.stop.request();
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="stopParametrized">
-              <interface>
-                <returnType><derived name="RequestResults" /></returnType>
-                <inputVars>
-                  <variable name="deceleration">
-                    <type><LREAL /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-                    </documentation>
-                  </variable>
-                  <variable name="jerk">
-                    <type><LREAL /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                </inOutVars>
-                <localVars>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                      <Attribute Name="TcRpcEnable" Value="1" />
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">stopParametrized := THIS^.processes.stopParametrized.request(
-    deceleration := deceleration,
-    jerk := jerk);
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="power">
-              <interface>
-                <returnType><derived name="RequestResults" /></returnType>
-                <inputVars>
-                  <variable name="enable">
-                    <type><BOOL /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                </inOutVars>
-                <localVars>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                      <Attribute Name="TcRpcEnable" Value="1" />
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">power := THIS^.processes.power.request( enable := enable );
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="gearIn">
-              <interface>
-                <returnType><derived name="RequestResults" /></returnType>
-                <inputVars>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                </inOutVars>
-                <localVars>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                      <Attribute Name="TcRpcEnable" Value="1" />
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">gearIn := THIS^.processes.gearIn.request();
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="gearOut">
-              <interface>
-                <returnType><derived name="RequestResults" /></returnType>
-                <inputVars>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                </inOutVars>
-                <localVars>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                      <Attribute Name="TcRpcEnable" Value="1" />
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">gearOut := THIS^.processes.gearOut.request();
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="initialize">
-              <interface>
-                <returnType><derived name="RequestResults" /></returnType>
-                <inputVars>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                </inOutVars>
-                <localVars>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                      <Attribute Name="TcRpcEnable" Value="1" />
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">initialize := THIS^.processes.initialize.request();
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="setPosition">
-              <interface>
-                <returnType><derived name="RequestResults" /></returnType>
-                <inputVars>
-                  <variable name="value">
-                    <type><LREAL /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                </inOutVars>
-                <localVars>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                      <Attribute Name="TcRpcEnable" Value="1" />
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">setPosition := THIS^.processes.setPosition.request( value := value );
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="enableExtSetGen">
-              <interface>
-                <returnType><derived name="RequestResults" /></returnType>
-                <inputVars>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                </inOutVars>
-                <localVars>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                      <Attribute Name="TcRpcEnable" Value="1" />
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">enableExtSetGen := THIS^.processes.enableExtSetGen.request();
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="disableExtSetGen">
-              <interface>
-                <returnType><derived name="RequestResults" /></returnType>
-                <inputVars>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                </inOutVars>
-                <localVars>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                      <Attribute Name="TcRpcEnable" Value="1" />
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">disableExtSetGen := THIS^.processes.disableExtSetGen.request();
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="forceCalibration">
-              <interface>
-                <returnType><derived name="RequestResults" /></returnType>
-                <inputVars>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                </inOutVars>
-                <localVars>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                      <Attribute Name="TcRpcEnable" Value="1" />
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">forceCalibration := THIS^.processes.forceCalibration.request();
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="resetCalibration">
-              <interface>
-                <returnType><derived name="RequestResults" /></returnType>
-                <inputVars>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                </inOutVars>
-                <localVars>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                      <Attribute Name="TcRpcEnable" Value="1" />
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">resetCalibration := THIS^.processes.resetCalibration.request();
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="readParameter">
-              <interface>
-                <returnType><derived name="RequestResults" /></returnType>
-                <inputVars>
-                  <variable name="parameterNumber">
-                    <type><INT /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                </inOutVars>
-                <localVars>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                      <Attribute Name="TcRpcEnable" Value="1" />
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">readParameter := THIS^.processes.readParameter.request( parameterNumber := parameterNumber );
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="readBoolParameter">
-              <interface>
-                <returnType><derived name="RequestResults" /></returnType>
-                <inputVars>
-                  <variable name="parameterNumber">
-                    <type><INT /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                </inOutVars>
-                <localVars>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                      <Attribute Name="TcRpcEnable" Value="1" />
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">readBoolParameter := THIS^.processes.readBoolParameter.request( parameterNumber := parameterNumber );
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="writeParameter">
-              <interface>
-                <returnType><derived name="RequestResults" /></returnType>
-                <inputVars>
-                  <variable name="parameterNumber">
-                    <type><INT /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-                    </documentation>
-                  </variable>
-                  <variable name="value">
-                    <type><LREAL /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                </inOutVars>
-                <localVars>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                      <Attribute Name="TcRpcEnable" Value="1" />
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">writeParameter := THIS^.processes.writeParameter.request(
-    parameterNumber := parameterNumber,
-    value := value);
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="writeBoolParameter">
-              <interface>
-                <returnType><derived name="RequestResults" /></returnType>
-                <inputVars>
-                  <variable name="parameterNumber">
-                    <type><INT /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-                    </documentation>
-                  </variable>
-                  <variable name="value">
-                    <type><BOOL /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                </inOutVars>
-                <localVars>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                      <Attribute Name="TcRpcEnable" Value="1" />
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">writeBoolParameter := THIS^.processes.writeBoolParameter.request(
-    parameterNumber := parameterNumber,
-    value := value);
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="probeStart">
-              <interface>
-                <returnType><derived name="RequestResults" /></returnType>
-                <inputVars>
-                  <variable name="risingEdge">
-                    <type><BOOL /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-                    </documentation>
-                  </variable>
-                  <variable name="timeout">
-                    <type><LREAL /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                </inOutVars>
-                <localVars>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                      <Attribute Name="TcRpcEnable" Value="1" />
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">probeStart := THIS^.processes.probeStart.request(
-    risingEdge := risingEdge,
-    timeout := timeout);
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="probeAbort">
-              <interface>
-                <returnType><derived name="RequestResults" /></returnType>
-                <inputVars>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                </inOutVars>
-                <localVars>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                      <Attribute Name="TcRpcEnable" Value="1" />
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">probeAbort := THIS^.processes.probeAbort.request();
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_log">
-              <interface>
-                <returnType><BOOL /></returnType>
-                <inputVars>
-                  <variable name="name">
-                    <type><string /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                  <variable name="buffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
-                    </documentation>
-                  </variable>
-                </inOutVars>
-                <localVars>
-                  <variable name="subBuffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
-                    </documentation>
-                  </variable>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.processes.moveAbsolute._log(
-    name := &#39;processes.moveAbsolute&#39;,
-    buffer := subBuffer);
-THIS^.processes.moveRelative._log(
-    name := &#39;processes.moveRelative&#39;,
-    buffer := subBuffer);
-THIS^.processes.moveVelocity._log(
-    name := &#39;processes.moveVelocity&#39;,
-    buffer := subBuffer);
-THIS^.processes.reset._log(
-    name := &#39;processes.reset&#39;,
-    buffer := subBuffer);
-THIS^.processes.stop._log(
-    name := &#39;processes.stop&#39;,
-    buffer := subBuffer);
-THIS^.processes.stopParametrized._log(
-    name := &#39;processes.stopParametrized&#39;,
-    buffer := subBuffer);
-THIS^.processes.power._log(
-    name := &#39;processes.power&#39;,
-    buffer := subBuffer);
-THIS^.processes.gearIn._log(
-    name := &#39;processes.gearIn&#39;,
-    buffer := subBuffer);
-THIS^.processes.gearOut._log(
-    name := &#39;processes.gearOut&#39;,
-    buffer := subBuffer);
-THIS^.processes.initialize._log(
-    name := &#39;processes.initialize&#39;,
-    buffer := subBuffer);
-THIS^.processes.setPosition._log(
-    name := &#39;processes.setPosition&#39;,
-    buffer := subBuffer);
-THIS^.processes.enableExtSetGen._log(
-    name := &#39;processes.enableExtSetGen&#39;,
-    buffer := subBuffer);
-THIS^.processes.disableExtSetGen._log(
-    name := &#39;processes.disableExtSetGen&#39;,
-    buffer := subBuffer);
-THIS^.processes.forceCalibration._log(
-    name := &#39;processes.forceCalibration&#39;,
-    buffer := subBuffer);
-THIS^.processes.resetCalibration._log(
-    name := &#39;processes.resetCalibration&#39;,
-    buffer := subBuffer);
-THIS^.processes.readParameter._log(
-    name := &#39;processes.readParameter&#39;,
-    buffer := subBuffer);
-THIS^.processes.readBoolParameter._log(
-    name := &#39;processes.readBoolParameter&#39;,
-    buffer := subBuffer);
-THIS^.processes.writeParameter._log(
-    name := &#39;processes.writeParameter&#39;,
-    buffer := subBuffer);
-THIS^.processes.writeBoolParameter._log(
-    name := &#39;processes.writeBoolParameter&#39;,
-    buffer := subBuffer);
-THIS^.processes.probeStart._log(
-    name := &#39;processes.probeStart&#39;,
-    buffer := subBuffer);
-THIS^.processes.probeAbort._log(
-    name := &#39;processes.probeAbort&#39;,
-    buffer := subBuffer);
-LOGGER(
-    name := name,
-    actualStatus := THIS^.actualStatus,
-    previousStatus := THIS^.previousStatus,
-    buffer := buffer,
-    subBuffer := subBuffer,
-    pHealthStatus := ADR(THIS^.statuses.healthStatus),
-    pBusyStatus := ADR(THIS^.statuses.busyStatus));
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
         </addData>
       </pou>
       <pou name="SM_AngularAxis" pouType="functionBlock">
@@ -9150,78 +6856,6 @@ status_ro := status;
           </ST>
         </body>
         <addData>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_log">
-              <interface>
-                <returnType><BOOL /></returnType>
-                <inputVars>
-                  <variable name="name">
-                    <type><string /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                  <variable name="buffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
-                    </documentation>
-                  </variable>
-                </inOutVars>
-                <localVars>
-                  <variable name="subBuffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
-                    </documentation>
-                  </variable>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
-    name := name,
-    actualStatus := THIS^.actualStatus,
-    previousStatus := THIS^.previousStatus,
-    buffer := buffer,
-    subBuffer := subBuffer,
-    pHealthStatus := ADR(THIS^.statuses.healthStatus));
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
         </addData>
       </pou>
       <pou name="SM_IncrementalEncoder" pouType="functionBlock">
@@ -9629,141 +7263,6 @@ status_ro := status;
           </ST>
         </body>
         <addData>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="enableCounterResetC">
-              <interface>
-                <returnType><derived name="RequestResults" /></returnType>
-                <inputVars>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                </inOutVars>
-                <localVars>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                      <Attribute Name="TcRpcEnable" Value="1" />
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">enableCounterResetC := THIS^.processes.enableCounterResetC.request();
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="disableCounterResetC">
-              <interface>
-                <returnType><derived name="RequestResults" /></returnType>
-                <inputVars>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                </inOutVars>
-                <localVars>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                      <Attribute Name="TcRpcEnable" Value="1" />
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">disableCounterResetC := THIS^.processes.disableCounterResetC.request();
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_log">
-              <interface>
-                <returnType><BOOL /></returnType>
-                <inputVars>
-                  <variable name="name">
-                    <type><string /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                  <variable name="buffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
-                    </documentation>
-                  </variable>
-                </inOutVars>
-                <localVars>
-                  <variable name="subBuffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
-                    </documentation>
-                  </variable>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.processes.enableCounterResetC._log(
-    name := &#39;processes.enableCounterResetC&#39;,
-    buffer := subBuffer);
-THIS^.processes.disableCounterResetC._log(
-    name := &#39;processes.disableCounterResetC&#39;,
-    buffer := subBuffer);
-LOGGER(
-    name := name,
-    actualStatus := THIS^.actualStatus,
-    previousStatus := THIS^.previousStatus,
-    buffer := buffer,
-    subBuffer := subBuffer,
-    pHealthStatus := ADR(THIS^.statuses.healthStatus),
-    pBusyStatus := ADR(THIS^.statuses.busyStatus));
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
         </addData>
       </pou>
       <pou name="SM_EtherCatDevice" pouType="functionBlock">
@@ -9921,78 +7420,6 @@ infoData_ro := infoData;
           </ST>
         </body>
         <addData>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_log">
-              <interface>
-                <returnType><BOOL /></returnType>
-                <inputVars>
-                  <variable name="name">
-                    <type><string /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                  <variable name="buffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
-                    </documentation>
-                  </variable>
-                </inOutVars>
-                <localVars>
-                  <variable name="subBuffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
-                    </documentation>
-                  </variable>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
-    name := name,
-    actualStatus := THIS^.actualStatus,
-    previousStatus := THIS^.previousStatus,
-    buffer := buffer,
-    subBuffer := subBuffer,
-    pHealthStatus := ADR(THIS^.statuses.healthStatus));
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
         </addData>
       </pou>
       <pou name="SM_CANopenBus" pouType="functionBlock">
@@ -10182,78 +7609,6 @@ txErrorCounter_ro := txErrorCounter;
           </ST>
         </body>
         <addData>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_log">
-              <interface>
-                <returnType><BOOL /></returnType>
-                <inputVars>
-                  <variable name="name">
-                    <type><string /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                  <variable name="buffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
-                    </documentation>
-                  </variable>
-                </inOutVars>
-                <localVars>
-                  <variable name="subBuffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
-                    </documentation>
-                  </variable>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
-    name := name,
-    actualStatus := THIS^.actualStatus,
-    previousStatus := THIS^.previousStatus,
-    buffer := buffer,
-    subBuffer := subBuffer,
-    pHealthStatus := ADR(THIS^.statuses.healthStatus));
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
         </addData>
       </pou>
       <pou name="SM_CurrentMeasurement" pouType="functionBlock">
@@ -10393,78 +7748,6 @@ error_ro := error;
           </ST>
         </body>
         <addData>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_log">
-              <interface>
-                <returnType><BOOL /></returnType>
-                <inputVars>
-                  <variable name="name">
-                    <type><string /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                  <variable name="buffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
-                    </documentation>
-                  </variable>
-                </inOutVars>
-                <localVars>
-                  <variable name="subBuffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
-                    </documentation>
-                  </variable>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
-    name := name,
-    actualStatus := THIS^.actualStatus,
-    previousStatus := THIS^.previousStatus,
-    buffer := buffer,
-    subBuffer := subBuffer,
-    pHealthStatus := ADR(THIS^.statuses.healthStatus));
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
         </addData>
       </pou>
       <pou name="SM_VoltageMeasurement" pouType="functionBlock">
@@ -10718,78 +8001,6 @@ error_ro := error;
           </ST>
         </body>
         <addData>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_log">
-              <interface>
-                <returnType><BOOL /></returnType>
-                <inputVars>
-                  <variable name="name">
-                    <type><string /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                  <variable name="buffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
-                    </documentation>
-                  </variable>
-                </inOutVars>
-                <localVars>
-                  <variable name="subBuffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
-                    </documentation>
-                  </variable>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
-    name := name,
-    actualStatus := THIS^.actualStatus,
-    previousStatus := THIS^.previousStatus,
-    buffer := buffer,
-    subBuffer := subBuffer,
-    pHealthStatus := ADR(THIS^.statuses.healthStatus));
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
         </addData>
       </pou>
       <pou name="SM_TemperatureMeasurement" pouType="functionBlock">
@@ -11043,78 +8254,6 @@ error_ro := error;
           </ST>
         </body>
         <addData>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_log">
-              <interface>
-                <returnType><BOOL /></returnType>
-                <inputVars>
-                  <variable name="name">
-                    <type><string /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                  <variable name="buffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
-                    </documentation>
-                  </variable>
-                </inOutVars>
-                <localVars>
-                  <variable name="subBuffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
-                    </documentation>
-                  </variable>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
-    name := name,
-    actualStatus := THIS^.actualStatus,
-    previousStatus := THIS^.previousStatus,
-    buffer := buffer,
-    subBuffer := subBuffer,
-    pHealthStatus := ADR(THIS^.statuses.healthStatus));
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
         </addData>
       </pou>
       <pou name="SM_PressureMeasurement" pouType="functionBlock">
@@ -11368,78 +8507,6 @@ error_ro := error;
           </ST>
         </body>
         <addData>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_log">
-              <interface>
-                <returnType><BOOL /></returnType>
-                <inputVars>
-                  <variable name="name">
-                    <type><string /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                  <variable name="buffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
-                    </documentation>
-                  </variable>
-                </inOutVars>
-                <localVars>
-                  <variable name="subBuffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
-                    </documentation>
-                  </variable>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
-    name := name,
-    actualStatus := THIS^.actualStatus,
-    previousStatus := THIS^.previousStatus,
-    buffer := buffer,
-    subBuffer := subBuffer,
-    pHealthStatus := ADR(THIS^.statuses.healthStatus));
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
         </addData>
       </pou>
       <pou name="SM_FrequencyMeasurement" pouType="functionBlock">
@@ -11693,78 +8760,6 @@ error_ro := error;
           </ST>
         </body>
         <addData>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_log">
-              <interface>
-                <returnType><BOOL /></returnType>
-                <inputVars>
-                  <variable name="name">
-                    <type><string /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                  <variable name="buffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
-                    </documentation>
-                  </variable>
-                </inOutVars>
-                <localVars>
-                  <variable name="subBuffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
-                    </documentation>
-                  </variable>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
-    name := name,
-    actualStatus := THIS^.actualStatus,
-    previousStatus := THIS^.previousStatus,
-    buffer := buffer,
-    subBuffer := subBuffer,
-    pHealthStatus := ADR(THIS^.statuses.healthStatus));
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
         </addData>
       </pou>
       <pou name="SM_GForceMeasurement" pouType="functionBlock">
@@ -11919,78 +8914,6 @@ error_ro := error;
           </ST>
         </body>
         <addData>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_log">
-              <interface>
-                <returnType><BOOL /></returnType>
-                <inputVars>
-                  <variable name="name">
-                    <type><string /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                  <variable name="buffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
-                    </documentation>
-                  </variable>
-                </inOutVars>
-                <localVars>
-                  <variable name="subBuffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
-                    </documentation>
-                  </variable>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
-    name := name,
-    actualStatus := THIS^.actualStatus,
-    previousStatus := THIS^.previousStatus,
-    buffer := buffer,
-    subBuffer := subBuffer,
-    pHealthStatus := ADR(THIS^.statuses.healthStatus));
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
         </addData>
       </pou>
       <pou name="SM_RelativeHumidityMeasurement" pouType="functionBlock">
@@ -12244,78 +9167,6 @@ error_ro := error;
           </ST>
         </body>
         <addData>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_log">
-              <interface>
-                <returnType><BOOL /></returnType>
-                <inputVars>
-                  <variable name="name">
-                    <type><string /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                  <variable name="buffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
-                    </documentation>
-                  </variable>
-                </inOutVars>
-                <localVars>
-                  <variable name="subBuffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
-                    </documentation>
-                  </variable>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
-    name := name,
-    actualStatus := THIS^.actualStatus,
-    previousStatus := THIS^.previousStatus,
-    buffer := buffer,
-    subBuffer := subBuffer,
-    pHealthStatus := ADR(THIS^.statuses.healthStatus));
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
         </addData>
       </pou>
       <pou name="SM_ForceMeasurement" pouType="functionBlock">
@@ -12565,78 +9416,6 @@ overrange_ro := overrange;
           </ST>
         </body>
         <addData>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_log">
-              <interface>
-                <returnType><BOOL /></returnType>
-                <inputVars>
-                  <variable name="name">
-                    <type><string /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                  <variable name="buffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
-                    </documentation>
-                  </variable>
-                </inOutVars>
-                <localVars>
-                  <variable name="subBuffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
-                    </documentation>
-                  </variable>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
-    name := name,
-    actualStatus := THIS^.actualStatus,
-    previousStatus := THIS^.previousStatus,
-    buffer := buffer,
-    subBuffer := subBuffer,
-    pHealthStatus := ADR(THIS^.statuses.healthStatus));
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
         </addData>
       </pou>
       <pou name="SM_LinearPositionMeasurement16" pouType="functionBlock">
@@ -12886,78 +9665,6 @@ overrange_ro := overrange;
           </ST>
         </body>
         <addData>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_log">
-              <interface>
-                <returnType><BOOL /></returnType>
-                <inputVars>
-                  <variable name="name">
-                    <type><string /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                  <variable name="buffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
-                    </documentation>
-                  </variable>
-                </inOutVars>
-                <localVars>
-                  <variable name="subBuffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
-                    </documentation>
-                  </variable>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
-    name := name,
-    actualStatus := THIS^.actualStatus,
-    previousStatus := THIS^.previousStatus,
-    buffer := buffer,
-    subBuffer := subBuffer,
-    pHealthStatus := ADR(THIS^.statuses.healthStatus));
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
         </addData>
       </pou>
       <pou name="SM_LinearPositionMeasurementU32" pouType="functionBlock">
@@ -13207,78 +9914,6 @@ overrange_ro := overrange;
           </ST>
         </body>
         <addData>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_log">
-              <interface>
-                <returnType><BOOL /></returnType>
-                <inputVars>
-                  <variable name="name">
-                    <type><string /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                  <variable name="buffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
-                    </documentation>
-                  </variable>
-                </inOutVars>
-                <localVars>
-                  <variable name="subBuffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
-                    </documentation>
-                  </variable>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">LOGGER(
-    name := name,
-    actualStatus := THIS^.actualStatus,
-    previousStatus := THIS^.previousStatus,
-    buffer := buffer,
-    subBuffer := subBuffer,
-    pHealthStatus := ADR(THIS^.statuses.healthStatus));
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
         </addData>
       </pou>
       <pou name="SM_SimpleRelay" pouType="functionBlock">
@@ -13386,122 +10021,6 @@ processes.setEnabled( isEnabled := isEnabled AND (processes.setEnabled.statuses.
           </ST>
         </body>
         <addData>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="setEnabled">
-              <interface>
-                <returnType><derived name="RequestResults" /></returnType>
-                <inputVars>
-                  <variable name="enabled">
-                    <type><BOOL /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                </inOutVars>
-                <localVars>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                      <Attribute Name="TcRpcEnable" Value="1" />
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">setEnabled := THIS^.processes.setEnabled.request( enabled := enabled );
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_log">
-              <interface>
-                <returnType><BOOL /></returnType>
-                <inputVars>
-                  <variable name="name">
-                    <type><string /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                  <variable name="buffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
-                    </documentation>
-                  </variable>
-                </inOutVars>
-                <localVars>
-                  <variable name="subBuffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
-                    </documentation>
-                  </variable>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.processes.setEnabled._log(
-    name := &#39;processes.setEnabled&#39;,
-    buffer := subBuffer);
-LOGGER(
-    name := name,
-    actualStatus := THIS^.actualStatus,
-    previousStatus := THIS^.previousStatus,
-    buffer := buffer,
-    subBuffer := subBuffer,
-    pBusyStatus := ADR(THIS^.statuses.busyStatus));
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
         </addData>
       </pou>
       <pou name="SM_ConfigManager" pouType="functionBlock">
@@ -13615,198 +10134,6 @@ processes.activate( isEnabled := isEnabled AND (statuses.busyStatus = BusyStatus
           </ST>
         </body>
         <addData>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="save">
-              <interface>
-                <returnType><derived name="RequestResults" /></returnType>
-                <inputVars>
-                  <variable name="filePath">
-                    <type><string /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                </inOutVars>
-                <localVars>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                      <Attribute Name="TcRpcEnable" Value="1" />
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">save := THIS^.processes.save.request( filePath := filePath );
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="load">
-              <interface>
-                <returnType><derived name="RequestResults" /></returnType>
-                <inputVars>
-                  <variable name="filePath">
-                    <type><string /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                </inOutVars>
-                <localVars>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                      <Attribute Name="TcRpcEnable" Value="1" />
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">load := THIS^.processes.load.request( filePath := filePath );
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="activate">
-              <interface>
-                <returnType><derived name="RequestResults" /></returnType>
-                <inputVars>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                </inOutVars>
-                <localVars>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                      <Attribute Name="TcRpcEnable" Value="1" />
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">activate := THIS^.processes.activate.request();
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_log">
-              <interface>
-                <returnType><BOOL /></returnType>
-                <inputVars>
-                  <variable name="name">
-                    <type><string /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                  <variable name="buffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
-                    </documentation>
-                  </variable>
-                </inOutVars>
-                <localVars>
-                  <variable name="subBuffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
-                    </documentation>
-                  </variable>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.processes.save._log(
-    name := &#39;processes.save&#39;,
-    buffer := subBuffer);
-THIS^.processes.load._log(
-    name := &#39;processes.load&#39;,
-    buffer := subBuffer);
-THIS^.processes.activate._log(
-    name := &#39;processes.activate&#39;,
-    buffer := subBuffer);
-LOGGER(
-    name := name,
-    actualStatus := THIS^.actualStatus,
-    previousStatus := THIS^.previousStatus,
-    buffer := buffer,
-    subBuffer := subBuffer,
-    pHealthStatus := ADR(THIS^.statuses.healthStatus),
-    pBusyStatus := ADR(THIS^.statuses.busyStatus));
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
         </addData>
       </pou>
       <pou name="SM_ModbusRTUBus" pouType="functionBlock">
@@ -13919,415 +10246,6 @@ processes.diagnostics( isEnabled := isEnabled AND (statuses.busyStatus = BusySta
           </ST>
         </body>
         <addData>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="readCoil">
-              <interface>
-                <returnType><derived name="RequestResults" /></returnType>
-                <inputVars>
-                  <variable name="unitID">
-                    <type><USINT /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-                    </documentation>
-                  </variable>
-                  <variable name="address">
-                    <type><UINT /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                </inOutVars>
-                <localVars>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                      <Attribute Name="TcRpcEnable" Value="1" />
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">readCoil := THIS^.processes.readCoil.request(
-    unitID := unitID,
-    address := address);
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="writeCoil">
-              <interface>
-                <returnType><derived name="RequestResults" /></returnType>
-                <inputVars>
-                  <variable name="unitID">
-                    <type><USINT /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-                    </documentation>
-                  </variable>
-                  <variable name="address">
-                    <type><UINT /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-                    </documentation>
-                  </variable>
-                  <variable name="value">
-                    <type><BOOL /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                </inOutVars>
-                <localVars>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                      <Attribute Name="TcRpcEnable" Value="1" />
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">writeCoil := THIS^.processes.writeCoil.request(
-    unitID := unitID,
-    address := address,
-    value := value);
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="readRegister">
-              <interface>
-                <returnType><derived name="RequestResults" /></returnType>
-                <inputVars>
-                  <variable name="unitID">
-                    <type><USINT /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-                    </documentation>
-                  </variable>
-                  <variable name="address">
-                    <type><UINT /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                </inOutVars>
-                <localVars>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                      <Attribute Name="TcRpcEnable" Value="1" />
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">readRegister := THIS^.processes.readRegister.request(
-    unitID := unitID,
-    address := address);
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="writeRegister">
-              <interface>
-                <returnType><derived name="RequestResults" /></returnType>
-                <inputVars>
-                  <variable name="unitID">
-                    <type><USINT /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-                    </documentation>
-                  </variable>
-                  <variable name="address">
-                    <type><UINT /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-                    </documentation>
-                  </variable>
-                  <variable name="value">
-                    <type><INT /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                </inOutVars>
-                <localVars>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                      <Attribute Name="TcRpcEnable" Value="1" />
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">writeRegister := THIS^.processes.writeRegister.request(
-    unitID := unitID,
-    address := address,
-    value := value);
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="diagnostics">
-              <interface>
-                <returnType><derived name="RequestResults" /></returnType>
-                <inputVars>
-                  <variable name="unitID">
-                    <type><USINT /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-                    </documentation>
-                  </variable>
-                  <variable name="subFunction">
-                    <type><UINT /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-                    </documentation>
-                  </variable>
-                  <variable name="subData">
-                    <type><INT /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                </inOutVars>
-                <localVars>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                      <Attribute Name="TcRpcEnable" Value="1" />
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">diagnostics := THIS^.processes.diagnostics.request(
-    unitID := unitID,
-    subFunction := subFunction,
-    subData := subData);
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
-          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_log">
-              <interface>
-                <returnType><BOOL /></returnType>
-                <inputVars>
-                  <variable name="name">
-                    <type><string /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of this function block instance</xhtml>
-                    </documentation>
-                  </variable>
-                </inputVars>
-                <outputVars>
-                </outputVars>
-                <inOutVars>
-                  <variable name="buffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Buffer to write all logging to</xhtml>
-                    </documentation>
-                  </variable>
-                </inOutVars>
-                <localVars>
-                  <variable name="subBuffer">
-                    <type><derived name="LogBuffer" /></type>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                        <Attributes>
-                          <Attribute Name="TcHmiSymbol.Show" Value="" />
-                        </Attributes>
-                      </data>
-                    </addData>
-                    <documentation>
-                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporary buffer to write logging by parts (sub-statemachines) to</xhtml>
-                    </documentation>
-                  </variable>
-                </localVars>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                    </Attributes>
-                  </data>
-                </addData>
-              </interface>
-              <body>
-                <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.processes.readCoil._log(
-    name := &#39;processes.readCoil&#39;,
-    buffer := subBuffer);
-THIS^.processes.writeCoil._log(
-    name := &#39;processes.writeCoil&#39;,
-    buffer := subBuffer);
-THIS^.processes.readRegister._log(
-    name := &#39;processes.readRegister&#39;,
-    buffer := subBuffer);
-THIS^.processes.writeRegister._log(
-    name := &#39;processes.writeRegister&#39;,
-    buffer := subBuffer);
-THIS^.processes.diagnostics._log(
-    name := &#39;processes.diagnostics&#39;,
-    buffer := subBuffer);
-LOGGER(
-    name := name,
-    actualStatus := THIS^.actualStatus,
-    previousStatus := THIS^.previousStatus,
-    buffer := buffer,
-    subBuffer := subBuffer,
-    pBusyStatus := ADR(THIS^.statuses.busyStatus));
-</xhtml>
-                </ST>
-              </body>
-            </Method>
-          </data>
         </addData>
       </pou>
       <pou name="Process" pouType="functionBlock">
@@ -14339,19 +10257,6 @@ LOGGER(
           <inOutVars>
           </inOutVars>
           <localVars>
-            <variable name="testVar">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="0" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">At least 1 variable needed because subclass members of an empty class are not exposed by OPC UA (TwinCAT bug!)</xhtml>
-              </documentation>
-            </variable>
           </localVars>
           <addData>
             <data name="http://www.3s-software.com/plcopenxml/pouinheritance" handleUnknown="implementation">
@@ -14444,19 +10349,6 @@ END_IF;
           <inOutVars>
           </inOutVars>
           <localVars>
-            <variable name="testVar">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="0" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">At least 1 variable needed because subclass members of an empty class are not exposed by OPC UA (TwinCAT bug!)</xhtml>
-              </documentation>
-            </variable>
           </localVars>
           <addData>
             <data name="http://www.3s-software.com/plcopenxml/pouinheritance" handleUnknown="implementation">
@@ -17617,19 +13509,6 @@ END_IF;
           <inOutVars>
           </inOutVars>
           <localVars>
-            <variable name="testVar">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="0" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">At least 1 variable needed because subclass members of an empty class are not exposed by OPC UA (TwinCAT bug!)</xhtml>
-              </documentation>
-            </variable>
           </localVars>
           <addData>
             <data name="http://www.3s-software.com/plcopenxml/pouinheritance" handleUnknown="implementation">
@@ -19091,157 +14970,88 @@ END_IF;
               </Object>
             </Folder>
             <Object Name="SM_QuantityValue">
-              <Object Name="_log" />
             </Object>
             <Object Name="SM_AngularPosition">
-              <Object Name="_log" />
             </Object>
             <Object Name="SM_LinearPosition">
-              <Object Name="_log" />
             </Object>
             <Object Name="SM_AngularVelocity">
-              <Object Name="_log" />
             </Object>
             <Object Name="SM_AngularAcceleration">
-              <Object Name="_log" />
             </Object>
             <Object Name="SM_LinearVelocity">
-              <Object Name="_log" />
             </Object>
             <Object Name="SM_Voltage">
-              <Object Name="_log" />
             </Object>
             <Object Name="SM_GForce">
-              <Object Name="_log" />
             </Object>
             <Object Name="SM_Current">
-              <Object Name="_log" />
             </Object>
             <Object Name="SM_Torque">
-              <Object Name="_log" />
             </Object>
             <Object Name="SM_TorqueLimit">
-              <Object Name="_log" />
             </Object>
             <Object Name="SM_AverageCurrent">
             </Object>
             <Object Name="SM_Duration">
-              <Object Name="_log" />
             </Object>
             <Object Name="SM_Temperature">
-              <Object Name="_log" />
             </Object>
             <Object Name="SM_Pressure">
-              <Object Name="_log" />
             </Object>
             <Object Name="SM_Frequency">
-              <Object Name="_log" />
             </Object>
             <Object Name="SM_Force">
-              <Object Name="_log" />
             </Object>
             <Object Name="SM_Fraction">
-              <Object Name="_log" />
             </Object>
             <Object Name="SM_BaseProcess">
-              <Object Name="_log" />
             </Object>
             <Object Name="SM_BaseMcProcess">
             </Object>
             <Object Name="SM_ProcessStep">
-              <Object Name="_log" />
             </Object>
             <Object Name="SM_BaseXmlDataSrvProcess">
             </Object>
             <Object Name="SM_BaseAxis">
-              <Object Name="moveAbsolute" />
-              <Object Name="moveRelative" />
-              <Object Name="moveVelocity" />
-              <Object Name="reset" />
-              <Object Name="stop" />
-              <Object Name="stopParametrized" />
-              <Object Name="power" />
-              <Object Name="gearIn" />
-              <Object Name="gearOut" />
-              <Object Name="initialize" />
-              <Object Name="setPosition" />
-              <Object Name="enableExtSetGen" />
-              <Object Name="disableExtSetGen" />
-              <Object Name="forceCalibration" />
-              <Object Name="resetCalibration" />
-              <Object Name="readParameter" />
-              <Object Name="readBoolParameter" />
-              <Object Name="writeParameter" />
-              <Object Name="writeBoolParameter" />
-              <Object Name="probeStart" />
-              <Object Name="probeAbort" />
-              <Object Name="_log" />
             </Object>
             <Object Name="SM_AngularAxis">
             </Object>
             <Object Name="SM_LinearAxis">
             </Object>
             <Object Name="SM_SSIEncoder">
-              <Object Name="_log" />
             </Object>
             <Object Name="SM_IncrementalEncoder">
-              <Object Name="enableCounterResetC" />
-              <Object Name="disableCounterResetC" />
-              <Object Name="_log" />
             </Object>
             <Object Name="SM_EtherCatDevice">
-              <Object Name="_log" />
             </Object>
             <Object Name="SM_CANopenBus">
-              <Object Name="_log" />
             </Object>
             <Object Name="SM_CurrentMeasurement">
-              <Object Name="_log" />
             </Object>
             <Object Name="SM_VoltageMeasurement">
-              <Object Name="_log" />
             </Object>
             <Object Name="SM_TemperatureMeasurement">
-              <Object Name="_log" />
             </Object>
             <Object Name="SM_PressureMeasurement">
-              <Object Name="_log" />
             </Object>
             <Object Name="SM_FrequencyMeasurement">
-              <Object Name="_log" />
             </Object>
             <Object Name="SM_GForceMeasurement">
-              <Object Name="_log" />
             </Object>
             <Object Name="SM_RelativeHumidityMeasurement">
-              <Object Name="_log" />
             </Object>
             <Object Name="SM_ForceMeasurement">
-              <Object Name="_log" />
             </Object>
             <Object Name="SM_LinearPositionMeasurement16">
-              <Object Name="_log" />
             </Object>
             <Object Name="SM_LinearPositionMeasurementU32">
-              <Object Name="_log" />
             </Object>
             <Object Name="SM_SimpleRelay">
-              <Object Name="setEnabled" />
-              <Object Name="_log" />
             </Object>
             <Object Name="SM_ConfigManager">
-              <Object Name="save" />
-              <Object Name="load" />
-              <Object Name="activate" />
-              <Object Name="_log" />
             </Object>
             <Object Name="SM_ModbusRTUBus">
-              <Object Name="readCoil" />
-              <Object Name="writeCoil" />
-              <Object Name="readRegister" />
-              <Object Name="writeRegister" />
-              <Object Name="diagnostics" />
-              <Object Name="_log" />
             </Object>
           </Folder>
           <Folder Name="Configs">

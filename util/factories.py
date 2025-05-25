@@ -932,34 +932,35 @@ class Statemachine(FunctionBlock):
             for process_name in args['processes']:
                 self.processes[process_name] = self.var_out["processes"].get_child(process_name)
 
-        if "processes" in args:
-            for process_name, process_args in args["processes"].items():
-                input_args = {}
-                for var_name, var in resolve(process_args["type"], context=self).request.var_in.items():
-                    input_args[var_name] = { "type": var.type }
+        if is_mtcs():
+            if "processes" in args:
+                for process_name, process_args in args["processes"].items():
+                    input_args = {}
+                    for var_name, var in resolve(process_args["type"], context=self).request.var_in.items():
+                        input_args[var_name] = { "type": var.type }
 
-                m = Method(
-                    name = process_name,
-                    parent = self,
-                    args = {
-                        "comment": process_args["comment"],
-                        "returnType": f"{get_common_lib()}.RequestResults",
-                        "inputArgs": input_args
-                    })
-                
-                self.methods[process_name] = m
+                    m = Method(
+                        name = process_name,
+                        parent = self,
+                        args = {
+                            "comment": process_args["comment"],
+                            "returnType": f"{get_common_lib()}.RequestResults",
+                            "inputArgs": input_args
+                        })
+                    
+                    self.methods[process_name] = m
 
-                c = Call(f"call_{process_name}", self.processes[process_name])
-                c.calls = self.processes[process_name].get_child("request")
-                c.assignments = []
-                for k, v in input_args.items():
-                    assignment = ASSIGN([c.calls.get_child(k, recursive=False), m.get_child(k, recursive=False)])
-                    assignment.resolve_children(self)
-                    c.assignments.append(assignment)
+                    c = Call(f"call_{process_name}", self.processes[process_name])
+                    c.calls = self.processes[process_name].get_child("request")
+                    c.assignments = []
+                    for k, v in input_args.items():
+                        assignment = ASSIGN([c.calls.get_child(k, recursive=False), m.get_child(k, recursive=False)])
+                        assignment.resolve_children(self)
+                        c.assignments.append(assignment)
 
-                m.implementation = [
-                    ASSIGN([m, c])
-                ]
+                    m.implementation = [
+                        ASSIGN([m, c])
+                    ]
 
         # add the local variables
         if "local" in args:
@@ -1078,84 +1079,84 @@ class Statemachine(FunctionBlock):
             c.calls = PLC_DEREF(self.children["SUPER"])
             self.implementation.append(c)
         
+        if is_mtcs():
+            if not '_log' in self.children:
+                m = Method("_log", self, {
+                            "comment"   : "Log to buffer",
+                            "inputArgs" : {
+                                "name": {
+                                        "type": "t_string", 
+                                        "comment": "Name of this function block instance"} },
+                            "inOutArgs" : {
+                                "buffer" : {
+                                        "type": "LogBuffer", 
+                                        "comment": "Buffer to write all logging to" } },
+                            "localArgs": {
+                                    "subBuffer" : { 
+                                        "type": "LogBuffer", 
+                                        "comment": "Temporary buffer to write logging by parts (sub-statemachines) to" } },
+                            "returnType": "t_bool" })
+                
+                m.implementation = []
 
-        if not '_log' in self.children:
-            m = Method("_log", self, {
-                           "comment"   : "Log to buffer",
-                           "inputArgs" : {
-                               "name": {
-                                    "type": "t_string", 
-                                    "comment": "Name of this function block instance"} },
-                           "inOutArgs" : {
-                               "buffer" : {
-                                    "type": "LogBuffer", 
-                                    "comment": "Buffer to write all logging to" } },
-                           "localArgs": {
-                                "subBuffer" : { 
-                                    "type": "LogBuffer", 
-                                    "comment": "Temporary buffer to write logging by parts (sub-statemachines) to" } },
-                           "returnType": "t_bool" })
-            
-            m.implementation = []
-
-            c = Call("loggerCall", self)
-            c.calls = resolve("LOGGER", None)
-            c.assignments = [
-                ASSIGN([get_global("LOGGER").get_child("name"), m.get_child("name")]),
-                ASSIGN([get_global("LOGGER").get_child("actualStatus"), self.get_child("actualStatus")]),
-                ASSIGN([get_global("LOGGER").get_child("previousStatus"), self.get_child("previousStatus")]),
-                ASSIGN([get_global("LOGGER").get_child("buffer"), m.get_child("buffer")]),
-                ASSIGN([get_global("LOGGER").get_child("subBuffer"), m.get_child("subBuffer")])
-            ]
-
-            for part_name, part in self.parts.items():
-                if not "_log" in part.children:
-                    part.methods["_log"] = \
-                        Method("_log", part, {
-                           "inputArgs" : { "name": { "type": "t_string" } },
-                           "inOutArgs" : { "buffer" : { "type": "LogBuffer" } },
-                           "returnType": "t_bool" })
-                    
-                part_call = Call(f"call_{part_name}", self)
-                part_call.calls = part.children["_log"]
-                part_call.assignments = [
-                    ASSIGN([part_call.calls.get_child("name"), String(part_name)]),
-                    ASSIGN([part_call.calls.get_child("buffer"), m.var_local["subBuffer"]]),
+                c = Call("loggerCall", self)
+                c.calls = resolve("LOGGER", None)
+                c.assignments = [
+                    ASSIGN([get_global("LOGGER").get_child("name"), m.get_child("name")]),
+                    ASSIGN([get_global("LOGGER").get_child("actualStatus"), self.get_child("actualStatus")]),
+                    ASSIGN([get_global("LOGGER").get_child("previousStatus"), self.get_child("previousStatus")]),
+                    ASSIGN([get_global("LOGGER").get_child("buffer"), m.get_child("buffer")]),
+                    ASSIGN([get_global("LOGGER").get_child("subBuffer"), m.get_child("subBuffer")])
                 ]
 
-                m.implementation.append(part_call)
+                for part_name, part in self.parts.items():
+                    if not "_log" in part.children:
+                        part.methods["_log"] = \
+                            Method("_log", part, {
+                            "inputArgs" : { "name": { "type": "t_string" } },
+                            "inOutArgs" : { "buffer" : { "type": "LogBuffer" } },
+                            "returnType": "t_bool" })
+                        
+                    part_call = Call(f"call_{part_name}", self)
+                    part_call.calls = part.children["_log"]
+                    part_call.assignments = [
+                        ASSIGN([part_call.calls.get_child("name"), String(part_name)]),
+                        ASSIGN([part_call.calls.get_child("buffer"), m.var_local["subBuffer"]]),
+                    ]
 
-            for process_name, process in self.processes.items():
-                if not "_log" in process.children:
-                    process.methods["_log"] = \
-                        Method("_log", process, {
-                           "inputArgs" : { "name": { "type": "t_string" } },
-                           "inOutArgs" : { "buffer" : { "type": "LogBuffer" } },
-                           "returnType": "t_bool" })
-                    
-                process_call = Call(f"call_{process_name}", self)
-                process_call.calls = process.children["_log"]
-                process_call.assignments = [
-                    ASSIGN([process_call.calls.get_child("name"), String(f"processes.{process_name}")]),
-                    ASSIGN([process_call.calls.get_child("buffer"), m.var_local["subBuffer"]]),
-                ]
+                    m.implementation.append(part_call)
 
-                m.implementation.append(process_call)
-                    
+                for process_name, process in self.processes.items():
+                    if not "_log" in process.children:
+                        process.methods["_log"] = \
+                            Method("_log", process, {
+                            "inputArgs" : { "name": { "type": "t_string" } },
+                            "inOutArgs" : { "buffer" : { "type": "LogBuffer" } },
+                            "returnType": "t_bool" })
+                        
+                    process_call = Call(f"call_{process_name}", self)
+                    process_call.calls = process.children["_log"]
+                    process_call.assignments = [
+                        ASSIGN([process_call.calls.get_child("name"), String(f"processes.{process_name}")]),
+                        ASSIGN([process_call.calls.get_child("buffer"), m.var_local["subBuffer"]]),
+                    ]
 
-            if "healthStatus" in self.statuses:
-                    c.assignments.append(  
-                        ASSIGN([get_global("LOGGER").get_child("pHealthStatus"), ADR(self.statuses["healthStatus"])])
-                    )
-            if "busyStatus" in self.statuses:
-                    c.assignments.append(  
-                        ASSIGN([get_global("LOGGER").get_child("pBusyStatus"), ADR(self.statuses["busyStatus"])])
-                    )
+                    m.implementation.append(process_call)
+                        
+
+                if "healthStatus" in self.statuses:
+                        c.assignments.append(  
+                            ASSIGN([get_global("LOGGER").get_child("pHealthStatus"), ADR(self.statuses["healthStatus"])])
+                        )
+                if "busyStatus" in self.statuses:
+                        c.assignments.append(  
+                            ASSIGN([get_global("LOGGER").get_child("pBusyStatus"), ADR(self.statuses["busyStatus"])])
+                        )
 
 
-            m.implementation.append(c)
+                m.implementation.append(c)
 
-            self.methods["_log"] = m
+                self.methods["_log"] = m
 
         # finally, also add the main state machine (to be implemented by the user):
         main_sm = FunctionBlock(name, self.parent, { "extends": f"SM_{name}", "render": False })
@@ -1235,18 +1236,19 @@ class Process(FunctionBlock):
                 parent = self.parent,
                 args = { "items": args['arguments'] })
             self.parent.processes.args[struct.name] = struct
+
+        if is_mtcs():
+            if not ("variables" in args or "arguments" in args):
                 
-        if not ("variables" in args or "arguments" in args):
-            
-            self.var_local["testVar"] = Variable(
-                "testVar", 
-                self, 
-                {
-                    "comment":  "At least 1 variable needed because subclass members of an empty class are not exposed by OPC UA (TwinCAT bug!)",
-                    "type": "t_bool",
-                    "qualifiers": [ QUALIFIERS.OPC_UA_DEACTIVATE ]
-                })
-            
+                self.var_local["testVar"] = Variable(
+                    "testVar", 
+                    self, 
+                    {
+                        "comment":  "At least 1 variable needed because subclass members of an empty class are not exposed by OPC UA (TwinCAT bug!)",
+                        "type": "t_bool",
+                        "qualifiers": [ QUALIFIERS.OPC_UA_DEACTIVATE ]
+                    })
+        
         # in case we have arguments, also add a 'set' and 'get' instance of this <ProcessName>Args struct
         if "arguments" in args:
             self.var_in["set"] = Variable(
@@ -1383,7 +1385,7 @@ def make_marvel_status(name, parent, args={}):
     enum_items = [var_name for var_name in args["states"]]
     enum_items.insert(0, "invalid_model")
     enum_items.insert(0, "unknown")
-    enum = Enum(name, parent=parent, args={ "items": enum_items })
+    enum = Enum(name, parent=parent, args={ "items": enum_items, "type": "t_byte" })
 
     function = Function(f"F_{name}", parent=parent, args={})
     function.return_type = enum
