@@ -225,11 +225,13 @@
       <dataType name="TelescopeStatuses">
         <baseType>
           <struct>
-            <variable name="initializationStatus">
+            <variable name="init">
               <type><derived name="InitializationStatus" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
                     <Attribute Name="TcHmiSymbol.Show" Value="" />
                   </Attributes>
                 </data>
@@ -238,11 +240,13 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="healthStatus">
+            <variable name="health">
               <type><derived name="HealthStatus" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
                     <Attribute Name="TcHmiSymbol.Show" Value="" />
                   </Attributes>
                 </data>
@@ -251,11 +255,13 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="busyStatus">
+            <variable name="busy">
               <type><derived name="BusyStatus" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
                     <Attribute Name="TcHmiSymbol.Show" Value="" />
                   </Attributes>
                 </data>
@@ -264,11 +270,13 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="operatingStatus">
+            <variable name="operating">
               <type><derived name="OperatingStatus" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
                     <Attribute Name="TcHmiSymbol.Show" Value="" />
                   </Attributes>
                 </data>
@@ -277,11 +285,13 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="poweredStatus">
+            <variable name="powered">
               <type><derived name="PoweredStatus" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
                     <Attribute Name="TcHmiSymbol.Show" Value="" />
                   </Attributes>
                 </data>
@@ -980,7 +990,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Name of the known position if isAtKnownPosition is True</xhtml>
               </documentation>
             </variable>
-            <variable name="statuses">
+            <variable name="stat">
               <type><derived name="TelescopeStatuses" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -993,7 +1003,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Statuses of the state machine</xhtml>
               </documentation>
             </variable>
-            <variable name="processes">
+            <variable name="proc">
               <type><derived name="TelescopeProcesses" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -1008,7 +1018,7 @@
             </variable>
           </outputVars>
           <inOutVars>
-            <variable name="operatorStatus_ref">
+            <variable name="operator_ref">
               <type><derived name="OperatorStatus" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -1023,7 +1033,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Shared operator status</xhtml>
               </documentation>
             </variable>
-            <variable name="activityStatus_ref">
+            <variable name="activity_ref">
               <type><derived name="ActivityStatus" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -1089,28 +1099,28 @@
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">statuses.healthStatus := F_HealthStatus(
-    superState := NOT(statuses.initializationStatus = InitializationStatus.shutdown),
-    isGood := (NOT(statuses.initializationStatus = InitializationStatus.initializingFailed)) AND (isTelConnected AND (isAccConnected AND ((processes.initialize.statuses.healthStatus = HealthStatus.good) AND ((processes.changeOperatingState.statuses.healthStatus = HealthStatus.good) AND ((processes.slewToCoordinates.statuses.healthStatus = HealthStatus.good) AND ((processes.slewToAziEle.statuses.healthStatus = HealthStatus.good) AND ((processes.abortSlew.statuses.healthStatus = HealthStatus.good) AND ((processes.powerOn.statuses.healthStatus = HealthStatus.good) AND ((processes.powerOff.statuses.healthStatus = HealthStatus.good) AND ((processes.moveKnownPosition.statuses.healthStatus = HealthStatus.good) AND ((processes.setTracking.statuses.healthStatus = HealthStatus.good) AND ((processes.moveM2.statuses.healthStatus = HealthStatus.good) AND ((processes.openCover.statuses.healthStatus = HealthStatus.good) AND (processes.closeCover.statuses.healthStatus = HealthStatus.good)))))))))))))),
-    hasWarning := (processes.initialize.statuses.healthStatus = HealthStatus.warning) OR ((processes.changeOperatingState.statuses.healthStatus = HealthStatus.warning) OR ((processes.slewToCoordinates.statuses.healthStatus = HealthStatus.warning) OR ((processes.slewToAziEle.statuses.healthStatus = HealthStatus.warning) OR ((processes.abortSlew.statuses.healthStatus = HealthStatus.warning) OR ((processes.powerOn.statuses.healthStatus = HealthStatus.warning) OR ((processes.powerOff.statuses.healthStatus = HealthStatus.warning) OR ((processes.moveKnownPosition.statuses.healthStatus = HealthStatus.warning) OR ((processes.setTracking.statuses.healthStatus = HealthStatus.warning) OR ((processes.moveM2.statuses.healthStatus = HealthStatus.warning) OR ((processes.openCover.statuses.healthStatus = HealthStatus.warning) OR (processes.closeCover.statuses.healthStatus = HealthStatus.warning))))))))))));
-statuses.busyStatus := F_BusyStatus(
-    superState := NOT(statuses.initializationStatus = InitializationStatus.shutdown),
-    isBusy := (processes.initialize.statuses.busyStatus = BusyStatus.busy) OR ((processes.changeOperatingState.statuses.busyStatus = BusyStatus.busy) OR ((processes.slewToCoordinates.statuses.busyStatus = BusyStatus.busy) OR ((processes.slewToAziEle.statuses.busyStatus = BusyStatus.busy) OR ((processes.abortSlew.statuses.busyStatus = BusyStatus.busy) OR ((processes.powerOn.statuses.busyStatus = BusyStatus.busy) OR ((processes.powerOff.statuses.busyStatus = BusyStatus.busy) OR ((processes.moveKnownPosition.statuses.busyStatus = BusyStatus.busy) OR ((processes.setTracking.statuses.busyStatus = BusyStatus.busy) OR ((processes.moveM2.statuses.busyStatus = BusyStatus.busy) OR ((processes.openCover.statuses.busyStatus = BusyStatus.busy) OR (processes.closeCover.statuses.busyStatus = BusyStatus.busy))))))))))));
-processes.initialize( isEnabled := (NOT(statuses.initializationStatus = InitializationStatus.locked)) AND ((statuses.initializationStatus = InitializationStatus.shutdown) OR ((statuses.initializationStatus = InitializationStatus.initializingFailed) OR (statuses.initializationStatus = InitializationStatus.initialized))) );
-processes.lock( isEnabled := operatorStatus_ref = OperatorStatus.tech );
-processes.unlock( isEnabled := (operatorStatus_ref = OperatorStatus.tech) AND (statuses.initializationStatus = InitializationStatus.locked) );
-processes.changeOperatingState( isEnabled := (statuses.busyStatus = BusyStatus.idle) AND ((statuses.initializationStatus = InitializationStatus.initialized) AND (operatorStatus_ref = OperatorStatus.tech)) );
-processes.slewToCoordinates( isEnabled := (statuses.initializationStatus = InitializationStatus.initialized) AND ((statuses.busyStatus = BusyStatus.idle) AND (statuses.poweredStatus = PoweredStatus.enabled)) );
-processes.slewToAziEle( isEnabled := (statuses.initializationStatus = InitializationStatus.initialized) AND ((statuses.busyStatus = BusyStatus.idle) AND (statuses.poweredStatus = PoweredStatus.enabled)) );
-processes.abortSlew( isEnabled := statuses.initializationStatus = InitializationStatus.initialized );
-processes.reset( isEnabled := (statuses.busyStatus = BusyStatus.idle) AND (statuses.initializationStatus = InitializationStatus.initialized) );
-processes.powerOn( isEnabled := (NOT(statuses.initializationStatus = InitializationStatus.locked)) AND ((statuses.initializationStatus = InitializationStatus.initialized) AND (processes.powerOn.statuses.busyStatus = BusyStatus.idle)) );
-processes.powerOff( isEnabled := (statuses.initializationStatus = InitializationStatus.initialized) AND (processes.powerOff.statuses.busyStatus = BusyStatus.idle) );
-processes.moveKnownPosition( isEnabled := (statuses.initializationStatus = InitializationStatus.initialized) AND ((statuses.busyStatus = BusyStatus.idle) AND (statuses.poweredStatus = PoweredStatus.enabled)) );
-processes.setTracking( isEnabled := statuses.initializationStatus = InitializationStatus.initialized );
-processes.moveM2( isEnabled := (statuses.initializationStatus = InitializationStatus.initialized) AND (processes.moveM2.statuses.busyStatus = BusyStatus.idle) );
-processes.openCover( isEnabled := (statuses.initializationStatus = InitializationStatus.initialized) AND (processes.openCover.statuses.busyStatus = BusyStatus.idle) );
-processes.closeCover( isEnabled := (statuses.initializationStatus = InitializationStatus.initialized) AND (processes.closeCover.statuses.busyStatus = BusyStatus.idle) );
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">stat.health := F_HealthStatus(
+    superState := NOT(stat.init = InitializationStatus.shutdown),
+    isGood := (NOT(stat.init = InitializationStatus.initializingFailed)) AND (isTelConnected AND (isAccConnected AND ((proc.initialize.stat.health = HealthStatus.good) AND ((proc.changeOperatingState.stat.health = HealthStatus.good) AND ((proc.slewToCoordinates.stat.health = HealthStatus.good) AND ((proc.slewToAziEle.stat.health = HealthStatus.good) AND ((proc.abortSlew.stat.health = HealthStatus.good) AND ((proc.powerOn.stat.health = HealthStatus.good) AND ((proc.powerOff.stat.health = HealthStatus.good) AND ((proc.moveKnownPosition.stat.health = HealthStatus.good) AND ((proc.setTracking.stat.health = HealthStatus.good) AND ((proc.moveM2.stat.health = HealthStatus.good) AND ((proc.openCover.stat.health = HealthStatus.good) AND (proc.closeCover.stat.health = HealthStatus.good)))))))))))))),
+    hasWarning := (proc.initialize.stat.health = HealthStatus.warning) OR ((proc.changeOperatingState.stat.health = HealthStatus.warning) OR ((proc.slewToCoordinates.stat.health = HealthStatus.warning) OR ((proc.slewToAziEle.stat.health = HealthStatus.warning) OR ((proc.abortSlew.stat.health = HealthStatus.warning) OR ((proc.powerOn.stat.health = HealthStatus.warning) OR ((proc.powerOff.stat.health = HealthStatus.warning) OR ((proc.moveKnownPosition.stat.health = HealthStatus.warning) OR ((proc.setTracking.stat.health = HealthStatus.warning) OR ((proc.moveM2.stat.health = HealthStatus.warning) OR ((proc.openCover.stat.health = HealthStatus.warning) OR (proc.closeCover.stat.health = HealthStatus.warning))))))))))));
+stat.busy := F_BusyStatus(
+    superState := NOT(stat.init = InitializationStatus.shutdown),
+    isBusy := (proc.initialize.stat.busy = BusyStatus.busy) OR ((proc.changeOperatingState.stat.busy = BusyStatus.busy) OR ((proc.slewToCoordinates.stat.busy = BusyStatus.busy) OR ((proc.slewToAziEle.stat.busy = BusyStatus.busy) OR ((proc.abortSlew.stat.busy = BusyStatus.busy) OR ((proc.powerOn.stat.busy = BusyStatus.busy) OR ((proc.powerOff.stat.busy = BusyStatus.busy) OR ((proc.moveKnownPosition.stat.busy = BusyStatus.busy) OR ((proc.setTracking.stat.busy = BusyStatus.busy) OR ((proc.moveM2.stat.busy = BusyStatus.busy) OR ((proc.openCover.stat.busy = BusyStatus.busy) OR (proc.closeCover.stat.busy = BusyStatus.busy))))))))))));
+proc.initialize( isEnabled := (NOT(stat.init = InitializationStatus.locked)) AND ((stat.init = InitializationStatus.shutdown) OR ((stat.init = InitializationStatus.initializingFailed) OR (stat.init = InitializationStatus.initialized))) );
+proc.lock( isEnabled := operator_ref = OperatorStatus.tech );
+proc.unlock( isEnabled := (operator_ref = OperatorStatus.tech) AND (stat.init = InitializationStatus.locked) );
+proc.changeOperatingState( isEnabled := (stat.busy = BusyStatus.idle) AND ((stat.init = InitializationStatus.initialized) AND (operator_ref = OperatorStatus.tech)) );
+proc.slewToCoordinates( isEnabled := (stat.init = InitializationStatus.initialized) AND ((stat.busy = BusyStatus.idle) AND (stat.powered = PoweredStatus.enabled)) );
+proc.slewToAziEle( isEnabled := (stat.init = InitializationStatus.initialized) AND ((stat.busy = BusyStatus.idle) AND (stat.powered = PoweredStatus.enabled)) );
+proc.abortSlew( isEnabled := stat.init = InitializationStatus.initialized );
+proc.reset( isEnabled := (stat.busy = BusyStatus.idle) AND (stat.init = InitializationStatus.initialized) );
+proc.powerOn( isEnabled := (NOT(stat.init = InitializationStatus.locked)) AND ((stat.init = InitializationStatus.initialized) AND (proc.powerOn.stat.busy = BusyStatus.idle)) );
+proc.powerOff( isEnabled := (stat.init = InitializationStatus.initialized) AND (proc.powerOff.stat.busy = BusyStatus.idle) );
+proc.moveKnownPosition( isEnabled := (stat.init = InitializationStatus.initialized) AND ((stat.busy = BusyStatus.idle) AND (stat.powered = PoweredStatus.enabled)) );
+proc.setTracking( isEnabled := stat.init = InitializationStatus.initialized );
+proc.moveM2( isEnabled := (stat.init = InitializationStatus.initialized) AND (proc.moveM2.stat.busy = BusyStatus.idle) );
+proc.openCover( isEnabled := (stat.init = InitializationStatus.initialized) AND (proc.openCover.stat.busy = BusyStatus.idle) );
+proc.closeCover( isEnabled := (stat.init = InitializationStatus.initialized) AND (proc.closeCover.stat.busy = BusyStatus.idle) );
 </xhtml>
           </ST>
         </body>
@@ -1226,8 +1236,8 @@ SUPER^();
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.azimuth := azimuth;
 THIS^.get.elevation := elevation;
-THIS^.statuses.busyStatus := BusyStatus.busy;
-THIS^.statuses.healthStatus := HealthStatus.good;
+THIS^.stat.busy := BusyStatus.busy;
+THIS^.stat.health := HealthStatus.good;
 </xhtml>
                 </ST>
               </body>
@@ -1281,7 +1291,7 @@ THIS^.statuses.healthStatus := HealthStatus.good;
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF THIS^.statuses.enabledStatus = EnabledStatus.enabled THEN
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF THIS^.stat.enabled = EnabledStatus.enabled THEN
     request := RequestResults.ACCEPTED;
     THIS^.start(
         azimuth := azimuth,
@@ -1389,8 +1399,8 @@ SUPER^();
               <body>
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.tracking := tracking;
-THIS^.statuses.busyStatus := BusyStatus.busy;
-THIS^.statuses.healthStatus := HealthStatus.good;
+THIS^.stat.busy := BusyStatus.busy;
+THIS^.stat.health := HealthStatus.good;
 </xhtml>
                 </ST>
               </body>
@@ -1431,7 +1441,7 @@ THIS^.statuses.healthStatus := HealthStatus.good;
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF THIS^.statuses.enabledStatus = EnabledStatus.enabled THEN
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF THIS^.stat.enabled = EnabledStatus.enabled THEN
     request := RequestResults.ACCEPTED;
     THIS^.start( tracking := tracking );
 ELSE
@@ -1537,8 +1547,8 @@ SUPER^();
               <body>
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.name := name;
-THIS^.statuses.busyStatus := BusyStatus.busy;
-THIS^.statuses.healthStatus := HealthStatus.good;
+THIS^.stat.busy := BusyStatus.busy;
+THIS^.stat.health := HealthStatus.good;
 </xhtml>
                 </ST>
               </body>
@@ -1579,7 +1589,7 @@ THIS^.statuses.healthStatus := HealthStatus.good;
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF THIS^.statuses.enabledStatus = EnabledStatus.enabled THEN
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF THIS^.stat.enabled = EnabledStatus.enabled THEN
     request := RequestResults.ACCEPTED;
     THIS^.start( name := name );
 ELSE
@@ -1685,8 +1695,8 @@ SUPER^();
               <body>
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.position := position;
-THIS^.statuses.busyStatus := BusyStatus.busy;
-THIS^.statuses.healthStatus := HealthStatus.good;
+THIS^.stat.busy := BusyStatus.busy;
+THIS^.stat.health := HealthStatus.good;
 </xhtml>
                 </ST>
               </body>
@@ -1727,7 +1737,7 @@ THIS^.statuses.healthStatus := HealthStatus.good;
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF THIS^.statuses.enabledStatus = EnabledStatus.enabled THEN
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF THIS^.stat.enabled = EnabledStatus.enabled THEN
     request := RequestResults.ACCEPTED;
     THIS^.start( position := position );
 ELSE

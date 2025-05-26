@@ -753,16 +753,16 @@
   !STATEMACHINE BaseProcess:
     variables_hidden:
         isEnabled           : { type: t_bool, comment: "Should the trigger be enabled?" }
-    statuses:
-        enabledStatus       : { type: EnabledStatus    , comment: "Is the process enabled or not?" }
-        busyStatus          : { type: BusyStatus       , comment: "Is the process busy or not?" }
-        healthStatus        : { type: HealthStatus     , comment: "Is the process in a healthy state or not?" }
-        startedStatus       : { type: StartedStatus    , comment: "Is the process started or not?" }
+    stat:
+        enabled             : { type: EnabledStatus    , comment: "Is the process enabled or not?" }
+        busy                : { type: BusyStatus       , comment: "Is the process busy or not?" }
+        health              : { type: HealthStatus     , comment: "Is the process in a healthy state or not?" }
+        started             : { type: StartedStatus    , comment: "Is the process started or not?" }
     local:
         do_request          : { type: t_bool           , comment: "Write TRUE to request the start of the process" }
         do_request_result   : { type: RequestResults   , comment: "Result of the request" }
     calls:
-        enabledStatus:
+        enabled:
             superState  : !BOOL TRUE
             isEnabled   : isEnabled
 
@@ -784,10 +784,10 @@
         isEnabled       : { type: t_bool        , comment: "Is the step enabled?" }
     references:
         process         : { type: BaseProcess   , comment: "The process corresponding to the step", expand: false }
-    statuses:
-        enabledStatus   : { type: EnabledStatus , comment: "Is the process step enabled or not?"  }
+    stat:
+        enabled         : { type: EnabledStatus , comment: "Is the process step enabled or not?"  }
     calls:
-        enabledStatus:
+        enabled:
             superState  : !BOOL TRUE
             isEnabled   : isEnabled
 
@@ -961,13 +961,13 @@
     variables_read_only:
         isJogEnabled        : { type: t_bool                        , comment: "True if jog is enabled" }
         errorId             : { type: t_uint32                      , comment: "Axis error ID" }
-    statuses:
-        busyStatus          : { type: BusyStatus            , comment: "Is the NcAxis in a busy state?" }
-        healthStatus        : { type: HealthStatus          , comment: "Is the NcAxis in a healthy state?" }
-        poweredStatus       : { type: PoweredStatus         , comment: "Is the NcAxis powered?" }
-        extSetGenStatus     : { type: EnabledStatus         , comment: "Is the NcAxis its external setpoint generator enabled?" }
-        motionStatus        : { type: MotionStatus          , comment: "Is the NcAxis moving forward or backward or standing still?" }
-    processes:
+    stat:
+        busy                : { type: BusyStatus            , comment: "Is the NcAxis in a busy state?" }
+        health              : { type: HealthStatus          , comment: "Is the NcAxis in a healthy state?" }
+        powered             : { type: PoweredStatus         , comment: "Is the NcAxis powered?" }
+        extSetGen           : { type: EnabledStatus         , comment: "Is the NcAxis its external setpoint generator enabled?" }
+        motion              : { type: MotionStatus          , comment: "Is the NcAxis moving forward or backward or standing still?" }
+    proc:
         moveAbsolute        : { type: McMoveAbsoluteProcess , comment: "Move absolute" }
         moveRelative        : { type: McMoveRelativeProcess , comment: "Move relative" }
         moveVelocity        : { type: McMoveVelocityProcess , comment: "Move at a constant velocity" }
@@ -990,85 +990,85 @@
         probeStart          : { type: McProbe               , comment: "Start probing a hardware pulse, until a pulse is found" }
         probeAbort          : { type: McProcess             , comment: "Stop probing even though the probe position is not found (yet)" }
     calls:
-        busyStatus:
+        busy:
             superState                  : !BOOL TRUE
             isBusy                      : !MTCS_SUMMARIZE_BUSY [ 
-                                                processes.moveAbsolute,
-                                                processes.moveRelative,
-                                                processes.reset,
-                                                processes.power,
-                                                processes.gearIn,
-                                                processes.gearOut,
-                                                processes.initialize,
-                                                processes.setPosition,
-                                                processes.enableExtSetGen,
-                                                processes.disableExtSetGen,
-                                                processes.forceCalibration,
-                                                processes.resetCalibration,
-                                                processes.readParameter,
-                                                processes.readBoolParameter,
-                                                processes.writeParameter,
-                                                processes.writeBoolParameter,
-                                                processes.probeAbort ]
-        healthStatus:
+                                                proc.moveAbsolute,
+                                                proc.moveRelative,
+                                                proc.reset,
+                                                proc.power,
+                                                proc.gearIn,
+                                                proc.gearOut,
+                                                proc.initialize,
+                                                proc.setPosition,
+                                                proc.enableExtSetGen,
+                                                proc.disableExtSetGen,
+                                                proc.forceCalibration,
+                                                proc.resetCalibration,
+                                                proc.readParameter,
+                                                proc.readBoolParameter,
+                                                proc.writeParameter,
+                                                proc.writeBoolParameter,
+                                                proc.probeAbort ]
+        health:
             superState                  : !BOOL TRUE
             isGood                      : !NOT [_axis_ref.Status.Error]
             hasWarning                  : !BOOL FALSE
-        poweredStatus:
+        powered:
             superState                  : !BOOL TRUE
             isEnabled                   : !NOT [_axis_ref.Status.Disabled]
-        motionStatus:
+        motion:
             superState                  : !BOOL TRUE
             actVel                      : _axis_ref.NcToPlc.ActVelo
             tolerance                   : standstillTolerance
-        extSetGenStatus:
+        extSetGen:
             superState                  : !BOOL TRUE
             isEnabled                   : _axis_ref.Status.ExtSetPointGenEnabled
-        # processes
+        # proc
         power:
-            isEnabled                   : !AND [ isEnabled, !EQ [ processes.power.statuses.busyStatus, BusyStatus.idle ] ]
+            isEnabled                   : !AND [ isEnabled, !EQ [ proc.power.stat.busy, BusyStatus.idle ] ]
         initialize:
-            isEnabled                   : !AND [ isEnabled, !EQ [ statuses.busyStatus, BusyStatus.idle ] ]
+            isEnabled                   : !AND [ isEnabled, !EQ [ stat.busy, BusyStatus.idle ] ]
         moveAbsolute:
             isEnabled                   : isEnabled
         moveRelative:
             isEnabled                   : isEnabled
         moveVelocity:
-            isEnabled                   : !AND [ isEnabled, !EQ [ processes.moveVelocity.statuses.busyStatus, BusyStatus.idle ] ]
+            isEnabled                   : !AND [ isEnabled, !EQ [ proc.moveVelocity.stat.busy, BusyStatus.idle ] ]
         reset:
-            isEnabled                   : !AND [ isEnabled, !EQ [ processes.reset.statuses.busyStatus, BusyStatus.idle ] ]
+            isEnabled                   : !AND [ isEnabled, !EQ [ proc.reset.stat.busy, BusyStatus.idle ] ]
         gearIn:
             isEnabled                   : !AND [ isEnabled, 
-                                                 !EQ [ processes.gearIn.statuses.busyStatus, BusyStatus.idle ],
+                                                 !EQ [ proc.gearIn.stat.busy, BusyStatus.idle ],
                                                  isGearingSupported ]
         gearOut:
             isEnabled                   : !AND [ isEnabled, 
-                                                 !EQ [ processes.gearOut.statuses.busyStatus, BusyStatus.idle ],
+                                                 !EQ [ proc.gearOut.stat.busy, BusyStatus.idle ],
                                                  isGearingSupported ]
         stop:
-            isEnabled                   : !AND [ isEnabled, !EQ [ processes.stop.statuses.busyStatus, BusyStatus.idle ] ]
+            isEnabled                   : !AND [ isEnabled, !EQ [ proc.stop.stat.busy, BusyStatus.idle ] ]
         setPosition:
-            isEnabled                   : !AND [ isEnabled, !EQ [ processes.setPosition.statuses.busyStatus, BusyStatus.idle ] ]
+            isEnabled                   : !AND [ isEnabled, !EQ [ proc.setPosition.stat.busy, BusyStatus.idle ] ]
         enableExtSetGen:
-            isEnabled                   : !AND [ isEnabled, !EQ [ processes.enableExtSetGen.statuses.busyStatus, BusyStatus.idle ] ]
+            isEnabled                   : !AND [ isEnabled, !EQ [ proc.enableExtSetGen.stat.busy, BusyStatus.idle ] ]
         disableExtSetGen:
-            isEnabled                   : !AND [ isEnabled, !EQ [ processes.disableExtSetGen.statuses.busyStatus, BusyStatus.idle ] ]
+            isEnabled                   : !AND [ isEnabled, !EQ [ proc.disableExtSetGen.stat.busy, BusyStatus.idle ] ]
         forceCalibration:
-            isEnabled                   : !AND [ isEnabled, !EQ [ statuses.busyStatus, BusyStatus.idle ] ]
+            isEnabled                   : !AND [ isEnabled, !EQ [ stat.busy, BusyStatus.idle ] ]
         resetCalibration:
-            isEnabled                   : !AND [ isEnabled, !EQ [ statuses.busyStatus, BusyStatus.idle ] ]
+            isEnabled                   : !AND [ isEnabled, !EQ [ stat.busy, BusyStatus.idle ] ]
         readParameter:
-            isEnabled                   : !AND [ isEnabled, !EQ [ statuses.busyStatus, BusyStatus.idle ] ]
+            isEnabled                   : !AND [ isEnabled, !EQ [ stat.busy, BusyStatus.idle ] ]
         readBoolParameter:
-            isEnabled                   : !AND [ isEnabled, !EQ [ statuses.busyStatus, BusyStatus.idle ] ]
+            isEnabled                   : !AND [ isEnabled, !EQ [ stat.busy, BusyStatus.idle ] ]
         writeParameter:
-            isEnabled                   : !AND [ isEnabled, !EQ [ statuses.busyStatus, BusyStatus.idle ] ]
+            isEnabled                   : !AND [ isEnabled, !EQ [ stat.busy, BusyStatus.idle ] ]
         writeBoolParameter:
-            isEnabled                   : !AND [ isEnabled, !EQ [ statuses.busyStatus, BusyStatus.idle ] ]
+            isEnabled                   : !AND [ isEnabled, !EQ [ stat.busy, BusyStatus.idle ] ]
         probeStart:
-            isEnabled                   : !AND [ isEnabled, !EQ [ statuses.busyStatus, BusyStatus.idle ] ]
+            isEnabled                   : !AND [ isEnabled, !EQ [ stat.busy, BusyStatus.idle ] ]
         probeAbort:
-            isEnabled                   : !AND [ isEnabled, !EQ [ statuses.busyStatus, BusyStatus.idle ] ]
+            isEnabled                   : !AND [ isEnabled, !EQ [ stat.busy, BusyStatus.idle ] ]
 
 
 
@@ -1132,10 +1132,10 @@
         frameError      : { type: t_bool                    , comment: "Frame error"                   , address: "%I*" }
         powerFailure    : { type: t_bool                    , comment: "Power failure"                 , address: "%I*" }
         syncError       : { type: t_bool                    , comment: "Sync error"                    , address: "%I*" }
-    statuses:
-        healthStatus    : { type: HealthStatus, comment: "Is the device in a healthy state?" }
+    stat:
+        health          : { type: HealthStatus, comment: "Is the device in a healthy state?" }
     calls:
-        healthStatus:
+        health:
             superState  : !BOOL TRUE
             hasWarning  : !BOOL FALSE
             isGood      : !NOT [ !OR [ dataError, frameError, powerFailure, syncError ] ]
@@ -1166,23 +1166,23 @@
         statusOfInputGate   : { type: t_bool                    , comment: "Bit 11: Status of input gate"  }
         statusOfExternLatch : { type: t_bool                    , comment: "Bit 12: Status of external latch"  }
         syncError           : { type: t_bool                    , comment: "Bit 13: Sync error"  }
-    statuses:
-        healthStatus        : { type: HealthStatus      , comment: "Is the device in a healthy state?" }
-        busyStatus          : { type: BusyStatus        , comment: "Is the device in a busy state?" }
-    processes:
+    stat:
+        health              : { type: HealthStatus      , comment: "Is the device in a healthy state?" }
+        busy                : { type: BusyStatus        , comment: "Is the device in a busy state?" }
+    proc:
         enableCounterResetC : { type: Process           , comment: "Enable the counter reset on the C pulse" }
         disableCounterResetC: { type: Process           , comment: "Disable the counter reset on the C pulse" }
     calls:
-        healthStatus:
+        health:
             superState      : !BOOL TRUE
             hasWarning      : !BOOL FALSE
             isGood          : !NOT [ !OR [ !NOT [ statusOfInputStatus ],
                                            openCircuit,
                                            extrapolationStall,
                                            syncError ] ]
-        busyStatus:
+        busy:
             superState      : !BOOL TRUE
-            isBusy          : !MTCS_SUMMARIZE_BUSY [ processes.enableCounterResetC, processes.disableCounterResetC ]
+            isBusy          : !MTCS_SUMMARIZE_BUSY [ proc.enableCounterResetC, proc.disableCounterResetC ]
         enableCounterResetC:
             isEnabled       : isEnabled
         disableCounterResetC:
@@ -1198,10 +1198,10 @@
         typeId   : { type: t_string , comment: "Manufacturer type, e.g. EL1008" }
         wcState  : { type: t_bool   , comment: "0 = Data valid, 1 = Data invalid" , address: "%I*" }
         infoData : { type: t_uint16 , comment: "EtherCAT state"                   , address: "%I*" }
-    statuses:
-        healthStatus : { type: HealthStatus, comment: "Is the device in a healthy state?" }
+    stat:
+        health       : { type: HealthStatus, comment: "Is the device in a healthy state?" }
     calls:
-        healthStatus:
+        health:
             superState  : !BOOL TRUE
             hasWarning  : !BOOL FALSE
             isGood      : !AND [ !EQ [ wcState, !BOOL FALSE ], !EQ [ infoData, !UINT16 8 ] ]
@@ -1216,10 +1216,10 @@
         canState       : { type: t_uint16 , comment: "CAN state (See system manager for bit interpretation"   , address: "%I*" }
         rxErrorCounter : { type: t_uint8  , comment: "RxError-counter of the CAN controller"                  , address: "%I*" }
         txErrorCounter : { type: t_uint8  , comment: "TxError-counter of the CAN controller"                  , address: "%I*" }
-    statuses:
-        healthStatus : { type: HealthStatus, comment: "Is the device in a healthy state?" }
+    stat:
+        health       : { type: HealthStatus, comment: "Is the device in a healthy state?" }
     calls:
-        healthStatus:
+        health:
             superState  : !BOOL TRUE
             hasWarning  : !BOOL FALSE
             isGood      : !EQ [ error, !UINT8 0 ]
@@ -1233,10 +1233,10 @@
         error           : { type: t_bool       , comment: "Error"                           , address: "%I*" }
     variables_read_only:
         current         : { type: Current      , comment: "The measured current" }
-    statuses:
-        healthStatus    : { type: HealthStatus , comment: "Is the measurement valid?" }
+    stat:
+        health          : { type: HealthStatus , comment: "Is the measurement valid?" }
     calls:
-        healthStatus:
+        health:
             superState   : !BOOL TRUE
             hasWarning   : !BOOL FALSE
             isGood       : !NOT [ error ]
@@ -1258,27 +1258,27 @@
         overrange       : { type: t_bool               , comment: "Overrange"                       , address: "%I*" }
     references:
         config          : { type: MeasurementConfig    , comment: "Reference to the config (alarms in volts)" }
-    statuses:
-        enabledStatus   : { type: EnabledStatus        , comment: "Is the voltage being measured?" }
-        healthStatus    : { type: HealthStatus         , comment: "Is the measurement OK?" }
-        alarmStatus     : { type: HiHiLoLoAlarmStatus  , comment: "Alarm status"}
+    stat:
+        enabled         : { type: EnabledStatus        , comment: "Is the voltage being measured?" }
+        health          : { type: HealthStatus         , comment: "Is the measurement OK?" }
+        alarm           : { type: HiHiLoLoAlarmStatus  , comment: "Alarm status"}
     calls:
-        enabledStatus:
+        enabled:
             superState   : !BOOL TRUE
             isEnabled    : config.enabled
-        alarmStatus:
-            superState   : !EQ [ statuses.enabledStatus, EnabledStatus.enabled ]
+        alarm:
+            superState   : !EQ [ stat.enabled, EnabledStatus.enabled ]
             config       : config.alarms
             value        : average.volt.value
-        healthStatus:
-            superState   : !EQ [ statuses.enabledStatus, EnabledStatus.enabled ]
+        health:
+            superState   : !EQ [ stat.enabled, EnabledStatus.enabled ]
             isGood       : !NOT [ !OR [error,
                                        underrange,
                                        overrange,
-                                       !EQ [ statuses.alarmStatus, HiHiLoLoAlarmStatus.hiHi ],
-                                       !EQ [ statuses.alarmStatus, HiHiLoLoAlarmStatus.loLo ] ] ]
-            hasWarning   : !OR [!EQ [ statuses.alarmStatus, HiHiLoLoAlarmStatus.hi ],
-                                !EQ [ statuses.alarmStatus, HiHiLoLoAlarmStatus.lo ]]
+                                       !EQ [ stat.alarm, HiHiLoLoAlarmStatus.hiHi ],
+                                       !EQ [ stat.alarm, HiHiLoLoAlarmStatus.loLo ] ] ]
+            hasWarning   : !OR [!EQ [ stat.alarm, HiHiLoLoAlarmStatus.hi ],
+                                !EQ [ stat.alarm, HiHiLoLoAlarmStatus.lo ]]
         actual:
             newVoltValue : !SUM [ !MUL [rawValue, conversionFactor], config.offset]
 
@@ -1299,27 +1299,27 @@
         overrange       : { type: t_bool               , comment: "Overrange"                       , address: "%I*" }
     references:
         config          : { type: MeasurementConfig    , comment: "Reference to the config (alarms in degrees celsius)" }
-    statuses:
-        enabledStatus   : { type: EnabledStatus        , comment: "Is the temperature being measured?" }
-        healthStatus    : { type: HealthStatus         , comment: "Is the measurement OK?" }
-        alarmStatus     : { type: HiHiLoLoAlarmStatus  , comment: "Alarm status"}
+    stat:
+        enabled         : { type: EnabledStatus        , comment: "Is the temperature being measured?" }
+        health          : { type: HealthStatus         , comment: "Is the measurement OK?" }
+        alarm           : { type: HiHiLoLoAlarmStatus  , comment: "Alarm status"}
     calls:
-        enabledStatus:
+        enabled:
             superState   : !BOOL TRUE
             isEnabled    : config.enabled
-        alarmStatus:
-            superState   : !EQ [ statuses.enabledStatus, EnabledStatus.enabled ]
+        alarm:
+            superState   : !EQ [ stat.enabled, EnabledStatus.enabled ]
             config       : config.alarms
             value        : average.celsius.value
-        healthStatus:
-            superState   : !EQ [ statuses.enabledStatus, EnabledStatus.enabled ]
+        health:
+            superState   : !EQ [ stat.enabled, EnabledStatus.enabled ]
             isGood       : !NOT [ !OR [error,
                                        underrange,
                                        overrange,
-                                       !EQ [ statuses.alarmStatus, HiHiLoLoAlarmStatus.hiHi ],
-                                       !EQ [ statuses.alarmStatus, HiHiLoLoAlarmStatus.loLo ]] ]
-            hasWarning   : !OR [!EQ [ statuses.alarmStatus, HiHiLoLoAlarmStatus.hi ],
-                                !EQ [ statuses.alarmStatus, HiHiLoLoAlarmStatus.lo ]]
+                                       !EQ [ stat.alarm, HiHiLoLoAlarmStatus.hiHi ],
+                                       !EQ [ stat.alarm, HiHiLoLoAlarmStatus.loLo ]] ]
+            hasWarning   : !OR [!EQ [ stat.alarm, HiHiLoLoAlarmStatus.hi ],
+                                !EQ [ stat.alarm, HiHiLoLoAlarmStatus.lo ]]
         actual:
             newCelsiusValue : !SUM [ !MUL [rawValue, conversionFactor], config.offset]
 
@@ -1340,27 +1340,27 @@
         overrange       : { type: t_bool               , comment: "Overrange"                       , address: "%I*" }
     references:
         config          : { type: MeasurementConfig    , comment: "Reference to the config (alarms in bar)" }
-    statuses:
-        enabledStatus   : { type: EnabledStatus        , comment: "Is the pressure being measured?" }
-        healthStatus    : { type: HealthStatus         , comment: "Is the measurement OK?" }
-        alarmStatus     : { type: HiHiLoLoAlarmStatus  , comment: "Alarm status"}
+    stat:
+        enabled         : { type: EnabledStatus        , comment: "Is the pressure being measured?" }
+        health          : { type: HealthStatus         , comment: "Is the measurement OK?" }
+        alarm           : { type: HiHiLoLoAlarmStatus  , comment: "Alarm status"}
     calls:
-        enabledStatus:
+        enabled:
             superState   : !BOOL TRUE
             isEnabled    : config.enabled
-        alarmStatus:
-            superState   : !EQ [ statuses.enabledStatus, EnabledStatus.enabled ]
+        alarm:
+            superState   : !EQ [ stat.enabled, EnabledStatus.enabled ]
             config       : config.alarms
             value        : average.bar.value
-        healthStatus:
-            superState   : !EQ [ statuses.enabledStatus, EnabledStatus.enabled ]
+        health:
+            superState   : !EQ [ stat.enabled, EnabledStatus.enabled ]
             isGood       : !NOT [ !OR [error,
                                        underrange,
                                        overrange,
-                                       !EQ [ statuses.alarmStatus, HiHiLoLoAlarmStatus.hiHi ],
-                                       !EQ [ statuses.alarmStatus, HiHiLoLoAlarmStatus.loLo ] ] ]
-            hasWarning   : !OR [!EQ [ statuses.alarmStatus, HiHiLoLoAlarmStatus.hi ],
-                                !EQ [ statuses.alarmStatus, HiHiLoLoAlarmStatus.lo ]]
+                                       !EQ [ stat.alarm, HiHiLoLoAlarmStatus.hiHi ],
+                                       !EQ [ stat.alarm, HiHiLoLoAlarmStatus.loLo ] ] ]
+            hasWarning   : !OR [!EQ [ stat.alarm, HiHiLoLoAlarmStatus.hi ],
+                                !EQ [ stat.alarm, HiHiLoLoAlarmStatus.lo ]]
         actual:
             newBarValue  : !SUM [ !MUL [rawValue, conversionFactor], config.offset ]
 
@@ -1381,27 +1381,27 @@
         overrange       : { type: t_bool               , comment: "Overrange"                       , address: "%I*" }
     references:
         config          : { type: MeasurementConfig    , comment: "Reference to the config (alarms in hertz)" }
-    statuses:
-        enabledStatus   : { type: EnabledStatus        , comment: "Is the frequency being measured?" }
-        healthStatus    : { type: HealthStatus         , comment: "Is the measurement OK?" }
-        alarmStatus     : { type: HiHiLoLoAlarmStatus  , comment: "Alarm status"}
+    stat:
+        enabled         : { type: EnabledStatus        , comment: "Is the frequency being measured?" }
+        health          : { type: HealthStatus         , comment: "Is the measurement OK?" }
+        alarm           : { type: HiHiLoLoAlarmStatus  , comment: "Alarm status"}
     calls:
-        enabledStatus:
+        enabled:
             superState   : !BOOL TRUE
             isEnabled    : config.enabled
-        alarmStatus:
-            superState   : !EQ [ statuses.enabledStatus, EnabledStatus.enabled ]
+        alarm:
+            superState   : !EQ [ stat.enabled, EnabledStatus.enabled ]
             config       : config.alarms
             value        : average.hertz.value
-        healthStatus:
-            superState   : !EQ [ statuses.enabledStatus, EnabledStatus.enabled ]
+        health:
+            superState   : !EQ [ stat.enabled, EnabledStatus.enabled ]
             isGood       : !NOT [ !OR [error,
                                        underrange,
                                        overrange,
-                                       !EQ [ statuses.alarmStatus, HiHiLoLoAlarmStatus.hiHi ],
-                                       !EQ [ statuses.alarmStatus, HiHiLoLoAlarmStatus.loLo ] ] ]
-            hasWarning   : !OR [!EQ [ statuses.alarmStatus, HiHiLoLoAlarmStatus.hi ],
-                                !EQ [ statuses.alarmStatus, HiHiLoLoAlarmStatus.lo ]]
+                                       !EQ [ stat.alarm, HiHiLoLoAlarmStatus.hiHi ],
+                                       !EQ [ stat.alarm, HiHiLoLoAlarmStatus.loLo ] ] ]
+            hasWarning   : !OR [!EQ [ stat.alarm, HiHiLoLoAlarmStatus.hi ],
+                                !EQ [ stat.alarm, HiHiLoLoAlarmStatus.lo ]]
         actual:
             newHertzValue: !SUM [ !MUL [rawValue, conversionFactor], config.offset]
 
@@ -1421,25 +1421,25 @@
         average         : { type: GForce       , comment: "Moving average value" }
 #    references:
 #        config          : { type: MeasurementConfig    , comment: "Reference to the config (alarms in milli g)" }
-    statuses:
-#        enabledStatus   : { type: EnabledStatus        , comment: "Is the frequency being measured?" }
-        healthStatus    : { type: HealthStatus         , comment: "Is the measurement OK?" }
-#        alarmStatus     : { type: HiHiLoLoAlarmStatus  , comment: "Alarm status"}
+    stat:
+#        enabled         : { type: EnabledStatus        , comment: "Is the frequency being measured?" }
+        health          : { type: HealthStatus         , comment: "Is the measurement OK?" }
+#        alarm           : { type: HiHiLoLoAlarmStatus  , comment: "Alarm status"}
     calls:
-#        enabledStatus:
+#        enabled:
 #            isEnabled    : config.enabled
-#        alarmStatus:
-#            superState   : !EQ [ statuses.enabledStatus, EnabledStatus.enabled ]
+#        alarm:
+#            superState   : !EQ [ stat.enabled, EnabledStatus.enabled ]
 #            config       : config.alarms
 #            value        : average.milliG.value
-#        healthStatus:
-#            superState   : !EQ [ statuses.enabledStatus, EnabledStatus.enabled ]
+#        health:
+#            superState   : !EQ [ stat.enabled, EnabledStatus.enabled ]
 #            isGood       : -> NOT( OR(error,
-#                                      !EQ [ statuses.alarmStatus, HiHiLoLoAlarmStatus.hiHi ],
-#                                      !EQ [ statuses.alarmStatus, HiHiLoLoAlarmStatus.loLo ]))
-#            hasWarning   : !OR [!EQ [ statuses.alarmStatus, HiHiLoLoAlarmStatus.hi ],
-#                                  !EQ [ statuses.alarmStatus, HiHiLoLoAlarmStatus.lo ] )
-        healthStatus:
+#                                      !EQ [ stat.alarm, HiHiLoLoAlarmStatus.hiHi ],
+#                                      !EQ [ stat.alarm, HiHiLoLoAlarmStatus.loLo ]))
+#            hasWarning   : !OR [!EQ [ stat.alarm, HiHiLoLoAlarmStatus.hi ],
+#                                  !EQ [ stat.alarm, HiHiLoLoAlarmStatus.lo ] )
+        health:
             superState   : !BOOL TRUE
             hasWarning   : !BOOL FALSE
             isGood       : !NOT [ error ]
@@ -1464,25 +1464,25 @@
         overrange       : { type: t_bool               , comment: "Overrange"                       , address: "%I*" }
     references:
         config          : { type: MeasurementConfig    , comment: "Reference to the config (alarms in percent)" }
-    statuses:
-        enabledStatus   : { type: EnabledStatus        , comment: "Is the relative humidity being measured?" }
-        healthStatus    : { type: HealthStatus         , comment: "Is the measurement OK?" }
-        alarmStatus     : { type: HiHiLoLoAlarmStatus  , comment: "Alarm status"}
+    stat:
+        enabled         : { type: EnabledStatus        , comment: "Is the relative humidity being measured?" }
+        health          : { type: HealthStatus         , comment: "Is the measurement OK?" }
+        alarm           : { type: HiHiLoLoAlarmStatus  , comment: "Alarm status"}
     calls:
-        enabledStatus:
+        enabled:
             superState   : !BOOL TRUE
             isEnabled    : config.enabled
-        alarmStatus:
-            superState   : !EQ [ statuses.enabledStatus, EnabledStatus.enabled ]
+        alarm:
+            superState   : !EQ [ stat.enabled, EnabledStatus.enabled ]
             config       : config.alarms
             value        : average.percent.value
-        healthStatus:
-            superState   : !EQ [ statuses.enabledStatus, EnabledStatus.enabled ]
+        health:
+            superState   : !EQ [ stat.enabled, EnabledStatus.enabled ]
             isGood       : !NOT [ !OR [ !AND [ error, !OR [underrange, overrange] ],
-                                        !EQ [ statuses.alarmStatus, HiHiLoLoAlarmStatus.hiHi ],
-                                        !EQ [ statuses.alarmStatus, HiHiLoLoAlarmStatus.loLo ] ] ]
-            hasWarning   : !OR [ !EQ [ statuses.alarmStatus, HiHiLoLoAlarmStatus.hi ],
-                                 !EQ [ statuses.alarmStatus, HiHiLoLoAlarmStatus.lo ] ]
+                                        !EQ [ stat.alarm, HiHiLoLoAlarmStatus.hiHi ],
+                                        !EQ [ stat.alarm, HiHiLoLoAlarmStatus.loLo ] ] ]
+            hasWarning   : !OR [ !EQ [ stat.alarm, HiHiLoLoAlarmStatus.hi ],
+                                 !EQ [ stat.alarm, HiHiLoLoAlarmStatus.lo ] ]
         actual:
             newFractionValue : !SUM [ !MUL [ !MUL [ rawValue, conversionFactor ], config.gain ], config.offset ]
 
@@ -1506,27 +1506,27 @@
         average         : { type: Force                , comment: "Moving average value" }
     references:
         config          : { type: MeasurementConfig    , comment: "Reference to the config (alarms in Newton)" }
-    statuses:
-        enabledStatus   : { type: EnabledStatus        , comment: "Is the force being measured?" }
-        healthStatus    : { type: HealthStatus         , comment: "Is the measurement OK?" }
-        alarmStatus     : { type: HiHiLoLoAlarmStatus  , comment: "Alarm status"}
+    stat:
+        enabled         : { type: EnabledStatus        , comment: "Is the force being measured?" }
+        health          : { type: HealthStatus         , comment: "Is the measurement OK?" }
+        alarm           : { type: HiHiLoLoAlarmStatus  , comment: "Alarm status"}
     calls:
-        enabledStatus:
+        enabled:
             superState   : !BOOL TRUE
             isEnabled    : config.enabled
-        alarmStatus:
-            superState   : !EQ [ statuses.enabledStatus, EnabledStatus.enabled ]
+        alarm:
+            superState   : !EQ [ stat.enabled, EnabledStatus.enabled ]
             config       : config.alarms
             value        : average.newton.value
-        healthStatus:
-            superState   : !EQ [ statuses.enabledStatus, EnabledStatus.enabled ]
+        health:
+            superState   : !EQ [ stat.enabled, EnabledStatus.enabled ]
             isGood       : !NOT [ !OR [ error,
                                         underrange,
                                         overrange,
-                                        !EQ [ statuses.alarmStatus, HiHiLoLoAlarmStatus.hiHi ],
-                                        !EQ [ statuses.alarmStatus, HiHiLoLoAlarmStatus.loLo ] ] ]
-            hasWarning   : !OR [!EQ [ statuses.alarmStatus, HiHiLoLoAlarmStatus.hi ],
-                                !EQ [ statuses.alarmStatus, HiHiLoLoAlarmStatus.lo ]]
+                                        !EQ [ stat.alarm, HiHiLoLoAlarmStatus.hiHi ],
+                                        !EQ [ stat.alarm, HiHiLoLoAlarmStatus.loLo ] ] ]
+            hasWarning   : !OR [!EQ [ stat.alarm, HiHiLoLoAlarmStatus.hi ],
+                                !EQ [ stat.alarm, HiHiLoLoAlarmStatus.lo ]]
         actual:
             newNewtonValue: !SUM [ !MUL [ rawValue, conversionFactor], config.offset ]
 
@@ -1546,27 +1546,27 @@
         average         : { type: LinearPosition, comment: "Moving average value" }
     references:
         config          : { type: MeasurementConfig    , comment: "Reference to the config (alarms in millimeters)" }
-    statuses:
-        enabledStatus   : { type: EnabledStatus        , comment: "Is the position being measured?" }
-        healthStatus    : { type: HealthStatus         , comment: "Is the measurement OK?" }
-        alarmStatus     : { type: HiHiLoLoAlarmStatus  , comment: "Alarm status"}
+    stat:
+        enabled         : { type: EnabledStatus        , comment: "Is the position being measured?" }
+        health          : { type: HealthStatus         , comment: "Is the measurement OK?" }
+        alarm           : { type: HiHiLoLoAlarmStatus  , comment: "Alarm status"}
     calls:
-        enabledStatus:
+        enabled:
             superState   : !BOOL TRUE
             isEnabled    : config.enabled
-        alarmStatus:
-            superState   : !EQ [ statuses.enabledStatus, EnabledStatus.enabled ]
+        alarm:
+            superState   : !EQ [ stat.enabled, EnabledStatus.enabled ]
             config       : config.alarms
             value        : average.millimeters.value
-        healthStatus:
-            superState   : !EQ [ statuses.enabledStatus, EnabledStatus.enabled ]
+        health:
+            superState   : !EQ [ stat.enabled, EnabledStatus.enabled ]
             isGood       : !NOT [ !OR [ error,
                                         underrange,
                                         overrange,
-                                        !EQ [ statuses.alarmStatus, HiHiLoLoAlarmStatus.hiHi ],
-                                        !EQ [ statuses.alarmStatus, HiHiLoLoAlarmStatus.loLo ] ] ]
-            hasWarning   : !OR [ !EQ [ statuses.alarmStatus, HiHiLoLoAlarmStatus.hi ],
-                                 !EQ [ statuses.alarmStatus, HiHiLoLoAlarmStatus.lo ] ]
+                                        !EQ [ stat.alarm, HiHiLoLoAlarmStatus.hiHi ],
+                                        !EQ [ stat.alarm, HiHiLoLoAlarmStatus.loLo ] ] ]
+            hasWarning   : !OR [ !EQ [ stat.alarm, HiHiLoLoAlarmStatus.hi ],
+                                 !EQ [ stat.alarm, HiHiLoLoAlarmStatus.lo ] ]
         actual:
             newMillimetersValue: !SUM [ !MUL [ rawValue, conversionFactor ], config.offset ]
 
@@ -1586,27 +1586,27 @@
         average         : { type: LinearPosition       , comment: "Moving average value" }
     references:
         config          : { type: MeasurementConfig    , comment: "Reference to the config (alarms in millimeters)" }
-    statuses:
-        enabledStatus   : { type: EnabledStatus        , comment: "Is the position being measured?" }
-        healthStatus    : { type: HealthStatus         , comment: "Is the measurement OK?" }
-        alarmStatus     : { type: HiHiLoLoAlarmStatus  , comment: "Alarm status"}
+    stat:
+        enabled         : { type: EnabledStatus        , comment: "Is the position being measured?" }
+        health          : { type: HealthStatus         , comment: "Is the measurement OK?" }
+        alarm           : { type: HiHiLoLoAlarmStatus  , comment: "Alarm status"}
     calls:
-        enabledStatus:
+        enabled:
             superState   : !BOOL TRUE
             isEnabled    : config.enabled
-        alarmStatus:
-            superState   : !EQ [ statuses.enabledStatus, EnabledStatus.enabled ]
+        alarm:
+            superState   : !EQ [ stat.enabled, EnabledStatus.enabled ]
             config       : config.alarms
             value        : average.millimeters.value
-        healthStatus:
-            superState   : !EQ [ statuses.enabledStatus, EnabledStatus.enabled ]
+        health:
+            superState   : !EQ [ stat.enabled, EnabledStatus.enabled ]
             isGood       : !NOT [ !OR [ error,
                                         underrange,
                                         overrange,
-                                        !EQ [ statuses.alarmStatus, HiHiLoLoAlarmStatus.hiHi ],
-                                        !EQ [ statuses.alarmStatus, HiHiLoLoAlarmStatus.loLo ] ] ]
-            hasWarning   : !OR [ !EQ [ statuses.alarmStatus, HiHiLoLoAlarmStatus.hi ],
-                                 !EQ [ statuses.alarmStatus, HiHiLoLoAlarmStatus.lo ] ]
+                                        !EQ [ stat.alarm, HiHiLoLoAlarmStatus.hiHi ],
+                                        !EQ [ stat.alarm, HiHiLoLoAlarmStatus.loLo ] ] ]
+            hasWarning   : !OR [ !EQ [ stat.alarm, HiHiLoLoAlarmStatus.hi ],
+                                 !EQ [ stat.alarm, HiHiLoLoAlarmStatus.lo ] ]
         actual:
             newMillimetersValue: !SUM [ !MUL [ rawValue, conversionFactor ], config.offset ]
 
@@ -1618,16 +1618,16 @@
         isEnabled       : { type: t_bool                , comment: "Is control enabled?" }
     variables_read_only:
         digitalOutput   : { type: t_bool                , comment: "Boolean, to bind to digital output"   , address: "%Q*" }
-    processes:
+    proc:
         setEnabled      : { type: SetEnabledProcess     , comment: "Set the relay enabled or disabled" }
-    statuses:
-        busyStatus      : { type: BusyStatus            , comment: "Is the SimpleRelay in a busy state?" }
+    stat:
+        busy            : { type: BusyStatus            , comment: "Is the SimpleRelay in a busy state?" }
     calls:
         setEnabled:
-            isEnabled   : !AND [ isEnabled, !EQ [ processes.setEnabled.statuses.busyStatus, BusyStatus.idle ] ]
-        busyStatus:
+            isEnabled   : !AND [ isEnabled, !EQ [ proc.setEnabled.stat.busy, BusyStatus.idle ] ]
+        busy:
             superState  : !BOOL TRUE
-            isBusy      : processes.setEnabled.statuses.busyStatus.busy
+            isBusy      : proc.setEnabled.stat.busy.busy
 
 
 
@@ -1692,29 +1692,29 @@
         isEnabled       : { type: t_bool                        , comment: "Is control enabled?" }
     variables:
         filePath        : { type: t_string                      , comment: "Full path of the config filename" }
-    processes:
+    proc:
         save            : { type: WriteXmlProcess       , comment: "Save the currently active config to disk" }
         load            : { type: ReadXmlProcess        , comment: "Load the config from disk" }
         activate        : { type: ActivateProcess       , comment: "Activate the loaded config" }
-    statuses:
-        busyStatus      : { type: BusyStatus            , comment: "Is the config manager in a busy state?" }
-        healthStatus    : { type: HealthStatus          , comment: "Is the config manager in a healthy state?" }
+    stat:
+        busy            : { type: BusyStatus            , comment: "Is the config manager in a busy state?" }
+        health          : { type: HealthStatus          , comment: "Is the config manager in a healthy state?" }
     calls:
-        # statuses
-        busyStatus:
+        # stat
+        busy:
             superState  : !BOOL TRUE
-            isBusy      : !MTCS_SUMMARIZE_BUSY [ processes.save, processes.load, processes.activate ]
-        healthStatus:
+            isBusy      : !MTCS_SUMMARIZE_BUSY [ proc.save, proc.load, proc.activate ]
+        health:
             superState  : !BOOL TRUE
-            isGood      : !MTCS_SUMMARIZE_GOOD [ processes.save, processes.load, processes.activate ]
-            hasWarning  : !MTCS_SUMMARIZE_WARN [ processes.save, processes.load, processes.activate ]
-        # processes
+            isGood      : !MTCS_SUMMARIZE_GOOD [ proc.save, proc.load, proc.activate ]
+            hasWarning  : !MTCS_SUMMARIZE_WARN [ proc.save, proc.load, proc.activate ]
+        # proc
         save:
-            isEnabled   : !AND [ isEnabled, !EQ [ statuses.busyStatus, BusyStatus.idle ] ]
+            isEnabled   : !AND [ isEnabled, !EQ [ stat.busy, BusyStatus.idle ] ]
         load:
-            isEnabled   : !AND [ isEnabled, !EQ [ statuses.busyStatus, BusyStatus.idle ] ]
+            isEnabled   : !AND [ isEnabled, !EQ [ stat.busy, BusyStatus.idle ] ]
         activate:
-            isEnabled   : !AND [ isEnabled, !EQ [ statuses.busyStatus, BusyStatus.idle ] ]
+            isEnabled   : !AND [ isEnabled, !EQ [ stat.busy, BusyStatus.idle ] ]
 
 
   ########################################################################################################################
@@ -1832,32 +1832,32 @@
         isEnabled       : { type: t_bool , comment: "Is control enabled?" }
     variables:
         retries         : { type: t_int16   , initial: !INT16 3     ,  comment: "Number of retries for a succesfull process" }
-    processes:
+    proc:
         readCoil       : { type: ModbusRTUBusReadCoilProcess        , comment: "Read coil" }
         writeCoil      : { type: ModbusRTUBusWriteCoilProcess       , comment: "Write coil" }
         readRegister   : { type: ModbusRTUBusReadRegisterProcess    , comment: "Read register" }
         writeRegister  : { type: ModbusRTUBusWriteRegisterProcess   , comment: "Write register" } 
         diagnostics    : { type: ModbusRTUBusDiagnosticsProcess     , comment: "Diagnostics" } 
-    statuses:
-        busyStatus      : { type: BusyStatus                        , comment: "Is the config manager in a busy state?" }
+    stat:
+        busy            : { type: BusyStatus                        , comment: "Is the config manager in a busy state?" }
     calls:
-        busyStatus:
+        busy:
             superState  : !BOOL TRUE
-            isBusy      : !OR [ processes.readCoil.statuses.busyStatus.busy,
-                                processes.writeCoil.statuses.busyStatus.busy,
-                                processes.readRegister.statuses.busyStatus.busy,
-                                processes.writeRegister.statuses.busyStatus.busy,
-                                processes.diagnostics.statuses.busyStatus.busy ]     
+            isBusy      : !OR [ proc.readCoil.stat.busy.busy,
+                                proc.writeCoil.stat.busy.busy,
+                                proc.readRegister.stat.busy.busy,
+                                proc.writeRegister.stat.busy.busy,
+                                proc.diagnostics.stat.busy.busy ]     
         readCoil:
-            isEnabled  : !AND [ isEnabled, !EQ [ statuses.busyStatus, BusyStatus.idle ] ]
+            isEnabled  : !AND [ isEnabled, !EQ [ stat.busy, BusyStatus.idle ] ]
         writeCoil:
-            isEnabled  : !AND [ isEnabled, !EQ [ statuses.busyStatus, BusyStatus.idle ] ]
+            isEnabled  : !AND [ isEnabled, !EQ [ stat.busy, BusyStatus.idle ] ]
         readRegister:
-            isEnabled  : !AND [ isEnabled, !EQ [ statuses.busyStatus, BusyStatus.idle ] ]
+            isEnabled  : !AND [ isEnabled, !EQ [ stat.busy, BusyStatus.idle ] ]
         writeRegister:
-            isEnabled  : !AND [ isEnabled, !EQ [ statuses.busyStatus, BusyStatus.idle ] ]
+            isEnabled  : !AND [ isEnabled, !EQ [ stat.busy, BusyStatus.idle ] ]
         diagnostics:
-            isEnabled  : !AND [ isEnabled, !EQ [ statuses.busyStatus, BusyStatus.idle ] ]
+            isEnabled  : !AND [ isEnabled, !EQ [ stat.busy, BusyStatus.idle ] ]
 
 
   ########################################################################################################################
@@ -1865,7 +1865,7 @@
   ########################################################################################################################
   !STRUCT MercatorMeteoExchange:
     items:
-        mercatorServiceHealthy      : { type: t_bool    , comment : "TRUE if the Mercator service healthStatus is Good" }
+        mercatorServiceHealthy      : { type: t_bool    , comment : "TRUE if the Mercator service health       is Good" }
         windSpeedMinimum            : { type: t_double  , comment: "Wind speed minimum" }
         windSpeedAverage            : { type: t_double  , comment: "Wind speed average" }
         windSpeedMaximum            : { type: t_double  , comment: "Wind speed maximum" }

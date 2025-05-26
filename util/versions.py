@@ -11,3 +11,19 @@ def is_marvel():
 
 def is_mtcs():
     return CODEGEN_VERSION == CodeGenVersion.MTCS
+
+def statuses() -> str:
+    if is_mtcs():
+        return "statuses"
+    elif is_marvel():
+        return "stat"
+    else:
+        raise Exception("Invalid version")
+
+def processes() -> str:
+    if is_mtcs():
+        return "processes"
+    elif is_marvel():
+        return "proc"
+    else:
+        raise Exception("Invalid version")

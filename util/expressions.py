@@ -1,5 +1,5 @@
 from util.objects import Object
-from util.versions import is_marvel, is_mtcs
+from util.versions import is_marvel, is_mtcs, statuses, processes
 
 class Operator:
     """
@@ -342,10 +342,10 @@ class MTCS_SUMMARIZE_BUSY(BinaryOperation):
         new_operands = []
         if is_mtcs():
             for operand in operands:
-                new_operands.append(operand + ".statuses.busyStatus.busy")
+                new_operands.append(f"{operand}.{statuses()}.busyStatus.busy")
         elif is_marvel():
             for operand in operands:
-                new_operands.append(EQ([operand + ".statuses.busyStatus", "marvel_common.BusyStatus.busy"]))
+                new_operands.append(EQ([f"{operand}.{statuses()}.busy", "marvel_common.BusyStatus.busy"]))
         else:
             raise Exception("Invalid version")
 
@@ -356,10 +356,10 @@ class MTCS_SUMMARIZE_GOOD(BinaryOperation):
         new_operands = []
         if is_mtcs():
             for operand in operands:
-                new_operands.append(operand + ".statuses.healthStatus.isGood")
+                new_operands.append(f"{operand}.{statuses()}.healthStatus.isGood")
         elif is_marvel():
             for operand in operands:
-                new_operands.append(EQ([operand + ".statuses.healthStatus", "marvel_common.HealthStatus.good"]))
+                new_operands.append(EQ([f"{operand}.{statuses()}.health", "marvel_common.HealthStatus.good"]))
         else:
             raise Exception("Invalid version")
 
@@ -370,10 +370,10 @@ class MTCS_SUMMARIZE_WARN(BinaryOperation):
         new_operands = []
         if is_mtcs():
             for operand in operands:
-                new_operands.append(operand + ".statuses.healthStatus.hasWarning")
+                new_operands.append(f"{operand}.{statuses()}.healthStatus.hasWarning")
         elif is_marvel():
             for operand in operands:
-                new_operands.append(EQ([operand + ".statuses.healthStatus", "marvel_common.HealthStatus.warning"]))
+                new_operands.append(EQ([f"{operand}.{statuses()}.health", "marvel_common.HealthStatus.warning"]))
         else:
             raise Exception("Invalid version")
         super().__init__(new_operands, OPERATORS.OR)
@@ -383,12 +383,12 @@ class MTCS_SUMMARIZE_GOOD_OR_DISABLED(BinaryOperation):
         new_operands = []
         if is_mtcs():
             for operand in operands:
-                new_operands.append(OR([operand + ".statuses.healthStatus.isGood", 
-                                        operand + ".statuses.enabledStatus.disabled"]))
+                new_operands.append(OR([f"{operand}.{statuses()}.healthStatus.isGood", 
+                                        f"{operand}.{statuses()}.enabledStatus.disabled"]))
         elif is_marvel():
             for operand in operands:
-                new_operands.append(OR([EQ([operand + ".statuses.healthStatus", "marvel_common.HealthStatus.good"]), 
-                                        EQ([operand + ".statuses.enabledStatus", "marvel_common.EnabledStatus.enabled"])]))
+                new_operands.append(OR([EQ([f"{operand}.{statuses()}.health", "marvel_common.HealthStatus.good"]), 
+                                        EQ([f"{operand}.{statuses()}.enabled", "marvel_common.EnabledStatus.enabled"])]))
         else:
             raise Exception("Invalid version")
         

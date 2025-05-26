@@ -171,7 +171,7 @@
       variables:
           editableConfig                  : { type: ServicesConfig              , comment: "Editable configuration of the Services subsystem", expand: false }
       references:
-          operatorStatus_ref              : { type: marvel_common.OperatorStatus  , comment: "Shared operator status" }
+          operator_ref                    : { type: marvel_common.OperatorStatus  , comment: "Shared operator status" }
       variables_read_only:
           config                          : { type: ServicesConfig              , comment: "Active configuration of the Services subsystem" }
       parts:
@@ -179,61 +179,61 @@
               comment                     : "Timing service"
               arguments:
                   config_ref              : {}
-                  operatorStatus_ref      : {}
+                  operator_ref      : {}
               attributes:
-                  statuses:
+                  stat:
                       attributes:
-                          healthStatus    : { type: marvel_common.HealthStatus }
+                          health          : { type: marvel_common.HealthStatus }
           mercatorMeteo:
               comment                     : "Mercator meteo service"
               arguments:
                   config_ref              : {}
               attributes:
                   airTemperature          : {}
-                  statuses:
+                  stat:
                       attributes:
-                          healthStatus    : { type: marvel_common.HealthStatus }
+                          health          : { type: marvel_common.HealthStatus }
           configManager:
               comment                     : "The config manager (to load/save/activate configuration data)"
               type                        : marvel_common.ConfigManager
-      statuses:
-          initializationStatus            : { type: marvel_common.InitializationStatus }
-          healthStatus                    : { type: marvel_common.HealthStatus }
-          busyStatus                      : { type: marvel_common.BusyStatus }
-          operatingStatus                 : { type: marvel_common.OperatingStatus }
-      processes:
+      stat:
+          init                            : { type: marvel_common.InitializationStatus }
+          health                          : { type: marvel_common.HealthStatus }
+          busy                            : { type: marvel_common.BusyStatus }
+          operating                       : { type: marvel_common.OperatingStatus }
+      proc:
           initialize                      : { type: marvel_common.Process                       , comment: "Start initializing" }
           lock                            : { type: marvel_common.Process                       , comment: "Lock the system" }
           unlock                          : { type: marvel_common.Process                       , comment: "Unlock the system" }
           changeOperatingState            : { type: marvel_common.ChangeOperatingStateProcess   , comment: "Change the operating state (e.g. AUTO, MANUAL, ...)" }
       calls:
           initialize:
-              isEnabled                   : !OR [ !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.shutdown ],
-                                                  !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initializingFailed ],
-                                                  !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initialized ] ]
+              isEnabled                   : !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ],
+                                                  !EQ [ stat.init, marvel_common.InitializationStatus.initializingFailed ],
+                                                  !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ]
           lock:
-              isEnabled                   : !AND [ !EQ [ operatorStatus_ref,  marvel_common.OperatorStatus.tech ],
-                                                   !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initialized ] ]
+              isEnabled                   : !AND [ !EQ [ operator_ref,  marvel_common.OperatorStatus.tech ],
+                                                   !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ]
           unlock:
-              isEnabled                   : !AND [ !EQ [ operatorStatus_ref,  marvel_common.OperatorStatus.tech ], 
-                                                   !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.locked ] ]
+              isEnabled                   : !AND [ !EQ [ operator_ref,  marvel_common.OperatorStatus.tech ], 
+                                                   !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
           changeOperatingState:
               isEnabled                   : !BOOL FALSE # there is no MANUAL mode
-        #   operatingStatus:
-        #       superState                  : !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initialized ]
-          healthStatus:
+        #   operating:
+        #       superState                  : !EQ [ stat.init, marvel_common.InitializationStatus.initialized ]
+          health:
               superState                  : !BOOL TRUE
               isGood                      : !MTCS_SUMMARIZE_GOOD [ parts.timing, 
                                                                    parts.mercatorMeteo ]
               hasWarning                  : !MTCS_SUMMARIZE_WARN [ parts.timing,
                                                                    parts.mercatorMeteo ]
-          busyStatus:
+          busy:
               superState                  : !BOOL TRUE
-              isBusy                      : !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initializing ]
+              isBusy                      : !EQ [ stat.init, marvel_common.InitializationStatus.initializing ]
           configManager:
-              isEnabled                   : !EQ [ operatorStatus_ref, marvel_common.OperatorStatus.tech ]
+              isEnabled                   : !EQ [ operator_ref, marvel_common.OperatorStatus.tech ]
           timing:
-              operatorStatus_ref          : operatorStatus_ref
+              operator_ref          : operator_ref
               config_ref                  : config.timing
           mercatorMeteo:
               config_ref                  : config.mercatorMeteo
@@ -246,7 +246,7 @@
   !STATEMACHINE ServicesTiming:
       typeOf                              : [ ServicesParts.timing ]
       references:
-          operatorStatus_ref              : { type: marvel_common.OperatorStatus    , comment: "Shared operator status"}
+          operator_ref              : { type: marvel_common.OperatorStatus    , comment: "Shared operator status"}
           config_ref                      : { type: ServicesTimingConfig          , comment: "The config" }
       variables:
           ntpExtTime                      : { type: t_int64 , address: "%I*"       , comment: "TcCOM object nExtTime variable" }
@@ -256,12 +256,12 @@
           # actual source
           utcDateString                   : { type: t_string                      , comment: "UTC date as a string of format YYYY-MM-DD" }
           utcTimeString                   : { type: t_string                      , comment: "UTC time as a string of format HH-MM-SS.SSS" }
-      statuses:
-          healthStatus                    : { type: marvel_common.HealthStatus }
-      processes:
+      stat:
+          health                          : { type: marvel_common.HealthStatus }
+      proc:
           {}
       calls:
-          healthStatus:
+          health:
               superState                  : !BOOL TRUE
               hasWarning                  : !BOOL FALSE
               isGood                      : !AND [ isNtpConnected, isNtpSynchronized ]
@@ -278,26 +278,26 @@
           data            : { type: t_double                        , comment: "The measured data" }
           valid           : { type: t_bool                          , comment: "TRUE if the data is valid" }
           disconnected    : { type: t_bool                          , comment: "TRUE if the data provider is disconnected" }
-      statuses:
-          enabledStatus   : { type: marvel_common.EnabledStatus       , comment: "Is the temperature being measured?" }
-          healthStatus    : { type: marvel_common.HealthStatus        , comment: "Is the data valid and within range?" }
-          alarmStatus     : { type: marvel_common.HiHiLoLoAlarmStatus , comment: "Alarm status"}
+      stat:
+          enabled         : { type: marvel_common.EnabledStatus       , comment: "Is the temperature being measured?" }
+          health          : { type: marvel_common.HealthStatus        , comment: "Is the data valid and within range?" }
+          alarm           : { type: marvel_common.HiHiLoLoAlarmStatus , comment: "Alarm status"}
       calls:
-          enabledStatus:
+          enabled:
               superState   : !BOOL TRUE
               isEnabled    : config_ref.enabled
-          alarmStatus:
-              superState   : !EQ [ statuses.enabledStatus, marvel_common.EnabledStatus.enabled ]
+          alarm:
+              superState   : !EQ [ stat.enabled, marvel_common.EnabledStatus.enabled ]
               config       : config_ref.alarms
               value        : data
-          healthStatus:
-              superState   : !EQ [ statuses.enabledStatus, marvel_common.EnabledStatus.enabled ]
+          health:
+              superState   : !EQ [ stat.enabled, marvel_common.EnabledStatus.enabled ]
               isGood       : !NOT [ !OR [ !NOT [ valid ],
                                           disconnected,
-                                          !EQ [ statuses.alarmStatus, marvel_common.HiHiLoLoAlarmStatus.hiHi ],
-                                          !EQ [ statuses.alarmStatus, marvel_common.HiHiLoLoAlarmStatus.loLo ] ] ]
-              hasWarning   : !OR [ !EQ [ statuses.alarmStatus, marvel_common.HiHiLoLoAlarmStatus.hi ],
-                                   !EQ [ statuses.alarmStatus, marvel_common.HiHiLoLoAlarmStatus.lo ] ]
+                                          !EQ [ stat.alarm, marvel_common.HiHiLoLoAlarmStatus.hiHi ],
+                                          !EQ [ stat.alarm, marvel_common.HiHiLoLoAlarmStatus.loLo ] ] ]
+              hasWarning   : !OR [ !EQ [ stat.alarm, marvel_common.HiHiLoLoAlarmStatus.hi ],
+                                   !EQ [ stat.alarm, marvel_common.HiHiLoLoAlarmStatus.lo ] ]
   
   ########################################################################################################################
   # ServicesMercatorMeteo
@@ -345,10 +345,10 @@
           fromSimulation              : { type: marvel_common.MercatorMeteoExchange , comment: "The simulated data (if config.simulated is TRUE)", expand: false }
       references:
           config_ref                  : { type: ServicesMercatorMeteoConfig       , comment: "The config" }
-      statuses:
+      stat:
           meteoHealthStatus           : { type: marvel_common.HealthStatus }
-          healthStatus                : { type: marvel_common.HealthStatus }
-      processes:
+          health                      : { type: marvel_common.HealthStatus }
+      proc:
           {}
       calls:
           windSpeedMinimum:
@@ -466,13 +466,13 @@
               data                    : fromMercator.dewpoint
               valid                   : fromMercator.dewpointValid
               disconnected            : mercatorDisconnected
-          healthStatus:
+          health:
               superState              : !BOOL TRUE
               hasWarning              : !BOOL FALSE
               isGood                  : !AND [ fromMercator.mercatorServiceHealthy,
                                                !NOT [ mercatorDisconnected ] ]
           meteoHealthStatus:
-              superState              : !EQ [ statuses.healthStatus, marvel_common.HealthStatus.good ]
+              superState              : !EQ [ stat.health, marvel_common.HealthStatus.good ]
               isGood                  : !MTCS_SUMMARIZE_GOOD_OR_DISABLED [
                                                   windSpeedMinimum,
                                                   windSpeedAverage,

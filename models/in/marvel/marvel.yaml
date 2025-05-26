@@ -72,8 +72,8 @@
               expand: false
               arguments:
                   number                  : { type: t_uint8 }
-                  operatorStatus_ref      : { type: marvel_common.OperatorStatus          , expand: false }
-                  activityStatus_ref      : { type: marvel_common.ActivityStatus          , expand: false }
+                  operator_ref            : { type: marvel_common.OperatorStatus          , expand: false }
+                  activity_ref            : { type: marvel_common.ActivityStatus          , expand: false }
                   services_ref            : { type: marvel_services.Services              , expand: false }
               attributes:
                   parts:
@@ -82,19 +82,19 @@
                             attributes:
                                 shutter:
                                     attributes:
-                                        statuses:
+                                        stat:
                                             attributes:
-                                                apertureStatus: { type: marvel_common.ApertureStatus }
-                                        processes:
+                                                aperture: { type: marvel_common.ApertureStatus }
+                                        proc:
                                             attributes:
                                                 open:   { attributes: { isEnabled: { type: t_bool } } }
                                                 close:  { attributes: { isEnabled: { type: t_bool } } }
                                                 stop:   { attributes: { isEnabled: { type: t_bool } } }
-                  statuses:
+                  stat:
                       attributes:
-                          healthStatus    : { type: marvel_common.HealthStatus }
-                          busyStatus      : { type: marvel_common.BusyStatus }
-                  processes:
+                          health          : { type: marvel_common.HealthStatus }
+                          busy            : { type: marvel_common.BusyStatus }
+                  proc:
                       attributes:
                         point:
                             attributes:
@@ -105,8 +105,8 @@
               expand: false
               arguments:
                   number                  : { type: t_uint8 }
-                  operatorStatus_ref      : { type: marvel_common.OperatorStatus          , expand: false }
-                  activityStatus_ref      : { type: marvel_common.ActivityStatus          , expand: false }
+                  operator_ref            : { type: marvel_common.OperatorStatus          , expand: false }
+                  activity_ref      : { type: marvel_common.ActivityStatus          , expand: false }
                   services_ref            : { type: marvel_services.Services              , expand: false }
               attributes:
                   parts:
@@ -115,19 +115,19 @@
                             attributes:
                                 shutter:
                                     attributes:
-                                        statuses:
+                                        stat:
                                             attributes:
-                                                apertureStatus: { type: marvel_common.ApertureStatus }
-                                        processes:
+                                                aperture: { type: marvel_common.ApertureStatus }
+                                        proc:
                                             attributes:
                                                 open:   { attributes: { isEnabled: { type: t_bool } } }
                                                 close:  { attributes: { isEnabled: { type: t_bool } } }
                                                 stop:   { attributes: { isEnabled: { type: t_bool } } }
-                  statuses:
+                  stat:
                       attributes:
-                          healthStatus    : { type: marvel_common.HealthStatus }
-                          busyStatus      : { type: marvel_common.BusyStatus }
-                  processes:
+                          health          : { type: marvel_common.HealthStatus }
+                          busy            : { type: marvel_common.BusyStatus }
+                  proc:
                       attributes:
                         point:
                             attributes:
@@ -138,8 +138,8 @@
               expand: false
               arguments:
                   number                  : { type: t_uint8 }
-                  operatorStatus_ref      : { type: marvel_common.OperatorStatus          , expand: false }
-                  activityStatus_ref      : { type: marvel_common.ActivityStatus          , expand: false }
+                  operator_ref            : { type: marvel_common.OperatorStatus          , expand: false }
+                  activity_ref            : { type: marvel_common.ActivityStatus          , expand: false }
                   services_ref            : { type: marvel_services.Services              , expand: false }
               attributes:
                   parts:
@@ -148,19 +148,19 @@
                             attributes:
                                 shutter:
                                     attributes:
-                                        statuses:
+                                        stat:
                                             attributes:
-                                                apertureStatus: { type: marvel_common.ApertureStatus }
-                                        processes:
+                                                aperture: { type: marvel_common.ApertureStatus }
+                                        proc:
                                             attributes:
                                                 open:   { attributes: { isEnabled: { type: t_bool } } }
                                                 close:  { attributes: { isEnabled: { type: t_bool } } }
                                                 stop:   { attributes: { isEnabled: { type: t_bool } } }
-                  statuses:
+                  stat:
                       attributes:
-                          healthStatus    : { type: marvel_common.HealthStatus }
-                          busyStatus      : { type: marvel_common.BusyStatus }
-                  processes:
+                          health          : { type: marvel_common.HealthStatus }
+                          busy            : { type: marvel_common.BusyStatus }
+                  proc:
                       attributes:
                         point:
                             attributes:
@@ -171,8 +171,8 @@
               expand: false
               arguments:
                   number                  : { type: t_uint8 }
-                  operatorStatus_ref      : { type: marvel_common.OperatorStatus          , expand: false }
-                  activityStatus_ref      : { type: marvel_common.ActivityStatus          , expand: false }
+                  operator_ref            : { type: marvel_common.OperatorStatus          , expand: false }
+                  activity_ref            : { type: marvel_common.ActivityStatus          , expand: false }
                   services_ref            : { type: marvel_services.Services              , expand: false }
               attributes:
                   parts:
@@ -181,19 +181,19 @@
                             attributes:
                                 shutter:
                                     attributes:
-                                        statuses:
+                                        stat:
                                             attributes:
-                                                apertureStatus: { type: marvel_common.ApertureStatus }
-                                        processes:
+                                                aperture: { type: marvel_common.ApertureStatus }
+                                        proc:
                                             attributes:
                                                 open:   { attributes: { isEnabled: { type: t_bool } } }
                                                 close:  { attributes: { isEnabled: { type: t_bool } } }
                                                 stop:   { attributes: { isEnabled: { type: t_bool } } } 
-                  statuses:
+                  stat:
                       attributes:
-                          healthStatus    : { type: marvel_common.HealthStatus }
-                          busyStatus      : { type: marvel_common.BusyStatus }
-                  processes:
+                          health          : { type: marvel_common.HealthStatus }
+                          busy            : { type: marvel_common.BusyStatus }
+                  proc:
                       attributes:
                         point:
                             attributes:
@@ -203,23 +203,23 @@
               comment: "Services"
               expand: false
               arguments:
-                  operatorStatus_ref      : { type: marvel_common.OperatorStatus, expand: false }
+                  operator_ref            : { type: marvel_common.OperatorStatus, expand: false }
               attributes:
-                  statuses:
+                  stat:
                       attributes:
-                          healthStatus    : { type: marvel_common.HealthStatus }
-                          busyStatus      : { type: marvel_common.BusyStatus }
+                          health          : { type: marvel_common.HealthStatus }
+                          busy            : { type: marvel_common.BusyStatus }
         #   configManager:
         #       comment                     : "The config manager (to load/save/activate configuration data)"
         #       type                        : marvel_common.ConfigManager
-      statuses:
-          initializationStatus        : { type: marvel_common.InitializationStatus }
-          healthStatus                : { type: marvel_common.HealthStatus }
-          busyStatus                  : { type: marvel_common.BusyStatus }
-          operatorStatus              : { type: marvel_common.OperatorStatus }
-          passwordHealthStatus        : { type: marvel_common.HealthStatus }
-          activityStatus              : { type: marvel_common.ActivityStatus }
-      processes:
+      stat:
+          init                        : { type: marvel_common.InitializationStatus }
+          health                      : { type: marvel_common.HealthStatus }
+          busy                        : { type: marvel_common.BusyStatus }
+          operator                    : { type: marvel_common.OperatorStatus }
+          passwordHealth              : { type: marvel_common.HealthStatus }
+          activity                    : { type: marvel_common.ActivityStatus }
+      proc:
           initialize                  : { type: marvel_common.Process                         , comment: "Start initializing the whole MTCS" }      
           lock                        : { type: marvel_common.Process                         , comment: "Lock the whole MTCS" }
           unlock                      : { type: marvel_common.Process                         , comment: "Unlock the whole MTCS" }
@@ -234,13 +234,13 @@
           stopDomes                   : { type: MarvelMultiUnitProcess                      , comment: "Stop the dome of multiple units at once"}
       calls:
           initialize:
-              isEnabled           : !NOT [ !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initializing ] ]
+              isEnabled           : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.initializing ] ]
           lock:
-              isEnabled           : !AND [ !EQ [ statuses.operatorStatus, marvel_common.OperatorStatus.tech ],
-                                           !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initialized ] ]
+              isEnabled           : !AND [ !EQ [ stat.operator, marvel_common.OperatorStatus.tech ],
+                                           !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ]
           unlock:
-              isEnabled           : !AND [ !EQ [ statuses.operatorStatus, marvel_common.OperatorStatus.tech ], 
-                                           !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.locked ] ]
+              isEnabled           : !AND [ !EQ [ stat.operator, marvel_common.OperatorStatus.tech ], 
+                                           !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
           changeOperator:
               isEnabled           : !BOOL TRUE
           verifyPassword:
@@ -248,60 +248,60 @@
           wakeUp:
               isEnabled           : !BOOL TRUE
           goToSleep:
-              isEnabled           : !BOOL TRUE # !OR [ statuses.activityStatus.awake, statuses.healthStatus.bad ]
+              isEnabled           : !BOOL TRUE # !OR [ stat.activity.awake, stat.health.bad ]
           point:
-              isEnabled           : !OR [ parts.u1.processes.point.isEnabled,
-                                          parts.u2.processes.point.isEnabled,
-                                          parts.u3.processes.point.isEnabled,
-                                          parts.u4.processes.point.isEnabled ]
+              isEnabled           : !OR [ parts.u1.proc.point.isEnabled,
+                                          parts.u2.proc.point.isEnabled,
+                                          parts.u3.proc.point.isEnabled,
+                                          parts.u4.proc.point.isEnabled ]
           openDomes:
-              isEnabled           : !OR [ parts.u1.parts.dome.parts.shutter.processes.open.isEnabled,
-                                          parts.u2.parts.dome.parts.shutter.processes.open.isEnabled,
-                                          parts.u3.parts.dome.parts.shutter.processes.open.isEnabled,
-                                          parts.u4.parts.dome.parts.shutter.processes.open.isEnabled ]
+              isEnabled           : !OR [ parts.u1.parts.dome.parts.shutter.proc.open.isEnabled,
+                                          parts.u2.parts.dome.parts.shutter.proc.open.isEnabled,
+                                          parts.u3.parts.dome.parts.shutter.proc.open.isEnabled,
+                                          parts.u4.parts.dome.parts.shutter.proc.open.isEnabled ]
           closeDomes:
-              isEnabled           : !OR [ parts.u1.parts.dome.parts.shutter.processes.close.isEnabled,
-                                          parts.u2.parts.dome.parts.shutter.processes.close.isEnabled,
-                                          parts.u3.parts.dome.parts.shutter.processes.close.isEnabled,
-                                          parts.u4.parts.dome.parts.shutter.processes.close.isEnabled ]
+              isEnabled           : !OR [ parts.u1.parts.dome.parts.shutter.proc.close.isEnabled,
+                                          parts.u2.parts.dome.parts.shutter.proc.close.isEnabled,
+                                          parts.u3.parts.dome.parts.shutter.proc.close.isEnabled,
+                                          parts.u4.parts.dome.parts.shutter.proc.close.isEnabled ]
           stopDomes:
-              isEnabled           : !OR [ parts.u1.parts.dome.parts.shutter.processes.stop.isEnabled,
-                                          parts.u2.parts.dome.parts.shutter.processes.stop.isEnabled,
-                                          parts.u3.parts.dome.parts.shutter.processes.stop.isEnabled,
-                                          parts.u4.parts.dome.parts.shutter.processes.stop.isEnabled ]
+              isEnabled           : !OR [ parts.u1.parts.dome.parts.shutter.proc.stop.isEnabled,
+                                          parts.u2.parts.dome.parts.shutter.proc.stop.isEnabled,
+                                          parts.u3.parts.dome.parts.shutter.proc.stop.isEnabled,
+                                          parts.u4.parts.dome.parts.shutter.proc.stop.isEnabled ]
           services:
-              operatorStatus_ref  : statuses.operatorStatus
+              operator_ref        : stat.operator
           u1:
               number              : !UINT8 1
-              operatorStatus_ref  : statuses.operatorStatus
-              activityStatus_ref  : statuses.activityStatus
+              operator_ref        : stat.operator
+              activity_ref        : stat.activity
               services_ref        : parts.services
           u2:
               number              : !UINT8 2
-              operatorStatus_ref  : statuses.operatorStatus
-              activityStatus_ref  : statuses.activityStatus
+              operator_ref        : stat.operator
+              activity_ref        : stat.activity
               services_ref        : parts.services
           u3:
               number              : !UINT8 3
-              operatorStatus_ref  : statuses.operatorStatus
-              activityStatus_ref  : statuses.activityStatus
+              operator_ref        : stat.operator
+              activity_ref        : stat.activity
               services_ref        : parts.services
           u4:
               number              : !UINT8 4
-              operatorStatus_ref  : statuses.operatorStatus
-              activityStatus_ref  : statuses.activityStatus
+              operator_ref        : stat.operator
+              activity_ref        : stat.activity
               services_ref        : parts.services
           configManager:
-             isEnabled            : !EQ [ statuses.operatorStatus, marvel_common.OperatorStatus.tech ]
+             isEnabled            : !EQ [ stat.operator, marvel_common.OperatorStatus.tech ]
           emergencyClose:
-              isEnabled           : !NOT [ !AND [ !EQ [ parts.u1.parts.dome.parts.shutter.statuses.apertureStatus, marvel_common.ApertureStatus.closed ],
-                                                  !EQ [ parts.u1.parts.dome.parts.shutter.statuses.apertureStatus, marvel_common.ApertureStatus.closed ] ,
-                                                  !EQ [ parts.u1.parts.dome.parts.shutter.statuses.apertureStatus, marvel_common.ApertureStatus.closed ] ,
-                                                  !EQ [ parts.u1.parts.dome.parts.shutter.statuses.apertureStatus, marvel_common.ApertureStatus.closed ] ] ]
-          healthStatus:
-              superState          : !NOT [ !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.shutdown ] ]
+              isEnabled           : !NOT [ !AND [ !EQ [ parts.u1.parts.dome.parts.shutter.stat.aperture, marvel_common.ApertureStatus.closed ],
+                                                  !EQ [ parts.u1.parts.dome.parts.shutter.stat.aperture, marvel_common.ApertureStatus.closed ] ,
+                                                  !EQ [ parts.u1.parts.dome.parts.shutter.stat.aperture, marvel_common.ApertureStatus.closed ] ,
+                                                  !EQ [ parts.u1.parts.dome.parts.shutter.stat.aperture, marvel_common.ApertureStatus.closed ] ] ]
+          health:
+              superState          : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ] ]
               isGood              : !MTCS_SUMMARIZE_GOOD [ parts.u1, parts.u2, parts.u3, parts.u4, parts.services ]
               hasWarning          : !MTCS_SUMMARIZE_WARN [ parts.u1, parts.u2, parts.u3, parts.u4, parts.services ]
-          busyStatus:
-              superState          : !NOT [ !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.shutdown ] ]
+          busy:
+              superState          : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ] ]
               isBusy              : !MTCS_SUMMARIZE_BUSY [ parts.u1, parts.u2, parts.u3, parts.u4, parts.services ]

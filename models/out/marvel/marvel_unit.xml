@@ -114,11 +114,13 @@
       <dataType name="UnitStatuses">
         <baseType>
           <struct>
-            <variable name="initializationStatus">
+            <variable name="init">
               <type><derived name="InitializationStatus" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
                     <Attribute Name="TcHmiSymbol.Show" Value="" />
                   </Attributes>
                 </data>
@@ -127,11 +129,13 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="healthStatus">
+            <variable name="health">
               <type><derived name="HealthStatus" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
                     <Attribute Name="TcHmiSymbol.Show" Value="" />
                   </Attributes>
                 </data>
@@ -140,11 +144,13 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="busyStatus">
+            <variable name="busy">
               <type><derived name="BusyStatus" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
                     <Attribute Name="TcHmiSymbol.Show" Value="" />
                   </Attributes>
                 </data>
@@ -338,7 +344,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">The target delta coordinate (Declination)</xhtml>
               </documentation>
             </variable>
-            <variable name="statuses">
+            <variable name="stat">
               <type><derived name="UnitStatuses" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -364,7 +370,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Parts of the state machine</xhtml>
               </documentation>
             </variable>
-            <variable name="processes">
+            <variable name="proc">
               <type><derived name="UnitProcesses" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -379,7 +385,7 @@
             </variable>
           </outputVars>
           <inOutVars>
-            <variable name="operatorStatus_ref">
+            <variable name="operator_ref">
               <type><derived name="OperatorStatus" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -394,7 +400,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Reference to the operator (observer/tech)</xhtml>
               </documentation>
             </variable>
-            <variable name="activityStatus_ref">
+            <variable name="activity_ref">
               <type><derived name="ActivityStatus" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -431,28 +437,28 @@
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">parts.dome(
-    operatorStatus_ref := operatorStatus_ref,
-    activityStatus_ref := activityStatus_ref,
+    operator_ref := operator_ref,
+    activity_ref := activity_ref,
     services_ref := services_ref,
     config_ref := config.dome,
     telescopeAzi_ref := parts.telescope.actAzi);
 parts.telescope(
-    operatorStatus_ref := operatorStatus_ref,
-    activityStatus_ref := activityStatus_ref,
+    operator_ref := operator_ref,
+    activity_ref := activity_ref,
     config_ref := config.telescope,
     longitude_ref := config.longitude,
     latitude_ref := config.latitude);
-parts.configManager( isEnabled := operatorStatus_ref = OperatorStatus.tech );
-statuses.healthStatus := F_HealthStatus(
-    superState := NOT(statuses.initializationStatus = InitializationStatus.shutdown),
-    isGood := (parts.dome.statuses.healthStatus = HealthStatus.good) AND ((parts.telescope.statuses.healthStatus = HealthStatus.good) AND (parts.configManager.statuses.healthStatus = HealthStatus.good)),
-    hasWarning := (parts.dome.statuses.healthStatus = HealthStatus.warning) OR ((parts.telescope.statuses.healthStatus = HealthStatus.warning) OR (parts.configManager.statuses.healthStatus = HealthStatus.warning)));
-statuses.busyStatus := F_BusyStatus(
-    superState := NOT(statuses.initializationStatus = InitializationStatus.shutdown),
-    isBusy := (parts.dome.statuses.busyStatus = BusyStatus.busy) OR ((parts.telescope.statuses.busyStatus = BusyStatus.busy) OR (parts.configManager.statuses.busyStatus = BusyStatus.busy)));
-processes.initialize( isEnabled := NOT(statuses.initializationStatus = InitializationStatus.initializing) );
-processes.point( isEnabled := parts.telescope.processes.slewToCoordinates.isEnabled AND parts.dome.processes.syncWithAxes.isEnabled );
-processes.stop( isEnabled := parts.telescope.processes.abortSlew.isEnabled OR parts.dome.processes.stop.isEnabled );
+parts.configManager( isEnabled := operator_ref = OperatorStatus.tech );
+stat.health := F_HealthStatus(
+    superState := NOT(stat.init = InitializationStatus.shutdown),
+    isGood := (parts.dome.stat.health = HealthStatus.good) AND ((parts.telescope.stat.health = HealthStatus.good) AND (parts.configManager.stat.health = HealthStatus.good)),
+    hasWarning := (parts.dome.stat.health = HealthStatus.warning) OR ((parts.telescope.stat.health = HealthStatus.warning) OR (parts.configManager.stat.health = HealthStatus.warning)));
+stat.busy := F_BusyStatus(
+    superState := NOT(stat.init = InitializationStatus.shutdown),
+    isBusy := (parts.dome.stat.busy = BusyStatus.busy) OR ((parts.telescope.stat.busy = BusyStatus.busy) OR (parts.configManager.stat.busy = BusyStatus.busy)));
+proc.initialize( isEnabled := NOT(stat.init = InitializationStatus.initializing) );
+proc.point( isEnabled := parts.telescope.proc.slewToCoordinates.isEnabled AND parts.dome.proc.syncWithAxes.isEnabled );
+proc.stop( isEnabled := parts.telescope.proc.abortSlew.isEnabled OR parts.dome.proc.stop.isEnabled );
 </xhtml>
           </ST>
         </body>

@@ -10,6 +10,8 @@ from util.expressions import *
 from util.objects import add_global, get_global, Object, resolve
 from util import logger
 from util import versions
+from util.versions import is_marvel, is_mtcs, statuses, processes
+
 
 
 class Primitive(Object):
@@ -782,9 +784,9 @@ class Statemachine(FunctionBlock):
         
         check_args("Statemachine", args,
                    ["variables", "variables_hidden", "variables_read_only",
-                    "statuses", "parts", "local", "methods", "calls",
+                    "statuses", "parts", "local", "methods", "calls", statuses(),
                     "disabled_calls", "updates", "references", "extends",
-                    "processes", "constraints", "render", "typeOf"])
+                    processes(), "constraints", "render", "typeOf"])
         
         self.variables = {}
         self.variables_hidden = {}
@@ -869,21 +871,25 @@ class Statemachine(FunctionBlock):
                 self.var_inout[var_name] = v
                 self.vars[var_name] = v
 
-        if "statuses" in args:
+        if statuses() in args:
             struct = Struct(
                 name = f'{name}Statuses',
                 parent = self.parent,
-                args = { "items": args['statuses'] }
+                args = { "items": args[statuses()] }
             )
+            if is_marvel():
+                for item in struct.items.values():
+                    item.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_R, QUALIFIERS.HMI_SHOW]
+            
             self.parent.statemachines.statuses[struct.name] = struct
-            self.var_out["statuses"] = Variable(
-                name='statuses', 
+            self.var_out[statuses()] = Variable(
+                name=statuses(), 
                 parent=self,
                 args = {
                     "comment": "Statuses of the state machine",
                     "type": f'{name}Statuses'})
-            for status_name in args['statuses']:
-                self.statuses[status_name] = self.var_out["statuses"].get_child(status_name)
+            for status_name in args[statuses()]:
+                self.statuses[status_name] = self.var_out[statuses()].get_child(status_name)
 
         if "parts" in args:
             struct = Struct(
@@ -916,25 +922,25 @@ class Statemachine(FunctionBlock):
             for disabled_call in args["disabled_calls"]:
                 self.disabledCallNames.append(disabled_call)
 
-        if "processes" in args:
+        if processes() in args:
             struct = Struct(
                 name = f'{name}Processes',
                 parent = self.parent,
-                args = {"items" : args['processes']})
+                args = {"items" : args[processes()]})
             self.parent.statemachines.processes[struct.name] = struct
-            self.var_out["processes"] = Variable(
-                name='processes', 
+            self.var_out[processes()] = Variable(
+                name=processes(), 
                 parent=self,
                 args = {
                     "comment": "Processes of the state machine",
                     "type": f'{name}Processes'
                 })
-            for process_name in args['processes']:
-                self.processes[process_name] = self.var_out["processes"].get_child(process_name)
+            for process_name in args[processes()]:
+                self.processes[process_name] = self.var_out[processes()].get_child(process_name)
 
         if is_mtcs():
-            if "processes" in args:
-                for process_name, process_args in args["processes"].items():
+            if processes() in args:
+                for process_name, process_args in args[processes()].items():
                     input_args = {}
                     for var_name, var in resolve(process_args["type"], context=self).request.var_in.items():
                         input_args[var_name] = { "type": var.type }
@@ -1137,7 +1143,7 @@ class Statemachine(FunctionBlock):
                     process_call = Call(f"call_{process_name}", self)
                     process_call.calls = process.children["_log"]
                     process_call.assignments = [
-                        ASSIGN([process_call.calls.get_child("name"), String(f"processes.{process_name}")]),
+                        ASSIGN([process_call.calls.get_child("name"), String(f"{processes()}.{process_name}")]),
                         ASSIGN([process_call.calls.get_child("buffer"), m.var_local["subBuffer"]]),
                     ]
 
@@ -1299,14 +1305,14 @@ class Process(FunctionBlock):
 
         if versions.CODEGEN_VERSION == versions.CodeGenVersion.MARVEL:        
             start.implementation.append(
-                ASSIGN([self.get_child("statuses").get_child("busyStatus"), resolve("marvel_common.BusyStatus.busy", context=parent)]))
+                ASSIGN([self.get_child(statuses()).get_child("busy"), resolve("marvel_common.BusyStatus.busy", context=parent)]))
             start.implementation.append(
-                ASSIGN([self.get_child("statuses").get_child("healthStatus"), resolve("marvel_common.HealthStatus.good", context=parent)]))
+                ASSIGN([self.get_child(statuses()).get_child("health"), resolve("marvel_common.HealthStatus.good", context=parent)]))
         elif versions.CODEGEN_VERSION == versions.CodeGenVersion.MTCS:
             start.implementation.append(
-                Call("setBusy", start, { "calls": self.get_child("statuses").get_child("busyStatus"), "assigns": [ ASSIGN([self.get_child("statuses").get_child("busyStatus").get_child("isBusy"), Bool("TRUE")]) ] }))
+                Call("setBusy", start, { "calls": self.get_child(statuses()).get_child("busyStatus"), "assigns": [ ASSIGN([self.get_child(statuses()).get_child("busyStatus").get_child("isBusy"), Bool("TRUE")]) ] }))
             start.implementation.append(
-                Call("setGood", start, { "calls": self.get_child("statuses").get_child("healthStatus"), "assigns": [ ASSIGN([self.get_child("statuses").get_child("healthStatus").get_child("isGood"), Bool("TRUE")]) ] }))
+                Call("setGood", start, { "calls": self.get_child(statuses()).get_child("healthStatus"), "assigns": [ ASSIGN([self.get_child(statuses()).get_child("healthStatus").get_child("isGood"), Bool("TRUE")]) ] }))
         else:
             raise Exception("Invalid version")
 
@@ -1339,10 +1345,10 @@ class Process(FunctionBlock):
                 start_call.assignments.append(ASSIGN([start.get_child(arg_name, False),  self.request.get_child(arg_name, False)]))
         
         if is_marvel():
-            req_if = EQ( [self.children["statuses"].children["enabledStatus"], 
+            req_if = EQ( [self.children[statuses()].children["enabled"], 
                           resolve(f"{get_common_lib()}.EnabledStatus.enabled", self.parent)] )
         elif is_mtcs():
-            req_if = self.children["statuses"].children["enabledStatus"].children["enabled"]
+            req_if = self.children[statuses()].children["enabledStatus"].children["enabled"]
         else:
             raise Exception("Invalid version")
 

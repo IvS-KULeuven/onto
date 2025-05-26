@@ -43,8 +43,8 @@
           targetAlpha               : { type: marvel_common.AngularPosition       , comment: "The target alpha coordinate (Right Ascention)" , expand: false}
           targetDelta               : { type: marvel_common.AngularPosition       , comment: "The target delta coordinate (Declination)" , expand: false }
       references:
-        operatorStatus_ref          : { type: marvel_common.OperatorStatus        , comment: "Reference to the operator (observer/tech)"}
-        activityStatus_ref          : { type: marvel_common.ActivityStatus        , comment: "Shared activity status"}
+        operator_ref                : { type: marvel_common.OperatorStatus        , comment: "Reference to the operator (observer/tech)"}
+        activity_ref                : { type: marvel_common.ActivityStatus        , comment: "Shared activity status"}
         services_ref                : { type: marvel_services.Services          , comment: "Shared services", expand: false}
       parts:
           dome:
@@ -52,18 +52,18 @@
               comment: "The dome"
               expand: false
               arguments:
-                  operatorStatus_ref        : { type: marvel_common.OperatorStatus          , expand: false }
-                  activityStatus_ref        : { type: marvel_common.ActivityStatus          , expand: false }
+                  operator_ref              : { type: marvel_common.OperatorStatus          , expand: false }
+                  activity_ref              : { type: marvel_common.ActivityStatus          , expand: false }
                   services_ref              : { type: marvel_services.Services              , expand: false }
                   config_ref                : { type: marvel_dome.DomeConfig                , expand: false }
                   telescopeAzi              : { type: marvel_common.AngularPosition         , expand: false }
               attributes:
                   # isTracking              : { type: t_bool }
-                  statuses:
+                  stat:
                       attributes:
-                          healthStatus    : { type: marvel_common.HealthStatus }
-                          busyStatus      : { type: marvel_common.BusyStatus }
-                  processes:
+                          health          : { type: marvel_common.HealthStatus }
+                          busy            : { type: marvel_common.BusyStatus }
+                  proc:
                       attributes:
                         syncWithAxes:
                             attributes:
@@ -76,19 +76,19 @@
               comment: "The telescope"
               expand: false
               arguments:
-                  operatorStatus_ref      : { type: marvel_common.OperatorStatus          , expand: false }
-                  activityStatus_ref      : { type: marvel_common.ActivityStatus          , expand: false }
+                  operator_ref            : { type: marvel_common.OperatorStatus          , expand: false }
+                  activity_ref            : { type: marvel_common.ActivityStatus          , expand: false }
                   config_ref              : { type: marvel_telescope.TelescopeConfig    , expand: false }
                   longitude_ref           : { type: t_double }
                   latitude_ref            : { type: t_double }
               attributes:
                   # isTracking              : { type: t_bool }
                   actAzi                  : { type: marvel_common.AngularPosition         , expand: false }
-                  statuses:
+                  stat:
                       attributes:
-                          healthStatus    : { type: marvel_common.HealthStatus }
-                          busyStatus      : { type: marvel_common.BusyStatus }
-                  processes:
+                          health          : { type: marvel_common.HealthStatus }
+                          busy            : { type: marvel_common.BusyStatus }
+                  proc:
                       attributes:
                         slewToCoordinates:
                             attributes:
@@ -99,42 +99,42 @@
           configManager:
               comment                     : "The config manager (to load/save/activate configuration data)"
               type                        : marvel_common.ConfigManager
-      statuses:
-          initializationStatus        : { type: marvel_common.InitializationStatus }
-          healthStatus                : { type: marvel_common.HealthStatus }
-          busyStatus                  : { type: marvel_common.BusyStatus }
-      processes:
+      stat:
+          init                       : { type: marvel_common.InitializationStatus }
+          health                      : { type: marvel_common.HealthStatus }
+          busy                        : { type: marvel_common.BusyStatus }
+      proc:
           initialize                  : { type: marvel_common.Process                     , comment: "Start initializing the unit" }   
           point                       : { type: marvel_common.PointAlphaDeltaProcess    , comment: "Point the telescope and dome"}     
           stop                        : { type: marvel_common.Process                     , comment: "Stop the rotation movement and/or tracking" }
       calls:
           initialize:
-              isEnabled           : !NOT [ !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initializing ] ]
+              isEnabled           : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.initializing ] ]
           point:
-              isEnabled           : !AND [ parts.telescope.processes.slewToCoordinates.isEnabled,
-                                           parts.dome.processes.syncWithAxes.isEnabled ]
+              isEnabled           : !AND [ parts.telescope.proc.slewToCoordinates.isEnabled,
+                                           parts.dome.proc.syncWithAxes.isEnabled ]
           stop:
-              isEnabled           : !OR  [ parts.telescope.processes.abortSlew.isEnabled,
-                                           parts.dome.processes.stop.isEnabled ]
+              isEnabled           : !OR  [ parts.telescope.proc.abortSlew.isEnabled,
+                                           parts.dome.proc.stop.isEnabled ]
           dome:
-              operatorStatus_ref  : operatorStatus_ref
-              activityStatus_ref  : activityStatus_ref
+              operator_ref        : operator_ref
+              activity_ref        : activity_ref
               services_ref        : services_ref
               config_ref          : config.dome
               telescopeAzi_ref    : parts.telescope.actAzi
           telescope:
-              operatorStatus_ref  : operatorStatus_ref
-              activityStatus_ref  : activityStatus_ref
+              operator_ref        : operator_ref
+              activity_ref        : activity_ref
               config_ref          : config.telescope
               longitude_ref       : config.longitude
               latitude_ref        : config.latitude
           configManager:
-             isEnabled            : !EQ [ operatorStatus_ref, marvel_common.OperatorStatus.tech ]
-          healthStatus:
-              superState          : !NOT [ !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.shutdown ] ]
+             isEnabled            : !EQ [ operator_ref, marvel_common.OperatorStatus.tech ]
+          health:
+              superState          : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ] ]
               isGood              : !MTCS_SUMMARIZE_GOOD [ parts.dome, parts.telescope, parts.configManager ]
               hasWarning          : !MTCS_SUMMARIZE_WARN [ parts.dome, parts.telescope, parts.configManager ]
-          busyStatus:
-              superState          : !NOT [ !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.shutdown ] ]
+          busy:
+              superState          : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ] ]
               isBusy              : !MTCS_SUMMARIZE_BUSY [ parts.dome, parts.telescope, parts.configManager ]
 

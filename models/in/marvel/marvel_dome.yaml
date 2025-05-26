@@ -167,8 +167,8 @@
   
   !STATEMACHINE Dome:
     references:
-      operatorStatus_ref      : { type: marvel_common.OperatorStatus        , comment: "Reference to the operator (observer/tech)"}
-      activityStatus_ref      : { type: marvel_common.ActivityStatus        , comment: "Shared activity status"}
+      operator_ref            : { type: marvel_common.OperatorStatus        , comment: "Reference to the operator (observer/tech)"}
+      activity_ref      : { type: marvel_common.ActivityStatus        , comment: "Shared activity status"}
       services_ref            : { type: marvel_services.Services          , comment: "Shared services", expand: false}
       config_ref              : { type: DomeConfig                        , comment: "Active configuration of the cover" }
       telescopeAzi_ref        : { type: marvel_common.AngularPosition       , comment: "Azimuth target position of the telescope Axes"}
@@ -181,55 +181,55 @@
       shutter:
         comment                   : "Shutter mechanism"
         arguments:
-          initializationStatus_ref: { comment: "Dome initialization status (initialized/initializing/...)" }
-          operatorStatus_ref      : { comment: "marvel operator (observer/tech)" }
-          operatingStatus_ref     : { comment: "Dome operating status (manual/auto)" }
-          activityStatus_ref      : { comment: "Shared activity status"}
+          init_ref:               { comment: "Dome initialization status (initialized/initializing/...)" }
+          operator_ref            : { comment: "marvel operator (observer/tech)" }
+          operating_ref           : { comment: "Dome operating status (manual/auto)" }
+          activity_ref            : { comment: "Shared activity status"}
           config_ref              : { comment: "The shutter config" }
           services_ref            : { comment: "Shared services"}
         attributes:
-          statuses:
+          stat:
             attributes:
-              healthStatus        : { type: marvel_common.HealthStatus }
-              busyStatus          : { type: marvel_common.BusyStatus }
+              health              : { type: marvel_common.HealthStatus }
+              busy                : { type: marvel_common.BusyStatus }
       rotation:
         comment                   : "Rotation mechanism"
         arguments:
-          initializationStatus_ref: { comment: "Dome initialization status (initialized/initializing/...)"}
-          operatorStatus_ref      : { comment: "marvel operator (observer/tech)"}
-          operatingStatus_ref     : { comment: "Dome operating status (manual/auto)"}
+          init_ref                : { comment: "Dome initialization status (initialized/initializing/...)"}
+          operator_ref            : { comment: "marvel operator (observer/tech)"}
+          operating_ref           : { comment: "Dome operating status (manual/auto)"}
           config_ref              : { comment: "The rotation config"}
         attributes:
-          statuses:
+          stat:
             attributes:
-              healthStatus        : { type: marvel_common.HealthStatus }
-              busyStatus          : { type: marvel_common.BusyStatus }
+              health              : { type: marvel_common.HealthStatus }
+              busy                : { type: marvel_common.BusyStatus }
       # light:
       #   comment                   : "Light in dome"
       #   arguments:
-      #     initializationStatus    : { comment: "Dome initialization status (initialized/initializing/...)" }
-      #     operatorStatus          : { comment: "marvel operator (observer/tech)" }
-      #     operatingStatus         : { comment: "Dome operating status (manual/auto)" }
-      #     activityStatus          : { comment: "Shared activity status"}
+      #     init                    : { comment: "Dome initialization status (initialized/initializing/...)" }
+      #     operator                : { comment: "marvel operator (observer/tech)" }
+      #     operating               : { comment: "Dome operating status (manual/auto)" }
+      #     activity                : { comment: "Shared activity status"}
       #     config                  : { comment: "The light config" }
       #     isDomeLightON           : { comment: "True if the light inside the dome is ON" }
       #   attributes:
-      #     statuses:
+      #     stat:
       #       attributes:
-      #         healthStatus        : { type: marvel_common.HealthStatus }
-      #         busyStatus          : { type: marvel_common.BusyStatus }      
+      #         health              : { type: marvel_common.HealthStatus }
+      #         busy                : { type: marvel_common.BusyStatus }      
       # io:
       #   comment                   : "EtherCAT devices"
       #   attributes:
-      #     statuses:
+      #     stat:
       #       attributes:
-      #         healthStatus        : { type: marvel_common.HealthStatus }
-    statuses:
-      initializationStatus        : { type: marvel_common.InitializationStatus }
-      healthStatus                : { type: marvel_common.HealthStatus }
-      busyStatus                  : { type: marvel_common.BusyStatus }
-      operatingStatus             : { type: marvel_common.OperatingStatus }
-    processes:
+      #         health              : { type: marvel_common.HealthStatus }
+    stat:
+      init                        : { type: marvel_common.InitializationStatus }
+      health                      : { type: marvel_common.HealthStatus }
+      busy                        : { type: marvel_common.BusyStatus }
+      operating                   : { type: marvel_common.OperatingStatus }
+    proc:
       initialize                  : { type: marvel_common.Process                     , comment: "Start initializing" }
       changeOperatingState        : { type: marvel_common.ChangeOperatingStateProcess , comment: "Change the operating state (e.g. AUTO, MANUAL, ...)" }
       lock                        : { type: marvel_common.Process                     , comment: "Lock the cover" }
@@ -242,94 +242,94 @@
       stop                        : { type: marvel_common.Process                     , comment: "Stop the rotation movement and/or tracking" }
       moveKnownPosition           : { type: DomeMoveKnownPositionProcess            , comment: "Move the dome to the given known position" }
     calls:
-      # processes
+      # proc
       initialize:
-        isEnabled                 : !AND [ !NOT [ !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.locked ] ],
-                                           !OR [ !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.shutdown ],
-                                                 !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initializingFailed ],
-                                                 !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initialized ] ] ]
+        isEnabled                 : !AND [ !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ],
+                                           !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ],
+                                                 !EQ [ stat.init, marvel_common.InitializationStatus.initializingFailed ],
+                                                 !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ] ]
       lock:
-        isEnabled                 : !EQ [ operatorStatus_ref, marvel_common.OperatorStatus.tech ]
+        isEnabled                 : !EQ [ operator_ref, marvel_common.OperatorStatus.tech ]
       unlock:
-        isEnabled                 : !AND [ !EQ [ operatorStatus_ref, marvel_common.OperatorStatus.tech ],
-                                           !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.locked ] ]
+        isEnabled                 : !AND [ !EQ [ operator_ref, marvel_common.OperatorStatus.tech ],
+                                           !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
       changeOperatingState:
         isEnabled                 : !BOOL FALSE # we currently don't use AUTO/MANUAL
       reset:
-        isEnabled                 : !AND [ !EQ [ statuses.busyStatus, marvel_common.BusyStatus.idle ],
-                                           !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initialized ] ]
+        isEnabled                 : !AND [ !EQ [ stat.busy, marvel_common.BusyStatus.idle ],
+                                           !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ]
       stop:
-        isEnabled                 : !OR [ !EQ [ statuses.busyStatus, marvel_common.BusyStatus.busy ], isTrackingTelescope,  !EQ [ operatorStatus_ref, marvel_common.OperatorStatus.tech ] ]
+        isEnabled                 : !OR [ !EQ [ stat.busy, marvel_common.BusyStatus.busy ], isTrackingTelescope,  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ]
       moveAbsolute:
-        isEnabled                 : !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initialized ]
+        isEnabled                 : !EQ [ stat.init, marvel_common.InitializationStatus.initialized ]
       startTrackingTelescope:
         isEnabled                 : !NOT [isTrackingTelescope]
       stopTrackingTelescope:
         isEnabled                 : isTrackingTelescope
       moveKnownPosition:
-          isEnabled               : !AND [ !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initialized ],
-                                           !EQ [ statuses.busyStatus, marvel_common.BusyStatus.idle ] ]
+          isEnabled               : !AND [ !EQ [ stat.init, marvel_common.InitializationStatus.initialized ],
+                                           !EQ [ stat.busy, marvel_common.BusyStatus.idle ] ]
       syncWithAxes:
-          isEnabled               : !AND [ !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initialized ],
-                                           !EQ [ statuses.busyStatus, marvel_common.BusyStatus.idle ] ]
+          isEnabled               : !AND [ !EQ [ stat.init, marvel_common.InitializationStatus.initialized ],
+                                           !EQ [ stat.busy, marvel_common.BusyStatus.idle ] ]
       # parts
       shutter:
-        initializationStatus_ref  : statuses.initializationStatus
-        operatorStatus_ref        : operatorStatus_ref
-        operatingStatus_ref       : statuses.operatingStatus
-        activityStatus_ref        : activityStatus_ref
+        init_ref                  : stat.init
+        operator_ref              : operator_ref
+        operating_ref             : stat.operating
+        activity_ref              : activity_ref
         config_ref                : config_ref.shutter
         services_ref              : services_ref
       rotation:
-        initializationStatus_ref  : statuses.initializationStatus
-        operatorStatus_ref        : operatorStatus_ref
-        operatingStatus_ref       : statuses.operatingStatus
+        init_ref                  : stat.init
+        operator_ref              : operator_ref
+        operating_ref             : stat.operating
         config_ref                : config_ref.rotation
       # light:
-      #   initializationStatus      : statuses.initializationStatus
-      #   operatorStatus            : operatorStatus
-      #   operatingStatus           : statuses.operatingStatus
-      #   activityStatus            : activityStatus
+      #   init                      : stat.init
+      #   operator                  : operatorStatus
+      #   operating                 : stat.operating
+      #   activity                  : activityStatus
       #   config                    : config_ref.light
-      # statuses
-      # operatingStatus:
-      #   superState                : !EQ [ statuses.initializationStatus, marvel_common.InitializationStatus.initialized ]
-      healthStatus:
+      # stat
+      # operating:
+      #   superState                : !EQ [ stat.init, marvel_common.InitializationStatus.initialized ]
+      health:
         superState                : !BOOL True
         isGood                    : !MTCS_SUMMARIZE_GOOD [ parts.shutter,
                                                            parts.rotation,
                                                            # parts.light,
                                                            # parts.io 
-                                                           processes.reset,
-                                                           processes.initialize,
-                                                           processes.syncWithAxes,
-                                                           processes.startTrackingTelescope,
-                                                           processes.stopTrackingTelescope,
-                                                           processes.stop,
-                                                           processes.moveKnownPosition ]
+                                                           proc.reset,
+                                                           proc.initialize,
+                                                           proc.syncWithAxes,
+                                                           proc.startTrackingTelescope,
+                                                           proc.stopTrackingTelescope,
+                                                           proc.stop,
+                                                           proc.moveKnownPosition ]
   
         hasWarning                : !MTCS_SUMMARIZE_WARN [ parts.shutter,
                                                            parts.rotation,
                                                            # parts.light,
                                                            # parts.io
-                                                           processes.reset,
-                                                           processes.initialize,
-                                                           processes.syncWithAxes,
-                                                           processes.startTrackingTelescope,
-                                                           processes.stopTrackingTelescope,
-                                                           processes.stop,
-                                                           processes.moveKnownPosition ]
-      busyStatus:
+                                                           proc.reset,
+                                                           proc.initialize,
+                                                           proc.syncWithAxes,
+                                                           proc.startTrackingTelescope,
+                                                           proc.stopTrackingTelescope,
+                                                           proc.stop,
+                                                           proc.moveKnownPosition ]
+      busy:
         superState                : !BOOL TRUE
         isBusy                    : !MTCS_SUMMARIZE_BUSY [ parts.shutter,
                                                            parts.rotation,
-                                                           processes.reset,
-                                                           processes.initialize,
-                                                           processes.syncWithAxes,
-                                                           processes.startTrackingTelescope,
-                                                           processes.stopTrackingTelescope,
-                                                           processes.stop,
-                                                           processes.moveKnownPosition ]
+                                                           proc.reset,
+                                                           proc.initialize,
+                                                           proc.syncWithAxes,
+                                                           proc.startTrackingTelescope,
+                                                           proc.stopTrackingTelescope,
+                                                           proc.stop,
+                                                           proc.moveKnownPosition ]
   
 
   ########################################################################################################################
@@ -372,71 +372,71 @@
       humidityActualStatus     : { type: t_string                          , comment: "The humidity sensor status as a string" }
       humidityLimit            : { type: marvel_common.Fraction              , comment: "The humidity limit" }
     references:
-      initializationStatus_ref : { type: marvel_common.InitializationStatus    , comment: "Dome initialization status (initialized/initializing/...)"}
-      operatorStatus_ref       : { type: marvel_common.OperatorStatus          , comment: "marvel operator (observer/tech)"}
-      operatingStatus_ref      : { type: marvel_common.OperatingStatus         , comment: "Dome operating status (manual/auto)"}
-      activityStatus_ref       : { type: marvel_common.ActivityStatus          , comment: "Shared activity status"}
+      init_ref                 : { type: marvel_common.InitializationStatus    , comment: "Dome initialization status (initialized/initializing/...)"}
+      operator_ref             : { type: marvel_common.OperatorStatus          , comment: "marvel operator (observer/tech)"}
+      operating_ref            : { type: marvel_common.OperatingStatus         , comment: "Dome operating status (manual/auto)"}
+      activity_ref             : { type: marvel_common.ActivityStatus          , comment: "Shared activity status"}
       config_ref               : { type: DomeShutterConfig                   , comment: "The shutter config"}
       services_ref             : { type: marvel_services.Services            , comment: "Shared services", expand: false}
-    statuses:
-      apertureStatus          : { type: marvel_common.ApertureStatus          , comment: "Combined aperture status (i.e. of both panels)" }
-      motionStatus            : { type: DomeShutterOpeningStatus            , comment: "Motion status" }
-      healthStatus            : { type: marvel_common.HealthStatus            , comment: "Health status" }
-      busyStatus              : { type: marvel_common.BusyStatus              , comment: "Busy status"  }
-    processes:
+    stat:
+      aperture                : { type: marvel_common.ApertureStatus          , comment: "Combined aperture status (i.e. of both panels)" }
+      motion                  : { type: DomeShutterOpeningStatus            , comment: "Motion status" }
+      health                  : { type: marvel_common.HealthStatus            , comment: "Health status" }
+      busy                    : { type: marvel_common.BusyStatus              , comment: "Busy status"  }
+    proc:
       open                    : { type: marvel_common.Process                 , comment: "Open both panels" }
       close                   : { type: marvel_common.Process                 , comment: "Close both panels" }
       stop                    : { type: marvel_common.Process                 , comment: "Stop the panels" }
       send                    : { type: DomeShutterSendProcess              , comment: "Send a raw command" }
     calls:
-      # processes
+      # proc
       stop:
-        isEnabled             : !EQ [ statuses.busyStatus, marvel_common.BusyStatus.busy ]
+        isEnabled             : !EQ [ stat.busy, marvel_common.BusyStatus.busy ]
       open:
-        isEnabled             : !AND [ !EQ [statuses.healthStatus, marvel_common.HealthStatus.good], 
-                                       !NOT [ !EQ [ initializationStatus_ref, marvel_common.InitializationStatus.locked ] ], 
-                                       !OR [ !EQ [ operatorStatus_ref, marvel_common.OperatorStatus.tech ], 
-                                             !AND [ !EQ [ statuses.busyStatus, marvel_common.BusyStatus.idle ], 
-                                                    !EQ [ initializationStatus_ref, marvel_common.InitializationStatus.initialized ], 
-                                                    !OR [ !EQ [ activityStatus_ref, marvel_common.ActivityStatus.awake ], 
-                                                          !EQ [ activityStatus_ref, marvel_common.ActivityStatus.moving ] ] ] ] ]
+        isEnabled             : !AND [ !EQ [stat.health, marvel_common.HealthStatus.good], 
+                                       !NOT [ !EQ [ init_ref, marvel_common.InitializationStatus.locked ] ], 
+                                       !OR [ !EQ [ operator_ref, marvel_common.OperatorStatus.tech ], 
+                                             !AND [ !EQ [ stat.busy, marvel_common.BusyStatus.idle ], 
+                                                    !EQ [ init_ref, marvel_common.InitializationStatus.initialized ], 
+                                                    !OR [ !EQ [ activity_ref, marvel_common.ActivityStatus.awake ], 
+                                                          !EQ [ activity_ref, marvel_common.ActivityStatus.moving ] ] ] ] ]
       close:
-        isEnabled             : !OR [ !EQ [ operatorStatus_ref, marvel_common.OperatorStatus.tech ],
-                                      !AND [ !NOT [ !EQ [ initializationStatus_ref, marvel_common.InitializationStatus.locked ] ], 
-                                             !EQ [ statuses.busyStatus, marvel_common.BusyStatus.idle ], 
-                                             !EQ [ initializationStatus_ref, marvel_common.InitializationStatus.initialized ] ] ]
+        isEnabled             : !OR [ !EQ [ operator_ref, marvel_common.OperatorStatus.tech ],
+                                      !AND [ !NOT [ !EQ [ init_ref, marvel_common.InitializationStatus.locked ] ], 
+                                             !EQ [ stat.busy, marvel_common.BusyStatus.idle ], 
+                                             !EQ [ init_ref, marvel_common.InitializationStatus.initialized ] ] ]
       send:
-        isEnabled             : !OR [ !EQ [ operatorStatus_ref, marvel_common.OperatorStatus.tech ], isConnected ]
-      # statuses
-      apertureStatus:
+        isEnabled             : !OR [ !EQ [ operator_ref, marvel_common.OperatorStatus.tech ], isConnected ]
+      # stat
+      aperture:
         superState            : !NOT [ !OR [ !EQ [ dataRead.apertureState, marvel_shutterplc.DomeShutterApertureStates.UNKNOWN ], 
                                              !EQ [ dataRead.apertureState, marvel_shutterplc.DomeShutterApertureStates.INVALID ] ] ]
         isOpen                : !EQ [ dataRead.apertureState, marvel_shutterplc.DomeShutterApertureStates.FULLY_OPEN ]
         isClosed              : !EQ [ dataRead.apertureState, marvel_shutterplc.DomeShutterApertureStates.FULLY_CLOSED ]
-      motionStatus:
+      motion:
         superState            : !BOOL TRUE
         shutterValue          : dataRead.motionState
-      healthStatus:
-        superState            : !NOT [ !EQ [ initializationStatus_ref, marvel_common.InitializationStatus.shutdown ] ]
+      health:
+        superState            : !NOT [ !EQ [ init_ref, marvel_common.InitializationStatus.shutdown ] ]
         isGood                : !AND [ 
                                       isConnected,
-                                      !MTCS_SUMMARIZE_GOOD [ processes.open,
-                                                             processes.close,
-                                                             processes.stop] ]
+                                      !MTCS_SUMMARIZE_GOOD [ proc.open,
+                                                             proc.close,
+                                                             proc.stop] ]
         hasWarning            : !OR [ 
-                                      !MTCS_SUMMARIZE_WARN [ processes.open,
-                                                             processes.close,
-                                                             processes.stop ],
-                                      !AND [ !EQ [ statuses.busyStatus, marvel_common.BusyStatus.idle ], 
-                                             !EQ [ statuses.apertureStatus, marvel_common.ApertureStatus.partiallyOpen ] ]
+                                      !MTCS_SUMMARIZE_WARN [ proc.open,
+                                                             proc.close,
+                                                             proc.stop ],
+                                      !AND [ !EQ [ stat.busy, marvel_common.BusyStatus.idle ], 
+                                             !EQ [ stat.aperture, marvel_common.ApertureStatus.partiallyOpen ] ]
                                       #,
                                       #!NOT [ automaticOperation ] 
                                       ]
-      busyStatus:
-        superState            : !NOT [ !EQ [ initializationStatus_ref, marvel_common.InitializationStatus.shutdown ] ]
-        isBusy                : !MTCS_SUMMARIZE_BUSY [ processes.open,
-                                                       processes.close,
-                                                       processes.stop ]
+      busy:
+        superState            : !NOT [ !EQ [ init_ref, marvel_common.InitializationStatus.shutdown ] ]
+        isBusy                : !MTCS_SUMMARIZE_BUSY [ proc.open,
+                                                       proc.close,
+                                                       proc.stop ]
 
   ########################################################################################################################
   # DomeRotation
@@ -451,56 +451,56 @@
       actPos                      : { type: marvel_common.AngularPosition         , comment: "The actual position (same as parts.masterAxis!)", expand: false }
       actVelo                     : { type: marvel_common.AngularVelocity         , comment: "The actual velocity (same as parts.masterAxis!)", expand: false }
     references:
-      initializationStatus_ref    : { type: marvel_common.InitializationStatus    , comment: "Reference to the marvel initialization status"}
-      operatorStatus_ref          : { type: marvel_common.OperatorStatus          , comment: "Reference to the marvel operator status"}
-      operatingStatus_ref         : { type: marvel_common.OperatingStatus         , comment: "Reference to the Dome operating status"}
+      init_ref                    : { type: marvel_common.InitializationStatus    , comment: "Reference to the marvel initialization status"}
+      operator_ref                : { type: marvel_common.OperatorStatus          , comment: "Reference to the marvel operator status"}
+      operating_ref               : { type: marvel_common.OperatingStatus         , comment: "Reference to the Dome operating status"}
       config_ref                  : { type: DomeRotationConfig                  , comment: "Reference to the rotation config"}
     parts:
       motorAxis                   : { type: marvel_common.AngularAxis             , comment: "Motor axis" }
       encoderAxis                 : { type: marvel_common.AngularAxis             , comment: "Encoder axis" }
-    statuses:
-      healthStatus                : { type: marvel_common.HealthStatus            , comment: "Health status"}
-      busyStatus                  : { type: marvel_common.BusyStatus              , comment: "Busy status" }
-    processes:
+    stat:
+      health                      : { type: marvel_common.HealthStatus            , comment: "Health status"}
+      busy                        : { type: marvel_common.BusyStatus              , comment: "Busy status" }
+    proc:
       reset                       : { type: marvel_common.Process                 , comment: "Reset errors" }
       stop                        : { type: marvel_common.Process                 , comment: "Stop the rotation" }
       moveAbsolute                : { type: DomeMoveProcess                     , comment: "Move absolute" }
     calls:
       reset:
-        isEnabled                 : !EQ [ statuses.busyStatus, marvel_common.BusyStatus.idle ]
+        isEnabled                 : !EQ [ stat.busy, marvel_common.BusyStatus.idle ]
       stop:
-        isEnabled                 : !OR [ !EQ [ statuses.busyStatus, marvel_common.BusyStatus.busy ], 
-                                          !EQ [ operatorStatus_ref, marvel_common.OperatorStatus.tech ] ]
+        isEnabled                 : !OR [ !EQ [ stat.busy, marvel_common.BusyStatus.busy ], 
+                                          !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ]
       moveAbsolute:
-        isEnabled                 : !EQ [ statuses.busyStatus, marvel_common.BusyStatus.idle ]
+        isEnabled                 : !EQ [ stat.busy, marvel_common.BusyStatus.idle ]
       # parts
       motorAxis:
-        isEnabled                 : !AND [ !NOT [ !EQ [ initializationStatus_ref, marvel_common.InitializationStatus.locked ] ], 
-                                                  !EQ [ operatorStatus_ref, marvel_common.OperatorStatus.tech ] ]
+        isEnabled                 : !AND [ !NOT [ !EQ [ init_ref, marvel_common.InitializationStatus.locked ] ], 
+                                                  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ]
       encoderAxis:
-        isEnabled                 : !AND [ !NOT [ !EQ [ initializationStatus_ref, marvel_common.InitializationStatus.locked ] ], 
-                                           !EQ [ operatorStatus_ref, marvel_common.OperatorStatus.tech ] ]
-      # statuses
-      healthStatus:
+        isEnabled                 : !AND [ !NOT [ !EQ [ init_ref, marvel_common.InitializationStatus.locked ] ], 
+                                           !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ]
+      # stat
+      health:
         superState                : !BOOL TRUE
         isGood                    : !MTCS_SUMMARIZE_GOOD [ parts.motorAxis,
                                                            parts.encoderAxis,
-                                                           processes.moveAbsolute,
-                                                           processes.reset,
-                                                           processes.stop
+                                                           proc.moveAbsolute,
+                                                           proc.reset,
+                                                           proc.stop
                                                          ]
         hasWarning            : !MTCS_SUMMARIZE_WARN [ parts.motorAxis,
                                                        parts.encoderAxis,
-                                                       processes.moveAbsolute,
-                                                       processes.reset,
-                                                       processes.stop ]
-      busyStatus:
+                                                       proc.moveAbsolute,
+                                                       proc.reset,
+                                                       proc.stop ]
+      busy:
         superState            : !BOOL TRUE
         isBusy                : !MTCS_SUMMARIZE_BUSY [ parts.motorAxis,
                                                        parts.encoderAxis,
-                                                       processes.moveAbsolute,
-                                                       processes.reset,
-                                                       processes.stop ]
+                                                       proc.moveAbsolute,
+                                                       proc.reset,
+                                                       proc.stop ]
   
   
   
@@ -519,22 +519,22 @@
   
   
   #   references:
-  #     initializationStatus    : { type: marvel_common.InitializationStatus    , comment: "Dome initialization status (initialized/initializing/...)"}
-  #     operatorStatus          : { type: marvel_common.OperatorStatus          , comment: "marvel operator (observer/tech)"}
-  #     operatingStatus         : { type: marvel_common.OperatingStatus         , comment: "Dome operating status (manual/auto)"}
-  #     activityStatus          : { type: marvel_common.ActivityStatus          , comment: "Shared activity status"}
+  #     init                    : { type: marvel_common.InitializationStatus    , comment: "Dome initialization status (initialized/initializing/...)"}
+  #     operator                : { type: marvel_common.OperatorStatus          , comment: "marvel operator (observer/tech)"}
+  #     operating               : { type: marvel_common.OperatingStatus         , comment: "Dome operating status (manual/auto)"}
+  #     activity                : { type: marvel_common.ActivityStatus          , comment: "Shared activity status"}
   #     config                  : { type: DomeLightConfig                     , comment: "The light config"}
   #   parts:
   #     switchOnRelay           : { type: marvel_common.SimpleRelay             , comment: "Relay to switch on the light" }
-  #   statuses:
-  #     healthStatus            : { type: marvel_common.HealthStatus            , comment: "Health status"}
-  #     busyStatus              : { type: marvel_common.BusyStatus              , comment: "Busy status" }
-  #   processes:
+  #   stat:
+  #     health                  : { type: marvel_common.HealthStatus            , comment: "Health status"}
+  #     busy                    : { type: marvel_common.BusyStatus              , comment: "Busy status" }
+  #   proc:
   #     reset                   : { type: marvel_common.Process                 , comment: "Reset errors" }
   #     switchLightOn           : { type: marvel_common.Process                 , comment: "Turn On the light in the dome" }
   #     switchLightOff          : { type: marvel_common.Process                 , comment: "Turn Off the light in the dome" }
   #   calls:
-  #     # processes
+  #     # proc
   #     reset:
   #       isEnabled             : !BOOL TRUE
   #     switchLightOn:
@@ -544,18 +544,18 @@
   #     # relays
   #     switchOnRelay:
   #       isEnabled             : !EQ [ operatorStatus, marvel_common.OperatorStatus.tech ]
-  #     # statuses
-  #     healthStatus:
-  #       isGood                : !MTCS_SUMMARIZE_GOOD [ processes.reset,
-  #                                                      processes.switchLightOn,
-  #                                                      processes.switchLightOff ]
-  #       hasWarning            : !OR [ isDomeLightON, !MTCS_SUMMARIZE_WARN [ processes.reset,
-  #                                                                           processes.switchLightOn,
-  #                                                                           processes.switchLightOff ] ]
-  #     busyStatus:
-  #       isBusy                : !MTCS_SUMMARIZE_BUSY [ processes.reset,
-  #                                                      processes.switchLightOn,
-  #                                                      processes.switchLightOff ]
+  #     # stat
+  #     health:
+  #       isGood                : !MTCS_SUMMARIZE_GOOD [ proc.reset,
+  #                                                      proc.switchLightOn,
+  #                                                      proc.switchLightOff ]
+  #       hasWarning            : !OR [ isDomeLightON, !MTCS_SUMMARIZE_WARN [ proc.reset,
+  #                                                                           proc.switchLightOn,
+  #                                                                           proc.switchLightOff ] ]
+  #     busy:
+  #       isBusy                : !MTCS_SUMMARIZE_BUSY [ proc.reset,
+  #                                                      proc.switchLightOn,
+  #                                                      proc.switchLightOff ]
   
   
   ########################################################################################################################
@@ -564,8 +564,8 @@
   
   # !STATEMACHINE DomeIO:
   #   typeOf        : [ DomeParts.io ]
-  #   statuses:
-  #     healthStatus  : { type: marvel_common.HealthStatus   , comment: "Is the I/O in a healthy state?"  }
+  #   stat:
+  #     health        : { type: marvel_common.HealthStatus   , comment: "Is the I/O in a healthy state?"  }
   #   parts:
   #     coupler     : { type: marvel_common.EtherCatDevice , comment: "Coupler" }
   #     slot1       : { type: marvel_common.EtherCatDevice , comment: "Slot 1" }
@@ -592,7 +592,7 @@
   #     drive:
   #       id        : !STRING "10U1"
   #       typeId    : !STRING "AX5206"
-  #     healthStatus:
+  #     health:
   #       isGood    : !MTCS_SUMMARIZE_GOOD [
   #                           parts.coupler,
   #                           parts.slot1,
