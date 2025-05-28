@@ -57,11 +57,6 @@
           position2     : { type: TelescopeKnownPositionConfig, comment : "Known position 2"   , expand: false }
           position3     : { type: TelescopeKnownPositionConfig, comment : "Known position 3"   , expand: false }
           position4     : { type: TelescopeKnownPositionConfig, comment : "Known position 4"   , expand: false }
-          position5     : { type: TelescopeKnownPositionConfig, comment : "Known position 5"   , expand: false }
-          position6     : { type: TelescopeKnownPositionConfig, comment : "Known position 6"   , expand: false }
-          position7     : { type: TelescopeKnownPositionConfig, comment : "Known position 7"   , expand: false }
-          position8     : { type: TelescopeKnownPositionConfig, comment : "Known position 8"   , expand: false }
-          position9     : { type: TelescopeKnownPositionConfig, comment : "Known position 9"   , expand: false }
   
   
   ########################################################################################################################
@@ -76,6 +71,7 @@
           alpacaAccHost               : { type: t_string                  , comment: "ASA ACC alpaca server IP address or hostname" }
           alpacaAccPort               : { type: t_uint16                  , comment: "ASA ACC alpaca server port number" }
           alpacaLoopTime              : { type: t_uint16                  , comment: "Alpaca loop time in ms" }
+          slewingTimeout              : { type: t_uint16                  , comment: "Slewing timeout in s during pointing (both alpha/delta and azi/ele)" }
           knownPositions              : { type: TelescopeKnownPositionsConfig  , comment: "Known (predefined) positions (e.g. could be Park, Cover, Park winter, Mirror washing, ...)", expand: false }
           knownPositionToleranceAzi   : { type: t_double                  , comment: "Tolerance (in degrees) to determine if the telescope is at a known position in azi direction" }
           knownPositionToleranceEle   : { type: t_double                  , comment: "Tolerance (in degrees) to determine if the telescope is at a known position in ele direction" }
