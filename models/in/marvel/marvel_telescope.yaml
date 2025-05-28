@@ -7,6 +7,7 @@
 !VERSION marvel:
 
 !IMPORT models/in/marvel/marvel_common.yaml:
+!IMPORT models/in/marvel/marvel_services.yaml:
 
 
 ########################################################################################################################
@@ -121,10 +122,9 @@
   !STATEMACHINE Telescope:
       references:
           operator_ref                    : { type: marvel_common.OperatorStatus              , comment: "Shared operator status" }
-          activity_ref              : { type: marvel_common.ActivityStatus              , comment: "Shared activity status"}
-          config_ref                      : { type: TelescopeConfig                         , comment: "Active configuration of the telescope" }
-          longitude_ref                   : { type: t_double }
-          latitude_ref                    : { type: t_double }
+          activity_ref                    : { type: marvel_common.ActivityStatus              , comment: "Shared activity status"}
+          services_ref                    : { type: marvel_services.Services                  , comment: "Shared services", expand: false}
+          config_ref                      : { type: TelescopeConfig                           , comment: "Active configuration of the telescope" }
       variables_read_only:
           isTelConnected                  : { type: t_bool                                  , comment: "True if the TEL server is connected" }
           isAccConnected                  : { type: t_bool                                  , comment: "True if the ACC server is connected" }

@@ -191,45 +191,6 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Telescope config of a Marvel unit</xhtml>
               </documentation>
             </variable>
-            <variable name="longitude">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Unit location: longitude [degrees, positive = E, negative = W]</xhtml>
-              </documentation>
-            </variable>
-            <variable name="latitude">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Unit location: latitude [degrees, positive = N, negative = S]</xhtml>
-              </documentation>
-            </variable>
-            <variable name="height">
-              <type><REAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Unit location: height above sea-level [m]</xhtml>
-              </documentation>
-            </variable>
           </struct>
         </baseType>
       </dataType>
@@ -445,9 +406,8 @@
 parts.telescope(
     operator_ref := operator_ref,
     activity_ref := activity_ref,
-    config_ref := config.telescope,
-    longitude_ref := config.longitude,
-    latitude_ref := config.latitude);
+    services_ref := services_ref,
+    config_ref := config.telescope);
 parts.configManager( isEnabled := operator_ref = OperatorStatus.tech );
 stat.health := F_HealthStatus(
     superState := NOT(stat.init = InitializationStatus.shutdown),

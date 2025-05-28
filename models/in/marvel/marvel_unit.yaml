@@ -26,9 +26,6 @@
       items:
         dome:       { type: marvel_dome.DomeConfig              , comment: "Dome config of a Marvel unit", expand: false }
         telescope:  { type: marvel_telescope.TelescopeConfig    , comment: "Telescope config of a Marvel unit", expand: false }
-        longitude:  { type: t_double                            , comment: "Unit location: longitude [degrees, positive = E, negative = W]" }
-        latitude:   { type: t_double                            , comment: "Unit location: latitude [degrees, positive = N, negative = S]" }
-        height:     { type: t_float                             , comment: "Unit location: height above sea-level [m]" }
 
 
   ########################################################################################################################
@@ -78,9 +75,8 @@
               arguments:
                   operator_ref            : { type: marvel_common.OperatorStatus          , expand: false }
                   activity_ref            : { type: marvel_common.ActivityStatus          , expand: false }
-                  config_ref              : { type: marvel_telescope.TelescopeConfig    , expand: false }
-                  longitude_ref           : { type: t_double }
-                  latitude_ref            : { type: t_double }
+                  services_ref            : { type: marvel_services.Services              , expand: false }
+                  config_ref              : { type: marvel_telescope.TelescopeConfig      , expand: false }
               attributes:
                   # isTracking              : { type: t_bool }
                   actAzi                  : { type: marvel_common.AngularPosition         , expand: false }
@@ -125,9 +121,8 @@
           telescope:
               operator_ref        : operator_ref
               activity_ref        : activity_ref
+              services_ref        : services_ref
               config_ref          : config.telescope
-              longitude_ref       : config.longitude
-              latitude_ref        : config.latitude
           configManager:
              isEnabled            : !EQ [ operator_ref, marvel_common.OperatorStatus.tech ]
           health:

@@ -21,6 +21,23 @@
   </contentHeader>
   <types>
     <dataTypes>
+      <dataType name="ServicesTimingTimeSource">
+        <baseType>
+          <enum>
+            <values>
+              <value name="SYSTEM_CLOCK" value="0" />
+              <value name="NTP_CLOCK" value="1" />
+            </values>
+          </enum>
+        </baseType>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+            <Attributes>
+              <Attribute Name="qualified_only" Value="" />
+            </Attributes>
+          </data>
+        </addData>
+      </dataType>
       <dataType name="ServicesMeteoSimulation">
         <baseType>
           <enum>
@@ -696,6 +713,45 @@
       <dataType name="ServicesConfig">
         <baseType>
           <struct>
+            <variable name="longitude">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Location: longitude [degrees, positive = E, negative = W]</xhtml>
+              </documentation>
+            </variable>
+            <variable name="latitude">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Location: latitude [degrees, positive = N, negative = S]</xhtml>
+              </documentation>
+            </variable>
+            <variable name="height">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Location: height above sea-level [m]</xhtml>
+              </documentation>
+            </variable>
             <variable name="timing">
               <type><derived name="ServicesTimingConfig" /></type>
               <addData>
@@ -855,7 +911,10 @@
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">parts.timing(
     operator_ref := operator_ref,
-    config_ref := config.timing);
+    config_ref := config.timing,
+    longitude_ref := config.longitude,
+    latitude_ref := config.latitude,
+    height_ref := config.height);
 parts.mercatorMeteo( config_ref := config.mercatorMeteo );
 parts.configManager( isEnabled := operator_ref = OperatorStatus.tech );
 stat.health := F_HealthStatus(
@@ -878,6 +937,21 @@ proc.changeOperatingState( isEnabled := FALSE );
       <pou name="SM_ServicesTiming" pouType="functionBlock">
         <interface>
           <inputVars>
+            <variable name="sysTime" address="%I*">
+              <type><LINT /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TcCOM object nSysTime variable</xhtml>
+              </documentation>
+            </variable>
             <variable name="ntpExtTime" address="%I*">
               <type><LINT /></type>
               <addData>
@@ -891,6 +965,36 @@ proc.changeOperatingState( isEnabled := FALSE );
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">TcCOM object nExtTime variable</xhtml>
+              </documentation>
+            </variable>
+            <variable name="ntpLastUpdated" address="%I*">
+              <type><LINT /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TcCOM object nLastUpdated variable</xhtml>
+              </documentation>
+            </variable>
+            <variable name="sysToNtpExtTimeOffset" address="%I*">
+              <type><LINT /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TcCOM object nSysToExtTimeOffset variable</xhtml>
               </documentation>
             </variable>
             <variable name="isNtpConnected" address="%I*">
@@ -954,6 +1058,36 @@ proc.changeOperatingState( isEnabled := FALSE );
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Previous status description</xhtml>
               </documentation>
             </variable>
+            <variable name="source">
+              <type><derived name="ServicesTimingTimeSource" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Actually used source</xhtml>
+              </documentation>
+            </variable>
+            <variable name="utcFractionOfDay">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">UTC as a fraction of a day</xhtml>
+              </documentation>
+            </variable>
             <variable name="utcDateString">
               <type><string /></type>
               <addData>
@@ -966,7 +1100,7 @@ proc.changeOperatingState( isEnabled := FALSE );
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">UTC date as a string of format YYYY-MM-DD</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Actual UTC date as a string of format YYYY-MM-DD</xhtml>
               </documentation>
             </variable>
             <variable name="utcTimeString">
@@ -981,7 +1115,97 @@ proc.changeOperatingState( isEnabled := FALSE );
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">UTC time as a string of format HH-MM-SS.SSS</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Actual UTC time as a string of format HH-MM-SS.SSS</xhtml>
+              </documentation>
+            </variable>
+            <variable name="lastUpdatedString">
+              <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Time of the last NTP update</xhtml>
+              </documentation>
+            </variable>
+            <variable name="sysToNtpOffset">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Offset in seconds: system time - NTP time</xhtml>
+              </documentation>
+            </variable>
+            <variable name="jd">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Julian date</xhtml>
+              </documentation>
+            </variable>
+            <variable name="jdSinceJ2000">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Julian date since J2000</xhtml>
+              </documentation>
+            </variable>
+            <variable name="gmst">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Greenwich Mean Sidereal Time</xhtml>
+              </documentation>
+            </variable>
+            <variable name="lst">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Local sidereal time in hours</xhtml>
               </documentation>
             </variable>
             <variable name="stat">
@@ -1042,9 +1266,99 @@ proc.changeOperatingState( isEnabled := FALSE );
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">The config</xhtml>
               </documentation>
             </variable>
+            <variable name="longitude_ref">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                    <Attribute Name="TcHmiSymbol.Hide" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Longitude as a reference</xhtml>
+              </documentation>
+            </variable>
+            <variable name="latitude_ref">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                    <Attribute Name="TcHmiSymbol.Hide" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Latitude as a reference</xhtml>
+              </documentation>
+            </variable>
+            <variable name="height_ref">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                    <Attribute Name="TcHmiSymbol.Hide" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Height as a reference</xhtml>
+              </documentation>
+            </variable>
           </inOutVars>
           <localVars>
+            <variable name="sysTime_ro">
+              <type><LINT /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
             <variable name="ntpExtTime_ro">
+              <type><LINT /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="ntpLastUpdated_ro">
+              <type><LINT /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="sysToNtpExtTimeOffset_ro">
               <type><LINT /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -1096,8 +1410,11 @@ proc.changeOperatingState( isEnabled := FALSE );
             <xhtml xmlns="http://www.w3.org/1999/xhtml">stat.health := F_HealthStatus(
     superState := TRUE,
     hasWarning := FALSE,
-    isGood := isNtpConnected AND isNtpSynchronized);
+    isGood := config_ref.alwaysUseLocalClock OR (isNtpConnected AND isNtpSynchronized));
+sysTime_ro := sysTime;
 ntpExtTime_ro := ntpExtTime;
+ntpLastUpdated_ro := ntpLastUpdated;
+sysToNtpExtTimeOffset_ro := sysToNtpExtTimeOffset;
 isNtpConnected_ro := isNtpConnected;
 isNtpSynchronized_ro := isNtpSynchronized;
 </xhtml>
@@ -1998,6 +2315,8 @@ mercatorDisconnected_ro := mercatorDisconnected;
       <ProjectStructure>
         <Folder Name="marvel_services">
           <Folder Name="Enums">
+            <Object Name="ServicesTimingTimeSource">
+            </Object>
             <Object Name="ServicesMeteoSimulation">
             </Object>
           </Folder>

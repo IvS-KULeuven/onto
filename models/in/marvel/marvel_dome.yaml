@@ -93,11 +93,6 @@
           position2     : { type: DomeKnownPositionConfig, comment : "Known position 2"   , expand: false }
           position3     : { type: DomeKnownPositionConfig, comment : "Known position 3"   , expand: false }
           position4     : { type: DomeKnownPositionConfig, comment : "Known position 4"   , expand: false }
-          position5     : { type: DomeKnownPositionConfig, comment : "Known position 5"   , expand: false }
-          position6     : { type: DomeKnownPositionConfig, comment : "Known position 6"   , expand: false }
-          position7     : { type: DomeKnownPositionConfig, comment : "Known position 7"   , expand: false }
-          position8     : { type: DomeKnownPositionConfig, comment : "Known position 8"   , expand: false }
-          position9     : { type: DomeKnownPositionConfig, comment : "Known position 9"   , expand: false }
   
   
   
@@ -168,7 +163,7 @@
   !STATEMACHINE Dome:
     references:
       operator_ref            : { type: marvel_common.OperatorStatus        , comment: "Reference to the operator (observer/tech)"}
-      activity_ref      : { type: marvel_common.ActivityStatus        , comment: "Shared activity status"}
+      activity_ref            : { type: marvel_common.ActivityStatus        , comment: "Shared activity status"}
       services_ref            : { type: marvel_services.Services          , comment: "Shared services", expand: false}
       config_ref              : { type: DomeConfig                        , comment: "Active configuration of the cover" }
       telescopeAzi_ref        : { type: marvel_common.AngularPosition       , comment: "Azimuth target position of the telescope Axes"}

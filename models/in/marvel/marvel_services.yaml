@@ -17,6 +17,15 @@
 
 
   ########################################################################################################################
+  # ServicesTimingTimeSource
+  ########################################################################################################################
+  
+  !ENUMERATION ServicesTimingTimeSource:
+      items:
+       - SYSTEM_CLOCK
+       - NTP_CLOCK
+
+  ########################################################################################################################
   # ServicesTimingConfig
   ########################################################################################################################
   
@@ -154,6 +163,9 @@
   
   !CONFIG ServicesConfig:
       items:
+          longitude:  { type: t_double                            , comment: "Location: longitude [degrees, positive = E, negative = W]" }
+          latitude:   { type: t_double                            , comment: "Location: latitude [degrees, positive = N, negative = S]" }
+          height:     { type: t_double                            , comment: "Location: height above sea-level [m]" }
           timing:
               type: ServicesTimingConfig
               comment: "Timing config"
@@ -161,6 +173,7 @@
           mercatorMeteo:
               type: ServicesMercatorMeteoConfig
               comment: "Mercator meteo config"
+
 
 
   ########################################################################################################################
@@ -178,8 +191,11 @@
           timing:
               comment                     : "Timing service"
               arguments:
+                  operator_ref            : {}
                   config_ref              : {}
-                  operator_ref      : {}
+                  longitude_ref           : {}
+                  latitude_ref            : {}
+                  height_ref              : {}
               attributes:
                   stat:
                       attributes:
@@ -233,8 +249,11 @@
           configManager:
               isEnabled                   : !EQ [ operator_ref, marvel_common.OperatorStatus.tech ]
           timing:
-              operator_ref          : operator_ref
+              operator_ref                : operator_ref
               config_ref                  : config.timing
+              longitude_ref               : config.longitude
+              latitude_ref                : config.latitude
+              height_ref                  : config.height
           mercatorMeteo:
               config_ref                  : config.mercatorMeteo
 
@@ -244,27 +263,43 @@
   ########################################################################################################################
   
   !STATEMACHINE ServicesTiming:
-      typeOf                              : [ ServicesParts.timing ]
+      typeOf                            : [ ServicesParts.timing ]
       references:
-          operator_ref              : { type: marvel_common.OperatorStatus    , comment: "Shared operator status"}
-          config_ref                      : { type: ServicesTimingConfig          , comment: "The config" }
+          operator_ref                  : { type: marvel_common.OperatorStatus     , comment: "Shared operator status"}
+          config_ref                    : { type: ServicesTimingConfig            , comment: "The config" }
+          longitude_ref                 : { type: t_double                        , comment: "Longitude as a reference"}
+          latitude_ref                  : { type: t_double                        , comment: "Latitude as a reference"}
+          height_ref                    : { type: t_double                        , comment: "Height as a reference"}
       variables:
-          ntpExtTime                      : { type: t_int64 , address: "%I*"       , comment: "TcCOM object nExtTime variable" }
-          isNtpConnected                  : { type: t_bool  , address: "%I*"       , comment: "TRUE if NTP is connected" }
-          isNtpSynchronized               : { type: t_bool  , address: "%I*"       , comment: "TRUE if NTP is synchronized" }
+          sysTime                       : { type: t_int64 , address: "%I*"        , comment: "TcCOM object nSysTime variable" }
+          ntpExtTime                    : { type: t_int64 , address: "%I*"        , comment: "TcCOM object nExtTime variable" }
+          ntpLastUpdated                : { type: t_int64 , address: "%I*"        , comment: "TcCOM object nLastUpdated variable" }
+          sysToNtpExtTimeOffset         : { type: t_int64 , address: "%I*"        , comment: "TcCOM object nSysToExtTimeOffset variable" }
+          isNtpConnected                : { type: t_bool  , address: "%I*"        , comment: "TRUE if NTP is connected" }
+          isNtpSynchronized             : { type: t_bool  , address: "%I*"        , comment: "TRUE if NTP is synchronized" }
       variables_read_only:
           # actual source
-          utcDateString                   : { type: t_string                      , comment: "UTC date as a string of format YYYY-MM-DD" }
-          utcTimeString                   : { type: t_string                      , comment: "UTC time as a string of format HH-MM-SS.SSS" }
+          source                        : { type: ServicesTimingTimeSource        , comment: "Actually used source"}
+          utcFractionOfDay              : { type: t_double                        , comment: "UTC as a fraction of a day" }
+          utcDateString                 : { type: t_string                        , comment: "Actual UTC date as a string of format YYYY-MM-DD" }
+          utcTimeString                 : { type: t_string                        , comment: "Actual UTC time as a string of format HH-MM-SS.SSS" }
+          lastUpdatedString             : { type: t_string                        , comment: "Time of the last NTP update" }
+          # System to NTP offset
+          sysToNtpOffset                : { type: t_double                        , comment: "Offset in seconds: system time - NTP time" }
+          # JD, GMST
+          jd                            : { type: t_double                        , comment: "Julian date" }
+          jdSinceJ2000                  : { type: t_double                        , comment: "Julian date since J2000" }
+          gmst                          : { type: t_double                        , comment: "Greenwich Mean Sidereal Time" }
+          lst                           : { type: t_double                        , comment: "Local sidereal time in hours" }
       stat:
-          health                          : { type: marvel_common.HealthStatus }
+          health                        : { type: marvel_common.HealthStatus }
       proc:
           {}
       calls:
           health:
-              superState                  : !BOOL TRUE
-              hasWarning                  : !BOOL FALSE
-              isGood                      : !AND [ isNtpConnected, isNtpSynchronized ]
+              superState                : !BOOL TRUE
+              hasWarning                : !BOOL FALSE
+              isGood                    : !OR [ config_ref.alwaysUseLocalClock, !AND [ isNtpConnected, isNtpSynchronized ] ]
   
   
 
