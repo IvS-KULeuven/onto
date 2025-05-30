@@ -21,6 +21,26 @@
   </contentHeader>
   <types>
     <dataTypes>
+      <dataType name="ServicesMeteoAlert">
+        <baseType>
+          <enum>
+            <values>
+              <value name="DISABLED" value="0" />
+              <value name="NONE" value="1" />
+              <value name="YELLOW" value="2" />
+              <value name="ORANGE" value="3" />
+              <value name="RED" value="4" />
+            </values>
+          </enum>
+        </baseType>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+            <Attributes>
+              <Attribute Name="qualified_only" Value="" />
+            </Attributes>
+          </data>
+        </addData>
+      </dataType>
       <dataType name="ServicesTimingTimeSource">
         <baseType>
           <enum>
@@ -392,11 +412,11 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Enable weather monitoring and emergency closing</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Enable weather monitoring and emergency closing via alerts</xhtml>
               </documentation>
             </variable>
-            <variable name="wetLimit">
-              <type><LREAL /></type>
+            <variable name="meteoUnknownYellowAlertTime">
+              <type><INT /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -405,7 +425,33 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Wet if (rainIntensity+hailIntensity)&gt;wetLimit</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Time in seconds, after which unknown meteo data will cause a yellow alert. -1 = disable</xhtml>
+              </documentation>
+            </variable>
+            <variable name="meteoUnknownOrangeAlertTime">
+              <type><INT /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Time in seconds, after which unknown meteo data will cause an orange alert. -1 = disable</xhtml>
+              </documentation>
+            </variable>
+            <variable name="meteoUnknownRedAlertTime">
+              <type><INT /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Time in seconds, after which unknown meteo data will cause a red alert. -1 = disable</xhtml>
               </documentation>
             </variable>
             <variable name="windSpeedMinimum">
@@ -1948,21 +1994,6 @@ stat.alarm := F_HiHiLoLoAlarmStatus(
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Duration that the meteo is OK</xhtml>
               </documentation>
             </variable>
-            <variable name="wet">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Wet if (rainIntensity+hailIntensity) &gt; config.wetLimit</xhtml>
-              </documentation>
-            </variable>
             <variable name="heating">
               <type><BOOL /></type>
               <addData>
@@ -2095,6 +2126,66 @@ stat.alarm := F_HiHiLoLoAlarmStatus(
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Previous status description</xhtml>
+              </documentation>
+            </variable>
+            <variable name="alertActive">
+              <type><derived name="ServicesMeteoAlert" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The currently active alert</xhtml>
+              </documentation>
+            </variable>
+            <variable name="unknownDataYellowTimeout">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the data is unknown longer than the yellow alert timeout</xhtml>
+              </documentation>
+            </variable>
+            <variable name="unknownDataOrangeTimeout">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the data is unknown longer than the orange alert timeout</xhtml>
+              </documentation>
+            </variable>
+            <variable name="unknownDataRedTimeout">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the data is unknown longer than the red alert timeout</xhtml>
               </documentation>
             </variable>
             <variable name="stat">
@@ -2290,9 +2381,9 @@ dewpoint(
     valid := fromMercator.dewpointValid,
     disconnected := mercatorDisconnected);
 stat.meteoHealthStatus := F_HealthStatus(
-    superState := stat.health = HealthStatus.good,
-    isGood := ((windSpeedMinimum.stat.health = HealthStatus.good) OR (windSpeedMinimum.stat.enabled = EnabledStatus.disabled)) AND (((windSpeedAverage.stat.health = HealthStatus.good) OR (windSpeedAverage.stat.enabled = EnabledStatus.disabled)) AND (((windSpeedMaximum.stat.health = HealthStatus.good) OR (windSpeedMaximum.stat.enabled = EnabledStatus.disabled)) AND (((windDirectionMinimum.stat.health = HealthStatus.good) OR (windDirectionMinimum.stat.enabled = EnabledStatus.disabled)) AND (((windDirectionAverage.stat.health = HealthStatus.good) OR (windDirectionAverage.stat.enabled = EnabledStatus.disabled)) AND (((windDirectionMaximum.stat.health = HealthStatus.good) OR (windDirectionMaximum.stat.enabled = EnabledStatus.disabled)) AND (((airPressure.stat.health = HealthStatus.good) OR (airPressure.stat.enabled = EnabledStatus.disabled)) AND (((airTemperature.stat.health = HealthStatus.good) OR (airTemperature.stat.enabled = EnabledStatus.disabled)) AND (((internalTemperature.stat.health = HealthStatus.good) OR (internalTemperature.stat.enabled = EnabledStatus.disabled)) AND (((relativeHumidity.stat.health = HealthStatus.good) OR (relativeHumidity.stat.enabled = EnabledStatus.disabled)) AND (((rainAccumulation.stat.health = HealthStatus.good) OR (rainAccumulation.stat.enabled = EnabledStatus.disabled)) AND (((rainDuration.stat.health = HealthStatus.good) OR (rainDuration.stat.enabled = EnabledStatus.disabled)) AND (((rainIntensity.stat.health = HealthStatus.good) OR (rainIntensity.stat.enabled = EnabledStatus.disabled)) AND (((rainPeakIntensity.stat.health = HealthStatus.good) OR (rainPeakIntensity.stat.enabled = EnabledStatus.disabled)) AND (((hailAccumulation.stat.health = HealthStatus.good) OR (hailAccumulation.stat.enabled = EnabledStatus.disabled)) AND (((hailDuration.stat.health = HealthStatus.good) OR (hailDuration.stat.enabled = EnabledStatus.disabled)) AND (((hailIntensity.stat.health = HealthStatus.good) OR (hailIntensity.stat.enabled = EnabledStatus.disabled)) AND (((hailPeakIntensity.stat.health = HealthStatus.good) OR (hailPeakIntensity.stat.enabled = EnabledStatus.disabled)) AND (((heatingTemperature.stat.health = HealthStatus.good) OR (heatingTemperature.stat.enabled = EnabledStatus.disabled)) AND (((heatingVoltage.stat.health = HealthStatus.good) OR (heatingVoltage.stat.enabled = EnabledStatus.disabled)) AND (((supplyVoltage.stat.health = HealthStatus.good) OR (supplyVoltage.stat.enabled = EnabledStatus.disabled)) AND (((referenceVoltage.stat.health = HealthStatus.good) OR (referenceVoltage.stat.enabled = EnabledStatus.disabled)) AND ((dewpoint.stat.health = HealthStatus.good) OR (dewpoint.stat.enabled = EnabledStatus.disabled))))))))))))))))))))))),
-    hasWarning := (windSpeedMinimum.stat.health = HealthStatus.warning) OR ((windSpeedAverage.stat.health = HealthStatus.warning) OR ((windSpeedMaximum.stat.health = HealthStatus.warning) OR ((windDirectionMinimum.stat.health = HealthStatus.warning) OR ((windDirectionAverage.stat.health = HealthStatus.warning) OR ((windDirectionMaximum.stat.health = HealthStatus.warning) OR ((airPressure.stat.health = HealthStatus.warning) OR ((airTemperature.stat.health = HealthStatus.warning) OR ((internalTemperature.stat.health = HealthStatus.warning) OR ((relativeHumidity.stat.health = HealthStatus.warning) OR ((rainAccumulation.stat.health = HealthStatus.warning) OR ((rainDuration.stat.health = HealthStatus.warning) OR ((rainIntensity.stat.health = HealthStatus.warning) OR ((rainPeakIntensity.stat.health = HealthStatus.warning) OR ((hailAccumulation.stat.health = HealthStatus.warning) OR ((hailDuration.stat.health = HealthStatus.warning) OR ((hailIntensity.stat.health = HealthStatus.warning) OR ((hailPeakIntensity.stat.health = HealthStatus.warning) OR ((heatingTemperature.stat.health = HealthStatus.warning) OR ((heatingVoltage.stat.health = HealthStatus.warning) OR ((supplyVoltage.stat.health = HealthStatus.warning) OR ((referenceVoltage.stat.health = HealthStatus.warning) OR (dewpoint.stat.health = HealthStatus.warning)))))))))))))))))))))));
+    superState := (stat.health = HealthStatus.good) OR (unknownDataRedTimeout OR (unknownDataOrangeTimeout OR unknownDataYellowTimeout)),
+    isGood := (NOT(unknownDataRedTimeout)) AND (((NOT(windSpeedMinimum.stat.health = HealthStatus.bad)) OR (windSpeedMinimum.stat.enabled = EnabledStatus.disabled)) AND (((NOT(windSpeedAverage.stat.health = HealthStatus.bad)) OR (windSpeedAverage.stat.enabled = EnabledStatus.disabled)) AND (((NOT(windSpeedMaximum.stat.health = HealthStatus.bad)) OR (windSpeedMaximum.stat.enabled = EnabledStatus.disabled)) AND (((NOT(windDirectionMinimum.stat.health = HealthStatus.bad)) OR (windDirectionMinimum.stat.enabled = EnabledStatus.disabled)) AND (((NOT(windDirectionAverage.stat.health = HealthStatus.bad)) OR (windDirectionAverage.stat.enabled = EnabledStatus.disabled)) AND (((NOT(windDirectionMaximum.stat.health = HealthStatus.bad)) OR (windDirectionMaximum.stat.enabled = EnabledStatus.disabled)) AND (((NOT(airPressure.stat.health = HealthStatus.bad)) OR (airPressure.stat.enabled = EnabledStatus.disabled)) AND (((NOT(airTemperature.stat.health = HealthStatus.bad)) OR (airTemperature.stat.enabled = EnabledStatus.disabled)) AND (((NOT(internalTemperature.stat.health = HealthStatus.bad)) OR (internalTemperature.stat.enabled = EnabledStatus.disabled)) AND (((NOT(relativeHumidity.stat.health = HealthStatus.bad)) OR (relativeHumidity.stat.enabled = EnabledStatus.disabled)) AND (((NOT(rainAccumulation.stat.health = HealthStatus.bad)) OR (rainAccumulation.stat.enabled = EnabledStatus.disabled)) AND (((NOT(rainDuration.stat.health = HealthStatus.bad)) OR (rainDuration.stat.enabled = EnabledStatus.disabled)) AND (((NOT(rainIntensity.stat.health = HealthStatus.bad)) OR (rainIntensity.stat.enabled = EnabledStatus.disabled)) AND (((NOT(rainPeakIntensity.stat.health = HealthStatus.bad)) OR (rainPeakIntensity.stat.enabled = EnabledStatus.disabled)) AND (((NOT(hailAccumulation.stat.health = HealthStatus.bad)) OR (hailAccumulation.stat.enabled = EnabledStatus.disabled)) AND (((NOT(hailDuration.stat.health = HealthStatus.bad)) OR (hailDuration.stat.enabled = EnabledStatus.disabled)) AND (((NOT(hailIntensity.stat.health = HealthStatus.bad)) OR (hailIntensity.stat.enabled = EnabledStatus.disabled)) AND (((NOT(hailPeakIntensity.stat.health = HealthStatus.bad)) OR (hailPeakIntensity.stat.enabled = EnabledStatus.disabled)) AND (((NOT(heatingTemperature.stat.health = HealthStatus.bad)) OR (heatingTemperature.stat.enabled = EnabledStatus.disabled)) AND (((NOT(heatingVoltage.stat.health = HealthStatus.bad)) OR (heatingVoltage.stat.enabled = EnabledStatus.disabled)) AND (((NOT(supplyVoltage.stat.health = HealthStatus.bad)) OR (supplyVoltage.stat.enabled = EnabledStatus.disabled)) AND (((NOT(referenceVoltage.stat.health = HealthStatus.bad)) OR (referenceVoltage.stat.enabled = EnabledStatus.disabled)) AND ((NOT(dewpoint.stat.health = HealthStatus.bad)) OR (dewpoint.stat.enabled = EnabledStatus.disabled)))))))))))))))))))))))),
+    hasWarning := unknownDataYellowTimeout OR (unknownDataOrangeTimeout OR ((windSpeedMinimum.stat.health = HealthStatus.warning) OR ((windSpeedAverage.stat.health = HealthStatus.warning) OR ((windSpeedMaximum.stat.health = HealthStatus.warning) OR ((windDirectionMinimum.stat.health = HealthStatus.warning) OR ((windDirectionAverage.stat.health = HealthStatus.warning) OR ((windDirectionMaximum.stat.health = HealthStatus.warning) OR ((airPressure.stat.health = HealthStatus.warning) OR ((airTemperature.stat.health = HealthStatus.warning) OR ((internalTemperature.stat.health = HealthStatus.warning) OR ((relativeHumidity.stat.health = HealthStatus.warning) OR ((rainAccumulation.stat.health = HealthStatus.warning) OR ((rainDuration.stat.health = HealthStatus.warning) OR ((rainIntensity.stat.health = HealthStatus.warning) OR ((rainPeakIntensity.stat.health = HealthStatus.warning) OR ((hailAccumulation.stat.health = HealthStatus.warning) OR ((hailDuration.stat.health = HealthStatus.warning) OR ((hailIntensity.stat.health = HealthStatus.warning) OR ((hailPeakIntensity.stat.health = HealthStatus.warning) OR ((heatingTemperature.stat.health = HealthStatus.warning) OR ((heatingVoltage.stat.health = HealthStatus.warning) OR ((supplyVoltage.stat.health = HealthStatus.warning) OR ((referenceVoltage.stat.health = HealthStatus.warning) OR (dewpoint.stat.health = HealthStatus.warning)))))))))))))))))))))))));
 stat.health := F_HealthStatus(
     superState := TRUE,
     hasWarning := FALSE,
@@ -2315,6 +2406,8 @@ mercatorDisconnected_ro := mercatorDisconnected;
       <ProjectStructure>
         <Folder Name="marvel_services">
           <Folder Name="Enums">
+            <Object Name="ServicesMeteoAlert">
+            </Object>
             <Object Name="ServicesTimingTimeSource">
             </Object>
             <Object Name="ServicesMeteoSimulation">

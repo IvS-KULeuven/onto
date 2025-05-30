@@ -17,6 +17,18 @@
 
 
   ########################################################################################################################
+  # ServicesM
+  ########################################################################################################################
+  
+  !ENUMERATION ServicesMeteoAlert:
+      items:
+       - DISABLED
+       - NONE
+       - YELLOW  # in mildly alerted state, e.g. because the meteo service is down
+       - ORANGE
+       - RED
+
+  ########################################################################################################################
   # ServicesTimingTimeSource
   ########################################################################################################################
   
@@ -36,7 +48,7 @@
               comment: "If TRUE, then the local clock (source=LOCAL_CLOCK) will be used even if an external (more accurate!) clock is available"
 
   ##########################################################################
-  # DomeShutterMotionStates
+  # ServicesMeteoSimulation
   ##########################################################################
   
   !ENUMERATION ServicesMeteoSimulation:
@@ -60,10 +72,16 @@
               comment: "TRUE to simulate the Mercator weather station data"
           enableWeatherMonitoring:
               type: t_bool
-              comment: "Enable weather monitoring and emergency closing"
-          wetLimit:
-              type: t_double
-              comment: "Wet if (rainIntensity+hailIntensity)>wetLimit"
+              comment: "Enable weather monitoring and emergency closing via alerts"
+          meteoUnknownYellowAlertTime:
+              type: t_int16
+              comment: "Time in seconds, after which unknown meteo data will cause a yellow alert. -1 = disable"
+          meteoUnknownOrangeAlertTime:
+              type: t_int16
+              comment: "Time in seconds, after which unknown meteo data will cause an orange alert. -1 = disable"
+          meteoUnknownRedAlertTime:
+              type: t_int16
+              comment: "Time in seconds, after which unknown meteo data will cause a red alert. -1 = disable"
           windSpeedMinimum:
               type: marvel_common.MeasurementConfig
               comment: "Config for the wind speed minimum"
@@ -343,6 +361,11 @@
       variables_hidden:
           fromMercator                : { type: marvel_common.MercatorMeteoExchange , address: "%I*" , comment: "The data exchanged by the Mercator telescope" }
           mercatorDisconnected        : { type: t_bool                            , address: "%I*" , comment: "The data exchanged by the Mercator telescope is invalid" }
+      variables_read_only:
+          alertActive                 : { type: ServicesMeteoAlert                , comment: "The currently active alert" }
+          unknownDataYellowTimeout    : { type: t_bool                            , comment: "True if the data is unknown longer than the yellow alert timeout" }
+          unknownDataOrangeTimeout    : { type: t_bool                            , comment: "True if the data is unknown longer than the orange alert timeout" }
+          unknownDataRedTimeout       : { type: t_bool                            , comment: "True if the data is unknown longer than the red alert timeout" }
       variables:
           weatherStatus               : { type: t_string                          , comment: "Weather status as a string" }
           mercatorConnected           : { type: t_bool                            , comment: "True if MTCS is connected" }
@@ -372,7 +395,6 @@
           dewpoint                    : { type: ServicesMercatorMeteoMeasurement  , comment: "Calculated dew point temperature" }
           # other
           durationOK                  : { type: marvel_common.Duration              , comment: "Duration that the meteo is OK" }
-          wet                         : { type: t_bool                            , comment: "Wet if (rainIntensity+hailIntensity) > config.wetLimit" }
           heating                     : { type: t_bool                            , comment: "Heating or not?"}
           windDirectionMinimumString  : { type: t_string                          , comment: "Average direction of the wind as a string"}
           windDirectionAverageString  : { type: t_string                          , comment: "Average direction of the wind as a string"}
@@ -508,8 +530,14 @@
               isGood                  : !AND [ fromMercator.mercatorServiceHealthy,
                                                !NOT [ mercatorDisconnected ] ]
           meteoHealthStatus:
-              superState              : !EQ [ stat.health, marvel_common.HealthStatus.good ]
-              isGood                  : !MTCS_SUMMARIZE_GOOD_OR_DISABLED [
+              superState              : !OR [ 
+                                            !EQ [ stat.health, marvel_common.HealthStatus.good ],
+                                            unknownDataRedTimeout,
+                                            unknownDataOrangeTimeout,
+                                            unknownDataYellowTimeout ]
+              isGood                  : !AND [
+                                              !NOT [ unknownDataRedTimeout ],
+                                              !MTCS_SUMMARIZE_GOOD_OR_DISABLED [
                                                   windSpeedMinimum,
                                                   windSpeedAverage,
                                                   windSpeedMaximum,
@@ -533,7 +561,11 @@
                                                   supplyVoltage,
                                                   referenceVoltage,
                                                   dewpoint ]
-              hasWarning                 : !MTCS_SUMMARIZE_WARN [
+                                            ]
+              hasWarning               : !OR [ 
+                                                unknownDataYellowTimeout,
+                                                unknownDataOrangeTimeout,
+                                                !MTCS_SUMMARIZE_WARN [
                                                   windSpeedMinimum,
                                                   windSpeedAverage,
                                                   windSpeedMaximum,
@@ -557,4 +589,5 @@
                                                   supplyVoltage,
                                                   referenceVoltage,
                                                   dewpoint ]
+                                        ]
   

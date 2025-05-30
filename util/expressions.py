@@ -387,7 +387,7 @@ class MTCS_SUMMARIZE_GOOD_OR_DISABLED(BinaryOperation):
                                         f"{operand}.{statuses()}.enabledStatus.disabled"]))
         elif is_marvel():
             for operand in operands:
-                new_operands.append(OR([EQ([f"{operand}.{statuses()}.health", "marvel_common.HealthStatus.good"]), 
+                new_operands.append(OR([NOT( EQ([f"{operand}.{statuses()}.health", "marvel_common.HealthStatus.bad"]) ), 
                                         EQ([f"{operand}.{statuses()}.enabled", "marvel_common.EnabledStatus.disabled"])]))
         else:
             raise Exception("Invalid version")
