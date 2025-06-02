@@ -8334,7 +8334,7 @@ statuses.startedStatus();
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
-                    <Attribute Name="TcHmiSymbol.Hide" Value="" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
                     <Attribute Name="OPC.UA.DA" Value="1" />
                     <Attribute Name="OPC.UA.DA.Access" Value="1" />
                   </Attributes>
@@ -8370,20 +8370,6 @@ statuses.startedStatus();
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Tolerance in [main units] per second: if &lt; ABS(this value), then the axis is considered to be standing still</xhtml>
-              </documentation>
-            </variable>
-            <variable name="_axis_ref">
-              <type><derived name="REFERENCE TO AXIS_REF" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="0" />
-                    <Attribute Name="TcHmiSymbol.Hide" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">The AXIS_REF to be linked to the NC I/O</xhtml>
               </documentation>
             </variable>
           </inputVars>
@@ -8482,11 +8468,11 @@ statuses.startedStatus();
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">statuses.busyStatus( isBusy := processes.moveAbsolute.statuses.busyStatus.busy OR (processes.moveRelative.statuses.busyStatus.busy OR (processes.reset.statuses.busyStatus.busy OR (processes.power.statuses.busyStatus.busy OR (processes.gearIn.statuses.busyStatus.busy OR (processes.gearOut.statuses.busyStatus.busy OR (processes.initialize.statuses.busyStatus.busy OR (processes.setPosition.statuses.busyStatus.busy OR (processes.enableExtSetGen.statuses.busyStatus.busy OR (processes.disableExtSetGen.statuses.busyStatus.busy OR (processes.forceCalibration.statuses.busyStatus.busy OR (processes.resetCalibration.statuses.busyStatus.busy OR (processes.readParameter.statuses.busyStatus.busy OR (processes.readBoolParameter.statuses.busyStatus.busy OR (processes.writeParameter.statuses.busyStatus.busy OR (processes.writeBoolParameter.statuses.busyStatus.busy OR processes.probeAbort.statuses.busyStatus.busy))))))))))))))) );
-statuses.healthStatus( isGood := NOT(_axis_ref.Status.Error) );
-statuses.poweredStatus( isEnabled := NOT(_axis_ref.Status.Disabled) );
-statuses.extSetGenStatus( isEnabled := _axis_ref.Status.ExtSetPointGenEnabled );
+statuses.healthStatus( isGood := NOT(axis_ref.Status.Error) );
+statuses.poweredStatus( isEnabled := NOT(axis_ref.Status.Disabled) );
+statuses.extSetGenStatus( isEnabled := axis_ref.Status.ExtSetPointGenEnabled );
 statuses.motionStatus(
-    actVel := _axis_ref.NcToPlc.ActVelo,
+    actVel := axis_ref.NcToPlc.ActVelo,
     tolerance := standstillTolerance);
 processes.moveAbsolute( isEnabled := isEnabled );
 processes.moveRelative( isEnabled := isEnabled );
@@ -9507,51 +9493,6 @@ LOGGER(
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Actual velocity of the axis</xhtml>
               </documentation>
             </variable>
-            <variable name="setPos">
-              <type><derived name="AngularPosition" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Setpoint position of the axis</xhtml>
-              </documentation>
-            </variable>
-            <variable name="setVel">
-              <type><derived name="AngularVelocity" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Setpoint velocity of the axis</xhtml>
-              </documentation>
-            </variable>
-            <variable name="targetPos">
-              <type><derived name="AngularPosition" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Target position of the axis</xhtml>
-              </documentation>
-            </variable>
           </outputVars>
           <inOutVars>
           </inOutVars>
@@ -9567,11 +9508,8 @@ LOGGER(
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">actPos( newDegreesValue := _axis_ref.NcToPlc.ActPos );
-actVel( newDegreesPerSecondValue := _axis_ref.NcToPlc.ActVelo );
-setPos( newDegreesValue := _axis_ref.NcToPlc.SetPos );
-setVel( newDegreesPerSecondValue := _axis_ref.NcToPlc.SetVelo );
-targetPos( newDegreesValue := _axis_ref.NcToPlc.TargetPos );
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">actPos( newDegreesValue := axis_ref.NcToPlc.ActPos );
+actVel( newDegreesPerSecondValue := axis_ref.NcToPlc.ActVelo );
 SUPER^();
 </xhtml>
           </ST>
@@ -9614,51 +9552,6 @@ SUPER^();
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Actual velocity of the axis</xhtml>
               </documentation>
             </variable>
-            <variable name="setPos">
-              <type><derived name="LinearPosition" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Setpoint position of the axis</xhtml>
-              </documentation>
-            </variable>
-            <variable name="setVel">
-              <type><derived name="LinearVelocity" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Setpoint velocity of the axis</xhtml>
-              </documentation>
-            </variable>
-            <variable name="targetPos">
-              <type><derived name="LinearPosition" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Target position of the axis</xhtml>
-              </documentation>
-            </variable>
           </outputVars>
           <inOutVars>
           </inOutVars>
@@ -9674,11 +9567,8 @@ SUPER^();
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">actPos( newMillimetersValue := _axis_ref.NcToPlc.ActPos );
-actVel( newMillimetersPerSecondValue := _axis_ref.NcToPlc.ActVelo );
-setPos( newMillimetersValue := _axis_ref.NcToPlc.SetPos );
-setVel( newMillimetersPerSecondValue := _axis_ref.NcToPlc.SetVelo );
-targetPos( newMillimetersValue := _axis_ref.NcToPlc.TargetPos );
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">actPos( newMillimetersValue := axis_ref.NcToPlc.ActPos );
+actVel( newMillimetersPerSecondValue := axis_ref.NcToPlc.ActVelo );
 SUPER^();
 </xhtml>
           </ST>
