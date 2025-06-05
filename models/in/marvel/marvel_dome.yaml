@@ -392,9 +392,7 @@
                                        !NOT [ !EQ [ init_ref, marvel_common.InitializationStatus.locked ] ], 
                                        !OR [ !EQ [ operator_ref, marvel_common.OperatorStatus.tech ], 
                                              !AND [ !EQ [ stat.busy, marvel_common.BusyStatus.idle ], 
-                                                    !EQ [ init_ref, marvel_common.InitializationStatus.initialized ], 
-                                                    !OR [ !EQ [ activity_ref, marvel_common.ActivityStatus.awake ], 
-                                                          !EQ [ activity_ref, marvel_common.ActivityStatus.moving ] ] ] ] ]
+                                                    !EQ [ init_ref, marvel_common.InitializationStatus.initialized ] ] ] ]
       close:
         isEnabled             : !OR [ !EQ [ operator_ref, marvel_common.OperatorStatus.tech ],
                                       !AND [ !NOT [ !EQ [ init_ref, marvel_common.InitializationStatus.locked ] ], 
@@ -415,6 +413,7 @@
         superState            : !NOT [ !EQ [ init_ref, marvel_common.InitializationStatus.shutdown ] ]
         isGood                : !AND [ 
                                       isConnected,
+                                      !NOT [ !EQ [ stat.aperture, marvel_common.ApertureStatus.undefined ] ],
                                       !MTCS_SUMMARIZE_GOOD [ proc.open,
                                                              proc.close,
                                                              proc.stop] ]
@@ -449,7 +448,7 @@
       init_ref                    : { type: marvel_common.InitializationStatus    , comment: "Reference to the marvel initialization status"}
       operator_ref                : { type: marvel_common.OperatorStatus          , comment: "Reference to the marvel operator status"}
       operating_ref               : { type: marvel_common.OperatingStatus         , comment: "Reference to the Dome operating status"}
-      config_ref                  : { type: DomeRotationConfig                  , comment: "Reference to the rotation config"}
+      config_ref                  : { type: DomeRotationConfig                    , comment: "Reference to the rotation config"}
     parts:
       motorAxis                   : { type: marvel_common.AngularAxis             , comment: "Motor axis" }
       encoderAxis                 : { type: marvel_common.AngularAxis             , comment: "Encoder axis" }

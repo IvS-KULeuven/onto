@@ -965,7 +965,7 @@ parts.mercatorMeteo( config_ref := config.mercatorMeteo );
 parts.configManager( isEnabled := operator_ref = OperatorStatus.tech );
 stat.health := F_HealthStatus(
     superState := TRUE,
-    isGood := (parts.timing.stat.health = HealthStatus.good) AND (parts.mercatorMeteo.stat.health = HealthStatus.good),
+    isGood := ((parts.timing.stat.health = HealthStatus.good) OR (parts.timing.stat.health = HealthStatus.warning)) AND ((parts.mercatorMeteo.stat.health = HealthStatus.good) OR (parts.mercatorMeteo.stat.health = HealthStatus.warning)),
     hasWarning := (parts.timing.stat.health = HealthStatus.warning) OR (parts.mercatorMeteo.stat.health = HealthStatus.warning));
 stat.busy := F_BusyStatus(
     superState := TRUE,

@@ -359,7 +359,8 @@ class MTCS_SUMMARIZE_GOOD(BinaryOperation):
                 new_operands.append(f"{operand}.{statuses()}.healthStatus.isGood")
         elif is_marvel():
             for operand in operands:
-                new_operands.append(EQ([f"{operand}.{statuses()}.health", "marvel_common.HealthStatus.good"]))
+                new_operands.append(OR([EQ([f"{operand}.{statuses()}.health", "marvel_common.HealthStatus.good"]),
+                                        EQ([f"{operand}.{statuses()}.health", "marvel_common.HealthStatus.warning"])]))
         else:
             raise Exception("Invalid version")
 

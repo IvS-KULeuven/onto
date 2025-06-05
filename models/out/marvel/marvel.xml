@@ -613,7 +613,7 @@ parts.u4(
 parts.services( operator_ref := stat.operator );
 stat.health := F_HealthStatus(
     superState := NOT(stat.init = InitializationStatus.shutdown),
-    isGood := (parts.u1.stat.health = HealthStatus.good) AND ((parts.u2.stat.health = HealthStatus.good) AND ((parts.u3.stat.health = HealthStatus.good) AND ((parts.u4.stat.health = HealthStatus.good) AND (parts.services.stat.health = HealthStatus.good)))),
+    isGood := ((parts.u1.stat.health = HealthStatus.good) OR (parts.u1.stat.health = HealthStatus.warning)) AND (((parts.u2.stat.health = HealthStatus.good) OR (parts.u2.stat.health = HealthStatus.warning)) AND (((parts.u3.stat.health = HealthStatus.good) OR (parts.u3.stat.health = HealthStatus.warning)) AND (((parts.u4.stat.health = HealthStatus.good) OR (parts.u4.stat.health = HealthStatus.warning)) AND ((parts.services.stat.health = HealthStatus.good) OR (parts.services.stat.health = HealthStatus.warning))))),
     hasWarning := (parts.u1.stat.health = HealthStatus.warning) OR ((parts.u2.stat.health = HealthStatus.warning) OR ((parts.u3.stat.health = HealthStatus.warning) OR ((parts.u4.stat.health = HealthStatus.warning) OR (parts.services.stat.health = HealthStatus.warning)))));
 stat.busy := F_BusyStatus(
     superState := NOT(stat.init = InitializationStatus.shutdown),

@@ -411,7 +411,7 @@ parts.telescope(
 parts.configManager( isEnabled := operator_ref = OperatorStatus.tech );
 stat.health := F_HealthStatus(
     superState := NOT(stat.init = InitializationStatus.shutdown),
-    isGood := (parts.dome.stat.health = HealthStatus.good) AND ((parts.telescope.stat.health = HealthStatus.good) AND (parts.configManager.stat.health = HealthStatus.good)),
+    isGood := ((parts.dome.stat.health = HealthStatus.good) OR (parts.dome.stat.health = HealthStatus.warning)) AND (((parts.telescope.stat.health = HealthStatus.good) OR (parts.telescope.stat.health = HealthStatus.warning)) AND ((parts.configManager.stat.health = HealthStatus.good) OR (parts.configManager.stat.health = HealthStatus.warning))),
     hasWarning := (parts.dome.stat.health = HealthStatus.warning) OR ((parts.telescope.stat.health = HealthStatus.warning) OR (parts.configManager.stat.health = HealthStatus.warning)));
 stat.busy := F_BusyStatus(
     superState := NOT(stat.init = InitializationStatus.shutdown),

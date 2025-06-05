@@ -1262,7 +1262,7 @@ parts.rotation(
     config_ref := config_ref.rotation);
 stat.health := F_HealthStatus(
     superState := TRUE,
-    isGood := (parts.shutter.stat.health = HealthStatus.good) AND ((parts.rotation.stat.health = HealthStatus.good) AND ((proc.reset.stat.health = HealthStatus.good) AND ((proc.initialize.stat.health = HealthStatus.good) AND ((proc.syncWithAxes.stat.health = HealthStatus.good) AND ((proc.startTrackingTelescope.stat.health = HealthStatus.good) AND ((proc.stopTrackingTelescope.stat.health = HealthStatus.good) AND ((proc.stop.stat.health = HealthStatus.good) AND (proc.moveKnownPosition.stat.health = HealthStatus.good)))))))),
+    isGood := ((parts.shutter.stat.health = HealthStatus.good) OR (parts.shutter.stat.health = HealthStatus.warning)) AND (((parts.rotation.stat.health = HealthStatus.good) OR (parts.rotation.stat.health = HealthStatus.warning)) AND (((proc.reset.stat.health = HealthStatus.good) OR (proc.reset.stat.health = HealthStatus.warning)) AND (((proc.initialize.stat.health = HealthStatus.good) OR (proc.initialize.stat.health = HealthStatus.warning)) AND (((proc.syncWithAxes.stat.health = HealthStatus.good) OR (proc.syncWithAxes.stat.health = HealthStatus.warning)) AND (((proc.startTrackingTelescope.stat.health = HealthStatus.good) OR (proc.startTrackingTelescope.stat.health = HealthStatus.warning)) AND (((proc.stopTrackingTelescope.stat.health = HealthStatus.good) OR (proc.stopTrackingTelescope.stat.health = HealthStatus.warning)) AND (((proc.stop.stat.health = HealthStatus.good) OR (proc.stop.stat.health = HealthStatus.warning)) AND ((proc.moveKnownPosition.stat.health = HealthStatus.good) OR (proc.moveKnownPosition.stat.health = HealthStatus.warning))))))))),
     hasWarning := (parts.shutter.stat.health = HealthStatus.warning) OR ((parts.rotation.stat.health = HealthStatus.warning) OR ((proc.reset.stat.health = HealthStatus.warning) OR ((proc.initialize.stat.health = HealthStatus.warning) OR ((proc.syncWithAxes.stat.health = HealthStatus.warning) OR ((proc.startTrackingTelescope.stat.health = HealthStatus.warning) OR ((proc.stopTrackingTelescope.stat.health = HealthStatus.warning) OR ((proc.stop.stat.health = HealthStatus.warning) OR (proc.moveKnownPosition.stat.health = HealthStatus.warning)))))))));
 stat.busy := F_BusyStatus(
     superState := TRUE,
@@ -1676,12 +1676,12 @@ stat.motion := F_DomeShutterOpeningStatus(
     shutterValue := dataRead.motionState);
 stat.health := F_HealthStatus(
     superState := NOT(init_ref = InitializationStatus.shutdown),
-    isGood := isConnected AND ((proc.open.stat.health = HealthStatus.good) AND ((proc.close.stat.health = HealthStatus.good) AND (proc.stop.stat.health = HealthStatus.good))),
+    isGood := isConnected AND ((NOT(stat.aperture = ApertureStatus.undefined)) AND (((proc.open.stat.health = HealthStatus.good) OR (proc.open.stat.health = HealthStatus.warning)) AND (((proc.close.stat.health = HealthStatus.good) OR (proc.close.stat.health = HealthStatus.warning)) AND ((proc.stop.stat.health = HealthStatus.good) OR (proc.stop.stat.health = HealthStatus.warning))))),
     hasWarning := ((proc.open.stat.health = HealthStatus.warning) OR ((proc.close.stat.health = HealthStatus.warning) OR (proc.stop.stat.health = HealthStatus.warning))) OR ((stat.busy = BusyStatus.idle) AND (stat.aperture = ApertureStatus.partiallyOpen)));
 stat.busy := F_BusyStatus(
     superState := NOT(init_ref = InitializationStatus.shutdown),
     isBusy := (proc.open.stat.busy = BusyStatus.busy) OR ((proc.close.stat.busy = BusyStatus.busy) OR (proc.stop.stat.busy = BusyStatus.busy)));
-proc.open( isEnabled := (stat.health = HealthStatus.good) AND ((NOT(init_ref = InitializationStatus.locked)) AND ((operator_ref = OperatorStatus.tech) OR ((stat.busy = BusyStatus.idle) AND ((init_ref = InitializationStatus.initialized) AND ((activity_ref = ActivityStatus.awake) OR (activity_ref = ActivityStatus.moving)))))) );
+proc.open( isEnabled := (stat.health = HealthStatus.good) AND ((NOT(init_ref = InitializationStatus.locked)) AND ((operator_ref = OperatorStatus.tech) OR ((stat.busy = BusyStatus.idle) AND (init_ref = InitializationStatus.initialized)))) );
 proc.close( isEnabled := (operator_ref = OperatorStatus.tech) OR ((NOT(init_ref = InitializationStatus.locked)) AND ((stat.busy = BusyStatus.idle) AND (init_ref = InitializationStatus.initialized))) );
 proc.stop( isEnabled := stat.busy = BusyStatus.busy );
 proc.send( isEnabled := (operator_ref = OperatorStatus.tech) OR isConnected );
@@ -1911,7 +1911,7 @@ proc.send( isEnabled := (operator_ref = OperatorStatus.tech) OR isConnected );
 parts.encoderAxis( isEnabled := (NOT(init_ref = InitializationStatus.locked)) AND (operator_ref = OperatorStatus.tech) );
 stat.health := F_HealthStatus(
     superState := TRUE,
-    isGood := (parts.motorAxis.stat.health = HealthStatus.good) AND ((parts.encoderAxis.stat.health = HealthStatus.good) AND ((proc.moveAbsolute.stat.health = HealthStatus.good) AND ((proc.reset.stat.health = HealthStatus.good) AND (proc.stop.stat.health = HealthStatus.good)))),
+    isGood := ((parts.motorAxis.stat.health = HealthStatus.good) OR (parts.motorAxis.stat.health = HealthStatus.warning)) AND (((parts.encoderAxis.stat.health = HealthStatus.good) OR (parts.encoderAxis.stat.health = HealthStatus.warning)) AND (((proc.moveAbsolute.stat.health = HealthStatus.good) OR (proc.moveAbsolute.stat.health = HealthStatus.warning)) AND (((proc.reset.stat.health = HealthStatus.good) OR (proc.reset.stat.health = HealthStatus.warning)) AND ((proc.stop.stat.health = HealthStatus.good) OR (proc.stop.stat.health = HealthStatus.warning))))),
     hasWarning := (parts.motorAxis.stat.health = HealthStatus.warning) OR ((parts.encoderAxis.stat.health = HealthStatus.warning) OR ((proc.moveAbsolute.stat.health = HealthStatus.warning) OR ((proc.reset.stat.health = HealthStatus.warning) OR (proc.stop.stat.health = HealthStatus.warning)))));
 stat.busy := F_BusyStatus(
     superState := TRUE,

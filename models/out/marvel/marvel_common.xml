@@ -10215,7 +10215,7 @@ proc.setEnabled( isEnabled := isEnabled AND (proc.setEnabled.stat.busy = BusySta
     isBusy := (proc.save.stat.busy = BusyStatus.busy) OR ((proc.load.stat.busy = BusyStatus.busy) OR (proc.activate.stat.busy = BusyStatus.busy)));
 stat.health := F_HealthStatus(
     superState := TRUE,
-    isGood := (proc.save.stat.health = HealthStatus.good) AND ((proc.load.stat.health = HealthStatus.good) AND (proc.activate.stat.health = HealthStatus.good)),
+    isGood := ((proc.save.stat.health = HealthStatus.good) OR (proc.save.stat.health = HealthStatus.warning)) AND (((proc.load.stat.health = HealthStatus.good) OR (proc.load.stat.health = HealthStatus.warning)) AND ((proc.activate.stat.health = HealthStatus.good) OR (proc.activate.stat.health = HealthStatus.warning))),
     hasWarning := (proc.save.stat.health = HealthStatus.warning) OR ((proc.load.stat.health = HealthStatus.warning) OR (proc.activate.stat.health = HealthStatus.warning)));
 proc.save( isEnabled := isEnabled AND (stat.busy = BusyStatus.idle) );
 proc.load( isEnabled := isEnabled AND (stat.busy = BusyStatus.idle) );

@@ -77,6 +77,11 @@
           knownPositionToleranceAzi   : { type: t_double                  , comment: "Tolerance (in degrees) to determine if the telescope is at a known position in azi direction" }
           knownPositionToleranceEle   : { type: t_double                  , comment: "Tolerance (in degrees) to determine if the telescope is at a known position in ele direction" }
           knownPositionToleranceRot   : { type: t_double                  , comment: "Tolerance (in degrees) to determine if the telescope is at a known position in rot direction" }
+          initSelectNasmythPort       : { type: t_bool                    , comment: "TRUE to always select a Nasmyth port during initialization"}
+          initSelectNasmythPortNumber : { type: t_uint16                  , comment: "Number of the nasmyth port to select during initialization"}
+          initPower                   : { type: t_bool                    , comment: "TRUE if the power should be on or off at the end of the initialization"}
+          initWaitForAsa              : { type: t_uint16                  , comment: "Seconds to wait for the connection to the ASA PC during initialization"}
+          
 
 
   ########################################################################################################################
@@ -96,6 +101,15 @@
       extends: marvel_common.BaseProcess
       arguments:
           tracking              : { type: t_bool                              , comment: "Switch tracking on (TRUE) or off (FALSE)" }
+  
+
+  ########################################################################################################################
+  # TelescopeSelectNasmythPortProcess
+  ########################################################################################################################
+  !PROCESS TelescopeSelectNasmythPortProcess:
+      extends: marvel_common.BaseProcess
+      arguments:
+          port                : { type: t_uint16                              , comment: "Port to switch to" }
   
   
   ########################################################################################################################
@@ -150,15 +164,19 @@
           lock                            : { type: marvel_common.Process                         , comment: "Lock the cover" }
           unlock                          : { type: marvel_common.Process                         , comment: "Unlock the cover" }
           changeOperatingState            : { type: marvel_common.ChangeOperatingStateProcess     , comment: "Change the operating state (e.g. AUTO, MANUAL, ...)" }
-          slewToCoordinates               : { type: marvel_common.PointAlphaDeltaProcess        , comment: "Slew to the given equatorial coordinates" }
-          slewToAziEle                    : { type: TelescopeSlewToAziEleProcess                , comment: "Slew to the given horizontal coordinates" }
+          slewToCoordinates               : { type: marvel_common.PointAlphaDeltaProcess          , comment: "Slew to the given equatorial coordinates" }
+          slewToAziEle                    : { type: TelescopeSlewToAziEleProcess                  , comment: "Slew to the given horizontal coordinates" }
+          syncToCoordinates               : { type: marvel_common.PointAlphaDeltaProcess          , comment: "Sync to the given equatorial coordinates" }
+          syncToAziEle                    : { type: TelescopeSlewToAziEleProcess                  , comment: "Sync to the given horizontal coordinates" }
+          syncToTarget                    : { type: marvel_common.Process                         , comment: "Sync to the given target" }
+          selectNasmythPort               : { type: TelescopeSelectNasmythPortProcess             , comment: "Select a nasmyth port" }
           abortSlew                       : { type: marvel_common.Process                         , comment: "Stop the slewing" }
           reset                           : { type: marvel_common.Process                         , comment: "Reset any errors" }
           powerOn                         : { type: marvel_common.Process                         , comment: "Power on the axes" }
           powerOff                        : { type: marvel_common.Process                         , comment: "Power off the axes" }
-          moveKnownPosition               : { type: TelescopeMoveKnownPositionProcess           , comment: "Move the telescope to the given known position" }
-          setTracking                     : { type: TelescopeSetTrackingProcess                 , comment: "Power on the axes" }
-          moveM2                          : { type: TelescopeMoveProcess                        , comment: "Move M2 to the given position in mm"}
+          moveKnownPosition               : { type: TelescopeMoveKnownPositionProcess             , comment: "Move the telescope to the given known position" }
+          setTracking                     : { type: TelescopeSetTrackingProcess                   , comment: "Power on the axes" }
+          moveM2                          : { type: TelescopeMoveProcess                          , comment: "Move M2 to the given position in mm"}
           openCover                       : { type: marvel_common.Process                         , comment: "Open the telescope cover" }
           closeCover                      : { type: marvel_common.Process                         , comment: "Close the telescope cover" }
       calls:
@@ -188,7 +206,21 @@
               isEnabled                   : !AND [ !EQ [ stat.init, marvel_common.InitializationStatus.initialized ],
                                                    !EQ [ stat.busy, marvel_common.BusyStatus.idle],
                                                    !EQ [ stat.powered, marvel_common.PoweredStatus.enabled ] ]
+          syncToCoordinates:
+              isEnabled                   : !AND [ !EQ [ stat.init, marvel_common.InitializationStatus.initialized ],
+                                                   !EQ [ stat.busy, marvel_common.BusyStatus.idle],
+                                                   !EQ [ stat.powered, marvel_common.PoweredStatus.enabled ] ]
+          syncToAziEle:
+              isEnabled                   : !AND [ !EQ [ stat.init, marvel_common.InitializationStatus.initialized ],
+                                                   !EQ [ stat.busy, marvel_common.BusyStatus.idle],
+                                                   !EQ [ stat.powered, marvel_common.PoweredStatus.enabled ] ]
+          syncToTarget:
+              isEnabled                   : !AND [ !EQ [ stat.init, marvel_common.InitializationStatus.initialized ],
+                                                   !EQ [ stat.busy, marvel_common.BusyStatus.idle],
+                                                   !EQ [ stat.powered, marvel_common.PoweredStatus.enabled ] ]
           abortSlew:
+              isEnabled                   : !EQ [ stat.init, marvel_common.InitializationStatus.initialized ]
+          selectNasmythPort:
               isEnabled                   : !EQ [ stat.init, marvel_common.InitializationStatus.initialized ]
           powerOn:
               isEnabled                   : !AND [  !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked] ],

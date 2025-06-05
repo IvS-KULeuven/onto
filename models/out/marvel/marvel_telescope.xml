@@ -102,6 +102,58 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Slew to the given horizontal coordinates</xhtml>
               </documentation>
             </variable>
+            <variable name="syncToCoordinates">
+              <type><derived name="PointAlphaDeltaProcess" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Sync to the given equatorial coordinates</xhtml>
+              </documentation>
+            </variable>
+            <variable name="syncToAziEle">
+              <type><derived name="TelescopeSlewToAziEleProcess" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Sync to the given horizontal coordinates</xhtml>
+              </documentation>
+            </variable>
+            <variable name="syncToTarget">
+              <type><derived name="Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Sync to the given target</xhtml>
+              </documentation>
+            </variable>
+            <variable name="selectNasmythPort">
+              <type><derived name="TelescopeSelectNasmythPortProcess" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Select a nasmyth port</xhtml>
+              </documentation>
+            </variable>
             <variable name="abortSlew">
               <type><derived name="Process" /></type>
               <addData>
@@ -630,6 +682,58 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Tolerance (in degrees) to determine if the telescope is at a known position in rot direction</xhtml>
               </documentation>
             </variable>
+            <variable name="initSelectNasmythPort">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE to always select a Nasmyth port during initialization</xhtml>
+              </documentation>
+            </variable>
+            <variable name="initSelectNasmythPortNumber">
+              <type><UINT /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Number of the nasmyth port to select during initialization</xhtml>
+              </documentation>
+            </variable>
+            <variable name="initPower">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if the power should be on or off at the end of the initialization</xhtml>
+              </documentation>
+            </variable>
+            <variable name="initWaitForAsa">
+              <type><UINT /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Seconds to wait for the connection to the ASA PC during initialization</xhtml>
+              </documentation>
+            </variable>
           </struct>
         </baseType>
       </dataType>
@@ -679,6 +783,25 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Switch tracking on (TRUE) or off (FALSE)</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="TelescopeSelectNasmythPortProcessArgs">
+        <baseType>
+          <struct>
+            <variable name="port">
+              <type><UINT /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Port to switch to</xhtml>
               </documentation>
             </variable>
           </struct>
@@ -1034,7 +1157,7 @@
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">stat.health := F_HealthStatus(
     superState := NOT(stat.init = InitializationStatus.shutdown),
-    isGood := (NOT(stat.init = InitializationStatus.initializingFailed)) AND (isTelConnected AND (isAccConnected AND ((proc.initialize.stat.health = HealthStatus.good) AND ((proc.changeOperatingState.stat.health = HealthStatus.good) AND ((proc.slewToCoordinates.stat.health = HealthStatus.good) AND ((proc.slewToAziEle.stat.health = HealthStatus.good) AND ((proc.abortSlew.stat.health = HealthStatus.good) AND ((proc.powerOn.stat.health = HealthStatus.good) AND ((proc.powerOff.stat.health = HealthStatus.good) AND ((proc.moveKnownPosition.stat.health = HealthStatus.good) AND ((proc.setTracking.stat.health = HealthStatus.good) AND ((proc.moveM2.stat.health = HealthStatus.good) AND ((proc.openCover.stat.health = HealthStatus.good) AND (proc.closeCover.stat.health = HealthStatus.good)))))))))))))),
+    isGood := (NOT(stat.init = InitializationStatus.initializingFailed)) AND (isTelConnected AND (isAccConnected AND (((proc.initialize.stat.health = HealthStatus.good) OR (proc.initialize.stat.health = HealthStatus.warning)) AND (((proc.changeOperatingState.stat.health = HealthStatus.good) OR (proc.changeOperatingState.stat.health = HealthStatus.warning)) AND (((proc.slewToCoordinates.stat.health = HealthStatus.good) OR (proc.slewToCoordinates.stat.health = HealthStatus.warning)) AND (((proc.slewToAziEle.stat.health = HealthStatus.good) OR (proc.slewToAziEle.stat.health = HealthStatus.warning)) AND (((proc.abortSlew.stat.health = HealthStatus.good) OR (proc.abortSlew.stat.health = HealthStatus.warning)) AND (((proc.powerOn.stat.health = HealthStatus.good) OR (proc.powerOn.stat.health = HealthStatus.warning)) AND (((proc.powerOff.stat.health = HealthStatus.good) OR (proc.powerOff.stat.health = HealthStatus.warning)) AND (((proc.moveKnownPosition.stat.health = HealthStatus.good) OR (proc.moveKnownPosition.stat.health = HealthStatus.warning)) AND (((proc.setTracking.stat.health = HealthStatus.good) OR (proc.setTracking.stat.health = HealthStatus.warning)) AND (((proc.moveM2.stat.health = HealthStatus.good) OR (proc.moveM2.stat.health = HealthStatus.warning)) AND (((proc.openCover.stat.health = HealthStatus.good) OR (proc.openCover.stat.health = HealthStatus.warning)) AND ((proc.closeCover.stat.health = HealthStatus.good) OR (proc.closeCover.stat.health = HealthStatus.warning))))))))))))))),
     hasWarning := (proc.initialize.stat.health = HealthStatus.warning) OR ((proc.changeOperatingState.stat.health = HealthStatus.warning) OR ((proc.slewToCoordinates.stat.health = HealthStatus.warning) OR ((proc.slewToAziEle.stat.health = HealthStatus.warning) OR ((proc.abortSlew.stat.health = HealthStatus.warning) OR ((proc.powerOn.stat.health = HealthStatus.warning) OR ((proc.powerOff.stat.health = HealthStatus.warning) OR ((proc.moveKnownPosition.stat.health = HealthStatus.warning) OR ((proc.setTracking.stat.health = HealthStatus.warning) OR ((proc.moveM2.stat.health = HealthStatus.warning) OR ((proc.openCover.stat.health = HealthStatus.warning) OR (proc.closeCover.stat.health = HealthStatus.warning))))))))))));
 stat.busy := F_BusyStatus(
     superState := NOT(stat.init = InitializationStatus.shutdown),
@@ -1045,6 +1168,10 @@ proc.unlock( isEnabled := (operator_ref = OperatorStatus.tech) AND (stat.init = 
 proc.changeOperatingState( isEnabled := (stat.busy = BusyStatus.idle) AND ((stat.init = InitializationStatus.initialized) AND (operator_ref = OperatorStatus.tech)) );
 proc.slewToCoordinates( isEnabled := (stat.init = InitializationStatus.initialized) AND ((stat.busy = BusyStatus.idle) AND (stat.powered = PoweredStatus.enabled)) );
 proc.slewToAziEle( isEnabled := (stat.init = InitializationStatus.initialized) AND ((stat.busy = BusyStatus.idle) AND (stat.powered = PoweredStatus.enabled)) );
+proc.syncToCoordinates( isEnabled := (stat.init = InitializationStatus.initialized) AND ((stat.busy = BusyStatus.idle) AND (stat.powered = PoweredStatus.enabled)) );
+proc.syncToAziEle( isEnabled := (stat.init = InitializationStatus.initialized) AND ((stat.busy = BusyStatus.idle) AND (stat.powered = PoweredStatus.enabled)) );
+proc.syncToTarget( isEnabled := (stat.init = InitializationStatus.initialized) AND ((stat.busy = BusyStatus.idle) AND (stat.powered = PoweredStatus.enabled)) );
+proc.selectNasmythPort( isEnabled := stat.init = InitializationStatus.initialized );
 proc.abortSlew( isEnabled := stat.init = InitializationStatus.initialized );
 proc.reset( isEnabled := (stat.busy = BusyStatus.idle) AND (stat.init = InitializationStatus.initialized) );
 proc.powerOn( isEnabled := (NOT(stat.init = InitializationStatus.locked)) AND ((stat.init = InitializationStatus.initialized) AND (proc.powerOn.stat.busy = BusyStatus.idle)) );
@@ -1377,6 +1504,154 @@ THIS^.stat.health := HealthStatus.good;
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">IF THIS^.stat.enabled = EnabledStatus.enabled THEN
     request := RequestResults.ACCEPTED;
     THIS^.start( tracking := tracking );
+ELSE
+    request := RequestResults.REJECTED;
+END_IF;
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+        </addData>
+      </pou>
+      <pou name="TelescopeSelectNasmythPortProcess" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="set">
+              <type><derived name="TelescopeSelectNasmythPortProcessArgs" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Arguments to be set, before writing do_request TRUE</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="get">
+              <type><derived name="TelescopeSelectNasmythPortProcessArgs" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Arguments in use by the process, if do_request was accepted</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <inOutVars>
+          </inOutVars>
+          <localVars>
+          </localVars>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/pouinheritance" handleUnknown="implementation">
+              <Inheritance>
+                <Extends>BaseProcess</Extends>
+              </Inheritance>
+            </data>
+          </addData>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+    do_request_result := request( port := set.port );
+    do_request := FALSE;
+END_IF;
+SUPER^();
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="start">
+              <interface>
+                <inputVars>
+                  <variable name="port">
+                    <type><UINT /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="TcHmiSymbol.Show" Value="" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Port to switch to</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.port := port;
+THIS^.stat.busy := BusyStatus.busy;
+THIS^.stat.health := HealthStatus.good;
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="request">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                  <variable name="port">
+                    <type><UINT /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="TcHmiSymbol.Show" Value="" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Port to switch to</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF THIS^.stat.enabled = EnabledStatus.enabled THEN
+    request := RequestResults.ACCEPTED;
+    THIS^.start( port := port );
 ELSE
     request := RequestResults.REJECTED;
 END_IF;
@@ -1726,6 +2001,8 @@ END_IF;
               </Object>
               <Object Name="TelescopeSetTrackingProcessArgs">
               </Object>
+              <Object Name="TelescopeSelectNasmythPortProcessArgs">
+              </Object>
               <Object Name="TelescopeMoveKnownPositionProcessArgs">
               </Object>
               <Object Name="TelescopeMoveProcessArgs">
@@ -1736,6 +2013,10 @@ END_IF;
               <Object Name="request" />
             </Object>
             <Object Name="TelescopeSetTrackingProcess">
+              <Object Name="start" />
+              <Object Name="request" />
+            </Object>
+            <Object Name="TelescopeSelectNasmythPortProcess">
               <Object Name="start" />
               <Object Name="request" />
             </Object>
