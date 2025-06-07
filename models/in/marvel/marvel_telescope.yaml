@@ -81,7 +81,9 @@
           initSelectNasmythPortNumber : { type: t_uint16                  , comment: "Number of the nasmyth port to select during initialization"}
           initPower                   : { type: t_bool                    , comment: "TRUE if the power should be on or off at the end of the initialization"}
           initWaitForAsa              : { type: t_uint16                  , comment: "Seconds to wait for the connection to the ASA PC during initialization"}
-          
+          nasmythSelectionTime        : { type: t_uint16                  , comment: "Time in seconds to wait for M3 to switch positions (because no status can be retrieved from ASA)" }
+          nasmythPort1Name            : { type: t_string                  , comment: "Name of Nasmyth port 1" }
+          nasmythPort2Name            : { type: t_string                  , comment: "Name of Nasmyth port 2" }
 
 
   ########################################################################################################################
@@ -92,6 +94,24 @@
       arguments:
           azimuth               : { type: t_double                            , comment: "Azimuth, in degrees" }
           elevation             : { type: t_double                            , comment: "Elevation, in degrees" }
+
+
+  ########################################################################################################################
+  # TelescopePulseGuideProcess
+  ########################################################################################################################
+  !PROCESS TelescopePulseGuideProcess:
+      extends: marvel_common.BaseProcess
+      arguments:
+          direction               : { type: t_int32                            , comment: "Direction" }
+          duration                : { type: t_int32                            , comment: "Duration" }
+
+  ########################################################################################################################
+  # TelescopeSetRateProcess
+  ########################################################################################################################
+  !PROCESS TelescopeSetRateProcess:
+      extends: marvel_common.BaseProcess
+      arguments:
+          rate                   : { type: t_double                            , comment: "Rate (e.g. guide rate)" }
   
 
   ########################################################################################################################
@@ -129,6 +149,20 @@
       arguments:
           position               : { type: t_double                            , comment: "New position" }
 
+  ##########################################################################
+  # TelescopeNasmythPort
+  ##########################################################################
+  
+  !ENUMERATION TelescopeNasmythPort:
+    comment: "The telescope Nasmyth port"
+    type: t_byte
+    items: [
+      UNKNOWN,
+      CHANGING,
+      POS_1,
+      POS_2
+    ]
+
   ########################################################################################################################
   # Telescope
   ########################################################################################################################
@@ -144,11 +178,14 @@
           isAccConnected                  : { type: t_bool                                  , comment: "True if the ACC server is connected" }
           isSlewing                       : { type: t_bool                                  , comment: "True if the telescope is slewing" }
           isTracking                      : { type: t_bool                                  , comment: "True if the telescope is tracking" }
+          isPulseGuiding                  : { type: t_bool                                  , comment: "True if the telescope is pulse guiding" }
           # actual position
           actAlpha                        : { type: marvel_common.AngularPosition             , comment: "The actual alpha coordinate (Right Ascention)" , expand: false}
           actDelta                        : { type: marvel_common.AngularPosition             , comment: "The actual delta coordinate (Declination)" , expand: false }
           actAzi                          : { type: marvel_common.AngularPosition             , comment: "The actual azimuth" , expand: false}
           actEle                          : { type: marvel_common.AngularPosition             , comment: "The actual elevation" , expand: false }
+          actNasmythPort                  : { type: TelescopeNasmythPort                      , comment: "Actual Nasmyth port" }
+          actNasmythPortName              : { type: t_string                                  , comment: "Actual Nasmyth port name" }
           targetAlpha                     : { type: marvel_common.AngularPosition             , comment: "The target alpha coordinate (Right Ascention)" , expand: false}
           targetDelta                     : { type: marvel_common.AngularPosition             , comment: "The target delta coordinate (Declination)" , expand: false }
           isAtKnownPosition               : { type: t_bool                                  , comment: "True if the telescope is at a known position" }
@@ -179,6 +216,9 @@
           moveM2                          : { type: TelescopeMoveProcess                          , comment: "Move M2 to the given position in mm"}
           openCover                       : { type: marvel_common.Process                         , comment: "Open the telescope cover" }
           closeCover                      : { type: marvel_common.Process                         , comment: "Close the telescope cover" }
+          pulseGuide                      : { type: TelescopePulseGuideProcess                    , comment: "Pulse guide" }
+          guideRateAlpha                  : { type: TelescopeSetRateProcess                       , comment: "Guide right ascention rate" }
+          guideRateDelta                  : { type: TelescopeSetRateProcess                       , comment: "Guide declination rate" }
       calls:
           # proc
           initialize:
@@ -244,6 +284,15 @@
           moveM2:
               isEnabled                   : !AND [ !EQ [ stat.init, marvel_common.InitializationStatus.initialized ],
                                                    !EQ [ proc.moveM2.stat.busy, marvel_common.BusyStatus.idle] ]
+          pulseGuide:
+              isEnabled                   : !AND [ !EQ [ stat.init, marvel_common.InitializationStatus.initialized ],
+                                                   !EQ [ proc.pulseGuide.stat.busy, marvel_common.BusyStatus.idle] ]
+          guideRateAlpha:
+              isEnabled                   : !AND [ !EQ [ stat.init, marvel_common.InitializationStatus.initialized ],
+                                                   !EQ [ proc.guideRateAlpha.stat.busy, marvel_common.BusyStatus.idle] ]
+          guideRateDelta:
+              isEnabled                   : !AND [ !EQ [ stat.init, marvel_common.InitializationStatus.initialized ],
+                                                   !EQ [ proc.guideRateDelta.stat.busy, marvel_common.BusyStatus.idle] ]
           # stat
           health:
               superState                  : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown] ]
