@@ -433,6 +433,45 @@
                                                        proc.stop ]
 
   ########################################################################################################################
+  # DomeEncoder
+  ########################################################################################################################
+  
+  !STATEMACHINE DomeEncoder:
+    variables:
+      isSimulated   : { type: t_bool                     , comment: "True if the rotation is being simulated" }
+    variables_read_only:
+      # SSI data
+      counterValue  : { type: t_uint32                    , comment: "SSI counter value" }
+      dataError     : { type: t_bit                      , comment: "SSI data error" }
+      frameError    : { type: t_bit                      , comment: "SSI frame error" }
+      powerFailure  : { type: t_bit                      , comment: "SSI power failure" }
+      dataMismatch  : { type: t_bit                      , comment: "SSI data mismatch" }
+      syncError     : { type: t_bit                      , comment: "SSI sync error"  }
+      power         : { type: t_bit      , address: "%Q*", comment: "Power to the encoder (e.g. via relay)" }
+    stat:
+      health        : { type: marvel_common.HealthStatus            , comment: "Health status" }
+      busy          : { type: marvel_common.BusyStatus              , comment: "Busy status"  }
+    proc:
+      powerOn       : { type: marvel_common.Process                 , comment: "Power on the encoder" }
+      powerOff      : { type: marvel_common.Process                 , comment: "Power off the encoder" }
+    calls:
+      powerOn:
+        isEnabled   : !NOT [ !EQ [ stat.busy, marvel_common.BusyStatus.busy ] ]
+      powerOff:
+        isEnabled   : !NOT [ !EQ [ stat.busy, marvel_common.BusyStatus.busy ] ]
+      busy:
+        superState  : !BOOL TRUE
+        isBusy      : !MTCS_SUMMARIZE_BUSY [ proc.powerOn, proc.powerOff ]
+      health:
+        superState  : !BOOL TRUE
+        isGood      : !OR [ isSimulated, 
+                            !NOT [ power ],
+                            !NOT [ !OR [ dataError, frameError, powerFailure, dataMismatch, syncError ] ] ]
+
+
+      # no calls for the health status, to allow for more complex logic (e.g. using timers) 
+  
+  ########################################################################################################################
   # DomeRotation
   ########################################################################################################################
   

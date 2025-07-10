@@ -173,20 +173,20 @@ class PLC_DEREF(UnaryOperation):
 #####################################################################################
 
 
-def load_unary_sequence(loader, node):
+def load_unary_sequence(name, loader, node):
     """Helper function to load a sequency of exactly 1 item"""
     values = loader.construct_sequence(node)
     if len(values) != 1:
-        raise Exception(f"Unary operation {str(values)} requires " \
-                        "exactly 1 argument, not {len(values)}!")
+        raise Exception(f"Unary operation {name} {str(values)} requires " \
+                        f"exactly 1 argument, not {len(values)}!")
     return values
 
-def load_binary_sequence(loader, node):
+def load_binary_sequence(name, loader, node):
     """Helper function to load a sequence of minimum 2 items"""
     values = loader.construct_sequence(node)
     if len(values) < 2:
-        raise Exception(f"Binary operation {str(values)} requires at " \
-                        "least 2 arguments, not {len(values)}!")
+        raise Exception(f"Binary operation {name} {str(values)} requires at " \
+                        f"least 2 arguments, not {len(values)}!")
     return values
 
 
@@ -197,37 +197,37 @@ def load_binary_sequence(loader, node):
 # unary constructors
 
 def NOT_constructor(loader, node):
-    values = load_unary_sequence(loader, node)
+    values = load_unary_sequence("NOT", loader, node)
     return NOT(values[0])
 def ADR_constructor(loader, node):
-    values = load_unary_sequence(loader, node)
+    values = load_unary_sequence("ADR", loader, node)
     return ADR(values[0])
 
 # binary constructors
 
 def ASSIGN_constructor(loader, node):
-    values = load_binary_sequence(loader, node)
+    values = load_binary_sequence("ASSIGN", loader, node)
     return ASSIGN(values)
 def AND_constructor(loader, node):
-    values = load_binary_sequence(loader, node)
+    values = load_binary_sequence("AND", loader, node)
     return AND(values)
 def OR_constructor(loader, node):
-    values = load_binary_sequence(loader, node)
+    values = load_binary_sequence("OR", loader, node)
     return OR(values)
 def EQ_constructor(loader, node):
-    values = load_binary_sequence(loader, node)
+    values = load_binary_sequence("EQ", loader, node)
     return EQ(values)
 def GT_constructor(loader, node):
-    values = load_binary_sequence(loader, node)
+    values = load_binary_sequence("GT", loader, node)
     return GT(values)
 def LT_constructor(loader, node):
-    values = load_binary_sequence(loader, node)
+    values = load_binary_sequence("LT", loader, node)
     return LT(values)
 def GE_constructor(loader, node):
-    values = load_binary_sequence(loader, node)
+    values = load_binary_sequence("GE", loader, node)
     return GE(values)
 def LE_constructor(loader, node):
-    values = load_binary_sequence(loader, node)
+    values = load_binary_sequence("LE", loader, node)
     return LE(values)
 
 
@@ -402,18 +402,18 @@ class MTCS_SUMMARIZE_GOOD_OR_DISABLED(BinaryOperation):
 
 
 def MTCS_SUMMARIZE_BUSY_constructor(loader, node):
-    values = load_binary_sequence(loader, node)
+    values = load_binary_sequence("MTCS_SUMMARIZE_BUSY", loader, node)
     return MTCS_SUMMARIZE_BUSY(values)
 
 def MTCS_SUMMARIZE_GOOD_constructor(loader, node):
-    values = load_binary_sequence(loader, node)
+    values = load_binary_sequence("MTCS_SUMMARIZE_GOOD", loader, node)
     return MTCS_SUMMARIZE_GOOD(values)
 
 def MTCS_SUMMARIZE_WARN_constructor(loader, node):
-    values = load_binary_sequence(loader, node)
+    values = load_binary_sequence("MTCS_SUMMARIZE_WARN", loader, node)
     return MTCS_SUMMARIZE_WARN(values)
 
 def MTCS_SUMMARIZE_GOOD_OR_DISABLED_constructor(loader, node):
-    values = load_binary_sequence(loader, node)
+    values = load_binary_sequence("MTCS_SUMMARIZE_GOOD_OR_DISABLED", loader, node)
     return MTCS_SUMMARIZE_GOOD_OR_DISABLED(values)
 

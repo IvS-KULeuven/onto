@@ -41,23 +41,23 @@ class NEG(UnaryOperation):
 # binary constructors
 
 def SUM_constructor(loader, node):
-    values = load_binary_sequence(loader, node)
+    values = load_binary_sequence("SUM", loader, node)
     return SUM(values)
 
 def SUB_constructor(loader, node):
-    values = load_binary_sequence(loader, node)
+    values = load_binary_sequence("SUB", loader, node)
     return SUB(values)
 
 def MUL_constructor(loader, node):
-    values = load_binary_sequence(loader, node)
+    values = load_binary_sequence("MUL", loader, node)
     return MUL(values)
 
 def DIV_constructor(loader, node):
-    values = load_binary_sequence(loader, node)
+    values = load_binary_sequence("DIV", loader, node)
     return DIV(values)
 
 def POW_constructor(loader, node):
-    values = load_binary_sequence(loader, node)
+    values = load_binary_sequence("POW", loader, node)
     return POW(values)
 
 
@@ -65,10 +65,10 @@ def POW_constructor(loader, node):
 
 
 def ABS_constructor(loader, node):
-    values = load_unary_sequence(loader, node)
+    values = load_unary_sequence("ABS", loader, node)
     return ABS(values[0])
 
 def NEG_constructor(loader, node):
-    values = load_unary_sequence(loader, node)
+    values = load_unary_sequence("NEG", loader, node)
     return NEG(values[0])
 

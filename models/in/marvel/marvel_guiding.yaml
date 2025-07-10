@@ -1,0 +1,75 @@
+########################################################################################################################
+#                                                                                                                      #
+# Model of the Telescope software.                                                                                     #
+#                                                                                                                      #
+########################################################################################################################
+
+!VERSION marvel:
+
+!IMPORT models/in/marvel/marvel_common.yaml:
+!IMPORT models/in/marvel/marvel_services.yaml:
+
+
+########################################################################################################################
+# Define the containing PLC library
+########################################################################################################################
+
+!LIBRARY marvel_guiding:
+  
+  
+  ########################################################################################################################
+  # GuidingConfig
+  ########################################################################################################################
+  !CONFIG GuidingConfig:
+      items:
+          initExposureTime:
+              type: t_double
+              comment: "Initial exposure time (in seconds)"
+          initAcquisitionFrameRate:
+              type: t_double
+              comment: "Initial acquisition frame rate"
+          initGain:
+              type: t_double
+              comment: "Initial gain"
+  
+  
+  ########################################################################################################################
+  # Telescope
+  ########################################################################################################################
+  
+  !STATEMACHINE Guiding:
+      references:
+          number                          : { type: t_uint8                                   , comment: "Number of the unit (1-4)" }
+          operator_ref                    : { type: marvel_common.OperatorStatus              , comment: "Shared operator status" }
+          activity_ref                    : { type: marvel_common.ActivityStatus              , comment: "Shared activity status"}
+          services_ref                    : { type: marvel_services.Services                  , comment: "Shared services", expand: false}
+          config_ref                      : { type: GuidingConfig                             , comment: "Active configuration of the guiding" }
+      parts:
+          camera                          : { type: marvel_common.GigECamera }
+      stat:
+          init                            : { type: marvel_common.InitializationStatus }
+          health                          : { type: marvel_common.HealthStatus }
+          busy                            : { type: marvel_common.BusyStatus }
+      proc:
+          initialize                      : { type: marvel_common.Process                         , comment: "Start initializing" }
+          reset                           : { type: marvel_common.Process                         , comment: "Reset any errors" }
+      calls:
+          initialize:
+              isEnabled                   : !AND [ !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ],
+                                                   !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ],
+                                                         !EQ [ stat.init, marvel_common.InitializationStatus.initializingFailed ],
+                                                         !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ] ]
+          camera:
+              {}
+          reset:
+              isEnabled                   : !BOOL TRUE
+          # stat
+          health:
+              superState                  : !BOOL TRUE
+              isGood                      : !EQ [ parts.camera.stat.health, marvel_common.HealthStatus.good ]
+              hasWarning                  : !EQ [ parts.camera.stat.health, marvel_common.HealthStatus.warning ]
+          busy:
+              superState                  : !BOOL TRUE
+              isBusy                      : !EQ [ parts.camera.stat.busy, marvel_common.BusyStatus.busy ]
+  
+  

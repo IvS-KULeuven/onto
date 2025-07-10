@@ -7,6 +7,7 @@
 !VERSION marvel:
 
 !IMPORT models/in/mercator/beckhoff.yaml:
+!IMPORT models/in/marvel/beckhoff_vision.yaml:
 
 ########################################################################################################################
 # Define the containing PLC library
@@ -1924,3 +1925,78 @@
           alpha               : { type: t_double                            , comment: "Right ascention, in hours" }
           delta               : { type: t_double                            , comment: "Declination, in degrees" }
   
+  
+  ########################################################################################################################
+  # GigECameraParams
+  ########################################################################################################################
+  !ENUMERATION GigECameraParams:
+    items:
+        - _NONE_
+        - fExposureTime
+        - fAcquisitionFrameRate
+        - fGain
+        - nWidth
+        - nHeight
+        - nOffsetX
+        - nOffsetY
+        - _END_
+  
+  ########################################################################################################################
+  # GigECameraSetParamProcess
+  ########################################################################################################################
+  !PROCESS GigECameraSetParamProcess:
+      extends: marvel_common.BaseProcess
+      arguments:
+          param         : { type: GigECameraParams              , comment: "UInt32 Parameter"}
+          nValue        : { type: t_uint32                      , comment: "Integer Value" }
+          fvalue        : { type: t_double                      , comment: "Double Value" }
+  
+  ########################################################################################################################
+  # GigECamera
+  ########################################################################################################################
+
+  !STATEMACHINE GigECamera:
+      variables:
+          state                           : { type: beckhoff_vision.ETcVnCameraState            , comment: "Camera state" }
+      variables_read_only:
+          # general
+          frameCounter                    : { type: t_uint64                                    , comment: "Number of frames taken"}
+          # parameters
+          acquisitionFrameRate            : { type: t_double                                    , comment: "Acquisition frame rate in Hz"}
+          exposureTime                    : { type: t_double                                    , comment: "Exposure time in s"}
+          gain                            : { type: t_double                                    , comment: "Gain (unitless)"}
+          width                           : { type: t_uint32                                    , comment: "Width of the frame, in pixels"}
+          height                          : { type: t_uint32                                    , comment: "Height of the frame, in pixels"}
+          offsetX                         : { type: t_uint32                                    , comment: "Offset of the frame in X direction, in pixels"}
+          offsetY                         : { type: t_uint32                                    , comment: "Offset of the frame in Y direction, in pixels"}
+      stat:
+          health                          : { type: marvel_common.HealthStatus }
+          busy                            : { type: marvel_common.BusyStatus }
+      proc:
+          open                            : { type: marvel_common.Process                       , comment: "Open the camera" }
+          close                           : { type: marvel_common.Process                       , comment: "Open the camera" }
+          reset                           : { type: marvel_common.Process                       , comment: "Reset any errors" }
+          setParam                        : { type: GigECameraSetParamProcess                   , comment: "Set a param value" }
+      calls:
+          reset:
+              isEnabled                   : !BOOL TRUE
+          open:
+              isEnabled                   : !OR [ !EQ [ state, beckhoff_vision.ETcVnCameraState.TCVN_CS_INITIAL ], 
+                                                  !EQ [ state, beckhoff_vision.ETcVnCameraState.TCVN_CS_INITIALIZED ] ]
+          close:
+              isEnabled                   : !NOT [ !OR [ !EQ [ state, beckhoff_vision.ETcVnCameraState.TCVN_CS_INITIAL ], 
+                                                         !EQ [ state, beckhoff_vision.ETcVnCameraState.TCVN_CS_INITIALIZED ] ] ]
+          setParam:
+              isEnabled                   : !BOOL TRUE
+          # stat
+          health:
+              superState                  : !NOT [ !EQ [ state, beckhoff_vision.ETcVnCameraState.TCVN_CS_INITIAL ] ]
+              isGood                      : !NOT [ !EQ [ state, beckhoff_vision.ETcVnCameraState.TCVN_CS_ERROR ] ]
+              hasWarning                  : !BOOL FALSE
+          busy:
+              superState                  : !NOT [ !EQ [ state, beckhoff_vision.ETcVnCameraState.TCVN_CS_INITIAL ] ]
+              isBusy                      : !OR [ !EQ [ state, beckhoff_vision.ETcVnCameraState.TCVN_CS_INITIALIZING ],
+                                                  !EQ [ state, beckhoff_vision.ETcVnCameraState.TCVN_CS_OPENING ],
+                                                  !EQ [ state, beckhoff_vision.ETcVnCameraState.TCVN_CS_CLOSING ]
+                                                ]
+

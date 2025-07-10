@@ -8,6 +8,7 @@
 
 !IMPORT models/in/marvel/marvel_common.yaml:
 !IMPORT models/in/marvel/marvel_dome.yaml:
+!IMPORT models/in/marvel/marvel_guiding.yaml:
 !IMPORT models/in/marvel/marvel_telescope.yaml:
 !IMPORT models/in/marvel/marvel_services.yaml:
 
@@ -26,7 +27,7 @@
       items:
         dome:       { type: marvel_dome.DomeConfig              , comment: "Dome config of a Marvel unit", expand: false }
         telescope:  { type: marvel_telescope.TelescopeConfig    , comment: "Telescope config of a Marvel unit", expand: false }
-
+        guiding:    { type: marvel_guiding.GuidingConfig        , comment: "Guiding config of a Marvel unit", expand: false }
 
   ########################################################################################################################
   # Unit
@@ -68,6 +69,21 @@
                         stop:
                             attributes:
                                 isEnabled : { type: t_bool }
+          guiding:
+              type : marvel_guiding.Guiding
+              comment: "The guiding"
+              expand: false
+              arguments:
+                  number                  : { type: t_uint8 }
+                  operator_ref            : { type: marvel_common.OperatorStatus          , expand: false }
+                  activity_ref            : { type: marvel_common.ActivityStatus          , expand: false }
+                  services_ref            : { type: marvel_services.Services              , expand: false }
+                  config_ref              : { type: marvel_guiding.GuidingConfig          , expand: false }
+              attributes:
+                  stat:
+                      attributes:
+                          health          : { type: marvel_common.HealthStatus }
+                          busy            : { type: marvel_common.BusyStatus }
           telescope:
               type : marvel_telescope.Telescope
               comment: "The telescope"
@@ -123,6 +139,12 @@
               activity_ref        : activity_ref
               services_ref        : services_ref
               config_ref          : config.telescope
+          guiding:
+              number              : number
+              operator_ref        : operator_ref
+              activity_ref        : activity_ref
+              services_ref        : services_ref
+              config_ref          : config.guiding
           configManager:
              isEnabled            : !EQ [ operator_ref, marvel_common.OperatorStatus.tech ]
           health:

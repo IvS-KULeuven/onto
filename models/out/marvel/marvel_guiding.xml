@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
   <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-01-01T00:00:00.0" />
-  <contentHeader name="marvel_unit" modificationDateTime="2025-01-01T00:00:00.0">
+  <contentHeader name="marvel_guiding" modificationDateTime="2025-01-01T00:00:00.0">
     <coordinateInfo>
       <fbd>
         <scaling x="1" y="1" />
@@ -21,11 +21,11 @@
   </contentHeader>
   <types>
     <dataTypes>
-      <dataType name="UnitParts">
+      <dataType name="GuidingParts">
         <baseType>
           <struct>
-            <variable name="dome">
-              <type><derived name="Dome" /></type>
+            <variable name="camera">
+              <type><derived name="GigECamera" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -34,52 +34,13 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">The dome</xhtml>
-              </documentation>
-            </variable>
-            <variable name="guiding">
-              <type><derived name="Guiding" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">The guiding</xhtml>
-              </documentation>
-            </variable>
-            <variable name="telescope">
-              <type><derived name="Telescope" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">The telescope</xhtml>
-              </documentation>
-            </variable>
-            <variable name="configManager">
-              <type><derived name="ConfigManager" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">The config manager (to load/save/activate configuration data)</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
           </struct>
         </baseType>
       </dataType>
-      <dataType name="UnitProcesses">
+      <dataType name="GuidingProcesses">
         <baseType>
           <struct>
             <variable name="initialize">
@@ -92,23 +53,10 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Start initializing the unit</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Start initializing</xhtml>
               </documentation>
             </variable>
-            <variable name="point">
-              <type><derived name="PointAlphaDeltaProcess" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Point the telescope and dome</xhtml>
-              </documentation>
-            </variable>
-            <variable name="stop">
+            <variable name="reset">
               <type><derived name="Process" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -118,13 +66,13 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Stop the rotation movement and/or tracking</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Reset any errors</xhtml>
               </documentation>
             </variable>
           </struct>
         </baseType>
       </dataType>
-      <dataType name="UnitStatuses">
+      <dataType name="GuidingStatuses">
         <baseType>
           <struct>
             <variable name="init">
@@ -175,11 +123,11 @@
           </struct>
         </baseType>
       </dataType>
-      <dataType name="UnitConfig">
+      <dataType name="GuidingConfig">
         <baseType>
           <struct>
-            <variable name="dome">
-              <type><derived name="DomeConfig" /></type>
+            <variable name="initExposureTime">
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -188,11 +136,11 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Dome config of a Marvel unit</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Initial exposure time (in seconds)</xhtml>
               </documentation>
             </variable>
-            <variable name="telescope">
-              <type><derived name="TelescopeConfig" /></type>
+            <variable name="initAcquisitionFrameRate">
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -201,11 +149,11 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Telescope config of a Marvel unit</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Initial acquisition frame rate</xhtml>
               </documentation>
             </variable>
-            <variable name="guiding">
-              <type><derived name="GuidingConfig" /></type>
+            <variable name="initGain">
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -214,7 +162,7 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Guiding config of a Marvel unit</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Initial gain</xhtml>
               </documentation>
             </variable>
           </struct>
@@ -222,39 +170,9 @@
       </dataType>
     </dataTypes>
     <pous>
-      <pou name="SM_Unit" pouType="functionBlock">
+      <pou name="SM_Guiding" pouType="functionBlock">
         <interface>
           <inputVars>
-            <variable name="number">
-              <type><USINT /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Number of the unit (1-4)</xhtml>
-              </documentation>
-            </variable>
-            <variable name="editableConfig">
-              <type><derived name="UnitConfig" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Editable configuration of the unit</xhtml>
-              </documentation>
-            </variable>
           </inputVars>
           <outputVars>
             <variable name="actualStatus">
@@ -286,53 +204,8 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Previous status description</xhtml>
               </documentation>
             </variable>
-            <variable name="config">
-              <type><derived name="UnitConfig" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Active configuration of the unit</xhtml>
-              </documentation>
-            </variable>
-            <variable name="targetAlpha">
-              <type><derived name="AngularPosition" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">The target alpha coordinate (Right Ascention)</xhtml>
-              </documentation>
-            </variable>
-            <variable name="targetDelta">
-              <type><derived name="AngularPosition" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">The target delta coordinate (Declination)</xhtml>
-              </documentation>
-            </variable>
             <variable name="stat">
-              <type><derived name="UnitStatuses" /></type>
+              <type><derived name="GuidingStatuses" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -345,7 +218,7 @@
               </documentation>
             </variable>
             <variable name="parts">
-              <type><derived name="UnitParts" /></type>
+              <type><derived name="GuidingParts" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -358,7 +231,7 @@
               </documentation>
             </variable>
             <variable name="proc">
-              <type><derived name="UnitProcesses" /></type>
+              <type><derived name="GuidingProcesses" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -372,6 +245,21 @@
             </variable>
           </outputVars>
           <inOutVars>
+            <variable name="number">
+              <type><USINT /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                    <Attribute Name="TcHmiSymbol.Hide" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Number of the unit (1-4)</xhtml>
+              </documentation>
+            </variable>
             <variable name="operator_ref">
               <type><derived name="OperatorStatus" /></type>
               <addData>
@@ -384,7 +272,7 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Reference to the operator (observer/tech)</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Shared operator status</xhtml>
               </documentation>
             </variable>
             <variable name="activity_ref">
@@ -417,40 +305,37 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Shared services</xhtml>
               </documentation>
             </variable>
+            <variable name="config_ref">
+              <type><derived name="GuidingConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                    <Attribute Name="TcHmiSymbol.Hide" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Active configuration of the guiding</xhtml>
+              </documentation>
+            </variable>
           </inOutVars>
           <localVars>
           </localVars>
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">parts.dome(
-    operator_ref := operator_ref,
-    activity_ref := activity_ref,
-    services_ref := services_ref,
-    config_ref := config.dome,
-    telescopeAzi_ref := parts.telescope.actAzi);
-parts.guiding(
-    number := number,
-    operator_ref := operator_ref,
-    activity_ref := activity_ref,
-    services_ref := services_ref,
-    config_ref := config.guiding);
-parts.telescope(
-    operator_ref := operator_ref,
-    activity_ref := activity_ref,
-    services_ref := services_ref,
-    config_ref := config.telescope);
-parts.configManager( isEnabled := operator_ref = OperatorStatus.tech );
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">parts.camera();
 stat.health := F_HealthStatus(
-    superState := NOT(stat.init = InitializationStatus.shutdown),
-    isGood := ((parts.dome.stat.health = HealthStatus.good) OR (parts.dome.stat.health = HealthStatus.warning)) AND (((parts.telescope.stat.health = HealthStatus.good) OR (parts.telescope.stat.health = HealthStatus.warning)) AND ((parts.configManager.stat.health = HealthStatus.good) OR (parts.configManager.stat.health = HealthStatus.warning))),
-    hasWarning := (parts.dome.stat.health = HealthStatus.warning) OR ((parts.telescope.stat.health = HealthStatus.warning) OR (parts.configManager.stat.health = HealthStatus.warning)));
+    superState := TRUE,
+    isGood := parts.camera.stat.health = HealthStatus.good,
+    hasWarning := parts.camera.stat.health = HealthStatus.warning);
 stat.busy := F_BusyStatus(
-    superState := NOT(stat.init = InitializationStatus.shutdown),
-    isBusy := (parts.dome.stat.busy = BusyStatus.busy) OR ((parts.telescope.stat.busy = BusyStatus.busy) OR (parts.configManager.stat.busy = BusyStatus.busy)));
-proc.initialize( isEnabled := NOT(stat.init = InitializationStatus.initializing) );
-proc.point( isEnabled := parts.telescope.proc.slewToCoordinates.isEnabled AND parts.dome.proc.syncWithAxes.isEnabled );
-proc.stop( isEnabled := parts.telescope.proc.abortSlew.isEnabled OR parts.dome.proc.stop.isEnabled );
+    superState := TRUE,
+    isBusy := parts.camera.stat.busy = BusyStatus.busy);
+proc.initialize( isEnabled := (NOT(stat.init = InitializationStatus.locked)) AND ((stat.init = InitializationStatus.shutdown) OR ((stat.init = InitializationStatus.initializingFailed) OR (stat.init = InitializationStatus.initialized))) );
+proc.reset( isEnabled := TRUE );
 </xhtml>
           </ST>
         </body>
@@ -465,29 +350,29 @@ proc.stop( isEnabled := parts.telescope.proc.abortSlew.isEnabled OR parts.dome.p
   <addData>
     <data name="http://www.3s-software.com/plcopenxml/projectstructure" handleUnknown="discard">
       <ProjectStructure>
-        <Folder Name="marvel_unit">
+        <Folder Name="marvel_guiding">
           <Folder Name="Enums">
           </Folder>
           <Folder Name="Statuses">
           </Folder>
           <Folder Name="StateMachines">
             <Folder Name="Parts">
-              <Object Name="UnitParts">
+              <Object Name="GuidingParts">
               </Object>
             </Folder>
             <Folder Name="Processes">
-              <Object Name="UnitProcesses">
+              <Object Name="GuidingProcesses">
               </Object>
             </Folder>
             <Folder Name="Statuses">
-              <Object Name="UnitStatuses">
+              <Object Name="GuidingStatuses">
               </Object>
             </Folder>
-            <Object Name="SM_Unit">
+            <Object Name="SM_Guiding">
             </Object>
           </Folder>
           <Folder Name="Configs">
-            <Object Name="UnitConfig">
+            <Object Name="GuidingConfig">
             </Object>
           </Folder>
           <Folder Name="Structs">
