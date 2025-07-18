@@ -944,7 +944,13 @@
         recordedPosition : { type: t_double  , comment: "Value that was probed"}
 
 
-
+#   ########################################################################################################################
+#   # HomingTypes
+#   ########################################################################################################################
+#   !ENUMERATION HomingTypes:
+#     items:
+#         - homingSwitch
+#         - homingSwitchIsNegLimitSwitch
 
 
   ########################################################################################################################
@@ -955,6 +961,15 @@
         isEnabled           : { type: t_bool                        , comment: "Is control enabled?" }
         standstillTolerance : { type: t_double                      , comment: "Tolerance in [main units] per second: if < ABS(this value), then the axis is considered to be standing still" }
         _axis_ref           : { type: Tc2_MC2.AXIS_REF, isRef: TRUE , comment: "The AXIS_REF to be linked to the NC I/O" }
+        usePosLimitSwitch   : { type: t_bool , initial: !BOOL FALSE , comment: "TRUE to use a hardware forward limit switch" }
+        useNegLimitSwitch   : { type: t_bool , initial: !BOOL FALSE , comment: "TRUE to use a hardware reverse limit switch" }
+        # homingType          : { type: HomingTypes                   , comment: "Type of homing (e.g. using homing switch, using limit switch, ...)" }
+        posLimitSwitch      : { type: t_bool, address: "%I*"        , comment: "Limit switch in forward direction (e.g. at +105 mm for a stage of 100 mm travel range" }
+        negLimitSwitch      : { type: t_bool, address: "%I*"        , comment: "Limit switch in negative direction (e.g. at or a little bit below 0 mm)" }
+        # homingSwitch        : { type: t_bool, address: "%I*"        , comment: "Homing switch" }
+        invertPosLimitSwitch: { type: t_bool                        , comment: "Invert positive limit switch" }
+        invertNegLimitSwitch: { type: t_bool                        , comment: "Invert positive limit switch" }
+        # invertHomingSwitch:   { type: t_bool                        , comment: "Invert positive limit switch" }
     variables:
         isGearingSupported  : { type: t_bool , initial: !BOOL FALSE , comment: "Is gearIn/gearOut supported?" }
         axis_ref            : { type: Tc2_MC2.AXIS_REF              , comment: "The AXIS_REF to be linked to the NC I/O", 
@@ -976,6 +991,7 @@
         stop                : { type: McProcess             , comment: "Stop any movement" }
         stopParametrized    : { type: McStopProcess         , comment: "Stop any movement" }
         power               : { type: McPowerProcess        , comment: "Power on/off the axis" }
+        home                : { type: McProcess             , comment: "Peform a homing" }
         gearIn              : { type: McProcess             , comment: "Couple to master axis" }
         gearOut             : { type: McProcess             , comment: "Decouple from master axis" }
         initialize          : { type: Process               , comment: "Start initializing the axis" }
@@ -1010,7 +1026,8 @@
                                                 proc.readBoolParameter,
                                                 proc.writeParameter,
                                                 proc.writeBoolParameter,
-                                                proc.probeAbort ]
+                                                proc.probeAbort,
+                                                proc.home ]
         health:
             superState                  : !BOOL TRUE
             isGood                      : !NOT [_axis_ref.Status.Error]
@@ -1070,6 +1087,8 @@
             isEnabled                   : !AND [ isEnabled, !EQ [ stat.busy, BusyStatus.idle ] ]
         probeAbort:
             isEnabled                   : !AND [ isEnabled, !EQ [ stat.busy, BusyStatus.idle ] ]
+        home:
+            isEnabled                   : !AND [ isEnabled, !EQ [ stat.busy, BusyStatus.idle ] ]
 
 
 
@@ -1119,6 +1138,12 @@
         targetPos:
             newMillimetersValue             : _axis_ref.NcToPlc.TargetPos
 
+
+  ########################################################################################################################
+  # MTS50Axis
+  ########################################################################################################################
+  !STATEMACHINE MTS50Axis:
+    extends: LinearAxis
 
 
   ########################################################################################################################
@@ -1934,11 +1959,15 @@
         - _NONE_
         - fExposureTime
         - fAcquisitionFrameRate
+        - nGainSelector
         - fGain
         - nWidth
         - nHeight
         - nOffsetX
         - nOffsetY
+        - nBinningSelector
+        - nBinningHorizontal
+        - nBinningVertical
         - _END_
   
   ########################################################################################################################
@@ -1960,21 +1989,27 @@
           state                           : { type: beckhoff_vision.ETcVnCameraState            , comment: "Camera state" }
       variables_read_only:
           # general
-          frameCounter                    : { type: t_uint64                                    , comment: "Number of frames taken"}
+          frameCounter                    : { type: t_uint32                                    , comment: "Number of frames taken"}
           # parameters
           acquisitionFrameRate            : { type: t_double                                    , comment: "Acquisition frame rate in Hz"}
           exposureTime                    : { type: t_double                                    , comment: "Exposure time in s"}
+          gainSelector                    : { type: t_uint32                                    , comment: "Gain selector"}
           gain                            : { type: t_double                                    , comment: "Gain (unitless)"}
           width                           : { type: t_uint32                                    , comment: "Width of the frame, in pixels"}
           height                          : { type: t_uint32                                    , comment: "Height of the frame, in pixels"}
           offsetX                         : { type: t_uint32                                    , comment: "Offset of the frame in X direction, in pixels"}
           offsetY                         : { type: t_uint32                                    , comment: "Offset of the frame in Y direction, in pixels"}
+          binningSelector                 : { type: t_uint32                                    , comment: "Binning engine (sensor or FPGA)"}
+          binningHorizontal               : { type: t_uint32                                    , comment: "Horizontal binning"}
+          binningVertical                 : { type: t_uint32                                    , comment: "Vertical binning"}
       stat:
           health                          : { type: marvel_common.HealthStatus }
           busy                            : { type: marvel_common.BusyStatus }
       proc:
           open                            : { type: marvel_common.Process                       , comment: "Open the camera" }
-          close                           : { type: marvel_common.Process                       , comment: "Open the camera" }
+          close                           : { type: marvel_common.Process                       , comment: "Close the camera" }
+          startAcquiring                  : { type: marvel_common.Process                       , comment: "Start acquiring frames" }
+          stopAcquiring                   : { type: marvel_common.Process                       , comment: "Stop acquiring frames" }
           reset                           : { type: marvel_common.Process                       , comment: "Reset any errors" }
           setParam                        : { type: GigECameraSetParamProcess                   , comment: "Set a param value" }
       calls:
@@ -1984,6 +2019,13 @@
               isEnabled                   : !OR [ !EQ [ state, beckhoff_vision.ETcVnCameraState.TCVN_CS_INITIAL ], 
                                                   !EQ [ state, beckhoff_vision.ETcVnCameraState.TCVN_CS_INITIALIZED ] ]
           close:
+              isEnabled                   : !NOT [ !OR [ !EQ [ state, beckhoff_vision.ETcVnCameraState.TCVN_CS_INITIAL ], 
+                                                         !EQ [ state, beckhoff_vision.ETcVnCameraState.TCVN_CS_INITIALIZED ] ] ]
+          startAcquiring:
+              isEnabled                   : !OR [ !EQ [ state, beckhoff_vision.ETcVnCameraState.TCVN_CS_INITIAL ], 
+                                                  !EQ [ state, beckhoff_vision.ETcVnCameraState.TCVN_CS_INITIALIZED ], 
+                                                  !EQ [ state, beckhoff_vision.ETcVnCameraState.TCVN_CS_OPENED ] ]
+          stopAcquiring:
               isEnabled                   : !NOT [ !OR [ !EQ [ state, beckhoff_vision.ETcVnCameraState.TCVN_CS_INITIAL ], 
                                                          !EQ [ state, beckhoff_vision.ETcVnCameraState.TCVN_CS_INITIALIZED ] ] ]
           setParam:

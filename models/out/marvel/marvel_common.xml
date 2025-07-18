@@ -480,12 +480,16 @@
               <value name="_NONE_" value="0" />
               <value name="fExposureTime" value="1" />
               <value name="fAcquisitionFrameRate" value="2" />
-              <value name="fGain" value="3" />
-              <value name="nWidth" value="4" />
-              <value name="nHeight" value="5" />
-              <value name="nOffsetX" value="6" />
-              <value name="nOffsetY" value="7" />
-              <value name="_END_" value="8" />
+              <value name="nGainSelector" value="3" />
+              <value name="fGain" value="4" />
+              <value name="nWidth" value="5" />
+              <value name="nHeight" value="6" />
+              <value name="nOffsetX" value="7" />
+              <value name="nOffsetY" value="8" />
+              <value name="nBinningSelector" value="9" />
+              <value name="nBinningHorizontal" value="10" />
+              <value name="nBinningVertical" value="11" />
+              <value name="_END_" value="12" />
             </values>
           </enum>
         </baseType>
@@ -589,6 +593,19 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Power on/off the axis</xhtml>
+              </documentation>
+            </variable>
+            <variable name="home">
+              <type><derived name="McProcess" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Peform a homing</xhtml>
               </documentation>
             </variable>
             <variable name="gearIn">
@@ -969,7 +986,33 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Open the camera</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Close the camera</xhtml>
+              </documentation>
+            </variable>
+            <variable name="startAcquiring">
+              <type><derived name="Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Start acquiring frames</xhtml>
+              </documentation>
+            </variable>
+            <variable name="stopAcquiring">
+              <type><derived name="Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Stop acquiring frames</xhtml>
               </documentation>
             </variable>
             <variable name="reset">
@@ -6511,6 +6554,92 @@ percent(
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">The AXIS_REF to be linked to the NC I/O</xhtml>
               </documentation>
             </variable>
+            <variable name="usePosLimitSwitch">
+              <type><BOOL /></type>
+              <initialValue><simpleValue value="FALSE" /></initialValue>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                    <Attribute Name="TcHmiSymbol.Hide" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE to use a hardware forward limit switch</xhtml>
+              </documentation>
+            </variable>
+            <variable name="useNegLimitSwitch">
+              <type><BOOL /></type>
+              <initialValue><simpleValue value="FALSE" /></initialValue>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                    <Attribute Name="TcHmiSymbol.Hide" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE to use a hardware reverse limit switch</xhtml>
+              </documentation>
+            </variable>
+            <variable name="posLimitSwitch" address="%I*">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                    <Attribute Name="TcHmiSymbol.Hide" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Limit switch in forward direction (e.g. at +105 mm for a stage of 100 mm travel range</xhtml>
+              </documentation>
+            </variable>
+            <variable name="negLimitSwitch" address="%I*">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                    <Attribute Name="TcHmiSymbol.Hide" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Limit switch in negative direction (e.g. at or a little bit below 0 mm)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="invertPosLimitSwitch">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                    <Attribute Name="TcHmiSymbol.Hide" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Invert positive limit switch</xhtml>
+              </documentation>
+            </variable>
+            <variable name="invertNegLimitSwitch">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                    <Attribute Name="TcHmiSymbol.Hide" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Invert positive limit switch</xhtml>
+              </documentation>
+            </variable>
           </inputVars>
           <outputVars>
             <variable name="actualStatus">
@@ -6602,13 +6731,41 @@ percent(
           <inOutVars>
           </inOutVars>
           <localVars>
+            <variable name="posLimitSwitch_ro">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                    <Attribute Name="TcHmiSymbol.Hide" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="negLimitSwitch_ro">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                    <Attribute Name="TcHmiSymbol.Hide" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
           </localVars>
         </interface>
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">stat.busy := F_BusyStatus(
     superState := TRUE,
-    isBusy := (proc.moveAbsolute.stat.busy = BusyStatus.busy) OR ((proc.moveRelative.stat.busy = BusyStatus.busy) OR ((proc.reset.stat.busy = BusyStatus.busy) OR ((proc.power.stat.busy = BusyStatus.busy) OR ((proc.gearIn.stat.busy = BusyStatus.busy) OR ((proc.gearOut.stat.busy = BusyStatus.busy) OR ((proc.initialize.stat.busy = BusyStatus.busy) OR ((proc.setPosition.stat.busy = BusyStatus.busy) OR ((proc.enableExtSetGen.stat.busy = BusyStatus.busy) OR ((proc.disableExtSetGen.stat.busy = BusyStatus.busy) OR ((proc.forceCalibration.stat.busy = BusyStatus.busy) OR ((proc.resetCalibration.stat.busy = BusyStatus.busy) OR ((proc.readParameter.stat.busy = BusyStatus.busy) OR ((proc.readBoolParameter.stat.busy = BusyStatus.busy) OR ((proc.writeParameter.stat.busy = BusyStatus.busy) OR ((proc.writeBoolParameter.stat.busy = BusyStatus.busy) OR (proc.probeAbort.stat.busy = BusyStatus.busy)))))))))))))))));
+    isBusy := (proc.moveAbsolute.stat.busy = BusyStatus.busy) OR ((proc.moveRelative.stat.busy = BusyStatus.busy) OR ((proc.reset.stat.busy = BusyStatus.busy) OR ((proc.power.stat.busy = BusyStatus.busy) OR ((proc.gearIn.stat.busy = BusyStatus.busy) OR ((proc.gearOut.stat.busy = BusyStatus.busy) OR ((proc.initialize.stat.busy = BusyStatus.busy) OR ((proc.setPosition.stat.busy = BusyStatus.busy) OR ((proc.enableExtSetGen.stat.busy = BusyStatus.busy) OR ((proc.disableExtSetGen.stat.busy = BusyStatus.busy) OR ((proc.forceCalibration.stat.busy = BusyStatus.busy) OR ((proc.resetCalibration.stat.busy = BusyStatus.busy) OR ((proc.readParameter.stat.busy = BusyStatus.busy) OR ((proc.readBoolParameter.stat.busy = BusyStatus.busy) OR ((proc.writeParameter.stat.busy = BusyStatus.busy) OR ((proc.writeBoolParameter.stat.busy = BusyStatus.busy) OR ((proc.probeAbort.stat.busy = BusyStatus.busy) OR (proc.home.stat.busy = BusyStatus.busy))))))))))))))))));
 stat.health := F_HealthStatus(
     superState := TRUE,
     isGood := NOT(_axis_ref.Status.Error),
@@ -6630,6 +6787,7 @@ proc.reset( isEnabled := isEnabled AND (proc.reset.stat.busy = BusyStatus.idle) 
 proc.stop( isEnabled := isEnabled AND (proc.stop.stat.busy = BusyStatus.idle) );
 proc.stopParametrized();
 proc.power( isEnabled := isEnabled AND (proc.power.stat.busy = BusyStatus.idle) );
+proc.home( isEnabled := isEnabled AND (stat.busy = BusyStatus.idle) );
 proc.gearIn( isEnabled := isEnabled AND ((proc.gearIn.stat.busy = BusyStatus.idle) AND isGearingSupported) );
 proc.gearOut( isEnabled := isEnabled AND ((proc.gearOut.stat.busy = BusyStatus.idle) AND isGearingSupported) );
 proc.initialize( isEnabled := isEnabled AND (stat.busy = BusyStatus.idle) );
@@ -6644,6 +6802,8 @@ proc.writeParameter( isEnabled := isEnabled AND (stat.busy = BusyStatus.idle) );
 proc.writeBoolParameter( isEnabled := isEnabled AND (stat.busy = BusyStatus.idle) );
 proc.probeStart( isEnabled := isEnabled AND (stat.busy = BusyStatus.idle) );
 proc.probeAbort( isEnabled := isEnabled AND (stat.busy = BusyStatus.idle) );
+posLimitSwitch_ro := posLimitSwitch;
+negLimitSwitch_ro := negLimitSwitch;
 </xhtml>
           </ST>
         </body>
@@ -6858,6 +7018,33 @@ setPos( newMillimetersValue := _axis_ref.NcToPlc.SetPos );
 setVel( newMillimetersPerSecondValue := _axis_ref.NcToPlc.SetVelo );
 targetPos( newMillimetersValue := _axis_ref.NcToPlc.TargetPos );
 SUPER^();
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+        </addData>
+      </pou>
+      <pou name="SM_MTS50Axis" pouType="functionBlock">
+        <interface>
+          <inputVars>
+          </inputVars>
+          <outputVars>
+          </outputVars>
+          <inOutVars>
+          </inOutVars>
+          <localVars>
+          </localVars>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/pouinheritance" handleUnknown="implementation">
+              <Inheritance>
+                <Extends>LinearAxis</Extends>
+              </Inheritance>
+            </data>
+          </addData>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">SUPER^();
 </xhtml>
           </ST>
         </body>
@@ -10551,7 +10738,7 @@ proc.diagnostics( isEnabled := isEnabled AND (stat.busy = BusyStatus.idle) );
               </documentation>
             </variable>
             <variable name="frameCounter">
-              <type><ULINT /></type>
+              <type><UDINT /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -10593,6 +10780,21 @@ proc.diagnostics( isEnabled := isEnabled AND (stat.busy = BusyStatus.idle) );
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Exposure time in s</xhtml>
+              </documentation>
+            </variable>
+            <variable name="gainSelector">
+              <type><UDINT /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Gain selector</xhtml>
               </documentation>
             </variable>
             <variable name="gain">
@@ -10670,6 +10872,51 @@ proc.diagnostics( isEnabled := isEnabled AND (stat.busy = BusyStatus.idle) );
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Offset of the frame in Y direction, in pixels</xhtml>
               </documentation>
             </variable>
+            <variable name="binningSelector">
+              <type><UDINT /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Binning engine (sensor or FPGA)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="binningHorizontal">
+              <type><UDINT /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Horizontal binning</xhtml>
+              </documentation>
+            </variable>
+            <variable name="binningVertical">
+              <type><UDINT /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Vertical binning</xhtml>
+              </documentation>
+            </variable>
             <variable name="stat">
               <type><derived name="GigECameraStatuses" /></type>
               <addData>
@@ -10713,6 +10960,8 @@ stat.busy := F_BusyStatus(
     isBusy := (state = ETcVnCameraState.TCVN_CS_INITIALIZING) OR ((state = ETcVnCameraState.TCVN_CS_OPENING) OR (state = ETcVnCameraState.TCVN_CS_CLOSING)));
 proc.open( isEnabled := (state = ETcVnCameraState.TCVN_CS_INITIAL) OR (state = ETcVnCameraState.TCVN_CS_INITIALIZED) );
 proc.close( isEnabled := NOT((state = ETcVnCameraState.TCVN_CS_INITIAL) OR (state = ETcVnCameraState.TCVN_CS_INITIALIZED)) );
+proc.startAcquiring( isEnabled := (state = ETcVnCameraState.TCVN_CS_INITIAL) OR ((state = ETcVnCameraState.TCVN_CS_INITIALIZED) OR (state = ETcVnCameraState.TCVN_CS_OPENED)) );
+proc.stopAcquiring( isEnabled := NOT((state = ETcVnCameraState.TCVN_CS_INITIAL) OR (state = ETcVnCameraState.TCVN_CS_INITIALIZED)) );
 proc.reset( isEnabled := TRUE );
 proc.setParam( isEnabled := TRUE );
 </xhtml>
@@ -15705,6 +15954,8 @@ END_IF;
             <Object Name="SM_AngularAxis">
             </Object>
             <Object Name="SM_LinearAxis">
+            </Object>
+            <Object Name="SM_MTS50Axis">
             </Object>
             <Object Name="SM_SSIEncoder">
             </Object>

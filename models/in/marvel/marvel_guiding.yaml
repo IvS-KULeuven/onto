@@ -28,13 +28,45 @@
           initAcquisitionFrameRate:
               type: t_double
               comment: "Initial acquisition frame rate"
-          initGain:
+          initGainDigital:
               type: t_double
-              comment: "Initial gain"
-  
+              comment: "Initial digital gain"
+          initGainAnalog:
+              type: t_double
+              comment: "Initial analog gain"
+          initBinning:
+              type: t_uint32
+              comment: "Initial analog gain"
   
   ########################################################################################################################
-  # Telescope
+  # GuidingAcquireTargetProcess
+  ########################################################################################################################
+  !PROCESS GuidingAcquireTargetProcess:
+    extends: marvel_common.BaseProcess
+    arguments:
+        vMag     : { type: t_double, comment: "Visual magnitude of target" }
+  
+
+  ########################################################################################################################
+  # GuidingStartGuiding
+  ########################################################################################################################
+  !PROCESS GuidingStartGuidingProcess:
+    extends: marvel_common.BaseProcess
+    arguments:
+        vMag     : { type: t_double, comment: "Visual magnitude of target" }
+
+
+  ########################################################################################################################
+  # GuidingStates
+  ########################################################################################################################
+  !ENUMERATION GuidingStates:
+    items:
+        - IDLE
+        - ACQUISITION
+        - GUIDING
+
+  ########################################################################################################################
+  # Guiding
   ########################################################################################################################
   
   !STATEMACHINE Guiding:
@@ -44,6 +76,12 @@
           activity_ref                    : { type: marvel_common.ActivityStatus              , comment: "Shared activity status"}
           services_ref                    : { type: marvel_services.Services                  , comment: "Shared services", expand: false}
           config_ref                      : { type: GuidingConfig                             , comment: "Active configuration of the guiding" }
+      variables_read_only:
+          state                           : { type: GuidingStates                             , comment: "Actual guiding state" }
+          centroidXAbsCoo                 : { type: t_double                                  , comment: "Centroid X absolute coordinate" }
+          centroidYAbsCoo                 : { type: t_double                                  , comment: "Centroid Y absolute coordinate" }
+          centroidXRelCoo                 : { type: t_double                                  , comment: "Centroid X relative coordinate" }
+          centroidYRelCoo                 : { type: t_double                                  , comment: "Centroid Y relative coordinate" }
       parts:
           camera                          : { type: marvel_common.GigECamera }
       stat:
@@ -53,6 +91,9 @@
       proc:
           initialize                      : { type: marvel_common.Process                         , comment: "Start initializing" }
           reset                           : { type: marvel_common.Process                         , comment: "Reset any errors" }
+          acquireTarget                   : { type: GuidingAcquireTargetProcess                   , comment: "Acquire the target"}
+          startGuiding                    : { type: GuidingStartGuidingProcess                    , comment: "Start guiding"}
+          stop                            : { type: marvel_common.Process                         , comment: "Stop guiding and acquisition" }
       calls:
           initialize:
               isEnabled                   : !AND [ !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ],
@@ -62,6 +103,12 @@
           camera:
               {}
           reset:
+              isEnabled                   : !BOOL TRUE
+          startAcquisition:
+              isEnabled                   : !BOOL TRUE
+          acquireTarget:
+              isEnabled                   : !BOOL TRUE
+          stop:
               isEnabled                   : !BOOL TRUE
           # stat
           health:

@@ -50,6 +50,19 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">The guiding</xhtml>
               </documentation>
             </variable>
+            <variable name="fibreSelector">
+              <type><derived name="MTS50Axis" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The fibre selector stage</xhtml>
+              </documentation>
+            </variable>
             <variable name="telescope">
               <type><derived name="Telescope" /></type>
               <addData>
@@ -435,6 +448,12 @@ parts.guiding(
     activity_ref := activity_ref,
     services_ref := services_ref,
     config_ref := config.guiding);
+parts.fibreSelector(
+    isEnabled := (NOT(stat.init = InitializationStatus.locked)) AND (operator_ref = OperatorStatus.tech),
+    usePosLimitSwitch := TRUE,
+    useNegLimitSwitch := TRUE,
+    invertPosLimitSwitch := TRUE,
+    invertNegLimitSwitch := TRUE);
 parts.telescope(
     operator_ref := operator_ref,
     activity_ref := activity_ref,

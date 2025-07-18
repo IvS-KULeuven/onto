@@ -21,6 +21,24 @@
   </contentHeader>
   <types>
     <dataTypes>
+      <dataType name="GuidingStates">
+        <baseType>
+          <enum>
+            <values>
+              <value name="IDLE" value="0" />
+              <value name="ACQUISITION" value="1" />
+              <value name="GUIDING" value="2" />
+            </values>
+          </enum>
+        </baseType>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+            <Attributes>
+              <Attribute Name="qualified_only" Value="" />
+            </Attributes>
+          </data>
+        </addData>
+      </dataType>
       <dataType name="GuidingParts">
         <baseType>
           <struct>
@@ -67,6 +85,45 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Reset any errors</xhtml>
+              </documentation>
+            </variable>
+            <variable name="acquireTarget">
+              <type><derived name="GuidingAcquireTargetProcess" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Acquire the target</xhtml>
+              </documentation>
+            </variable>
+            <variable name="startGuiding">
+              <type><derived name="GuidingStartGuidingProcess" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Start guiding</xhtml>
+              </documentation>
+            </variable>
+            <variable name="stop">
+              <type><derived name="Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Stop guiding and acquisition</xhtml>
               </documentation>
             </variable>
           </struct>
@@ -152,7 +209,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Initial acquisition frame rate</xhtml>
               </documentation>
             </variable>
-            <variable name="initGain">
+            <variable name="initGainDigital">
               <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -162,7 +219,71 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Initial gain</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Initial digital gain</xhtml>
+              </documentation>
+            </variable>
+            <variable name="initGainAnalog">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Initial analog gain</xhtml>
+              </documentation>
+            </variable>
+            <variable name="initBinning">
+              <type><UDINT /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Initial analog gain</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="GuidingAcquireTargetProcessArgs">
+        <baseType>
+          <struct>
+            <variable name="vMag">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Visual magnitude of target</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="GuidingStartGuidingProcessArgs">
+        <baseType>
+          <struct>
+            <variable name="vMag">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Visual magnitude of target</xhtml>
               </documentation>
             </variable>
           </struct>
@@ -202,6 +323,81 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Previous status description</xhtml>
+              </documentation>
+            </variable>
+            <variable name="state">
+              <type><derived name="GuidingStates" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Actual guiding state</xhtml>
+              </documentation>
+            </variable>
+            <variable name="centroidXAbsCoo">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Centroid X absolute coordinate</xhtml>
+              </documentation>
+            </variable>
+            <variable name="centroidYAbsCoo">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Centroid Y absolute coordinate</xhtml>
+              </documentation>
+            </variable>
+            <variable name="centroidXRelCoo">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Centroid X relative coordinate</xhtml>
+              </documentation>
+            </variable>
+            <variable name="centroidYRelCoo">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Centroid Y relative coordinate</xhtml>
               </documentation>
             </variable>
             <variable name="stat">
@@ -336,10 +532,309 @@ stat.busy := F_BusyStatus(
     isBusy := parts.camera.stat.busy = BusyStatus.busy);
 proc.initialize( isEnabled := (NOT(stat.init = InitializationStatus.locked)) AND ((stat.init = InitializationStatus.shutdown) OR ((stat.init = InitializationStatus.initializingFailed) OR (stat.init = InitializationStatus.initialized))) );
 proc.reset( isEnabled := TRUE );
+proc.acquireTarget( isEnabled := TRUE );
+proc.startGuiding();
+proc.stop( isEnabled := TRUE );
 </xhtml>
           </ST>
         </body>
         <addData>
+        </addData>
+      </pou>
+      <pou name="GuidingAcquireTargetProcess" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="set">
+              <type><derived name="GuidingAcquireTargetProcessArgs" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Arguments to be set, before writing do_request TRUE</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="get">
+              <type><derived name="GuidingAcquireTargetProcessArgs" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Arguments in use by the process, if do_request was accepted</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <inOutVars>
+          </inOutVars>
+          <localVars>
+          </localVars>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/pouinheritance" handleUnknown="implementation">
+              <Inheritance>
+                <Extends>BaseProcess</Extends>
+              </Inheritance>
+            </data>
+          </addData>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+    do_request_result := request( vMag := set.vMag );
+    do_request := FALSE;
+END_IF;
+SUPER^();
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="start">
+              <interface>
+                <inputVars>
+                  <variable name="vMag">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="TcHmiSymbol.Show" Value="" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Visual magnitude of target</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.vMag := vMag;
+THIS^.stat.busy := BusyStatus.busy;
+THIS^.stat.health := HealthStatus.good;
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="request">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                  <variable name="vMag">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="TcHmiSymbol.Show" Value="" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Visual magnitude of target</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF THIS^.stat.enabled = EnabledStatus.enabled THEN
+    request := RequestResults.ACCEPTED;
+    THIS^.start( vMag := vMag );
+ELSE
+    request := RequestResults.REJECTED;
+END_IF;
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+        </addData>
+      </pou>
+      <pou name="GuidingStartGuidingProcess" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="set">
+              <type><derived name="GuidingStartGuidingProcessArgs" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Arguments to be set, before writing do_request TRUE</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="get">
+              <type><derived name="GuidingStartGuidingProcessArgs" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Arguments in use by the process, if do_request was accepted</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <inOutVars>
+          </inOutVars>
+          <localVars>
+          </localVars>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/pouinheritance" handleUnknown="implementation">
+              <Inheritance>
+                <Extends>BaseProcess</Extends>
+              </Inheritance>
+            </data>
+          </addData>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+    do_request_result := request( vMag := set.vMag );
+    do_request := FALSE;
+END_IF;
+SUPER^();
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="start">
+              <interface>
+                <inputVars>
+                  <variable name="vMag">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="TcHmiSymbol.Show" Value="" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Visual magnitude of target</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.vMag := vMag;
+THIS^.stat.busy := BusyStatus.busy;
+THIS^.stat.health := HealthStatus.good;
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="request">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                  <variable name="vMag">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="TcHmiSymbol.Show" Value="" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Visual magnitude of target</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF THIS^.stat.enabled = EnabledStatus.enabled THEN
+    request := RequestResults.ACCEPTED;
+    THIS^.start( vMag := vMag );
+ELSE
+    request := RequestResults.REJECTED;
+END_IF;
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
         </addData>
       </pou>
     </pous>
@@ -352,6 +847,8 @@ proc.reset( isEnabled := TRUE );
       <ProjectStructure>
         <Folder Name="marvel_guiding">
           <Folder Name="Enums">
+            <Object Name="GuidingStates">
+            </Object>
           </Folder>
           <Folder Name="Statuses">
           </Folder>
@@ -379,7 +876,19 @@ proc.reset( isEnabled := TRUE );
           </Folder>
           <Folder Name="Processes">
             <Folder Name="Args">
+              <Object Name="GuidingAcquireTargetProcessArgs">
+              </Object>
+              <Object Name="GuidingStartGuidingProcessArgs">
+              </Object>
             </Folder>
+            <Object Name="GuidingAcquireTargetProcess">
+              <Object Name="start" />
+              <Object Name="request" />
+            </Object>
+            <Object Name="GuidingStartGuidingProcess">
+              <Object Name="start" />
+              <Object Name="request" />
+            </Object>
           </Folder>
           <Folder Name="Functionblocks">
           </Folder>

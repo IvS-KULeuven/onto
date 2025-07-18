@@ -84,6 +84,9 @@
                       attributes:
                           health          : { type: marvel_common.HealthStatus }
                           busy            : { type: marvel_common.BusyStatus }
+          fibreSelector:
+              type : marvel_common.MTS50Axis
+              comment: "The fibre selector stage"
           telescope:
               type : marvel_telescope.Telescope
               comment: "The telescope"
@@ -145,6 +148,13 @@
               activity_ref        : activity_ref
               services_ref        : services_ref
               config_ref          : config.guiding
+          fibreSelector:
+              isEnabled           : !AND [ !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ], 
+                                                  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ]
+              usePosLimitSwitch   : !BOOL TRUE
+              useNegLimitSwitch   : !BOOL TRUE
+              invertPosLimitSwitch: !BOOL TRUE
+              invertNegLimitSwitch: !BOOL TRUE
           configManager:
              isEnabled            : !EQ [ operator_ref, marvel_common.OperatorStatus.tech ]
           health:
