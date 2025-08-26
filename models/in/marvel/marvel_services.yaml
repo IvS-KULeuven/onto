@@ -46,6 +46,12 @@
           alwaysUseLocalClock:
               type: t_bool
               comment: "If TRUE, then the local clock (source=LOCAL_CLOCK) will be used even if an external (more accurate!) clock is available"
+          autoCloseAtSunrise:
+              type: t_bool
+              comment: "If TRUE, then the domes will auto close at sunrise (at the angle set by autoCloseSunriseAltitude)"
+          autoCloseSunriseAltitude:
+              type: t_double
+              comment: "Angle in degrees: e.g. -4 means that the domes will close automatically when the sun goes from -4.00001° to -3.999999° altitude"
 
   ##########################################################################
   # ServicesMeteoSimulation
@@ -309,6 +315,12 @@
           jdSinceJ2000                  : { type: t_double                        , comment: "Julian date since J2000" }
           gmst                          : { type: t_double                        , comment: "Greenwich Mean Sidereal Time" }
           lst                           : { type: t_double                        , comment: "Local sidereal time in hours" }
+          # sun position
+          sunAlpha                      : { type: t_double                        , comment: "Sun Right Ascension" }
+          sunDelta                      : { type: t_double                        , comment: "Sun Declination" }
+          sunAzi                        : { type: t_double                        , comment: "Sun Azimuth" }
+          sunEle                        : { type: t_double                        , comment: "Sun Elevation" }
+          sunAutoClose                  : { type: t_bool                          , comment: "Pulse (during some seconds) which is TRUE while the sun is rising through autoCloseSunriseAltitude"}
       stat:
           health                        : { type: marvel_common.HealthStatus }
       proc:
