@@ -291,17 +291,18 @@
       #   superState                : !EQ [ stat.init, marvel_common.InitializationStatus.initialized ]
       health:
         superState                : !BOOL True
-        isGood                    : !MTCS_SUMMARIZE_GOOD [ parts.shutter,
-                                                           parts.rotation,
-                                                           # parts.light,
-                                                           # parts.io 
-                                                           proc.reset,
-                                                           proc.initialize,
-                                                           proc.syncWithAxes,
-                                                           proc.startTrackingTelescope,
-                                                           proc.stopTrackingTelescope,
-                                                           proc.stop,
-                                                           proc.moveKnownPosition ]
+        isGood                    : !AND [ !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.initializingFailed ] ],
+                                           !MTCS_SUMMARIZE_GOOD [ parts.shutter,
+                                                                  parts.rotation,
+                                                                  # parts.light,
+                                                                  # parts.io 
+                                                                  proc.reset,
+                                                                  proc.initialize,
+                                                                  proc.syncWithAxes,
+                                                                  proc.startTrackingTelescope,
+                                                                  proc.stopTrackingTelescope,
+                                                                  proc.stop,
+                                                                  proc.moveKnownPosition ] ]
   
         hasWarning                : !MTCS_SUMMARIZE_WARN [ parts.shutter,
                                                            parts.rotation,

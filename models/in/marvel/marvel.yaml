@@ -300,7 +300,8 @@
                                                   !EQ [ parts.u1.parts.dome.parts.shutter.stat.aperture, marvel_common.ApertureStatus.closed ] ] ]
           health:
               superState          : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ] ]
-              isGood              : !MTCS_SUMMARIZE_GOOD [ parts.u1, parts.u2, parts.u3, parts.u4, parts.services ]
+              isGood              : !AND [ !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.initializingFailed ] ],
+                                           !MTCS_SUMMARIZE_GOOD [ parts.u1, parts.u2, parts.u3, parts.u4, parts.services ] ]
               hasWarning          : !MTCS_SUMMARIZE_WARN [ parts.u1, parts.u2, parts.u3, parts.u4, parts.services ]
           busy:
               superState          : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ] ]

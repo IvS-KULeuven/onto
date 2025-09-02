@@ -50,8 +50,8 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">The guiding</xhtml>
               </documentation>
             </variable>
-            <variable name="fibreSelector">
-              <type><derived name="MTS50Axis" /></type>
+            <variable name="fem">
+              <type><derived name="Fem" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -60,7 +60,7 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">The fibre selector stage</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The front end module</xhtml>
               </documentation>
             </variable>
             <variable name="telescope">
@@ -228,6 +228,19 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Guiding config of a Marvel unit</xhtml>
+              </documentation>
+            </variable>
+            <variable name="fem">
+              <type><derived name="FemConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Front End Module config of a Marvel unit</xhtml>
               </documentation>
             </variable>
           </struct>
@@ -448,12 +461,12 @@ parts.guiding(
     activity_ref := activity_ref,
     services_ref := services_ref,
     config_ref := config.guiding);
-parts.fibreSelector(
-    isEnabled := (NOT(stat.init = InitializationStatus.locked)) AND (operator_ref = OperatorStatus.tech),
-    usePosLimitSwitch := TRUE,
-    useNegLimitSwitch := TRUE,
-    invertPosLimitSwitch := TRUE,
-    invertNegLimitSwitch := TRUE);
+parts.fem(
+    number := number,
+    operator_ref := operator_ref,
+    activity_ref := activity_ref,
+    services_ref := services_ref,
+    config_ref := config.fem);
 parts.telescope(
     operator_ref := operator_ref,
     activity_ref := activity_ref,
@@ -462,11 +475,11 @@ parts.telescope(
 parts.configManager( isEnabled := operator_ref = OperatorStatus.tech );
 stat.health := F_HealthStatus(
     superState := NOT(stat.init = InitializationStatus.shutdown),
-    isGood := ((parts.dome.stat.health = HealthStatus.good) OR (parts.dome.stat.health = HealthStatus.warning)) AND (((parts.telescope.stat.health = HealthStatus.good) OR (parts.telescope.stat.health = HealthStatus.warning)) AND ((parts.configManager.stat.health = HealthStatus.good) OR (parts.configManager.stat.health = HealthStatus.warning))),
-    hasWarning := (parts.dome.stat.health = HealthStatus.warning) OR ((parts.telescope.stat.health = HealthStatus.warning) OR (parts.configManager.stat.health = HealthStatus.warning)));
+    isGood := (NOT(stat.init = InitializationStatus.initializingFailed)) AND (((parts.dome.stat.health = HealthStatus.good) OR (parts.dome.stat.health = HealthStatus.warning)) AND (((parts.telescope.stat.health = HealthStatus.good) OR (parts.telescope.stat.health = HealthStatus.warning)) AND (((parts.fem.stat.health = HealthStatus.good) OR (parts.fem.stat.health = HealthStatus.warning)) AND ((parts.configManager.stat.health = HealthStatus.good) OR (parts.configManager.stat.health = HealthStatus.warning))))),
+    hasWarning := (parts.dome.stat.health = HealthStatus.warning) OR ((parts.telescope.stat.health = HealthStatus.warning) OR ((parts.fem.stat.health = HealthStatus.warning) OR (parts.configManager.stat.health = HealthStatus.warning))));
 stat.busy := F_BusyStatus(
     superState := NOT(stat.init = InitializationStatus.shutdown),
-    isBusy := (parts.dome.stat.busy = BusyStatus.busy) OR ((parts.telescope.stat.busy = BusyStatus.busy) OR (parts.configManager.stat.busy = BusyStatus.busy)));
+    isBusy := (parts.dome.stat.busy = BusyStatus.busy) OR ((parts.telescope.stat.busy = BusyStatus.busy) OR ((parts.fem.stat.busy = BusyStatus.busy) OR (parts.configManager.stat.busy = BusyStatus.busy))));
 proc.initialize( isEnabled := NOT(stat.init = InitializationStatus.initializing) );
 proc.point( isEnabled := parts.telescope.proc.slewToCoordinates.isEnabled AND parts.dome.proc.syncWithAxes.isEnabled );
 proc.stop( isEnabled := parts.telescope.proc.abortSlew.isEnabled OR parts.dome.proc.stop.isEnabled );

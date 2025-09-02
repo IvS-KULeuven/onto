@@ -11,6 +11,7 @@
 !IMPORT models/in/marvel/marvel_guiding.yaml:
 !IMPORT models/in/marvel/marvel_telescope.yaml:
 !IMPORT models/in/marvel/marvel_services.yaml:
+!IMPORT models/in/marvel/marvel_fem.yaml:
 
 
 ########################################################################################################################
@@ -28,6 +29,7 @@
         dome:       { type: marvel_dome.DomeConfig              , comment: "Dome config of a Marvel unit", expand: false }
         telescope:  { type: marvel_telescope.TelescopeConfig    , comment: "Telescope config of a Marvel unit", expand: false }
         guiding:    { type: marvel_guiding.GuidingConfig        , comment: "Guiding config of a Marvel unit", expand: false }
+        fem:        { type: marvel_fem.FemConfig                , comment: "Front End Module config of a Marvel unit", expand: false }
 
   ########################################################################################################################
   # Unit
@@ -84,9 +86,21 @@
                       attributes:
                           health          : { type: marvel_common.HealthStatus }
                           busy            : { type: marvel_common.BusyStatus }
-          fibreSelector:
-              type : marvel_common.MTS50Axis
-              comment: "The fibre selector stage"
+          fem:
+              type : marvel_fem.Fem
+              comment: "The front end module"
+              expand: false
+              arguments:
+                  number                  : { type: t_uint8 }
+                  operator_ref            : { type: marvel_common.OperatorStatus          , expand: false }
+                  activity_ref            : { type: marvel_common.ActivityStatus          , expand: false }
+                  services_ref            : { type: marvel_services.Services              , expand: false }
+                  config_ref              : { type: marvel_fem.FemConfig                  , expand: false }
+              attributes:
+                  stat:
+                      attributes:
+                          health          : { type: marvel_common.HealthStatus }
+                          busy            : { type: marvel_common.BusyStatus }
           telescope:
               type : marvel_telescope.Telescope
               comment: "The telescope"
@@ -119,9 +133,9 @@
           health                      : { type: marvel_common.HealthStatus }
           busy                        : { type: marvel_common.BusyStatus }
       proc:
-          initialize                  : { type: marvel_common.Process                     , comment: "Start initializing the unit" }   
-          point                       : { type: marvel_common.PointAlphaDeltaProcess    , comment: "Point the telescope and dome"}     
-          stop                        : { type: marvel_common.Process                     , comment: "Stop the rotation movement and/or tracking" }
+          initialize                  : { type: marvel_common.Process                       , comment: "Start initializing the unit" }   
+          point                       : { type: marvel_common.PointAlphaDeltaProcess        , comment: "Point the telescope and dome"}     
+          stop                        : { type: marvel_common.Process                       , comment: "Stop the rotation movement and/or tracking" }
       calls:
           initialize:
               isEnabled           : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.initializing ] ]
@@ -148,20 +162,20 @@
               activity_ref        : activity_ref
               services_ref        : services_ref
               config_ref          : config.guiding
-          fibreSelector:
-              isEnabled           : !AND [ !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ], 
-                                                  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ]
-              usePosLimitSwitch   : !BOOL TRUE
-              useNegLimitSwitch   : !BOOL TRUE
-              invertPosLimitSwitch: !BOOL TRUE
-              invertNegLimitSwitch: !BOOL TRUE
+          fem:
+              number              : number
+              operator_ref        : operator_ref
+              activity_ref        : activity_ref
+              services_ref        : services_ref
+              config_ref          : config.fem
           configManager:
              isEnabled            : !EQ [ operator_ref, marvel_common.OperatorStatus.tech ]
           health:
               superState          : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ] ]
-              isGood              : !MTCS_SUMMARIZE_GOOD [ parts.dome, parts.telescope, parts.configManager ]
-              hasWarning          : !MTCS_SUMMARIZE_WARN [ parts.dome, parts.telescope, parts.configManager ]
+              isGood              : !AND [ !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.initializingFailed ] ],
+                                           !MTCS_SUMMARIZE_GOOD [ parts.dome, parts.telescope, parts.fem, parts.configManager ] ]
+              hasWarning          : !MTCS_SUMMARIZE_WARN [ parts.dome, parts.telescope, parts.fem, parts.configManager ]
           busy:
               superState          : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ] ]
-              isBusy              : !MTCS_SUMMARIZE_BUSY [ parts.dome, parts.telescope, parts.configManager ]
+              isBusy              : !MTCS_SUMMARIZE_BUSY [ parts.dome, parts.telescope, parts.fem, parts.configManager ]
 

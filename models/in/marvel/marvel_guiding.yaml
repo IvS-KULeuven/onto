@@ -66,6 +66,24 @@
         - GUIDING
 
   ########################################################################################################################
+  # GuidingCameraParamSets
+  ########################################################################################################################
+  !ENUMERATION GuidingCameraParamSets:
+    items:
+        - INIT
+        - CONTINUOUS_IMAGING
+        - TRIGGER_IMAGING
+
+  ########################################################################################################################
+  # GigECameraSetParamSetProcess
+  ########################################################################################################################
+  !PROCESS GuidingCameraParamSetProcess:
+      extends: marvel_common.BaseProcess
+      arguments:
+          paramSet      : { type: GuidingCameraParamSets           , comment: "Parameter set"}
+  
+
+  ########################################################################################################################
   # Guiding
   ########################################################################################################################
   
@@ -94,6 +112,7 @@
           acquireTarget                   : { type: GuidingAcquireTargetProcess                   , comment: "Acquire the target"}
           startGuiding                    : { type: GuidingStartGuidingProcess                    , comment: "Start guiding"}
           stop                            : { type: marvel_common.Process                         , comment: "Stop guiding and acquisition" }
+          setCameraParamSet               : { type: GuidingCameraParamSetProcess                  , comment: "Set a parameter set" }
       calls:
           initialize:
               isEnabled                   : !AND [ !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ],
@@ -109,6 +128,8 @@
           acquireTarget:
               isEnabled                   : !BOOL TRUE
           stop:
+              isEnabled                   : !BOOL TRUE
+          setCameraParamSet:
               isEnabled                   : !BOOL TRUE
           # stat
           health:

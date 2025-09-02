@@ -1309,6 +1309,40 @@
             newVoltValue : !SUM [ !MUL [rawValue, conversionFactor], config.offset]
 
 
+  ########################################################################################################################
+  # SimpleTemperature
+  ########################################################################################################################
+  !STATEMACHINE SimpleTemperature:
+    variables_read_only:
+        value          : { type: t_double          , comment: "Actual value" }
+        error          : { type: t_bool            , comment: "error"                           , address: "%I*" }
+        underrange     : { type: t_bool            , comment: "Underrange"                      , address: "%I*" }
+        overrange      : { type: t_bool            , comment: "Overrange"                       , address: "%I*" }
+    references:
+        config          : { type: MeasurementConfig    , comment: "Reference to the config (alarms in degrees celsius)" }
+    stat:
+        enabled         : { type: EnabledStatus        , comment: "Is the temperature being measured?" }
+        health          : { type: HealthStatus         , comment: "Is the measurement OK?" }
+        alarm           : { type: HiHiLoLoAlarmStatus  , comment: "Alarm status"}
+    calls:
+        enabled:
+            superState   : !BOOL TRUE
+            isEnabled    : config.enabled
+        alarm:
+            superState   : !EQ [ stat.enabled, EnabledStatus.enabled ]
+            config       : config.alarms
+            value        : value
+        health:
+            superState   : !EQ [ stat.enabled, EnabledStatus.enabled ]
+            isGood       : !NOT [ !OR [error,
+                                       underrange,
+                                       overrange,
+                                       !EQ [ stat.alarm, HiHiLoLoAlarmStatus.hiHi ],
+                                       !EQ [ stat.alarm, HiHiLoLoAlarmStatus.loLo ]] ]
+            hasWarning   : !OR [!EQ [ stat.alarm, HiHiLoLoAlarmStatus.hi ],
+                                !EQ [ stat.alarm, HiHiLoLoAlarmStatus.lo ]]
+
+
 
   ########################################################################################################################
   # TemperatureMeasurement
@@ -1968,6 +2002,8 @@
         - nBinningSelector
         - nBinningHorizontal
         - nBinningVertical
+        - nTriggerSelector
+        - nTriggerMode
         - _END_
   
   ########################################################################################################################
@@ -1981,12 +2017,30 @@
           fvalue        : { type: t_double                      , comment: "Double Value" }
   
   ########################################################################################################################
+  # GigECameraPulseTrigger
+  ########################################################################################################################
+  !PROCESS GigECameraPulseTrigger:
+      extends: marvel_common.BaseProcess
+      arguments:
+          duration     : { type: t_double              , comment: "Duration in seconds of the pulse"}
+  
+  ########################################################################################################################
+  # GigECameraSource
+  ########################################################################################################################
+  !ENUMERATION GigECameraSources:
+    items:
+        - CAMERA
+        - ACQUISITION_EXAMPLE
+  
+
+  ########################################################################################################################
   # GigECamera
   ########################################################################################################################
 
   !STATEMACHINE GigECamera:
       variables:
           state                           : { type: beckhoff_vision.ETcVnCameraState            , comment: "Camera state" }
+          source                          : { type: GigECameraSources                           , comment: "Camera source" }
       variables_read_only:
           # general
           frameCounter                    : { type: t_uint32                                    , comment: "Number of frames taken"}
@@ -2002,6 +2056,8 @@
           binningSelector                 : { type: t_uint32                                    , comment: "Binning engine (sensor or FPGA)"}
           binningHorizontal               : { type: t_uint32                                    , comment: "Horizontal binning"}
           binningVertical                 : { type: t_uint32                                    , comment: "Vertical binning"}
+          triggerMode                     : { type: t_uint32                                    , comment: "Trigger mode"}
+          triggerSelector                 : { type: t_uint32                                    , comment: "Trigger selector"}
       stat:
           health                          : { type: marvel_common.HealthStatus }
           busy                            : { type: marvel_common.BusyStatus }
@@ -2012,6 +2068,8 @@
           stopAcquiring                   : { type: marvel_common.Process                       , comment: "Stop acquiring frames" }
           reset                           : { type: marvel_common.Process                       , comment: "Reset any errors" }
           setParam                        : { type: GigECameraSetParamProcess                   , comment: "Set a param value" }
+          trigger                         : { type: marvel_common.Process                       , comment: "Send a software trigger" }
+          pulseTrigger                    : { type: GigECameraPulseTrigger                      , comment: "Send 2 software triggers, with a given duration in between" }
       calls:
           reset:
               isEnabled                   : !BOOL TRUE
@@ -2029,6 +2087,10 @@
               isEnabled                   : !NOT [ !OR [ !EQ [ state, beckhoff_vision.ETcVnCameraState.TCVN_CS_INITIAL ], 
                                                          !EQ [ state, beckhoff_vision.ETcVnCameraState.TCVN_CS_INITIALIZED ] ] ]
           setParam:
+              isEnabled                   : !BOOL TRUE
+          trigger:
+              isEnabled                   : !BOOL TRUE
+          pulseTrigger:
               isEnabled                   : !BOOL TRUE
           # stat
           health:

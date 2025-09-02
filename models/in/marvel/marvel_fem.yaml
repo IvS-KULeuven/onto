@@ -1,0 +1,146 @@
+########################################################################################################################
+#                                                                                                                      #
+# Model of the FEM (Front End Module) software.                                                                        #
+#                                                                                                                      #
+########################################################################################################################
+
+!VERSION marvel:
+
+!IMPORT models/in/marvel/marvel_common.yaml:
+!IMPORT models/in/marvel/marvel_services.yaml:
+
+
+########################################################################################################################
+# Define the containing PLC library
+########################################################################################################################
+
+!LIBRARY marvel_fem:
+  
+  
+  ########################################################################################################################
+  # FemConfig
+  ########################################################################################################################
+  !CONFIG FemConfig:
+      items:
+          fsSim: { type: t_bool,  comment: "TRUE if the fibre selector axis is simulated" }
+          cmSim: { type: t_bool,  comment: "TRUE if the calibration mirror motor is simulated" }
+          temp:  { comment: "Temperatures config" }
+            
+  ########################################################################################################################
+  # FemTempConfig
+  ########################################################################################################################
+  !CONFIG FemTempConfig:
+      typeOf: FemConfig.temp
+      items:
+          basePlate                   : { type: marvel_common.MeasurementConfig   , comment: "FEM base plate config in °C",     expand: False }
+          electronics                 : { type: marvel_common.MeasurementConfig   , comment: "FEM base plate config in °C",     expand: False }
+          ambient                     : { type: marvel_common.MeasurementConfig   , comment: "FEM base plate config in °C",     expand: False }
+          fork                        : { type: marvel_common.MeasurementConfig   , comment: "Telescope fork config in °C",     expand: False }
+          truss                       : { type: marvel_common.MeasurementConfig   , comment: "Telescope truss config in °C",    expand: False }
+          spider                      : { type: marvel_common.MeasurementConfig   , comment: "Telescope spider config in °C",   expand: False }
+          m1Cell                      : { type: marvel_common.MeasurementConfig   , comment: "Telescope m1 cell config in °C",  expand: False }
+          spare                       : { type: marvel_common.MeasurementConfig   , comment: "Telescope spare config in °C",    expand: False }
+
+  ########################################################################################################################
+  # FemModuleTemperatures
+  ########################################################################################################################
+  !STATEMACHINE FemTemperatures:
+      references:
+          config_ref                  : { type: FemTempConfig                          , comment: "Active configuration of the FEM temperatures" }
+      parts:
+          basePlate                   : { type: marvel_common.SimpleTemperature        , comment: "FEM base plate temperature in °C" }
+          electronics                 : { type: marvel_common.SimpleTemperature        , comment: "FEM base plate temperature in °C" }
+          ambient                     : { type: marvel_common.SimpleTemperature        , comment: "FEM base plate temperature in °C" }
+          fork                        : { type: marvel_common.SimpleTemperature        , comment: "Telescope fork temperature in °C" }
+          truss                       : { type: marvel_common.SimpleTemperature        , comment: "Telescope truss temperature in °C" }
+          spider                      : { type: marvel_common.SimpleTemperature        , comment: "Telescope spider temperature in °C" }
+          m1Cell                      : { type: marvel_common.SimpleTemperature        , comment: "Telescope m1 cell temperature in °C" }
+          spare                       : { type: marvel_common.SimpleTemperature        , comment: "Telescope spare temperature in °C" }
+      stat:
+          health                      : { type: marvel_common.HealthStatus             , comment: "Are all temperatures OK?" }
+      calls:
+          # parts
+          basePlate                   : { config: config_ref.basePlate }
+          electronics                 : { config: config_ref.electronics }
+          ambient                     : { config: config_ref.ambient }
+          fork                        : { config: config_ref.fork }
+          truss                       : { config: config_ref.truss }
+          spider                      : { config: config_ref.spider }
+          m1Cell                      : { config: config_ref.m1Cell }
+          spare                       : { config: config_ref.spare }
+          # stat
+          health:
+              superState              : !BOOL TRUE
+              isGood                  : !MTCS_SUMMARIZE_GOOD_OR_DISABLED [
+                                            parts.basePlate,
+                                            parts.electronics,
+                                            parts.ambient,
+                                            parts.fork,
+                                            parts.truss,
+                                            parts.spider,
+                                            parts.m1Cell,
+                                            parts.spare ]
+              hasWarning               : !MTCS_SUMMARIZE_WARN [
+                                            parts.basePlate,
+                                            parts.electronics,
+                                            parts.ambient,
+                                            parts.fork,
+                                            parts.truss,
+                                            parts.spider,
+                                            parts.m1Cell,
+                                            parts.spare ]
+
+  ########################################################################################################################
+  # Fem
+  ########################################################################################################################
+  !STATEMACHINE Fem:
+      references:
+          number                      : { type: t_uint8                             , comment: "Number of the unit (1-4)" }
+          operator_ref                : { type: marvel_common.OperatorStatus        , comment: "Reference to the operator (observer/tech)"}
+          activity_ref                : { type: marvel_common.ActivityStatus        , comment: "Shared activity status"}
+          services_ref                : { type: marvel_services.Services            , comment: "Shared services", expand: false}
+          config_ref                  : { type: FemConfig                           , comment: "Active configuration of the FEM" }
+      parts:
+          fs:
+              type : marvel_common.MTS50Axis
+              comment: "The fibre selector stage"
+          cm:
+              type : marvel_common.MTS50Axis
+              comment: "The calibration mirror stage"
+          temp:
+              type: FemTemperatures
+              comment: "Temperatures measured by the front end"
+      stat:
+          init                       : { type: marvel_common.InitializationStatus }
+          health                     : { type: marvel_common.HealthStatus }
+          busy                       : { type: marvel_common.BusyStatus }
+      proc:
+          initialize                 : { type: marvel_common.Process                     , comment: "Start initializing the FEM" }
+      calls:
+          initialize:
+              isEnabled           : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.initializing ] ]
+          fs:
+              isEnabled           : !AND [ !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ], 
+                                                  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ]
+              usePosLimitSwitch   : !BOOL TRUE
+              useNegLimitSwitch   : !BOOL TRUE
+              invertPosLimitSwitch: !BOOL TRUE
+              invertNegLimitSwitch: !BOOL TRUE
+          cm:
+              isEnabled           : !AND [ !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ], 
+                                                  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ]
+              usePosLimitSwitch   : !BOOL TRUE
+              useNegLimitSwitch   : !BOOL TRUE
+              invertPosLimitSwitch: !BOOL TRUE
+              invertNegLimitSwitch: !BOOL TRUE
+          temp:
+              config_ref          : config_ref.temp
+          health:
+              superState          : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ] ]
+              isGood              : !AND [ !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.initializingFailed ] ],
+                                           !MTCS_SUMMARIZE_GOOD [ parts.fs, parts.cm, parts.temp ]
+                                         ]
+              hasWarning          : !MTCS_SUMMARIZE_WARN [ parts.fs, parts.cm, parts.temp ]
+          busy:
+              superState          : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ] ]
+              isBusy              : !MTCS_SUMMARIZE_BUSY [ parts.fs, parts.cm ]
