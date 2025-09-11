@@ -1194,6 +1194,21 @@ END_IF;
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Distance to the telescope azi</xhtml>
               </documentation>
             </variable>
+            <variable name="contactor" address="%Q*">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Contactor relay signal</xhtml>
+              </documentation>
+            </variable>
             <variable name="stat">
               <type><derived name="DomeStatuses" /></type>
               <addData>
@@ -1330,7 +1345,7 @@ parts.rotation(
     config_ref := config_ref.rotation);
 stat.health := F_HealthStatus(
     superState := TRUE,
-    isGood := ((parts.shutter.stat.health = HealthStatus.good) OR (parts.shutter.stat.health = HealthStatus.warning)) AND (((parts.rotation.stat.health = HealthStatus.good) OR (parts.rotation.stat.health = HealthStatus.warning)) AND (((proc.reset.stat.health = HealthStatus.good) OR (proc.reset.stat.health = HealthStatus.warning)) AND (((proc.initialize.stat.health = HealthStatus.good) OR (proc.initialize.stat.health = HealthStatus.warning)) AND (((proc.syncWithAxes.stat.health = HealthStatus.good) OR (proc.syncWithAxes.stat.health = HealthStatus.warning)) AND (((proc.startTrackingTelescope.stat.health = HealthStatus.good) OR (proc.startTrackingTelescope.stat.health = HealthStatus.warning)) AND (((proc.stopTrackingTelescope.stat.health = HealthStatus.good) OR (proc.stopTrackingTelescope.stat.health = HealthStatus.warning)) AND (((proc.stop.stat.health = HealthStatus.good) OR (proc.stop.stat.health = HealthStatus.warning)) AND ((proc.moveKnownPosition.stat.health = HealthStatus.good) OR (proc.moveKnownPosition.stat.health = HealthStatus.warning))))))))),
+    isGood := (NOT(stat.init = InitializationStatus.initializingFailed)) AND (((parts.shutter.stat.health = HealthStatus.good) OR (parts.shutter.stat.health = HealthStatus.warning)) AND (((parts.rotation.stat.health = HealthStatus.good) OR (parts.rotation.stat.health = HealthStatus.warning)) AND (((proc.reset.stat.health = HealthStatus.good) OR (proc.reset.stat.health = HealthStatus.warning)) AND (((proc.initialize.stat.health = HealthStatus.good) OR (proc.initialize.stat.health = HealthStatus.warning)) AND (((proc.syncWithAxes.stat.health = HealthStatus.good) OR (proc.syncWithAxes.stat.health = HealthStatus.warning)) AND (((proc.startTrackingTelescope.stat.health = HealthStatus.good) OR (proc.startTrackingTelescope.stat.health = HealthStatus.warning)) AND (((proc.stopTrackingTelescope.stat.health = HealthStatus.good) OR (proc.stopTrackingTelescope.stat.health = HealthStatus.warning)) AND (((proc.stop.stat.health = HealthStatus.good) OR (proc.stop.stat.health = HealthStatus.warning)) AND ((proc.moveKnownPosition.stat.health = HealthStatus.good) OR (proc.moveKnownPosition.stat.health = HealthStatus.warning)))))))))),
     hasWarning := (parts.shutter.stat.health = HealthStatus.warning) OR ((parts.rotation.stat.health = HealthStatus.warning) OR ((proc.reset.stat.health = HealthStatus.warning) OR ((proc.initialize.stat.health = HealthStatus.warning) OR ((proc.syncWithAxes.stat.health = HealthStatus.warning) OR ((proc.startTrackingTelescope.stat.health = HealthStatus.warning) OR ((proc.stopTrackingTelescope.stat.health = HealthStatus.warning) OR ((proc.stop.stat.health = HealthStatus.warning) OR (proc.moveKnownPosition.stat.health = HealthStatus.warning)))))))));
 stat.busy := F_BusyStatus(
     superState := TRUE,

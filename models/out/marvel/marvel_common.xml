@@ -458,9 +458,8 @@
             <values>
               <value name="unknown" value="0" />
               <value name="invalid_model" value="1" />
-              <value name="moving" value="2" />
-              <value name="awake" value="3" />
-              <value name="sleeping" value="4" />
+              <value name="notRunning" value="2" />
+              <value name="running" value="3" />
             </values>
             <baseType><BYTE /></baseType>
           </enum>
@@ -4532,7 +4531,7 @@ END_IF;
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">Super state (TRUE if the super state is active, or if there is no super state)</xhtml>
                 </documentation>
               </variable>
-              <variable name="isMoving">
+              <variable name="isRunning">
                 <type><BOOL /></type>
                 <addData>
                   <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -4542,20 +4541,7 @@ END_IF;
                   </data>
                 </addData>
                 <documentation>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if moving</xhtml>
-                </documentation>
-              </variable>
-              <variable name="isAwake">
-                <type><BOOL /></type>
-                <addData>
-                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                    <Attributes>
-                      <Attribute Name="TcHmiSymbol.Show" Value="" />
-                    </Attributes>
-                  </data>
-                </addData>
-                <documentation>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if awake</xhtml>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
                 </documentation>
               </variable>
             </inputVars>
@@ -4577,12 +4563,10 @@ END_IF;
             <ST>
               <xhtml xmlns="http://www.w3.org/1999/xhtml">IF NOT(superState) THEN
     F_ActivityStatus := ActivityStatus.unknown;
-ELSIF isAwake AND isMoving THEN
-    F_ActivityStatus := ActivityStatus.moving;
-ELSIF isAwake AND (NOT(isMoving)) THEN
-    F_ActivityStatus := ActivityStatus.awake;
-ELSIF NOT(isAwake) THEN
-    F_ActivityStatus := ActivityStatus.sleeping;
+ELSIF NOT(isRunning) THEN
+    F_ActivityStatus := ActivityStatus.notRunning;
+ELSIF isRunning THEN
+    F_ActivityStatus := ActivityStatus.running;
 ELSE
     F_ActivityStatus := ActivityStatus.invalid_model;
 END_IF;

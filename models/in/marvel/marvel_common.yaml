@@ -429,22 +429,14 @@
   ########################################################################################################################
   !STATUS ActivityStatus:
     variables:
-        isMoving:
-            type: t_bool
-            comment: "TRUE if moving"
-        isAwake:
-            type: t_bool
-            comment: "TRUE if awake"
+        isRunning: { type: t_bool }
     states:
-        moving:
-            expr: !AND [isAwake, isMoving]
-            comment: "Opening"
-        awake:
-            expr: !AND [isAwake, !NOT [isMoving]]
-            comment: "Opening"
-        sleeping:
-            expr: !NOT [isAwake]
-            comment: "Opening"
+        notRunning:
+            expr: !NOT [isRunning]
+            comment: "All parts of Marvel are powered off"
+        running:
+            expr: isRunning
+            comment: "At least one part of Marvel is powered on"
 
 
 

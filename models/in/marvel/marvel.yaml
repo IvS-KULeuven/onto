@@ -64,6 +64,7 @@
           
       variables_read_only:
           noOfFailedOperatorChanges   : { type: t_uint16                    , comment: "How many times has a wrong password been entered?"}
+          shuttersStatus              : { type: t_string                    , comment: "Summary of the domes open/closed state" }
       #    config                      : { type: MTCSConfig                  , comment: "Active configuration of the ServicesTiming subsystem" }
       parts:
           u1:
@@ -85,6 +86,8 @@
                                         stat:
                                             attributes:
                                                 aperture: { type: marvel_common.ApertureStatus }
+                                                health:   { type: marvel_common.HealthStatus }
+                                                busy:     { type: marvel_common.BusyStatus }
                                         proc:
                                             attributes:
                                                 open:   { attributes: { isEnabled: { type: t_bool } } }
@@ -106,7 +109,7 @@
               arguments:
                   number                  : { type: t_uint8 }
                   operator_ref            : { type: marvel_common.OperatorStatus          , expand: false }
-                  activity_ref      : { type: marvel_common.ActivityStatus          , expand: false }
+                  activity_ref            : { type: marvel_common.ActivityStatus          , expand: false }
                   services_ref            : { type: marvel_services.Services              , expand: false }
               attributes:
                   parts:
@@ -118,6 +121,8 @@
                                         stat:
                                             attributes:
                                                 aperture: { type: marvel_common.ApertureStatus }
+                                                health:   { type: marvel_common.HealthStatus }
+                                                busy:     { type: marvel_common.BusyStatus }
                                         proc:
                                             attributes:
                                                 open:   { attributes: { isEnabled: { type: t_bool } } }
@@ -151,6 +156,8 @@
                                         stat:
                                             attributes:
                                                 aperture: { type: marvel_common.ApertureStatus }
+                                                health:   { type: marvel_common.HealthStatus }
+                                                busy:     { type: marvel_common.BusyStatus }
                                         proc:
                                             attributes:
                                                 open:   { attributes: { isEnabled: { type: t_bool } } }
@@ -184,11 +191,13 @@
                                         stat:
                                             attributes:
                                                 aperture: { type: marvel_common.ApertureStatus }
+                                                health:   { type: marvel_common.HealthStatus }
+                                                busy:     { type: marvel_common.BusyStatus }
                                         proc:
                                             attributes:
                                                 open:   { attributes: { isEnabled: { type: t_bool } } }
                                                 close:  { attributes: { isEnabled: { type: t_bool } } }
-                                                stop:   { attributes: { isEnabled: { type: t_bool } } } 
+                                                stop:   { attributes: { isEnabled: { type: t_bool } } }
                   stat:
                       attributes:
                           health          : { type: marvel_common.HealthStatus }
@@ -219,6 +228,9 @@
           operator                    : { type: marvel_common.OperatorStatus }
           passwordHealth              : { type: marvel_common.HealthStatus }
           activity                    : { type: marvel_common.ActivityStatus }
+          shuttersHealth              : { type: marvel_common.HealthStatus }
+          shuttersBusy                : { type: marvel_common.BusyStatus }
+          shuttersAperture            : { type: marvel_common.ApertureStatus }
       proc:
           initialize                  : { type: marvel_common.Process                         , comment: "Start initializing the whole MTCS" }      
           lock                        : { type: marvel_common.Process                         , comment: "Lock the whole MTCS" }
@@ -306,3 +318,33 @@
           busy:
               superState          : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ] ]
               isBusy              : !MTCS_SUMMARIZE_BUSY [ parts.u1, parts.u2, parts.u3, parts.u4, parts.services ]
+          shuttersHealth:
+              superState          : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ] ]
+              isGood              : !MTCS_SUMMARIZE_GOOD [ parts.u1.parts.dome.parts.shutter, 
+                                                           parts.u2.parts.dome.parts.shutter, 
+                                                           parts.u3.parts.dome.parts.shutter, 
+                                                           parts.u4.parts.dome.parts.shutter ]
+              hasWarning          : !MTCS_SUMMARIZE_WARN [ parts.u1.parts.dome.parts.shutter, 
+                                                           parts.u2.parts.dome.parts.shutter, 
+                                                           parts.u3.parts.dome.parts.shutter, 
+                                                           parts.u4.parts.dome.parts.shutter ]
+          shuttersBusy:
+              superState          : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ] ]
+              isBusy              : !MTCS_SUMMARIZE_BUSY [ parts.u1.parts.dome.parts.shutter, 
+                                                           parts.u2.parts.dome.parts.shutter, 
+                                                           parts.u3.parts.dome.parts.shutter, 
+                                                           parts.u4.parts.dome.parts.shutter ]
+          shuttersAperture:
+              superState          : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ] ]
+              isOpen              : !OR [ !EQ [ parts.u1.parts.dome.parts.shutter.stat.aperture, marvel_common.ApertureStatus.open ],
+                                          !EQ [ parts.u2.parts.dome.parts.shutter.stat.aperture, marvel_common.ApertureStatus.open ],
+                                          !EQ [ parts.u3.parts.dome.parts.shutter.stat.aperture, marvel_common.ApertureStatus.open ],
+                                          !EQ [ parts.u4.parts.dome.parts.shutter.stat.aperture, marvel_common.ApertureStatus.open ],
+                                          !EQ [ parts.u1.parts.dome.parts.shutter.stat.aperture, marvel_common.ApertureStatus.partiallyOpen ],
+                                          !EQ [ parts.u2.parts.dome.parts.shutter.stat.aperture, marvel_common.ApertureStatus.partiallyOpen ],
+                                          !EQ [ parts.u3.parts.dome.parts.shutter.stat.aperture, marvel_common.ApertureStatus.partiallyOpen ],
+                                          !EQ [ parts.u4.parts.dome.parts.shutter.stat.aperture, marvel_common.ApertureStatus.partiallyOpen ] ]
+              isClosed            : !AND [ !EQ [ parts.u1.parts.dome.parts.shutter.stat.aperture, marvel_common.ApertureStatus.closed ],
+                                           !EQ [ parts.u2.parts.dome.parts.shutter.stat.aperture, marvel_common.ApertureStatus.closed ],
+                                           !EQ [ parts.u3.parts.dome.parts.shutter.stat.aperture, marvel_common.ApertureStatus.closed ],
+                                           !EQ [ parts.u4.parts.dome.parts.shutter.stat.aperture, marvel_common.ApertureStatus.closed ] ]

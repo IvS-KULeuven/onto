@@ -162,16 +162,17 @@
   
   !STATEMACHINE Dome:
     references:
-      operator_ref            : { type: marvel_common.OperatorStatus        , comment: "Reference to the operator (observer/tech)"}
-      activity_ref            : { type: marvel_common.ActivityStatus        , comment: "Shared activity status"}
-      services_ref            : { type: marvel_services.Services          , comment: "Shared services", expand: false}
-      config_ref              : { type: DomeConfig                        , comment: "Active configuration of the cover" }
-      telescopeAzi_ref        : { type: marvel_common.AngularPosition       , comment: "Azimuth target position of the telescope Axes"}
+      operator_ref            : { type: marvel_common.OperatorStatus              , comment: "Reference to the operator (observer/tech)"}
+      activity_ref            : { type: marvel_common.ActivityStatus              , comment: "Shared activity status"}
+      services_ref            : { type: marvel_services.Services                  , comment: "Shared services", expand: false}
+      config_ref              : { type: DomeConfig                                , comment: "Active configuration of the cover" }
+      telescopeAzi_ref        : { type: marvel_common.AngularPosition             , comment: "Azimuth target position of the telescope Axes"}
     variables_read_only:
-      isTrackingTelescope         : { type: t_bool                            , comment: "True if the dome is tracking the telescope" }
-      isAtKnownPosition           : { type: t_bool                            , comment: "True if the dome is at a known position" }
-      actualKnownPositionName     : { type: t_string                          , comment: "Name of the known position if isAtKnownPosition is True" }
-      telescopeDistance           : { type: marvel_common.AngularPosition       , comment: "Distance to the telescope azi"}
+      isTrackingTelescope         : { type: t_bool                                , comment: "True if the dome is tracking the telescope" }
+      isAtKnownPosition           : { type: t_bool                                , comment: "True if the dome is at a known position" }
+      actualKnownPositionName     : { type: t_string                              , comment: "Name of the known position if isAtKnownPosition is True" }
+      telescopeDistance           : { type: marvel_common.AngularPosition         , comment: "Distance to the telescope azi"}
+      contactor                   : { type: t_bool                                , comment: "Contactor relay signal", address: "%Q*" }
     parts:
       shutter:
         comment                   : "Shutter mechanism"
@@ -479,7 +480,7 @@
   !STATEMACHINE DomeRotation:
     typeOf: DomeParts.rotation
     variables_read_only:
-      isSimulated                 : { type: t_bool                              , comment: "True if the rotation is being simulated" }
+      isSimulated                 : { type: t_bool                                , comment: "True if the rotation is being simulated" }
       targetPos                   : { type: marvel_common.AngularPosition         , comment: "Target azimuth"}
       targetDistance              : { type: marvel_common.AngularPosition         , comment: "Distance to the setpoint"}
       actPos                      : { type: marvel_common.AngularPosition         , comment: "The actual position (same as parts.masterAxis!)", expand: false }
@@ -498,7 +499,7 @@
     proc:
       reset                       : { type: marvel_common.Process                 , comment: "Reset errors" }
       stop                        : { type: marvel_common.Process                 , comment: "Stop the rotation" }
-      moveAbsolute                : { type: DomeMoveProcess                     , comment: "Move absolute" }
+      moveAbsolute                : { type: DomeMoveProcess                       , comment: "Move absolute" }
     calls:
       reset:
         isEnabled                 : !EQ [ stat.busy, marvel_common.BusyStatus.idle ]

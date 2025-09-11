@@ -347,6 +347,51 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
+            <variable name="shuttersHealth">
+              <type><derived name="HealthStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="shuttersBusy">
+              <type><derived name="BusyStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="shuttersAperture">
+              <type><derived name="ApertureStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
           </struct>
         </baseType>
       </dataType>
@@ -543,6 +588,21 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">How many times has a wrong password been entered?</xhtml>
               </documentation>
             </variable>
+            <variable name="shuttersStatus">
+              <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Summary of the domes open/closed state</xhtml>
+              </documentation>
+            </variable>
             <variable name="stat">
               <type><derived name="MarvelStatuses" /></type>
               <addData>
@@ -618,6 +678,17 @@ stat.health := F_HealthStatus(
 stat.busy := F_BusyStatus(
     superState := NOT(stat.init = InitializationStatus.shutdown),
     isBusy := (parts.u1.stat.busy = BusyStatus.busy) OR ((parts.u2.stat.busy = BusyStatus.busy) OR ((parts.u3.stat.busy = BusyStatus.busy) OR ((parts.u4.stat.busy = BusyStatus.busy) OR (parts.services.stat.busy = BusyStatus.busy)))));
+stat.shuttersHealth := F_HealthStatus(
+    superState := NOT(stat.init = InitializationStatus.shutdown),
+    isGood := ((parts.u1.parts.dome.parts.shutter.stat.health = HealthStatus.good) OR (parts.u1.parts.dome.parts.shutter.stat.health = HealthStatus.warning)) AND (((parts.u2.parts.dome.parts.shutter.stat.health = HealthStatus.good) OR (parts.u2.parts.dome.parts.shutter.stat.health = HealthStatus.warning)) AND (((parts.u3.parts.dome.parts.shutter.stat.health = HealthStatus.good) OR (parts.u3.parts.dome.parts.shutter.stat.health = HealthStatus.warning)) AND ((parts.u4.parts.dome.parts.shutter.stat.health = HealthStatus.good) OR (parts.u4.parts.dome.parts.shutter.stat.health = HealthStatus.warning)))),
+    hasWarning := (parts.u1.parts.dome.parts.shutter.stat.health = HealthStatus.warning) OR ((parts.u2.parts.dome.parts.shutter.stat.health = HealthStatus.warning) OR ((parts.u3.parts.dome.parts.shutter.stat.health = HealthStatus.warning) OR (parts.u4.parts.dome.parts.shutter.stat.health = HealthStatus.warning))));
+stat.shuttersBusy := F_BusyStatus(
+    superState := NOT(stat.init = InitializationStatus.shutdown),
+    isBusy := (parts.u1.parts.dome.parts.shutter.stat.busy = BusyStatus.busy) OR ((parts.u2.parts.dome.parts.shutter.stat.busy = BusyStatus.busy) OR ((parts.u3.parts.dome.parts.shutter.stat.busy = BusyStatus.busy) OR (parts.u4.parts.dome.parts.shutter.stat.busy = BusyStatus.busy))));
+stat.shuttersAperture := F_ApertureStatus(
+    superState := NOT(stat.init = InitializationStatus.shutdown),
+    isOpen := (parts.u1.parts.dome.parts.shutter.stat.aperture = ApertureStatus.open) OR ((parts.u2.parts.dome.parts.shutter.stat.aperture = ApertureStatus.open) OR ((parts.u3.parts.dome.parts.shutter.stat.aperture = ApertureStatus.open) OR ((parts.u4.parts.dome.parts.shutter.stat.aperture = ApertureStatus.open) OR ((parts.u1.parts.dome.parts.shutter.stat.aperture = ApertureStatus.partiallyOpen) OR ((parts.u2.parts.dome.parts.shutter.stat.aperture = ApertureStatus.partiallyOpen) OR ((parts.u3.parts.dome.parts.shutter.stat.aperture = ApertureStatus.partiallyOpen) OR (parts.u4.parts.dome.parts.shutter.stat.aperture = ApertureStatus.partiallyOpen))))))),
+    isClosed := (parts.u1.parts.dome.parts.shutter.stat.aperture = ApertureStatus.closed) AND ((parts.u2.parts.dome.parts.shutter.stat.aperture = ApertureStatus.closed) AND ((parts.u3.parts.dome.parts.shutter.stat.aperture = ApertureStatus.closed) AND (parts.u4.parts.dome.parts.shutter.stat.aperture = ApertureStatus.closed))));
 proc.initialize( isEnabled := NOT(stat.init = InitializationStatus.initializing) );
 proc.lock( isEnabled := (stat.operator = OperatorStatus.tech) AND (stat.init = InitializationStatus.initialized) );
 proc.unlock( isEnabled := (stat.operator = OperatorStatus.tech) AND (stat.init = InitializationStatus.locked) );
