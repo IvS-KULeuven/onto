@@ -519,6 +519,57 @@
           </data>
         </addData>
       </dataType>
+      <dataType name="ELL14Command">
+        <baseType>
+          <enum>
+            <values>
+              <value name="HOME_FWD" value="0" />
+              <value name="HOME_BWD" value="1" />
+              <value name="SEARCHFREQ_MOT1" value="2" />
+              <value name="SEARCHFREQ_MOT2" value="3" />
+              <value name="GET_STATUS" value="4" />
+              <value name="GET_POSITION" value="5" />
+              <value name="_END_" value="6" />
+            </values>
+          </enum>
+        </baseType>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+            <Attributes>
+              <Attribute Name="qualified_only" Value="" />
+            </Attributes>
+          </data>
+        </addData>
+      </dataType>
+      <dataType name="ELL14StatusCode">
+        <baseType>
+          <enum>
+            <values>
+              <value name="OK" value="0" />
+              <value name="COMM_TIMEOUT" value="1" />
+              <value name="MECH_TIMEOUT" value="2" />
+              <value name="CMD_ERROR" value="3" />
+              <value name="VALUE_OUT_OF_RANGE" value="4" />
+              <value name="MOD_ISOLATED" value="5" />
+              <value name="MOD_OUT_OF_ISOLATION" value="6" />
+              <value name="INIT_ERROR" value="7" />
+              <value name="THERMAL_ERROR" value="8" />
+              <value name="BUSY" value="9" />
+              <value name="SENSOR_ERROR" value="10" />
+              <value name="MOTOR_ERROR" value="11" />
+              <value name="OUT_OF_RANGE" value="12" />
+              <value name="OVERCURRENT_ERROR" value="13" />
+            </values>
+          </enum>
+        </baseType>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+            <Attributes>
+              <Attribute Name="qualified_only" Value="" />
+            </Attributes>
+          </data>
+        </addData>
+      </dataType>
       <dataType name="BaseAxisProcesses">
         <baseType>
           <struct>
@@ -1083,6 +1134,51 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Send 2 software triggers, with a given duration in between</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="ELL14StageProcesses">
+        <baseType>
+          <struct>
+            <variable name="moveAbs">
+              <type><derived name="Arg1LrealProcess" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Move absolute to the specified position in °</xhtml>
+              </documentation>
+            </variable>
+            <variable name="moveRel">
+              <type><derived name="Arg1LrealProcess" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Move relative with the specified offset in °</xhtml>
+              </documentation>
+            </variable>
+            <variable name="send">
+              <type><derived name="Ell114SendProcess" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Send raw command</xhtml>
               </documentation>
             </variable>
           </struct>
@@ -1965,6 +2061,42 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="ELL14StageStatuses">
+        <baseType>
+          <struct>
+            <variable name="health">
+              <type><derived name="HealthStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Is the device in a healthy state?</xhtml>
+              </documentation>
+            </variable>
+            <variable name="busy">
+              <type><derived name="BusyStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Is the device in a busy state?</xhtml>
               </documentation>
             </variable>
           </struct>
@@ -3621,6 +3753,44 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Duration in seconds of the pulse</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="Arg1LrealProcessArgs">
+        <baseType>
+          <struct>
+            <variable name="setpoint">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">New setpoint value</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="Ell114SendProcessArgs">
+        <baseType>
+          <struct>
+            <variable name="cmd">
+              <type><derived name="ELL14Command" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The command to be sent</xhtml>
               </documentation>
             </variable>
           </struct>
@@ -6683,7 +6853,7 @@ percent(
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE to use a hardware reverse limit switch</xhtml>
               </documentation>
             </variable>
-            <variable name="posLimitSwitch" address="%I*">
+            <variable name="posLimitSwitchSig" address="%I*">
               <type><BOOL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -6694,10 +6864,10 @@ percent(
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Limit switch in forward direction (e.g. at +105 mm for a stage of 100 mm travel range</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Limit switch raw signal in forward direction (e.g. at +105 mm for a stage of 100 mm travel range</xhtml>
               </documentation>
             </variable>
-            <variable name="negLimitSwitch" address="%I*">
+            <variable name="negLimitSwitchSig" address="%I*">
               <type><BOOL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -6708,7 +6878,7 @@ percent(
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Limit switch in negative direction (e.g. at or a little bit below 0 mm)</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Limit switch raw signal in negative direction (e.g. at or a little bit below 0 mm)</xhtml>
               </documentation>
             </variable>
             <variable name="invertPosLimitSwitch">
@@ -6722,7 +6892,7 @@ percent(
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Invert positive limit switch</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Invert positive limit switch raw signal</xhtml>
               </documentation>
             </variable>
             <variable name="invertNegLimitSwitch">
@@ -6736,7 +6906,7 @@ percent(
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Invert positive limit switch</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Invert positive limit switch raw signal</xhtml>
               </documentation>
             </variable>
           </inputVars>
@@ -6800,6 +6970,36 @@ percent(
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Axis error ID</xhtml>
               </documentation>
             </variable>
+            <variable name="posLimitSwitch">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Limit switch in forward direction (e.g. at +105 mm for a stage of 100 mm travel range</xhtml>
+              </documentation>
+            </variable>
+            <variable name="negLimitSwitch">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Limit switch in negative direction (e.g. at or a little bit below 0 mm)</xhtml>
+              </documentation>
+            </variable>
             <variable name="stat">
               <type><derived name="BaseAxisStatuses" /></type>
               <addData>
@@ -6830,7 +7030,7 @@ percent(
           <inOutVars>
           </inOutVars>
           <localVars>
-            <variable name="posLimitSwitch_ro">
+            <variable name="posLimitSwitchSig_ro">
               <type><BOOL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -6844,7 +7044,7 @@ percent(
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="negLimitSwitch_ro">
+            <variable name="negLimitSwitchSig_ro">
               <type><BOOL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -6901,8 +7101,8 @@ proc.writeParameter( isEnabled := isEnabled AND (stat.busy = BusyStatus.idle) );
 proc.writeBoolParameter( isEnabled := isEnabled AND (stat.busy = BusyStatus.idle) );
 proc.probeStart( isEnabled := isEnabled AND (stat.busy = BusyStatus.idle) );
 proc.probeAbort( isEnabled := isEnabled AND (stat.busy = BusyStatus.idle) );
-posLimitSwitch_ro := posLimitSwitch;
-negLimitSwitch_ro := negLimitSwitch;
+posLimitSwitchSig_ro := posLimitSwitchSig;
+negLimitSwitchSig_ro := negLimitSwitchSig;
 </xhtml>
           </ST>
         </body>
@@ -11305,6 +11505,179 @@ proc.reset( isEnabled := TRUE );
 proc.setParam( isEnabled := TRUE );
 proc.trigger( isEnabled := TRUE );
 proc.pulseTrigger( isEnabled := TRUE );
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+        </addData>
+      </pou>
+      <pou name="SM_ELL14Stage" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="simulated">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the device must be simulated</xhtml>
+              </documentation>
+            </variable>
+            <variable name="isEnabled">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                    <Attribute Name="TcHmiSymbol.Hide" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Is control enabled?</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="actualStatus">
+              <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Current status description</xhtml>
+              </documentation>
+            </variable>
+            <variable name="previousStatus">
+              <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Hide" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Previous status description</xhtml>
+              </documentation>
+            </variable>
+            <variable name="commError">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the communication is in error</xhtml>
+              </documentation>
+            </variable>
+            <variable name="homed">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the stage was homed</xhtml>
+              </documentation>
+            </variable>
+            <variable name="position">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Actual position in °</xhtml>
+              </documentation>
+            </variable>
+            <variable name="statusCode">
+              <type><derived name="ELL14StatusCode" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Actual status</xhtml>
+              </documentation>
+            </variable>
+            <variable name="stat">
+              <type><derived name="ELL14StageStatuses" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Statuses of the state machine</xhtml>
+              </documentation>
+            </variable>
+            <variable name="proc">
+              <type><derived name="ELL14StageProcesses" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Processes of the state machine</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <inOutVars>
+          </inOutVars>
+          <localVars>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">stat.health := F_HealthStatus(
+    superState := TRUE,
+    hasWarning := FALSE,
+    isGood := (NOT(commError)) AND ((statusCode = ELL14StatusCode.OK) OR (statusCode = ELL14StatusCode.BUSY)));
+stat.busy := F_BusyStatus(
+    superState := TRUE,
+    isBusy := statusCode = ELL14StatusCode.BUSY);
+proc.moveAbs( isEnabled := isEnabled AND homed );
+proc.moveRel( isEnabled := isEnabled AND homed );
+proc.send( isEnabled := isEnabled );
 </xhtml>
           </ST>
         </body>
@@ -16276,6 +16649,302 @@ END_IF;
           </data>
         </addData>
       </pou>
+      <pou name="Arg1LrealProcess" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="set">
+              <type><derived name="Arg1LrealProcessArgs" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Arguments to be set, before writing do_request TRUE</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="get">
+              <type><derived name="Arg1LrealProcessArgs" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Arguments in use by the process, if do_request was accepted</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <inOutVars>
+          </inOutVars>
+          <localVars>
+          </localVars>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/pouinheritance" handleUnknown="implementation">
+              <Inheritance>
+                <Extends>BaseProcess</Extends>
+              </Inheritance>
+            </data>
+          </addData>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+    do_request_result := request( setpoint := set.setpoint );
+    do_request := FALSE;
+END_IF;
+SUPER^();
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="start">
+              <interface>
+                <inputVars>
+                  <variable name="setpoint">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="TcHmiSymbol.Show" Value="" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">New setpoint value</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.setpoint := setpoint;
+THIS^.stat.busy := BusyStatus.busy;
+THIS^.stat.health := HealthStatus.good;
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="request">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                  <variable name="setpoint">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="TcHmiSymbol.Show" Value="" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">New setpoint value</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF THIS^.stat.enabled = EnabledStatus.enabled THEN
+    request := RequestResults.ACCEPTED;
+    THIS^.start( setpoint := setpoint );
+ELSE
+    request := RequestResults.REJECTED;
+END_IF;
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+        </addData>
+      </pou>
+      <pou name="Ell114SendProcess" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="set">
+              <type><derived name="Ell114SendProcessArgs" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Arguments to be set, before writing do_request TRUE</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="get">
+              <type><derived name="Ell114SendProcessArgs" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Arguments in use by the process, if do_request was accepted</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <inOutVars>
+          </inOutVars>
+          <localVars>
+          </localVars>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/pouinheritance" handleUnknown="implementation">
+              <Inheritance>
+                <Extends>BaseProcess</Extends>
+              </Inheritance>
+            </data>
+          </addData>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+    do_request_result := request( cmd := set.cmd );
+    do_request := FALSE;
+END_IF;
+SUPER^();
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="start">
+              <interface>
+                <inputVars>
+                  <variable name="cmd">
+                    <type><derived name="ELL14Command" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="TcHmiSymbol.Show" Value="" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">The command to be sent</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.cmd := cmd;
+THIS^.stat.busy := BusyStatus.busy;
+THIS^.stat.health := HealthStatus.good;
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="request">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                  <variable name="cmd">
+                    <type><derived name="ELL14Command" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="TcHmiSymbol.Show" Value="" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">The command to be sent</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF THIS^.stat.enabled = EnabledStatus.enabled THEN
+    request := RequestResults.ACCEPTED;
+    THIS^.start( cmd := cmd );
+ELSE
+    request := RequestResults.REJECTED;
+END_IF;
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+        </addData>
+      </pou>
     </pous>
   </types>
   <instances>
@@ -16332,6 +17001,10 @@ END_IF;
             </Object>
             <Object Name="GigECameraSources">
             </Object>
+            <Object Name="ELL14Command">
+            </Object>
+            <Object Name="ELL14StatusCode">
+            </Object>
           </Folder>
           <Folder Name="Statuses">
           </Folder>
@@ -16350,6 +17023,8 @@ END_IF;
               <Object Name="ModbusRTUBusProcesses">
               </Object>
               <Object Name="GigECameraProcesses">
+              </Object>
+              <Object Name="ELL14StageProcesses">
               </Object>
             </Folder>
             <Folder Name="Statuses">
@@ -16396,6 +17071,8 @@ END_IF;
               <Object Name="ModbusRTUBusStatuses">
               </Object>
               <Object Name="GigECameraStatuses">
+              </Object>
+              <Object Name="ELL14StageStatuses">
               </Object>
             </Folder>
             <Object Name="SM_QuantityValue">
@@ -16488,6 +17165,8 @@ END_IF;
             </Object>
             <Object Name="SM_GigECamera">
             </Object>
+            <Object Name="SM_ELL14Stage">
+            </Object>
           </Folder>
           <Folder Name="Configs">
             <Object Name="HiHiLoLoAlarmConfig">
@@ -16556,6 +17235,10 @@ END_IF;
               <Object Name="GigECameraSetParamProcessArgs">
               </Object>
               <Object Name="GigECameraPulseTriggerArgs">
+              </Object>
+              <Object Name="Arg1LrealProcessArgs">
+              </Object>
+              <Object Name="Ell114SendProcessArgs">
               </Object>
             </Folder>
             <Object Name="Process">
@@ -16675,6 +17358,14 @@ END_IF;
               <Object Name="request" />
             </Object>
             <Object Name="GigECameraPulseTrigger">
+              <Object Name="start" />
+              <Object Name="request" />
+            </Object>
+            <Object Name="Arg1LrealProcess">
+              <Object Name="start" />
+              <Object Name="request" />
+            </Object>
+            <Object Name="Ell114SendProcess">
               <Object Name="start" />
               <Object Name="request" />
             </Object>

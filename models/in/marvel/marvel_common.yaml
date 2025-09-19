@@ -956,11 +956,11 @@
         usePosLimitSwitch   : { type: t_bool , initial: !BOOL FALSE , comment: "TRUE to use a hardware forward limit switch" }
         useNegLimitSwitch   : { type: t_bool , initial: !BOOL FALSE , comment: "TRUE to use a hardware reverse limit switch" }
         # homingType          : { type: HomingTypes                   , comment: "Type of homing (e.g. using homing switch, using limit switch, ...)" }
-        posLimitSwitch      : { type: t_bool, address: "%I*"        , comment: "Limit switch in forward direction (e.g. at +105 mm for a stage of 100 mm travel range" }
-        negLimitSwitch      : { type: t_bool, address: "%I*"        , comment: "Limit switch in negative direction (e.g. at or a little bit below 0 mm)" }
+        posLimitSwitchSig   : { type: t_bool, address: "%I*"        , comment: "Limit switch raw signal in forward direction (e.g. at +105 mm for a stage of 100 mm travel range" }
+        negLimitSwitchSig   : { type: t_bool, address: "%I*"        , comment: "Limit switch raw signal in negative direction (e.g. at or a little bit below 0 mm)" }
         # homingSwitch        : { type: t_bool, address: "%I*"        , comment: "Homing switch" }
-        invertPosLimitSwitch: { type: t_bool                        , comment: "Invert positive limit switch" }
-        invertNegLimitSwitch: { type: t_bool                        , comment: "Invert positive limit switch" }
+        invertPosLimitSwitch: { type: t_bool                        , comment: "Invert positive limit switch raw signal" }
+        invertNegLimitSwitch: { type: t_bool                        , comment: "Invert positive limit switch raw signal" }
         # invertHomingSwitch:   { type: t_bool                        , comment: "Invert positive limit switch" }
     variables:
         isGearingSupported  : { type: t_bool , initial: !BOOL FALSE , comment: "Is gearIn/gearOut supported?" }
@@ -969,6 +969,8 @@
     variables_read_only:
         isJogEnabled        : { type: t_bool                        , comment: "True if jog is enabled" }
         errorId             : { type: t_uint32                      , comment: "Axis error ID" }
+        posLimitSwitch      : { type: t_bool                        , comment: "Limit switch in forward direction (e.g. at +105 mm for a stage of 100 mm travel range" }
+        negLimitSwitch      : { type: t_bool                        , comment: "Limit switch in negative direction (e.g. at or a little bit below 0 mm)" }
     stat:
         busy                : { type: BusyStatus            , comment: "Is the NcAxis in a busy state?" }
         health              : { type: HealthStatus          , comment: "Is the NcAxis in a healthy state?" }
@@ -2096,3 +2098,90 @@
                                                   !EQ [ state, beckhoff_vision.ETcVnCameraState.TCVN_CS_CLOSING ]
                                                 ]
 
+  ########################################################################################################################
+  # Arg1LrealProcess
+  ########################################################################################################################
+  !PROCESS Arg1LrealProcess:
+    extends: BaseProcess
+    arguments:
+        setpoint     : { type: t_double     , comment: "New setpoint value" }
+
+
+  ########################################################################################################################
+  # ELL14Command
+  ########################################################################################################################
+  !ENUMERATION ELL14Command:
+    items:
+        - HOME_FWD
+        - HOME_BWD
+        - SEARCHFREQ_MOT1
+        - SEARCHFREQ_MOT2
+        - GET_STATUS
+        - GET_POSITION
+        - _END_
+
+  ########################################################################################################################
+  # Ell114CmdProcess
+  ########################################################################################################################
+  !PROCESS Ell114SendProcess:
+    extends: BaseProcess
+    arguments:
+        cmd : { type: ELL14Command, comment: "The command to be sent" }
+
+
+  ########################################################################################################################
+  # ELL14StatusCode
+  ########################################################################################################################
+  !ENUMERATION ELL14StatusCode:
+    items:
+        - OK                    # 0
+        - COMM_TIMEOUT          # 1
+        - MECH_TIMEOUT          # 2
+        - CMD_ERROR             # 3
+        - VALUE_OUT_OF_RANGE    # 4
+        - MOD_ISOLATED          # 5
+        - MOD_OUT_OF_ISOLATION  # 6
+        - INIT_ERROR            # 7
+        - THERMAL_ERROR         # 8
+        - BUSY                  # 9
+        - SENSOR_ERROR          # 10
+        - MOTOR_ERROR           # 11
+        - OUT_OF_RANGE          # 12
+        - OVERCURRENT_ERROR     # 13
+
+  ########################################################################################################################
+  # ELL14Stage
+  ########################################################################################################################
+  !STATEMACHINE ELL14Stage:
+    variables_hidden:
+        isEnabled           : { type: t_bool                        , comment: "Is control enabled?" }
+    variables:
+        simulated           : { type: t_bool                        , comment: "True if the device must be simulated" }
+    variables_read_only:
+        commError           : { type: t_bool                        , comment: "True if the communication is in error" }
+        homed               : { type: t_bool                        , comment: "True if the stage was homed" }
+        position            : { type: t_double                      , comment: "Actual position in °"  }
+        statusCode          : { type: ELL14StatusCode               , comment: "Actual status"  }
+    stat:
+        health              : { type: HealthStatus                  , comment: "Is the device in a healthy state?" }
+        busy                : { type: BusyStatus                    , comment: "Is the device in a busy state?" }
+    proc:
+        moveAbs             : { type: Arg1LrealProcess              , comment: "Move absolute to the specified position in °" }
+        moveRel             : { type: Arg1LrealProcess              , comment: "Move relative with the specified offset in °" }
+        send                : { type: Ell114SendProcess             , comment: "Send raw command" }
+    calls:
+        health:
+            superState      : !BOOL TRUE
+            hasWarning      : !BOOL FALSE
+            isGood          : !AND [ !NOT [ commError ],
+                                     !OR [ !EQ [ statusCode, ELL14StatusCode.OK ],
+                                           !EQ [ statusCode, ELL14StatusCode.BUSY ] ] ]
+        busy:
+            superState      : !BOOL TRUE
+            isBusy          : !EQ [ statusCode, ELL14StatusCode.BUSY ]
+        moveAbs:
+            isEnabled       : !AND [ isEnabled, homed ]
+        moveRel:
+            isEnabled       : !AND [ isEnabled, homed ]
+        send:
+            isEnabled       : isEnabled

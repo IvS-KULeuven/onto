@@ -22,9 +22,11 @@
   ########################################################################################################################
   !CONFIG FemConfig:
       items:
-          fsSim: { type: t_bool,  comment: "TRUE if the fibre selector axis is simulated" }
-          cmSim: { type: t_bool,  comment: "TRUE if the calibration mirror motor is simulated" }
-          temp:  { comment: "Temperatures config" }
+          fsSim     : { type: t_bool    , comment: "TRUE if the fibre selector axis is simulated" }
+          cmSim     : { type: t_bool    , comment: "TRUE if the calibration mirror motor is simulated" }
+          adc1Sim   : { type: t_bool    , comment: "TRUE if the ADC stage 1 is simulated" }
+          adc2Sim   : { type: t_bool    , comment: "TRUE if the ADC stage 2 is simulated" }
+          temp      : {                   comment: "Temperatures config" }
             
   ########################################################################################################################
   # FemTempConfig
@@ -107,6 +109,12 @@
           cm:
               type : marvel_common.MTS50Axis
               comment: "The calibration mirror stage"
+          adc1:
+              type : marvel_common.ELL14Stage
+              comment: "The ADC rotation 1 stage"
+          adc2:
+              type : marvel_common.ELL14Stage
+              comment: "The ADC rotation 1 stage"
           temp:
               type: FemTemperatures
               comment: "Temperatures measured by the front end"
@@ -133,14 +141,22 @@
               useNegLimitSwitch   : !BOOL TRUE
               invertPosLimitSwitch: !BOOL TRUE
               invertNegLimitSwitch: !BOOL TRUE
+          adc1:
+              isEnabled           : !AND [ !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ], 
+                                                  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ]
+              simulated           : config_ref.adc1Sim
+          adc2:
+              isEnabled           : !AND [ !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ], 
+                                                  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ]
+              simulated           : config_ref.adc2Sim
           temp:
               config_ref          : config_ref.temp
           health:
               superState          : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ] ]
               isGood              : !AND [ !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.initializingFailed ] ],
-                                           !MTCS_SUMMARIZE_GOOD [ parts.fs, parts.cm, parts.temp ]
+                                           !MTCS_SUMMARIZE_GOOD [ parts.fs, parts.cm, parts.temp, parts.adc1, parts.adc2 ]
                                          ]
-              hasWarning          : !MTCS_SUMMARIZE_WARN [ parts.fs, parts.cm, parts.temp ]
+              hasWarning          : !MTCS_SUMMARIZE_WARN [ parts.fs, parts.cm, parts.temp, parts.adc1, parts.adc2 ]
           busy:
               superState          : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ] ]
-              isBusy              : !MTCS_SUMMARIZE_BUSY [ parts.fs, parts.cm ]
+              isBusy              : !MTCS_SUMMARIZE_BUSY [ parts.fs, parts.cm, parts.adc1, parts.adc2 ]
