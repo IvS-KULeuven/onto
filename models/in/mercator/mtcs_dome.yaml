@@ -137,7 +137,7 @@
   ########################################################################################################################
   
   !STATEMACHINE Dome:
-    variables:
+    variables_input:
       editableConfig              : { type: DomeConfig                        , comment: "Editable configuration of the cover" }
     references:
       operatorStatus              : { type: mtcs_common.OperatorStatus        , comment: "Reference to the operator (observer/tech)"}
@@ -146,7 +146,7 @@
       safetyDomeShutter           : { type: mtcs_safety.SafetyDomeShutter     , comment: "Reference to the dome shutter safety", expand: false }
       safetyMotionBlocking        : { type: mtcs_safety.SafetyMotionBlocking  , comment: "Reference to the motion blocking safety", expand: false }
       safetyDomeAccess            : { type: mtcs_safety.SafetyDomeAccess      , comment: "Reference to the dome access safety", expand: false }
-    variables_read_only:
+    variables_output:
       config                      : { type: DomeConfig                        , comment: "Active configuration of the cover" }
       isPoweredOffByPersonInDome  : { type: t_bool                            , comment: "True if the dome is powered off due to a person entering the dome" }
       isTracking                  : { type: t_bool                            , comment: "True if the dome is tracking the telescope" }
@@ -316,7 +316,7 @@
   
   !STATEMACHINE DomeShutter:
     typeOf: DomeParts.shutter
-    variables:
+    variables_input:
       lowerOpenSignal         : { type: t_bool                            , comment: "False if the signal is not present OR if there is a communication error" }
       lowerClosedSignal       : { type: t_bool                            , comment: "False if the signal is not present OR if there is a communication error" }
       upperOpenSignal         : { type: t_bool                            , comment: "False if the signal is not present OR if there is a communication error" }
@@ -458,7 +458,7 @@
   
   !STATEMACHINE DomeRotation:
     typeOf: DomeParts.rotation
-    variables_read_only:
+    variables_output:
       actPos                      : { type: mtcs_common.AngularPosition         , comment: "The actual position (same as parts.masterAxis!)", expand: false }
       actVelo                     : { type: mtcs_common.AngularVelocity         , comment: "The actual velocity (same as parts.masterAxis!)", expand: false }
       actTorqueMaster             : { type: mtcs_common.Torque                  , comment: "The actual torque on the telescope axis by the master motor", expand: false }
@@ -543,7 +543,7 @@
   
   !STATEMACHINE DomeLight:
     typeOf: DomeParts.light
-    variables:
+    variables_input:
       switchOnSignal          : { type: t_bool                            , comment: "True if the light must be switched ON" }  
       
       switchOnInput           : { type: t_bool          , address: "%I*"  , comment: "External operation: switch ON" }

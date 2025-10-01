@@ -205,11 +205,11 @@
   ########################################################################################################################
   
   !STATEMACHINE Services:
-      variables:
+      variables_input:
           editableConfig                  : { type: ServicesConfig              , comment: "Editable configuration of the Services subsystem", expand: false }
       references:
           operator_ref                    : { type: marvel_common.OperatorStatus  , comment: "Shared operator status" }
-      variables_read_only:
+      variables_output:
           config                          : { type: ServicesConfig              , comment: "Active configuration of the Services subsystem" }
       parts:
           timing:
@@ -294,14 +294,14 @@
           longitude_ref                 : { type: t_double                        , comment: "Longitude as a reference"}
           latitude_ref                  : { type: t_double                        , comment: "Latitude as a reference"}
           height_ref                    : { type: t_double                        , comment: "Height as a reference"}
-      variables:
+      variables_output:
+          # I/O
           sysTime                       : { type: t_int64 , address: "%I*"        , comment: "TcCOM object nSysTime variable" }
           ntpExtTime                    : { type: t_int64 , address: "%I*"        , comment: "TcCOM object nExtTime variable" }
           ntpLastUpdated                : { type: t_int64 , address: "%I*"        , comment: "TcCOM object nLastUpdated variable" }
           sysToNtpExtTimeOffset         : { type: t_int64 , address: "%I*"        , comment: "TcCOM object nSysToExtTimeOffset variable" }
           isNtpConnected                : { type: t_bool  , address: "%I*"        , comment: "TRUE if NTP is connected" }
           isNtpSynchronized             : { type: t_bool  , address: "%I*"        , comment: "TRUE if NTP is synchronized" }
-      variables_read_only:
           # actual source
           source                        : { type: ServicesTimingTimeSource        , comment: "Actually used source"}
           utcFractionOfDay              : { type: t_double                        , comment: "UTC as a fraction of a day" }
@@ -339,7 +339,7 @@
   !STATEMACHINE ServicesMercatorMeteoMeasurement:
       references:
           config_ref      : { type: marvel_common.MeasurementConfig   , comment: "Reference to the config" }
-      variables:
+      variables_input:
           data            : { type: t_double                        , comment: "The measured data" }
           valid           : { type: t_bool                          , comment: "TRUE if the data is valid" }
           disconnected    : { type: t_bool                          , comment: "TRUE if the data provider is disconnected" }
@@ -373,12 +373,12 @@
       variables_hidden:
           fromMercator                : { type: marvel_common.MercatorMeteoExchange , address: "%I*" , comment: "The data exchanged by the Mercator telescope" }
           mercatorDisconnected        : { type: t_bool                            , address: "%I*" , comment: "The data exchanged by the Mercator telescope is invalid" }
-      variables_read_only:
+      variables_output:
           alertActive                 : { type: ServicesMeteoAlert                , comment: "The currently active alert" }
           unknownDataYellowTimeout    : { type: t_bool                            , comment: "True if the data is unknown longer than the yellow alert timeout" }
           unknownDataOrangeTimeout    : { type: t_bool                            , comment: "True if the data is unknown longer than the orange alert timeout" }
           unknownDataRedTimeout       : { type: t_bool                            , comment: "True if the data is unknown longer than the red alert timeout" }
-      variables:
+      local:
           weatherStatus               : { type: t_string                          , comment: "Weather status as a string" }
           mercatorConnected           : { type: t_bool                            , comment: "True if MTCS is connected" }
           # measurements

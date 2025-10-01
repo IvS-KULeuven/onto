@@ -166,6 +166,8 @@ class Library(Namespace):
             self.parts = Namespace("Parts", self)
             self.processes = Namespace("Processes", self)
             self.statuses = Namespace("Statuses", self)
+            if is_marvel():
+                self.models = Namespace("Models", self)
 
     class ProcessesNamespace(Namespace):
         def __init__(self, name, parent):
@@ -185,6 +187,8 @@ class Library(Namespace):
         self.processes = Library.ProcessesNamespace("Processes", self)   
         self.functionblocks = Namespace("Functionblocks", self)
         self.functions = Namespace("Functions", self)
+        if is_marvel():
+            self.models = Namespace("Models", self)
 
         # add the items
         for arg_k, arg_v in args.items():
@@ -214,6 +218,13 @@ class Library(Namespace):
             elif isinstance(arg_k, PROCESS):
                 proc = Process(arg_k.name, self, arg_v) 
                 self.processes[arg_k.name] = proc
+
+
+def add_models(lib: Library):
+    for sm in lib.statemachines:
+        m = Model(f"M_{sm.name}", lib.models, { 'items' : {}})
+        
+
 
 
 def check_args(name, args, allowed_args):
@@ -548,6 +559,9 @@ class Struct(Object):
                 subject = resolve(typeOf, self)
                 subject.type = self
 
+class Model(Struct):
+    def __init__(self, name, parent, args={}) -> None:
+        super().__init__(name, parent, args)
 
 class Call:
     """
@@ -690,7 +704,7 @@ class Status(FunctionBlock):
         logger.info(f"Creating {versions.CODEGEN_VERSION} Status {name}")
 
         super().__init__(name, parent)
-        check_args("Status", args, ["typeOf", "variables", "states", "render"])
+        check_args("Status", args, ["typeOf", "variables_input", "states", "render"])
 
         if 'typeOf' in args:
             typeOfList = args['typeOf']
@@ -717,8 +731,8 @@ class Status(FunctionBlock):
                 "initial": Bool(True)
             })
 
-        if "variables" in args:
-            for var_name, var_args in args["variables"].items():
+        if "variables_input" in args:
+            for var_name, var_args in args["variables_input"].items():
                 self.var_in[var_name] = Variable(var_name, self, var_args)
         
         if "states" in args:
@@ -783,21 +797,30 @@ class Statemachine(FunctionBlock):
             super().__init__(f"SM_{name}", parent)
         
         check_args("Statemachine", args,
-                   ["variables", "variables_hidden", "variables_read_only",
+                   ["variables_input", "variables_hidden", "variables_output",
                     "statuses", "parts", "local", "methods", "calls", statuses(),
                     "disabled_calls", "updates", "references", "extends",
                     processes(), "constraints", "render", "typeOf"])
         
         self.variables = {}
         self.variables_hidden = {}
-        self.variables_read_only = {}
+        self.variables_output = {}
         self.statuses = {}
         self.parts = {}
         self.methods = {}
         self.processes = {}
+        # self.model = None
+
+        # if is_marvel():
+        #     self.model = Model(f"M_{name}", self.parent, { "items" : {} })
+        #     # self.parent.register_child(f"M_{name}", self.model)
+        #     self.parent.statemachines.models[self.model.name] = self.model
 
         if "render" in args:
             self.render = args["render"]
+            # if is_marvel():
+            #     self.model.render = False
+            #     #self.model.render = self.render
         else:
             self.render = True
         
@@ -811,20 +834,23 @@ class Statemachine(FunctionBlock):
             v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_R, QUALIFIERS.HMI_SHOW]
             self.var_out['actualStatus'] = v
             self.vars['actualStatus'] = v
+            # if is_marvel():
+            #     self.model.items['actualStatus'] = Variable('actualStatus', self.model)
         
-        if "previousStatus" not in self.children:
-            v = Variable("previousStatus", self)
-            v.type = PRIMITIVE_TYPES.t_string
-            v.comment = "Previous status description"
-            if QUALIFIERS.HMI_SHOW in v.qualifiers:
-                v.qualifiers.remove(QUALIFIERS.HMI_SHOW)
-            v.qualifiers.append(QUALIFIERS.HMI_HIDE)
-            v.qualifiers.append(QUALIFIERS.OPC_UA_DEACTIVATE)
-            self.var_out["previousStatus"] = v
-            self.vars['previousStatus'] = v
+        if is_mtcs():
+            if "previousStatus" not in self.children:
+                v = Variable("previousStatus", self)
+                v.type = PRIMITIVE_TYPES.t_string
+                v.comment = "Previous status description"
+                if QUALIFIERS.HMI_SHOW in v.qualifiers:
+                    v.qualifiers.remove(QUALIFIERS.HMI_SHOW)
+                v.qualifiers.append(QUALIFIERS.HMI_HIDE)
+                v.qualifiers.append(QUALIFIERS.OPC_UA_DEACTIVATE)
+                self.var_out["previousStatus"] = v
+                self.vars['previousStatus'] = v
 
-        if "variables" in args:
-            for var_name, var in args['variables'].items():
+        if "variables_input" in args:
+            for var_name, var in args['variables_input'].items():
                 v = Variable(var_name, self, var)
                 if QUALIFIERS.OPC_UA_ACTIVATE not in v.qualifiers:
                     v.qualifiers.append(QUALIFIERS.OPC_UA_ACTIVATE)
@@ -836,9 +862,12 @@ class Statemachine(FunctionBlock):
                     v.qualifiers.append(QUALIFIERS.HMI_SHOW)
                 self.var_in[var_name] = v
                 self.vars[var_name] = v
+                # if is_marvel():
+                #     if QUALIFIERS.HMI_SHOW in v.qualifiers:
+                #         self.model.items[var_name] = Variable(var_name, self.model)
 
-        if "variables_read_only" in args:
-            for var_name, var in args['variables_read_only'].items():
+        if "variables_output" in args:
+            for var_name, var in args['variables_output'].items():
                 v = Variable(var_name, self, var)
                 if QUALIFIERS.OPC_UA_ACTIVATE not in v.qualifiers:
                     v.qualifiers.append(QUALIFIERS.OPC_UA_ACTIVATE)
@@ -848,6 +877,9 @@ class Statemachine(FunctionBlock):
                     v.qualifiers.append(QUALIFIERS.HMI_SHOW)
                 self.var_out[var_name] = v
                 self.vars[var_name] = v
+                # if is_marvel():
+                #     if QUALIFIERS.HMI_SHOW in v.qualifiers:
+                #         self.model.items[var_name] = Variable(var_name, self.model)
 
         if "variables_hidden" in args:
             for var_name, var in args['variables_hidden'].items():
@@ -890,6 +922,9 @@ class Statemachine(FunctionBlock):
                     "type": f'{name}Statuses'})
             for status_name in args[statuses()]:
                 self.statuses[status_name] = self.var_out[statuses()].get_child(status_name)
+            
+            # if is_marvel():
+            #     self.model.items[statuses()] = Variable(name=statuses(), parent=self.model, args = {"type": f'{name}Statuses'})
 
         if "parts" in args:
             struct = Struct(
@@ -917,6 +952,23 @@ class Statemachine(FunctionBlock):
                     pprint.pprint(struct.items["io"].__dict__)
                     print("=========")
                     raise
+            
+            # if is_marvel():
+            #     m_struct = Struct(
+            #         name = f'M_{name}Parts',
+            #         parent = self.parent,
+            #         args = { "items" : {} })
+            #     self.parent.statemachines.models[m_struct.name] = m_struct
+            #     self.model.items['parts'] = Variable('parts', self.model, { 'type' : f'M_{name}Parts' })
+            #     for part_name in args['parts']:
+            #         m_struct.items[part_name] = Variable(part_name, m_struct)
+            #         t = self.var_out["parts"].get_child(part_name).type
+            #         if t is not None:
+            #             m_struct.items[part_name].type = t
+
+            #     #for item_name, item in struct.items.items():
+            #     #     m_struct.items[item_name] = Variable(f'M_{item_name}', m_struct, { 'type': f'M_{item.type.name}' })
+
 
         if "disabled_calls" in args:
             for disabled_call in args["disabled_calls"]:
@@ -1175,6 +1227,7 @@ class Statemachine(FunctionBlock):
             for typeOf in typeOfList:
                 subject = resolve(typeOf, self)
                 subject.type = main_sm
+
         
 
 # create the global LogBuffer struct
@@ -1218,12 +1271,12 @@ class Process(FunctionBlock):
             super().__init__(name, parent, { "extends" : f"{get_common_lib()}.BaseProcess" })
         
         check_args("Process", args,
-                   ["extends", "arguments", "variables", "variables_hidden", "references"])
+                   ["extends", "arguments", "variables_input", "variables_hidden", "references"])
         
         self.request = None
         
-        if "variables" in args:
-            for var_name, var in args['variables'].items():
+        if "variables_input" in args:
+            for var_name, var in args['variables_input'].items():
                 v = Variable(var_name, self, var)
                 self.var_in[var_name] = v
         
@@ -1244,7 +1297,7 @@ class Process(FunctionBlock):
             self.parent.processes.args[struct.name] = struct
 
         if is_mtcs():
-            if not ("variables" in args or "arguments" in args):
+            if not ("variables_input" in args or "arguments" in args):
                 
                 self.var_local["testVar"] = Variable(
                     "testVar", 
@@ -1410,8 +1463,8 @@ def make_marvel_status(name, parent, args={}):
             "initial": Bool(True)
         })
 
-    if "variables" in args:
-        for var_name, var_args in args["variables"].items():
+    if "variables_input" in args:
+        for var_name, var_args in args["variables_input"].items():
             function.var_in[var_name] = Variable(var_name, function, var_args)
     
     function.implementation = []

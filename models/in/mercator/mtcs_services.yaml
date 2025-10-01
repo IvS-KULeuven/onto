@@ -796,12 +796,12 @@
   ########################################################################################################################
   
   !STATEMACHINE Services:
-      variables:
+      variables_input:
           editableConfig                  : { type: ServicesConfig              , comment: "Editable configuration of the Services subsystem", expand: false }
       references:
           operatorStatus                  : { type: mtcs_common.OperatorStatus  , comment: "Shared operator status" }
           domeApertureStatus              : { type: mtcs_common.ApertureStatus  , comment: "Is the dome open or closed?", expand: false }
-      variables_read_only:
+      variables_output:
           config                          : { type: ServicesConfig              , comment: "Active configuration of the Services subsystem" }
       parts:
           timing:
@@ -911,14 +911,14 @@
   
   !STATEMACHINE ServicesTiming:
       typeOf                              : [ ServicesParts.timing ]
-      variables:
+      variables_input:
           fromEL6688                      : { type: mtcs_tmc.TmcFromIoEL6688      , address: "%I*" , comment: "Data from the EL6688", expand: false}
           fromEcatMaster                  : { type: mtcs_tmc.TmcFromIoEcatMaster  , address: "%I*" , comment: "Data from the EtherCAT master", expand: false}
           fromCppTiming                   : { type: mtcs_tmc.TmcToPlcTiming       , address: "%I*" , comment: "Data from the C++ task", expand: false}
       references:
           operatorStatus                  : { type: mtcs_common.OperatorStatus    , comment: "Shared operator status"}
           config                          : { type: ServicesTimingConfig          , comment: "The config" }
-      variables_read_only:
+      variables_output:
           toCppTiming                     : { type: mtcs_tmc.TmcFromPlcTiming     , address: "%Q*" , comment: "Data to the C++ task", expand: false}
           # actual source
           utcDateString                   : { type: t_string                      , comment: "UTC date as a string of format YYYY-MM-DD" }
@@ -948,7 +948,7 @@
   
   !STATEMACHINE ServicesTimingSerialInfo:
       typeOf                          : [ ServicesTimingParts.serialInfo ]
-      variables_read_only:
+      variables_output:
           serialTimeout               : { type: t_bool    , comment: "Is the serial data not being received within time?" }
           comError                    : { type: t_bool    , comment: "Is there any problem with the COM port?" }
           comErrorID                  : { type: t_int16   , comment: "COM error id (see Beckhoff ComError_t)" }
@@ -1025,11 +1025,11 @@
   # ServicesMeteoMeasurement
   ########################################################################################################################
   !STATEMACHINE ServicesMeteoMeasurement:
-      variables:
+      variables_input:
           id              : { type: ServicesMeteoId                 , comment: "ID" }
       variables_hidden:
           inputString     : { type: t_string                        , comment: "Input string from the meteo station" }
-      variables_read_only:
+      variables_output:
           data            : { type: mtcs_common.QuantityValue       , comment: "Actual value" }
           invalidData     : { type: t_bool                          , comment: "True if the data is invalid" }
           lastChar        : { type: t_string                        , comment: "Last character" }
@@ -1063,7 +1063,7 @@
   
   !STATEMACHINE ServicesMeteo:
       typeOf                          : [ ServicesParts.meteo ]
-      variables:
+      variables_input:
           # serial comm
           serialTimeout               : { type: t_bool    , comment: "Is the serial data not being received within time?" }
           comError                    : { type: t_bool    , comment: "Is there any problem with the COM port?" }
@@ -1229,7 +1229,7 @@
   # ServicesWestController
   ########################################################################################################################
   !STATEMACHINE ServicesWestController:
-      variables:
+      variables_input:
           isEnabled           : { type: t_bool                   , comment: "Are the processes enabled?" }
           manualControl       : { type: t_bool                   , comment: "Controller switched to manualControl" }
           unit                : { type: mtcs_common.Units }
@@ -1247,7 +1247,7 @@
           rate                : { type: mtcs_common.QuantityValue, comment: "Derivative time constant" }
           outputPower         : { type: mtcs_common.QuantityValue, comment: "The Output power in percentage" }
   
-      variables_read_only:
+      variables_output:
           invalidData         : { type: t_bool                   , comment: "True if there is invalid data"}
           processValue        : { type: mtcs_common.QuantityValue, comment: "The Process value" }
           alarmActivated      : { type: t_bool                   , comment: "True if controller alarm is activated"}
@@ -1314,7 +1314,7 @@
   
   !STATEMACHINE ServicesWest:
       typeOf                          : [ ServicesParts.west ]
-      variables:
+      variables_input:
           {}
       references:
           operatorStatus              : { type: mtcs_common.OperatorStatus  , comment: "Shared operator status" }
@@ -1381,7 +1381,7 @@
   # ServicesChillerController
   ########################################################################################################################
   !STATEMACHINE ServicesChillerController:
-      variables :
+      variables_input:
           isEnabled            : { type: t_bool , comment: "Are the processes enabled?" }
           chillerOn            : { type: t_bool, comment: "The unit status, TRUE = Chiller is ON" }
           resetAlarmRegisters  : { type: t_bool, comment: "Flag to reset all active alarms"}
@@ -1404,7 +1404,7 @@
           hoursCompressor4     : { type: mtcs_common.QuantityValue, comment: "Operation hours of compressor 4" }
           hoursPump            : { type: mtcs_common.QuantityValue, comment: "Operation hours of water pump" }
               
-      variables_read_only:
+      variables_output:
           invalidData          : { type: t_bool                 , comment: "True if there is invalid data"}
           #Logical Area 1. Analog input. Read only. Words 16bits
           waterTankTemperature : { type: mtcs_common.QuantityValue, comment: "Water tank temperature" }
@@ -1576,7 +1576,7 @@
   ########################################################################################################################
   !STATEMACHINE ServicesChiller:
       typeOf                          : [ ServicesParts.chiller ]
-      variables:
+      variables_input:
           {}
       references:
           operatorStatus              : { type: mtcs_common.OperatorStatus      , comment: "Shared operator status" }

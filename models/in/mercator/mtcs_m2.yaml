@@ -169,7 +169,7 @@
   ########################################################################################################################
   
   !STATEMACHINE M2:
-      variables:
+      variables_input:
           editableConfig                  : { type: M2Config                              , comment: "Editable configuration of the M2 subsystem" }
       references:
           operatorStatus                  : { type: mtcs_common.OperatorStatus            , comment: "Shared operator status" }
@@ -177,7 +177,7 @@
           actualFocalStation              : { type: mtcs_m3.M3PositionIDs                 , comment: "Actual M3 focal station, needed for thermal focus" }
           m3KnownPositionsConfig          : { type: mtcs_m3.M3KnownPositionsConfig        , comment: "Config of M3 with all info (e.g. names) of focal stations" }
           temperatures                    : { type: mtcs_telemetry.TelemetryTemperatures  , comment: "Telemetry temperatures"}
-      variables_read_only:
+      variables_output:
           config                          : { type: M2Config                              , comment: "Active configuration of the M2 subsystem" }
           selectedAxis                    : { type: M2Axes                                , comment: "The axis which is currently selected by the multiplexer" }
           selectedAxisName                : { type: t_string                              , comment: "The name of the axis which is currently selected by the multiplexer" }
@@ -588,7 +588,7 @@
   
   !STATEMACHINE M2Multiplexer:
       typeOf: M2Parts.multiplexer
-      variables:
+      variables_input:
           noFault         : { type: t_bool                  , address: "%I*"  , comment: "FALSE if the drive selected by the multiplexer is in faulty state, TRUE if it is in a healthy state"}
           isEnabled       : { type: t_bool                                    , comment: "TRUE if the multiplexer is enabled, FALSE if not"}
           powered         : { type: t_bool                                                    , comment: "TRUE if the axis is powered" }
@@ -640,11 +640,11 @@
       references:
           config                  : { type: M2Config                          , expand: false , comment: "The general M2 config" }
           axisConfig              : { type: M2PotentiometerAxisConfig                         , comment: "The config particular for this axis" }
-      variables:
+      variables_input:
           position                : { type: mtcs_common.LinearPositionMeasurement16     , comment: "Actual position of the axis" }
           backlashLifted          : { type: t_bool                                      , comment: "TRUE if the backlash was previously lifted" }
           powered                 : { type: t_bool                                      , comment: "TRUE if the axis is powered" }
-      variables_read_only:
+      variables_output:
           constants               : { type: M2ConstantsX                                , comment: "Some constants particular for this axis" }
       statuses:
           healthStatus            : { type: mtcs_common.HealthStatus                    , comment: "Is the axis healthy?"}
@@ -671,11 +671,11 @@
       references:
           config                  : { type: M2Config                          , expand: false , comment: "The general M2 config" }
           axisConfig              : { type: M2PotentiometerAxisConfig                         , comment: "The config particular for this axis" }
-      variables:
+      variables_input:
           position                : { type: mtcs_common.LinearPositionMeasurement16     , comment: "Actual position of the axis" }
           backlashLifted          : { type: t_bool                                      , comment: "TRUE if the backlash was previously lifted" }
           powered                 : { type: t_bool                                      , comment: "TRUE if the axis is powered" }
-      variables_read_only:
+      variables_output:
           constants               : { type: M2ConstantsY                                , comment: "Some constants particular for this axis" }
       statuses:
           healthStatus            : { type: mtcs_common.HealthStatus                    , comment: "Is the axis healthy?"}
@@ -702,11 +702,11 @@
       references:
           config                  : { type: M2Config                          , expand: false , comment: "The general M2 config" }
           axisConfig              : { type: M2PotentiometerAxisConfig                         , comment: "The config particular for this axis" }
-      variables:
+      variables_input:
           position                : { type: mtcs_common.LinearPositionMeasurement16     , comment: "Actual position of the axis" }
           backlashLifted          : { type: t_bool                                      , comment: "TRUE if the backlash was previously lifted" }
           powered                 : { type: t_bool                                      , comment: "TRUE if the axis is powered" }
-      variables_read_only:
+      variables_output:
           constants               : { type: M2ConstantsTiltX                            , comment: "Some constants particular for this axis" }
       statuses:
           healthStatus            : { type: mtcs_common.HealthStatus                    , comment: "Is the axis healthy?"}
@@ -733,11 +733,11 @@
       references:
           config                  : { type: M2Config                          , expand: false , comment: "The general M2 config" }
           axisConfig              : { type: M2PotentiometerAxisConfig                         , comment: "The config particular for this axis" }
-      variables:
+      variables_input:
           position                : { type: mtcs_common.LinearPositionMeasurement16     , comment: "Actual position of the axis" }
           backlashLifted          : { type: t_bool                                      , comment: "TRUE if the backlash was previously lifted" }
           powered                 : { type: t_bool                                      , comment: "TRUE if the axis is powered" }
-      variables_read_only:
+      variables_output:
           constants               : { type: M2ConstantsTiltY                            , comment: "Some constants particular for this axis" }
       statuses:
           healthStatus            : { type: mtcs_common.HealthStatus                    , comment: "Is the axis healthy?"}
@@ -769,12 +769,12 @@
       references:
           config                : { type: M2Config          , expand: false         , comment: "The general M2 config" }
           axisConfig            : { type: M2ZAxisConfig                             , comment: "The config particular for this axis" }
-      variables:
+      variables_input:
           position              : { type: mtcs_common.LinearPositionMeasurementU32  , comment: "Actual position of the axis" }
           backlashLifted        : { type: t_bool                                    , comment: "TRUE if the backlash was previously lifted" }
           powered               : { type: t_bool                                    , comment: "TRUE if the axis is powered" }
           isEnabled             : { type: t_bool                                    , comment: "TRUE if the Z axis control is enabled, FALSE if not"}
-      variables_read_only:
+      variables_output:
           constants             : { type: M2ConstantsZ                              , comment: "Some constants particular for this axis" }
       parts:
           highSpeed             : { type: mtcs_common.SimpleRelay                   , comment: "Enabled (TRUE) to enable the high-speed motion of the Z axis, Disabled (FALSE) to leave it low-speed" }
@@ -828,7 +828,7 @@
   
   !STATEMACHINE M2MoveStepsProcedure:
       typeOf: [ M2Parts.moveStepsProcedure ]
-      variables:
+      variables_input:
           state               : { type: M2MoveProcedureStates                 , comment: "New state, to be set by the manual implementation" }
           actualCounterValue  : { type: t_uint32            , address: '%I*'  , comment: "Actual counter value" }
           stepsRemaining      : { type: t_uint32                              , comment: "Number of steps remaining"}
@@ -860,7 +860,7 @@
   
   !STATEMACHINE M2MovePositionProcedure:
       typeOf: [ M2Parts.movePositionProcedure ]
-      variables:
+      variables_input:
           state               : { type: M2MoveProcedureStates , comment: "New state, to be set by the manual implementation" }
       references:
           powerOn             : { type: mtcs_common.Process   , expand: false }

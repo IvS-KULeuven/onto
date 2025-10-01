@@ -1120,20 +1120,6 @@ END_IF;
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Current status description</xhtml>
               </documentation>
             </variable>
-            <variable name="previousStatus">
-              <type><string /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Hide" Value="" />
-                    <Attribute Name="OPC.UA.DA" Value="0" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Previous status description</xhtml>
-              </documentation>
-            </variable>
             <variable name="isTrackingTelescope">
               <type><BOOL /></type>
               <addData>
@@ -1582,20 +1568,6 @@ proc.moveKnownPosition( isEnabled := (stat.init = InitializationStatus.initializ
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Current status description</xhtml>
               </documentation>
             </variable>
-            <variable name="previousStatus">
-              <type><string /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Hide" Value="" />
-                    <Attribute Name="OPC.UA.DA" Value="0" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Previous status description</xhtml>
-              </documentation>
-            </variable>
             <variable name="isSimulated">
               <type><BOOL /></type>
               <addData>
@@ -1809,20 +1781,6 @@ proc.send( isEnabled := (operator_ref = OperatorStatus.tech) OR isConnected );
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Current status description</xhtml>
               </documentation>
             </variable>
-            <variable name="previousStatus">
-              <type><string /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Hide" Value="" />
-                    <Attribute Name="OPC.UA.DA" Value="0" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Previous status description</xhtml>
-              </documentation>
-            </variable>
             <variable name="counterValue">
               <type><UDINT /></type>
               <addData>
@@ -1994,20 +1952,6 @@ proc.powerOff( isEnabled := NOT(stat.busy = BusyStatus.busy) );
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Current status description</xhtml>
-              </documentation>
-            </variable>
-            <variable name="previousStatus">
-              <type><string /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Hide" Value="" />
-                    <Attribute Name="OPC.UA.DA" Value="0" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Previous status description</xhtml>
               </documentation>
             </variable>
             <variable name="isSimulated">
@@ -2727,6 +2671,8 @@ END_IF;
               <Object Name="DomeRotationStatuses">
               </Object>
             </Folder>
+            <Folder Name="Models">
+            </Folder>
             <Object Name="SM_Dome">
             </Object>
             <Object Name="SM_DomeShutter">
@@ -2777,6 +2723,8 @@ END_IF;
           <Folder Name="Functions">
             <Object Name="F_DomeShutterOpeningStatus">
             </Object>
+          </Folder>
+          <Folder Name="Models">
           </Folder>
         </Folder>
       </ProjectStructure>

@@ -298,20 +298,6 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Current status description</xhtml>
               </documentation>
             </variable>
-            <variable name="previousStatus">
-              <type><string /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Hide" Value="" />
-                    <Attribute Name="OPC.UA.DA" Value="0" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Previous status description</xhtml>
-              </documentation>
-            </variable>
             <variable name="config">
               <type><derived name="UnitConfig" /></type>
               <addData>
@@ -515,6 +501,8 @@ proc.stop( isEnabled := parts.telescope.proc.abortSlew.isEnabled OR parts.dome.p
               <Object Name="UnitStatuses">
               </Object>
             </Folder>
+            <Folder Name="Models">
+            </Folder>
             <Object Name="SM_Unit">
             </Object>
           </Folder>
@@ -531,6 +519,8 @@ proc.stop( isEnabled := parts.telescope.proc.abortSlew.isEnabled OR parts.dome.p
           <Folder Name="Functionblocks">
           </Folder>
           <Folder Name="Functions">
+          </Folder>
+          <Folder Name="Models">
           </Folder>
         </Folder>
       </ProjectStructure>

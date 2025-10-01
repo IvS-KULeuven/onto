@@ -166,7 +166,7 @@
   !STATEMACHINE TelemetryTemperatures:
       references:
           config : { type: TelemetryTemperaturesConfig, comment: "Configuration of the temperatures"}
-      variables_read_only:
+      variables_output:
           m1:
               type: mtcs_common.TemperatureMeasurement
               comment: "Temperature of M1"
@@ -254,7 +254,7 @@
           config:
             type: TelemetryRelativeHumiditiesConfig
             comment: "Configuration of the relative humidities"
-      variables_read_only:
+      variables_output:
           topAir:
               type: mtcs_common.RelativeHumidityMeasurement
               comment: "Relative humidity of the air at the top of the tube"
@@ -282,7 +282,7 @@
           config          : { type: mtcs_common.MeasurementConfig           , comment: "Configuration" }
           temperature     : { type: mtcs_common.TemperatureMeasurement      , comment: "Temperature to be taken into account" }
           relativeHumidity: { type: mtcs_common.RelativeHumidityMeasurement , comment: "Relative humidity to be taken into account" }
-      variables_read_only:
+      variables_output:
           actual          : { type: mtcs_common.Temperature         , comment: "Actual dewpoint temperature"            }
           average         : { type: mtcs_common.Temperature         , comment: "Average dewpoint temperature"           }
       statuses:
@@ -317,7 +317,7 @@
           config                  : { type: TelemetryDewpointsConfig      , comment: "Configuration of the dewpoints"}
           temperatures            : { type: TelemetryTemperatures         , comment: "Measured temperatures"}
           relativeHumidities      : { type: TelemetryRelativeHumidities   , comment: "Measured relative humidities"}
-      variables_read_only:
+      variables_output:
           topAir                  : { type: TelemetryDewpoint             , comment: "Dewpoint of the air at the top of the tube" }
           insideTube              : { type: TelemetryDewpoint             , comment: "Dewpoint of the air inside the tube" }
       statuses:
@@ -340,7 +340,7 @@
   ########################################################################################################################
   
   !STATEMACHINE TelemetryAccelerometer:
-      variables_read_only:
+      variables_output:
           X1plus          : { type: mtcs_common.GForceMeasurement       , comment: "+X1 (channel 1 of EP1816-3008)" , expand: true}
           Y1plus          : { type: mtcs_common.GForceMeasurement       , comment: "+Y1 (channel 2 of EP1816-3008)" , expand: true }
           Z1minus         : { type: mtcs_common.GForceMeasurement       , comment: "-Z1 (channel 3 of EP1816-3008)" , expand: true }
@@ -394,7 +394,7 @@
   !STATEMACHINE TelemetryAccelerometers:
       references:
           config                  : { type: TelemetryAccelerometersConfig , comment: "Configuration of the accelerometers"}
-      variables_read_only:
+      variables_output:
           tube                    : { type: TelemetryAccelerometer        , comment: "Accelerometer box at the tube" }
       statuses:
           healthStatus            : { type: mtcs_common.HealthStatus      , comment: "Are all accelerometers in a healthy state?" }
@@ -411,11 +411,11 @@
   ########################################################################################################################
   
   !STATEMACHINE Telemetry:
-      variables:
+      variables_input:
           editableConfig                  : { type: TelemetryConfig                 , comment: "Editable configuration of the Telemetry subsystem" }
       references:
           operatorStatus                  : { type: mtcs_common.OperatorStatus      , comment: "Shared operator status"}
-      variables_read_only:
+      variables_output:
           config                          : { type: TelemetryConfig                 , comment: "Active configuration of the Telemetry subsystem" }
       parts:
           temperatures:

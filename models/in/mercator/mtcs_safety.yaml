@@ -59,12 +59,12 @@ IMPORT! models/in/mercator/mtcs_common.yaml:
   ########################################################################################################################
   
   !STATEMACHINE Safety:
-      variables:
+      variables_input:
           editableConfig                  : { type: SafetyConfig                , comment: "Editable configuration of the Safety subsystem" }
       references:
           operatorStatus                  : { type: mtcs_common.OperatorStatus  , comment: "Shared operator status"}
           activityStatus                  : { type: mtcs_common.ActivityStatus  , comment: "Shared activity status"}
-      variables_read_only:
+      variables_output:
           config                          : { type: SafetyConfig                , comment: "Active configuration of the Safety subsystem" }
       parts:
           hydraulics:
@@ -373,7 +373,7 @@ IMPORT! models/in/mercator/mtcs_common.yaml:
       references:
           operatorStatus          : { type: mtcs_common.OperatorStatus      , comment: "Shared operator status"}
           activityStatus          : { type: mtcs_common.ActivityStatus      , comment: "Shared activity status"}
-      variables:
+      variables_input:
           # group variables
           groupComError           : { type: t_bool, address: "%I*"        , comment: "TwinSAFE group communication error"}
           groupFbError            : { type: t_bool, address: "%I*"        , comment: "TwinSAFE group function block error"}
@@ -415,7 +415,7 @@ IMPORT! models/in/mercator/mtcs_common.yaml:
           pumpsRelease            : { type: t_bool, address: "%I*"        , comment: "TRUE if the pumps are released (RFR 'ReglerFreigabe' high)" }
           # summary
           allOK                   : { type: t_bool, address: "%I*"        , comment: "TRUE if the hydraulics are OK" }
-      variables_read_only:
+      variables_output:
           restartPumpsOutput      : { type: t_bool, address: "%Q*"        , comment: "Output to restart the pumps"}
           resetErrorsOutput       : { type: t_bool, address: "%Q*"        , comment: "Output to reset the errors"}
           errorAcknowledge        : { type: t_bool, address: "%Q*"        , comment: "Output to restart the TwinSAFE group"}
@@ -443,7 +443,7 @@ IMPORT! models/in/mercator/mtcs_common.yaml:
   
   !STATEMACHINE SafetyEmergencyStops:
       typeOf                      : [ SafetyParts.emergencyStops ]
-      variables:
+      variables_input:
           # group variables
           groupComError           : { type: t_bool, address: "%I*"        , comment: "TwinSAFE group communication error"}
           groupFbError            : { type: t_bool, address: "%I*"        , comment: "TwinSAFE group function block error"}
@@ -462,7 +462,7 @@ IMPORT! models/in/mercator/mtcs_common.yaml:
           controlRoomNC           : { type: t_bool, address: "%I*"        , comment: "TRUE if the break contact (NC) is conducting --> button is not pushed" }
           domeAccessNO            : { type: t_bool, address: "%I*"        , comment: "TRUE if the make contact (NO) is conducting --> button is pushed!" }
           domeAccessNC            : { type: t_bool, address: "%I*"        , comment: "TRUE if the break contact (NC) is conducting --> button is not pushed" }
-      variables_read_only:
+      variables_output:
           restartOutput           : { type: t_bool, address: "%Q*"        , comment: "Output to restart the emergency buttons"}
           errorAcknowledge        : { type: t_bool, address: "%Q*"        , comment: "Output to restart the TwinSAFE group"}
       statuses:
@@ -489,7 +489,7 @@ IMPORT! models/in/mercator/mtcs_common.yaml:
           operatorStatus          : { type: mtcs_common.OperatorStatus      , comment: "Shared operator status"}
           activityStatus          : { type: mtcs_common.ActivityStatus      , comment: "Shared activity status"}
           config                  : { type: SafetyDomeAccessConfig, comment: "The dome access config" }
-      variables:
+      variables_input:
           # group variables
           groupComError           : { type: t_bool, address: "%I*"        , comment: "TwinSAFE group communication error"}
           groupFbError            : { type: t_bool, address: "%I*"        , comment: "TwinSAFE group function block error"}
@@ -511,7 +511,7 @@ IMPORT! models/in/mercator/mtcs_common.yaml:
           personHasLeftButtonPressed : { type: t_bool, address: "%I*"        , comment: "TRUE if the unblock button is being pressed"}
           returnButtonPressed     : { type: t_bool, address: "%I*"        , comment: "TRUE if the return button is being pressed"}
           safeAccess              : { type: t_bool, address: "%I*"        , comment: "TRUE if the safety still allows motion (e.g. also during the first seconds that a person has entered"}
-      variables_read_only:
+      variables_output:
           errorAcknowledge        : { type: t_bool, address: "%Q*"        , comment: "Output to restart the TwinSAFE group"}
           personHasEntered        : { type: t_bool, address: "%Q*"        , comment: "TRUE if the doors were opened without bypass/password" }
           enteredLedOn            : { type: t_bool, address: "%Q*"        , comment: "TRUE if the yellow led should be on" }
@@ -572,7 +572,7 @@ IMPORT! models/in/mercator/mtcs_common.yaml:
   
   !STATEMACHINE SafetyMotionBlocking:
       typeOf                      : [ SafetyParts.motionBlocking ]
-      variables:
+      variables_input:
           # group variables
           groupComError               : { type: t_bool, address: "%I*"        , comment: "TwinSAFE group communication error"}
           groupFbError                : { type: t_bool, address: "%I*"        , comment: "TwinSAFE group function block error"}
@@ -587,7 +587,7 @@ IMPORT! models/in/mercator/mtcs_common.yaml:
           hydraulics                  : { type: SafetyHydraulics      , expand: false }
           emergencyStops              : { type: SafetyEmergencyStops  , expand: false }
           domeAccess                  : { type: SafetyDomeAccess      , expand: false }
-      variables_read_only:
+      variables_output:
           errorAcknowledge            : { type: t_bool, address: "%Q*"        , comment: "Output to restart the TwinSAFE group"}
       statuses:
           busyStatus                  : { type: mtcs_common.BusyStatus          , comment: "Is the safety busy?"  }
@@ -611,7 +611,7 @@ IMPORT! models/in/mercator/mtcs_common.yaml:
   
   !STATEMACHINE SafetyDomeShutter:
       typeOf                      : [ SafetyParts.domeShutter ]
-      variables:
+      variables_input:
           # group variables
           groupComError               : { type: t_bool, address: "%I*"        , comment: "TwinSAFE group communication error"}
           groupFbError                : { type: t_bool, address: "%I*"        , comment: "TwinSAFE group function block error"}
@@ -625,7 +625,7 @@ IMPORT! models/in/mercator/mtcs_common.yaml:
       references:
           activityStatus              : { type: mtcs_common.ActivityStatus      , comment: "Shared activity status"}
           emergencyStops              : { type: SafetyEmergencyStops  , expand: false }
-      variables_read_only:
+      variables_output:
           errorAcknowledge            : { type: t_bool, address: "%Q*"        , comment: "Output to restart the TwinSAFE group"}
       statuses:
           busyStatus                  : { type: mtcs_common.BusyStatus          , comment: "Is the safety busy?"  }

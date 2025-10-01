@@ -371,7 +371,7 @@
   ########################################################################################################################
   !PROCESS AxesPointProcess:
       extends: mtcs_common.BaseProcess
-      variables:
+      variables_input:
           state               : { type: t_int16                           , comment: "State of the process" }
       arguments:
           alphaUnits          : { type: AxesAlphaUnits                    , comment: "The units in which alpha is given" }
@@ -483,7 +483,7 @@
   ########################################################################################################################
   !PROCESS AxesPowerOnProcess:
       extends: mtcs_common.BaseProcess
-      variables:
+      variables_input:
           state : { type: t_int16, comment: "State of the process" }
   
   ########################################################################################################################
@@ -491,7 +491,7 @@
   ########################################################################################################################
   !PROCESS AxesMultiPowerOnProcess:
       extends: mtcs_common.BaseProcess
-      variables:
+      variables_input:
           state : { type: t_int16, comment: "State of the process" }
       arguments:
           azi : { type: t_bool, comment: "TRUE to power on AZI" }
@@ -505,7 +505,7 @@
   ########################################################################################################################
   !PROCESS AxesPowerOffProcess:
       extends: mtcs_common.BaseProcess
-      variables:
+      variables_input:
           state : { type: t_int16, comment: "State of the process" }
   
   
@@ -514,7 +514,7 @@
   ########################################################################################################################
   !PROCESS AxesStopProcess:
       extends: mtcs_common.BaseProcess
-      variables:
+      variables_input:
           state : { type: t_int16, comment: "State of the process" }
   
   
@@ -535,7 +535,7 @@
   ########################################################################################################################
   !PROCESS AxesDoHomingProcess:
       extends: mtcs_common.BaseProcess
-      variables:
+      variables_input:
           state : { type: t_int16, comment: "State of the process" }
   
   
@@ -544,7 +544,7 @@
   ########################################################################################################################
   !PROCESS AxesMultiMoveProcess:
       extends: mtcs_common.BaseProcess
-      variables:
+      variables_input:
           waitingForAzi : { type: t_bool                , comment: "True if the process is waiting for AZI" }
           waitingForEle : { type: t_bool                , comment: "True if the process is waiting for ELE" }
           waitingForRoc : { type: t_bool                , comment: "True if the process is waiting for ROC" }
@@ -578,7 +578,7 @@
   ########################################################################################################################
   
   !STATEMACHINE Axes:
-      variables:
+      variables_input:
           editableConfig                  : { type: AxesConfig                              , comment: "Editable configuration of the Axes subsystem" , expand: false}
           fromCppAxes                     : { type: mtcs_tmc.TmcToPlcAxes, address: "%I*"   , comment: "Data from the C++ task", expand: false}
       references:
@@ -589,7 +589,7 @@
           activityStatus                  : { type: mtcs_common.ActivityStatus              , comment: "Shared activity status"}
           activeInstrument                : { type: mtcs_common.InstrumentConfig            , comment: "Instrument config *if* isInstrumentActive is TRUE", expand: false }
           isInstrumentActive              : { type: t_bool                                  , comment: "Is an instrument currently active (i.e. is M3 static at a known position?)"}
-      variables_read_only:
+      variables_output:
           isPoweredOffByPersonInDome      : { type: t_bool                                  , comment: "True if the axes are powered off due to a person entering the dome" }
           isPointing                      : { type: t_bool                                  , comment: "True if the telescope is pointing" }
           isLimitsReached                 : { type: t_bool                                  , comment: "True if a positiom limit is reached" }
@@ -959,7 +959,7 @@
   
   !STATEMACHINE AxesTarget:
       typeOf: Axes.target
-      variables:
+      variables_input:
           isGiven             : { type: t_bool                          , comment: "True if the target is given, false if not" }
           isValid             : { type: t_bool                          , comment: "True if the target is valid, false if not" }
           isTooLow            : { type: t_bool                          , comment: "True if the target is too low to calculate, false if not" }
@@ -1009,7 +1009,7 @@
   
   !STATEMACHINE AxesFeedback:
       typeOf: Axes.feedback
-      variables:
+      variables_input:
           isValid             : { type: t_bool                      , comment: "True if the feedback is valid, false if not" }
           isTooLow            : { type: t_bool                      , comment: "True if the feedback is too low to calculate, false if not" }
           alpha               : { type: mtcs_common.AngularPosition , comment: "The alpha coordinate (Right Ascention)" , expand: false}
@@ -1061,7 +1061,7 @@
           REDUCTION_AZI_TO_TEL        : { type: t_double, initial: !DOUBLE 1440.0         , comment: "The mechanical reduction between absolute encoder and telescope" }
           REDUCTION_ABL_TO_TEL        : { type: t_double, initial: !DOUBLE 180.0          , comment: "The mechanical reduction between absolute encoder and telescope" }
           REDUCTION_ABS_ENC_TO_TEL    : { type: t_double, initial: !DOUBLE 18.0           , comment: "The mechanical reduction between absolute encoder and telescope" }
-      variables:
+      variables_input:
           id                          : { type: AxesIds                           , comment: "Id of this axis"}
       references:
           config                      : { type: AxesAzimuthConfig                 , comment: "Reference to the azimuth config", expand: false }
@@ -1086,7 +1086,7 @@
                           busyStatus      : { type: mtcs_common.BusyStatus }
           aziMainDriveChannel         : { type: mtcs_common.AX52XXDriveChannel              , comment: "Reference to the main drive channel (channel A) of the drive" , expand: false }
           ablMainDriveChannel         : { type: mtcs_common.AX52XXDriveChannel              , comment: "Reference to the main drive channel (channel A) of the drive" , expand: false }
-      variables_read_only:
+      variables_output:
           slipError                   : { type: t_bool                                    , comment: "TRUE if the motor appears to be slipping w.r.t. the external encoder" }
           positiveLimitSwitchError    : { type: t_bool                                    , comment: "TRUE if the positive limit switch has detected the axis" }
           negativeLimitSwitchError    : { type: t_bool                                    , comment: "TRUE if the negative limit switch has detected the axis" }
@@ -1338,7 +1338,7 @@
           isEnabled                   : { type: t_bool                                      , comment: "Is control enabled?" }
           REDUCTION_MOT_TO_TEL        : { type: t_double, initial: !DOUBLE 1440.0           , comment: "The mechanical reduction between absolute encoder and telescope" }
           REDUCTION_ABS_ENC_TO_TEL    : { type: t_double, initial: !DOUBLE 18.0             , comment: "The mechanical reduction between absolute encoder and telescope" }
-      variables:
+      variables_input:
           id                          : { type: AxesIds                                     , comment: "Id of this axis"}
       references:
           config                      : { type: AxesElevationConfig                         , comment: "Reference to the elevation config", expand: false  }
@@ -1352,7 +1352,7 @@
                           healthStatus: { type: mtcs_common.HealthStatus }
                           busyStatus  : { type: mtcs_common.BusyStatus }
           mainDriveChannel            : { type: mtcs_common.AX52XXDriveChannel              , comment: "Reference to the main drive channel (channel A) of the drive" , expand: false }
-      variables_read_only:
+      variables_output:
           slipError                   : { type: t_bool                                      , comment: "TRUE if the motor appears to be slipping w.r.t. the external encoder" }
           positiveLimitSwitchError    : { type: t_bool                                      , comment: "TRUE if the positive limit switch has detected the axis" }
           negativeLimitSwitchError    : { type: t_bool                                      , comment: "TRUE if the negative limit switch has detected the axis" }
@@ -1539,7 +1539,7 @@
       typeOf: [AxesParts.roc, AxesParts.ron]
       variables_hidden:
           isEnabled                   : { type: t_bool                                      , comment: "Is control enabled?" }
-      variables:
+      variables_input:
           id                          : { type: AxesIds                                     , comment: "Id of this axis"}
       references:
           config                      : { type: AxesRotationConfig                          , comment: "Reference to the rotation config" , expand: false }
@@ -1553,7 +1553,7 @@
                           healthStatus    : { type: mtcs_common.HealthStatus }
                           busyStatus      : { type: mtcs_common.BusyStatus }
           mainDriveChannel            : { type: mtcs_common.AX52XXDriveChannel              , comment: "Reference to the main drive channel (channel A) of the drive" , expand: false }
-      variables_read_only:
+      variables_output:
           positiveLimitSwitchError    : { type: t_bool                                      , comment: "TRUE if the positive limit switch has detected the axis" }
           negativeLimitSwitchError    : { type: t_bool                                      , comment: "TRUE if the negative limit switch has detected the axis" }
           setPosLimitReached          : { type: t_bool                                      , comment: "TRUE if the setpoint position has reached its limit" }
@@ -1688,9 +1688,9 @@
   !STATEMACHINE AxesPointingModelSetup:
       variables_hidden:
           isEnabled               : { type: t_bool                          , comment: "Is control enabled?" }
-      variables:
+      variables_input:
           editableConfig          : { type: AxesPointingModelConfig         , comment: "Editable configuration of the particular TPOINT model" , expand: false}
-      variables_read_only:
+      variables_output:
           config                  : { type: AxesPointingModelConfig         , comment: "Active configuration of the particular TPOINT model", expand: false }
       parts:
           configManager           : { type: mtcs_common.ConfigManager       , comment: "The config manager (to load/save/activate configuration data)" }
@@ -1915,7 +1915,7 @@
   
   !STATEMACHINE AxesIO:
       typeOf              : [ AxesParts.io ]
-      variables:
+      variables_input:
           isEnabled       : { type: t_bool                   , comment: "Is control enabled?" }
       statuses:
           healthStatus    : { type: mtcs_common.HealthStatus   , comment: "Is the I/O in a healthy state?"  }

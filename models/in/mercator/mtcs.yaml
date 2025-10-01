@@ -185,14 +185,14 @@
   # MTCS
   ########################################################################################################################
   !STATEMACHINE MTCS:
-      variables:
+      variables_input:
           editableConfig              : { type: MTCSConfig                  , comment: "Editable configuration of the MTCS" , expand: false }
           remoteOperationEnable       : { type: t_bool                      , comment: "True to Remote operation enabled" }
           mocsObservationStatus       : { type: t_bool                      , comment: "True to notify that there is an observation running" }
           remoteConnectionStatus      : { type: t_bool                      , comment: "True to notify that there is a remote connection" }
           remoteconnectionPortStatus  : { type: t_bool                      , comment: "True to notify that there is a connection port established" }
           
-      variables_read_only:
+      variables_output:
           noOfFailedOperatorChanges   : { type: t_uint16                    , comment: "How many times has a wrong password been entered?"}
           activeInstrument            : { type: mtcs_common.InstrumentConfig, comment: "Config of the currently active instrument (depending on M3 and possibly derotator) *if* isInstrumentActive is TRUE" , expand: false}
           activeInstrumentNumber      : { type: t_int16                     , comment: "Number of the currently active instrument (0..9, or -1 if no instrument is active)" }

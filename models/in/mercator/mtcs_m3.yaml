@@ -156,7 +156,7 @@
   # M3TargetStatus
   ########################################################################################################################
   !STATUS M3TargetStatus:
-      variables:
+      variables_input:
           "state":
               type: M3TargetStates
               comment: "Enum!"
@@ -383,7 +383,7 @@
           newOffsetDegrees            : { type: t_double                           , comment: "New target offset in degrees" }
       references:
           knownPositions      : { type: M3KnownPositionsConfig      , comment: "The known positions"}
-      variables_read_only:
+      variables_output:
           name                : { type: t_string                    , comment: "Name of the target (only in case the position and offset match an entry in the config!)" }
           position            : { type: mtcs_common.AngularPosition , comment: "Target position for M3 rotation (only in case statuses.targetStatus.noTargetGiven is FALSE)" }
           offset              : { type: mtcs_common.AngularPosition , comment: "Target offset for M3 rotation (only in case statuses.targetStatus.noTargetGiven is FALSE)"}
@@ -406,7 +406,7 @@
           newPositionMillimeters  : { type: t_double                        , comment: "New target position in millimeters" }
       references:
           knownPositions          : { type: M3KnownPositionsConfig          , comment: "The known positions", expand: false}
-      variables_read_only:
+      variables_output:
           name                    : { type: t_string                        , comment: "Name of the target (only in case the position matches an entry in the config!)" }
           position                : { type: mtcs_common.LinearPosition      , comment: "Target position for M3 translation (only in case statuses.targetStatus.noTargetGiven is FALSE)" }
       statuses:
@@ -421,11 +421,11 @@
   ########################################################################################################################
   
   !STATEMACHINE M3:
-      variables:
+      variables_input:
           editableConfig                  : { type: M3Config                    , comment: "Editable configuration of M3" , expand: false }
       references:
           operatorStatus                  : { type: mtcs_common.OperatorStatus  , comment: "Shared operator status"}
-      variables_read_only:
+      variables_output:
           config                          : { type: M3Config           , comment: "Active configuration of M3" }
           actualKnownPositionName         : { type: t_string           , comment: "Name of the actual position according to config.knownPositions" }
           actualKnownPositionID           : { type: M3PositionIDs      , comment: "ID of the actual position according to config.knownPositions" }
@@ -568,9 +568,9 @@
   
   !STATEMACHINE M3GotoProcedure:
       typeOf: [ M3Parts.gotoProcedure ]
-      variables:
+      variables_input:
           state               : { type: M3GotoProcedureStates                   , comment: "New state, to be set by the manual implementation" }
-      variables_read_only:
+      variables_output:
           isGotoAllowed       : { type: t_bool                                  , comment: "TRUE if a goto command is allowed" }
       references:
           rotation            : {}
@@ -607,11 +607,11 @@
   !STATEMACHINE M3Rotation:
       typeOf                              : [ M3Parts.rotation,
                                               M3GotoProcedure.rotation ]
-      variables:
+      variables_input:
           target                          : { type: M3RotationTarget }
           positiveLimitSwitchActive       : { type: t_bool                        , comment: "TRUE if the positive limit switch is active", address: "%I*" }
           negativeLimitSwitchActive       : { type: t_bool                        , comment: "TRUE if the negative limit switch is active", address: "%I*" }
-      variables_read_only:
+      variables_output:
           actualPosition                  : { type: mtcs_common.AngularPosition     , comment: "The actual position of the rotation" }
           actualPositionError             : { type: mtcs_common.AngularPosition     , comment: "The actual position error of the rotation" }
           actualOffset                    : { type: mtcs_common.AngularPosition     , comment: "The actual offset of the rotation" }
@@ -771,9 +771,9 @@
   
   !STATEMACHINE M3RotationGotoProcedure:
       typeOf: [ M3RotationParts.gotoProcedure ]
-      variables:
+      variables_input:
           state                       : { type: M3RotateProcedureStates       , comment: "New state, to be set by the manual implementation" }
-      variables_read_only:
+      variables_output:
           isGotoAllowed               : { type: t_bool                        , comment: "TRUE if a goto command is allowed" }
       references:
           config                      : { type: M3RotationConfig              ,  expand: false }
@@ -808,7 +808,7 @@
   
   !STATEMACHINE M3RotationCalibrateProcedure:
       typeOf: [ M3RotationParts.calibrateProcedure ]
-      variables:
+      variables_input:
           state               : { type: M3CalibrateRotationProcedureStates, comment: "Current state of the " }
       references:
           config              : { type: M3RotationConfig              ,  expand: false }
@@ -852,11 +852,11 @@
   !STATEMACHINE M3Translation:
       typeOf                              : [ M3Parts.translation,
                                               M3GotoProcedure.translation ]
-      variables:
+      variables_input:
           target                          : { type: M3TranslationTarget }
           positiveLimitSwitchActive       : { type: t_bool                        , comment: "TRUE if the positive limit switch is active", address: "%I*" }
           negativeLimitSwitchActive       : { type: t_bool                        , comment: "TRUE if the negative limit switch is active", address: "%I*" }
-      variables_read_only:
+      variables_output:
           actualPosition                  : { type: mtcs_common.LinearPosition    , comment: "The actual position of the translation" }
           actualPositionError             : { type: mtcs_common.LinearPosition    , comment: "The actual position error of the translation" }
       references:
@@ -971,9 +971,9 @@
   
   !STATEMACHINE M3TranslationGotoProcedure:
       typeOf: [ M3TranslationParts.gotoProcedure ]
-      variables:
+      variables_input:
           state                       : { type: M3TranslateProcedureStates    , comment: "New state, to be set by the manual implementation" }
-      variables_read_only:
+      variables_output:
           isGotoAllowed               : { type: t_bool                        , comment: "TRUE if a goto command is allowed" }
       references:
           config                      : { type: M3TranslationConfig           ,  expand: false }
@@ -1003,7 +1003,7 @@
   
   !STATEMACHINE M3TranslationHomingProcedure:
       typeOf: [ M3TranslationParts.homingProcedure ]
-      variables:
+      variables_input:
           state                       : { type: M3TranslationHomingProcedureStates    , comment: "State to be set by the manual implementation" }
       references:
           config                      : { type: M3TranslationConfig           ,  expand: false }

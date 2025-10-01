@@ -116,7 +116,7 @@
   # ApertureStatus
   ########################################################################################################################
   !STATUS ApertureStatus:
-      variables:
+      variables_input:
           isOpen:
               type: t_bool
               comment: "TRUE if the 'open' limit switch is active"
@@ -141,7 +141,7 @@
   # BusyStatus
   ########################################################################################################################
   !STATUS BusyStatus:
-      variables:
+      variables_input:
           isBusy:
               type: t_bool
               comment: "TRUE if busy"
@@ -157,7 +157,7 @@
   # StartedStatus
   ########################################################################################################################
   !STATUS StartedStatus:
-      variables:
+      variables_input:
           isStarted:
               type: t_bool
               comment: "TRUE if started"
@@ -173,7 +173,7 @@
   # EnabledStatus
   ########################################################################################################################
   !STATUS EnabledStatus:
-      variables:
+      variables_input:
           isEnabled:
               type: t_bool
               comment: "TRUE if enabled"
@@ -189,7 +189,7 @@
   # PoweredStatus
   ########################################################################################################################
   !STATUS PoweredStatus:
-      variables:
+      variables_input:
           isEnabled:
               type: t_bool
               comment: "TRUE if power is enabled"
@@ -205,7 +205,7 @@
   # HealthStatus
   ########################################################################################################################
   !STATUS HealthStatus:
-      variables:
+      variables_input:
           isGood:
               type: t_bool
               comment: "TRUE if the subject is in Good health"
@@ -229,7 +229,7 @@
   # InitializationStatus
   ########################################################################################################################
   !STATUS InitializationStatus:
-      variables:
+      variables_input:
           state:
               type: InitializationStates
               comment: "Enum!"
@@ -255,7 +255,7 @@
   # MotionStatus
   ########################################################################################################################
   !STATUS MotionStatus:
-      variables:
+      variables_input:
           actVel:
               type: t_double
               comment: "Actual velocity"
@@ -299,7 +299,7 @@
   # HiHiLoLoAlarmStatus
   ########################################################################################################################
   !STATUS HiHiLoLoAlarmStatus:
-        variables:
+        variables_input:
             config:
                 type: HiHiLoLoAlarmConfig
                 comment: "Config"
@@ -351,7 +351,7 @@
   # OpeningStatus
   ########################################################################################################################
   !STATUS OpeningStatus:
-    variables:
+    variables_input:
         isOpening:
             type: t_bool
             comment: "TRUE if opening"
@@ -374,7 +374,7 @@
   # OperatorStatus
   ########################################################################################################################
   !STATUS OperatorStatus:
-    variables:
+    variables_input:
         state:
             type: OperatorStates
             comment: "Enum!"
@@ -394,7 +394,7 @@
   # OperatingStatus
   ########################################################################################################################
   !STATUS OperatingStatus:
-    variables:
+    variables_input:
         state:
             type: OperatingStates
             comment: "Enum!"
@@ -411,7 +411,7 @@
   # OperatingModeStatus
   ########################################################################################################################
   !STATUS OperatingModeStatus:
-    variables:
+    variables_input:
         state:
             type: OperatingModeStates
             comment: "Enum!"
@@ -428,7 +428,7 @@
   # MTCSStatus
   ########################################################################################################################
   !STATUS ActivityStatus:
-    variables:
+    variables_input:
         isRunning: { type: t_bool }
     states:
         notRunning:
@@ -446,7 +446,7 @@
   # QuantityValue
   ########################################################################################################################
   !STATEMACHINE QuantityValue:
-    variables:
+    variables_input:
         value: { type: t_double   , comment: "Numeric value" }
         unit:  { type: Units      , comment: "Unit of the numeric value" }
 
@@ -457,7 +457,7 @@
   !STATEMACHINE AngularPosition:
     variables_hidden:
         newDegreesValue: { type: t_double, comment: "New position value in degrees" }
-    variables_read_only:
+    variables_output:
         radians     : { type: QuantityValue, comment: "Angular position in radians" }
         degrees     : { type: QuantityValue, comment: "Angular position in degrees" }
         arcseconds  : { type: QuantityValue, comment: "Angular position in arcseconds" }
@@ -479,7 +479,7 @@
   !STATEMACHINE LinearPosition:
     variables_hidden:
         newMillimetersValue: { type: t_double, comment: "New position value in millimeters" }
-    variables_read_only:
+    variables_output:
         millimeters: { type: QuantityValue, comment: "Linear position in millimeters" }
         micrometers: { type: QuantityValue, comment: "Linear position in micrometers" }
     calls:
@@ -496,7 +496,7 @@
   !STATEMACHINE AngularVelocity:
     variables_hidden:
         newDegreesPerSecondValue: { type: t_double, comment: "New velocity value in degrees per second" }
-    variables_read_only:
+    variables_output:
         radiansPerSecond    : { type: QuantityValue, comment: "Angular velocity in radians per second" }
         degreesPerSecond    : { type: QuantityValue, comment: "Angular velocity in degrees per second" }
         arcsecondsPerSecond : { type: QuantityValue, comment: "Angular velocity in arcseconds per second" }
@@ -517,7 +517,7 @@
   !STATEMACHINE AngularAcceleration:
     variables_hidden:
         newDegreesPerSquareSecondValue: { type: t_double, comment: "New velocity value in degrees per second^2" }
-    variables_read_only:
+    variables_output:
         radiansPerSquareSecond   : { type: QuantityValue, comment: "Angular velocity in radians per second^2" }
         degreesPerSquareSecond   : { type: QuantityValue, comment: "Angular velocity in degrees per second^2" }
         arcsecondsPerSquareSecond: { type: QuantityValue, comment: "Angular velocity in arcseconds per second^2" }
@@ -538,7 +538,7 @@
   !STATEMACHINE LinearVelocity:
     variables_hidden:
         newMillimetersPerSecondValue: { type: t_double, comment: "New velocity value in millimeters per second" }
-    variables_read_only:
+    variables_output:
         millimetersPerSecond: { type: QuantityValue, comment: "Linear velocity in millimeters per second" }
     calls:
         millimetersPerSecond:
@@ -551,7 +551,7 @@
   !STATEMACHINE Voltage:
     variables_hidden:
         newVoltValue: { type: t_double, comment: "New voltage" }
-    variables_read_only:
+    variables_output:
         volt       : { type: QuantityValue, comment: "Voltage in Volt" }
         milliVolt  : { type: QuantityValue, comment: "Voltage in millivolt" }
     calls:
@@ -568,7 +568,7 @@
   !STATEMACHINE GForce:
     variables_hidden:
         newMilliGValue: { type: t_double, comment: "New milliG value" }
-    variables_read_only:
+    variables_output:
         g       : { type: QuantityValue, comment: "Acceleration in g units" }
         milliG  : { type: QuantityValue, comment: "Acceleration in in milli g units" }
     calls:
@@ -585,7 +585,7 @@
   !STATEMACHINE Current:
     variables_hidden:
         newAmpsValue: { type: t_double, comment: "New current in amps" }
-    variables_read_only:
+    variables_output:
         amps        : { type: QuantityValue, comment: "Current in amps" }
         milliAmps   : { type: QuantityValue, comment: "Current in milliamps" }
     calls:
@@ -603,7 +603,7 @@
   !STATEMACHINE Torque:
     variables_hidden:
         newNewtonmeterValue: { type: t_double, comment: "New torque in Nm" }
-    variables_read_only:
+    variables_output:
         newtonmeter: { type: QuantityValue, comment: "Torque in Nm" }
     calls:
         newtonmeter:
@@ -617,7 +617,7 @@
     variables_hidden:
         newFractionValue : { type: t_double, comment: "New torque limit as a unitless fraction (between 0 and 1)" }
         maxNewtonmeter   : { type: t_double, comment: "Newtonmeters corresponding to 100 percent (fraction=1)" }
-    variables_read_only:
+    variables_output:
         unitless        : { type: QuantityValue, comment: "Torque limit as a unitless fraction" }
         percent         : { type: QuantityValue, comment: "Torque limit in percent" }
         newtonmeter     : { type: QuantityValue, comment: "Torque in Nm" }
@@ -646,7 +646,7 @@
   !STATEMACHINE Duration:
     variables_hidden:
         newSecondsValue: { type: t_double, comment: "New duration in seconds" }
-    variables_read_only:
+    variables_output:
         seconds     : { type: QuantityValue, comment: "Duration in seconds" }
         minutes     : { type: QuantityValue, comment: "Duration in minutes" }
     calls:
@@ -663,7 +663,7 @@
   !STATEMACHINE Temperature:
     variables_hidden:
         newCelsiusValue: { type: t_double, comment: "New temperature in degrees Celsius" }
-    variables_read_only:
+    variables_output:
         celsius     : { type: QuantityValue, comment: "Temperature in degrees Celsius" }
         kelvin      : { type: QuantityValue, comment: "Temperature in Kelvin" }
     calls:
@@ -681,7 +681,7 @@
   !STATEMACHINE Pressure:
     variables_hidden:
         newBarValue: { type: t_double, comment: "New pressure in Bar" }
-    variables_read_only:
+    variables_output:
         bar        : { type: QuantityValue, comment: "Pressure in Bar" }
         pascal     : { type: QuantityValue, comment: "Pressure in Pascal" }
         hectoPascal: { type: QuantityValue, comment: "Pressure in HectoPascal" }
@@ -699,7 +699,7 @@
   !STATEMACHINE Frequency:
     variables_hidden:
         newHertzValue: { type: t_double, comment: "New frequency in Hz" }
-    variables_read_only:
+    variables_output:
         hertz       : { type: QuantityValue, comment: "Frequency in Hertz" }
     calls:
         hertz:
@@ -712,7 +712,7 @@
   !STATEMACHINE Force:
     variables_hidden:
         newNewtonValue  : { type: t_double, comment: "New force in Newton" }
-    variables_read_only:
+    variables_output:
         newton          : { type: QuantityValue, comment: "Force in Newton" }
         decaNewton      : { type: QuantityValue, comment: "Force in decaNewton" }
     calls:
@@ -729,7 +729,7 @@
   !STATEMACHINE Fraction:
     variables_hidden:
         newFractionValue: { type: t_double, comment: "New fraction (between 0 and 1)" }
-    variables_read_only:
+    variables_output:
         unitless   : { type: QuantityValue, comment: "Fraction as a unitless value between 0 and 1" }
         percent    : { type: QuantityValue, comment: "Fraction as a percentage value between 0 and 100" }
     calls:
@@ -765,7 +765,7 @@
   ########################################################################################################################
   !STATEMACHINE BaseMcProcess:
     extends: BaseProcess
-    variables:
+    variables_input:
         errorId: { type: t_uint32, comment: "Error ID according to Beckhoff/PlcOpen Motion Control" }
 
 
@@ -790,7 +790,7 @@
   ########################################################################################################################
   !STATEMACHINE BaseXmlDataSrvProcess:
     extends: BaseProcess
-    variables:
+    variables_input:
         errorId: { type: t_uint32, comment: "Error ID according to Beckhoff XML Data Server library" }
 
   ########################################################################################################################
@@ -900,7 +900,7 @@
     extends: BaseMcProcess
     arguments:
         parameterNumber : { type: t_int16   , comment: "Number of the parameter" }
-    variables:
+    variables_input:
         value           : { type: t_double  , comment: "Value that was read"}
 
   ########################################################################################################################
@@ -920,7 +920,7 @@
     extends: BaseMcProcess
     arguments:
         parameterNumber : { type: t_int16   , comment: "Number of the parameter" }
-    variables:
+    variables_input:
         value           : { type: t_bool  , comment: "Value that was read"}
         
         
@@ -932,7 +932,7 @@
     arguments:
         risingEdge       : { type: t_bool    , comment: "True to probe the rising edge, false to probe the falling edge" }
         timeout          : { type: t_double  , comment: "Timeout, in seconds. After this timeout, probing is aborted. timeout <= 0 means endless probing." }
-    variables:
+    variables_input:
         recordedPosition : { type: t_double  , comment: "Value that was probed"}
 
 
@@ -962,11 +962,11 @@
         invertPosLimitSwitch: { type: t_bool                        , comment: "Invert positive limit switch raw signal" }
         invertNegLimitSwitch: { type: t_bool                        , comment: "Invert positive limit switch raw signal" }
         # invertHomingSwitch:   { type: t_bool                        , comment: "Invert positive limit switch" }
-    variables:
+    variables_input:
         isGearingSupported  : { type: t_bool , initial: !BOOL FALSE , comment: "Is gearIn/gearOut supported?" }
         axis_ref            : { type: Tc2_MC2.AXIS_REF              , comment: "The AXIS_REF to be linked to the NC I/O", 
                                                                       qualifiers: [{ symbol: "TcHmiSymbol.Hide", value: "" }] }
-    variables_read_only:
+    variables_output:
         isJogEnabled        : { type: t_bool                        , comment: "True if jog is enabled" }
         errorId             : { type: t_uint32                      , comment: "Axis error ID" }
         posLimitSwitch      : { type: t_bool                        , comment: "Limit switch in forward direction (e.g. at +105 mm for a stage of 100 mm travel range" }
@@ -1091,7 +1091,7 @@
   ########################################################################################################################
   !STATEMACHINE AngularAxis:
     extends: BaseAxis
-    variables_read_only:
+    variables_output:
         actPos              : { type: AngularPosition       , comment: "Actual position of the axis" }
         actVel              : { type: AngularVelocity       , comment: "Actual velocity of the axis" }
         setPos              : { type: AngularPosition       , comment: "Setpoint position of the axis" }
@@ -1114,7 +1114,7 @@
   ########################################################################################################################
   !STATEMACHINE LinearAxis:
     extends: BaseAxis
-    variables_read_only:
+    variables_output:
         actPos              : { type: LinearPosition       , comment: "Actual position of the axis" }
         actVel              : { type: LinearVelocity       , comment: "Actual velocity of the axis" }
         setPos              : { type: LinearPosition       , comment: "Setpoint position of the axis" }
@@ -1147,7 +1147,7 @@
     variables_hidden:
         counterValue    : { type: t_uint32                  , comment: "Counter value"                  , address: "%I*" }
         status          : { type: t_uint16                  , comment: "Status"                         , address: "%I*" }
-    variables_read_only:
+    variables_output:
         dataError       : { type: t_bool                    , comment: "Data error"                    , address: "%I*" }
         frameError      : { type: t_bool                    , comment: "Frame error"                   , address: "%I*" }
         powerFailure    : { type: t_bool                    , comment: "Power failure"                 , address: "%I*" }
@@ -1171,7 +1171,7 @@
         setCounterValue     : { type: t_uint32                  , comment: "Counter value to be set"    , address: "%Q*" }
         setCounter          : { type: t_bool                    , comment: "Counter value to be set"    , address: "%Q*" }
         enableLatchC        : { type: t_bool                    , comment: "Enable latch C"             , address: "%Q*" }
-    variables_read_only:
+    variables_output:
         latchCValid         : { type: t_bool                    , comment: "Bit 0: Latch C valid"  }
         latchExternValid    : { type: t_bool                    , comment: "Bit 1: Latch extern valid"  }
         setCounterDone      : { type: t_bool                    , comment: "Bit 2: Set counter done"  }
@@ -1213,7 +1213,7 @@
   # EtherCatDevice
   ########################################################################################################################
   !STATEMACHINE EtherCatDevice:
-    variables:
+    variables_input:
         id       : { type: t_string , comment: "Label according to the electric schemes" }
         typeId   : { type: t_string , comment: "Manufacturer type, e.g. EL1008" }
         wcState  : { type: t_bool   , comment: "0 = Data valid, 1 = Data invalid" , address: "%I*" }
@@ -1231,7 +1231,7 @@
   # CANopenBus
   ########################################################################################################################
   !STATEMACHINE CANopenBus:
-    variables:
+    variables_input:
         error          : { type: t_uint8  , comment: "Number of boxes with BoxState unequal to 0"             , address: "%I*" }
         canState       : { type: t_uint16 , comment: "CAN state (See system manager for bit interpretation"   , address: "%I*" }
         rxErrorCounter : { type: t_uint8  , comment: "RxError-counter of the CAN controller"                  , address: "%I*" }
@@ -1251,7 +1251,7 @@
     variables_hidden:
         microAmpsValue  : { type: t_int32      , comment: "Measured current in microamps"   , address: "%I*" }
         error           : { type: t_bool       , comment: "Error"                           , address: "%I*" }
-    variables_read_only:
+    variables_output:
         current         : { type: Current      , comment: "The measured current" }
     stat:
         health          : { type: HealthStatus , comment: "Is the measurement valid?" }
@@ -1271,7 +1271,7 @@
         rawValue        : { type: t_int16              , comment: "Measured raw value"                                        , address: "%I*" }
         error           : { type: t_bool               , comment: "Error"                                                     , address: "%I*" }
         conversionFactor: { type: t_double             , comment: "rawValue * conversionFactor = volt.value"   , initial: !DOUBLE 0.00030517578125 }
-    variables_read_only:
+    variables_output:
         actual          : { type: Voltage              , comment: "Actual value" }
         average         : { type: Voltage              , comment: "Moving average value" }
         underrange      : { type: t_bool               , comment: "Underrange"                      , address: "%I*" }
@@ -1307,7 +1307,7 @@
   # SimpleTemperature
   ########################################################################################################################
   !STATEMACHINE SimpleTemperature:
-    variables_read_only:
+    variables_output:
         value          : { type: t_double          , comment: "Actual value" }
         error          : { type: t_bool            , comment: "error"                           , address: "%I*" }
         underrange     : { type: t_bool            , comment: "Underrange"                      , address: "%I*" }
@@ -1346,7 +1346,7 @@
         rawValue        : { type: t_int16              , comment: "Measured raw value"                                        , address: "%I*" }
         error           : { type: t_bool               , comment: "Error"                                                     , address: "%I*" } #&#176;
         conversionFactor: { type: t_double             , comment: "rawValue * conversionFactor = temperature.degrees.value"   , initial: !DOUBLE 0.01 }
-    variables_read_only:
+    variables_output:
         actual          : { type: Temperature          , comment: "Actual value" }
         average         : { type: Temperature          , comment: "Moving average value" }
         underrange      : { type: t_bool               , comment: "Underrange"                      , address: "%I*" }
@@ -1387,7 +1387,7 @@
         rawValue        : { type: t_int16              , comment: "Measured raw value"                                       , address: "%I*" }
         error           : { type: t_bool               , comment: "Error"                                                    , address: "%I*" }
         conversionFactor: { type: t_double             , comment: "rawValue * conversionFactor = bar.value"                  , initial: !DOUBLE 1 }
-    variables_read_only:
+    variables_output:
         actual          : { type: Pressure             , comment: "Actual value" }
         average         : { type: Pressure             , comment: "Moving average value" }
         underrange      : { type: t_bool               , comment: "Underrange"                      , address: "%I*" }
@@ -1428,7 +1428,7 @@
         rawValue        : { type: t_int16              , comment: "Measured raw value"                                       , address: "%I*" }
         error           : { type: t_bool               , comment: "Error"                                                    , address: "%I*" }
         conversionFactor: { type: t_double             , comment: "rawValue * conversionFactor = hertz.value"                , initial: !DOUBLE 1 }
-    variables_read_only:
+    variables_output:
         actual          : { type: Frequency    , comment: "Actual value" }
         average         : { type: Frequency    , comment: "Moving average value" }
         underrange      : { type: t_bool               , comment: "Underrange"                      , address: "%I*" }
@@ -1470,7 +1470,7 @@
     variables_hidden:
         milliGValue     : { type: t_int16              , comment: "Measured raw milliG value (linked to I/O module)"         , address: "%I*" }
         error           : { type: t_bool               , comment: "Error"                                                    , address: "%I*" }
-    variables_read_only:
+    variables_output:
         actual          : { type: GForce       , comment: "Actual value" }
         average         : { type: GForce       , comment: "Moving average value" }
 #    references:
@@ -1511,7 +1511,7 @@
         error           : { type: t_bool               , comment: "Error"                                        , address: "%I*" }
         conversionFactor: { type: t_double             , comment: "rawValue * conversionFactor = fraction.value", initial: !DOUBLE 3.051850947599719E-05 }
                                                                     # double(1.0/(Math.pow(2,15)-1))}
-    variables_read_only:
+    variables_output:
         actual          : { type: Fraction             , comment: "Actual value" }
         average         : { type: Fraction             , comment: "Moving average value" }
         underrange      : { type: t_bool               , comment: "Underrange"                      , address: "%I*" }
@@ -1555,7 +1555,7 @@
         underrange      : { type: t_bool               , comment: "Underrange"                                               , address: "%I*" }
         overrange       : { type: t_bool               , comment: "Overrange"                                                , address: "%I*" }
         conversionFactor: { type: t_double             , comment: "rawValue * conversionFactor = newton.value" , initial: !DOUBLE 1 }
-    variables_read_only:
+    variables_output:
         actual          : { type: Force                , comment: "Actual value" }
         average         : { type: Force                , comment: "Moving average value" }
     references:
@@ -1595,7 +1595,7 @@
         overrange       : { type: t_bool               , comment: "Overrange"                                                , address: "%I*" }
         conversionFactor: { type: t_double             , comment: "rawValue * conversionFactor = millimeters.value"          , initial: !DOUBLE 3.051850947599719E-05 }
             # double(1.0/(Math.pow(2,15)-1))
-    variables_read_only:
+    variables_output:
         actual          : { type: LinearPosition, comment: "Actual value" }
         average         : { type: LinearPosition, comment: "Moving average value" }
     references:
@@ -1635,7 +1635,7 @@
         overrange       : { type: t_bool               , comment: "Overrange"                                                , address: "%I*" }
         conversionFactor: { type: t_double             , comment: "rawValue * conversionFactor = millimeters.value"          , initial: !DOUBLE 0.0000000004656612875245797 }
         # double(1.0/(Math.pow(2,31)-1)) }
-    variables_read_only:
+    variables_output:
         actual          : { type: LinearPosition       , comment: "Actual value" }
         average         : { type: LinearPosition       , comment: "Moving average value" }
     references:
@@ -1670,7 +1670,7 @@
   !STATEMACHINE SimpleRelay:
     variables_hidden:
         isEnabled       : { type: t_bool                , comment: "Is control enabled?" }
-    variables_read_only:
+    variables_output:
         digitalOutput   : { type: t_bool                , comment: "Boolean, to bind to digital output"   , address: "%Q*" }
     proc:
         setEnabled      : { type: SetEnabledProcess     , comment: "Set the relay enabled or disabled" }
@@ -1744,7 +1744,7 @@
   !STATEMACHINE ConfigManager:
     variables_hidden:
         isEnabled       : { type: t_bool                        , comment: "Is control enabled?" }
-    variables:
+    variables_input:
         filePath        : { type: t_string                      , comment: "Full path of the config filename" }
     proc:
         save            : { type: WriteXmlProcess       , comment: "Save the currently active config to disk" }
@@ -1825,7 +1825,7 @@
     arguments:
         unitID       : { type: t_uint8  , comment: "Modbus station address (1..247)"}
         address      : { type: t_uint16 , comment: "Modbus data address"}
-    variables:
+    variables_input:
         value        : { type: t_bool, comment: "Value of the coil" }
         errorId      : { type: t_int16, comment: "Error Id. Modbus error code" }
 
@@ -1838,7 +1838,7 @@
         unitID       : { type: t_uint8  , comment: "Modbus station address (1..247)"}
         address      : { type: t_uint16 , comment: "Modbus data address"}
         value        : { type: t_bool   , comment: "Value to write on the coil" }
-    variables:
+    variables_input:
         errorId      : { type: t_int16  , comment: "Error Id. Modbus error code" }
 
   ########################################################################################################################
@@ -1849,7 +1849,7 @@
     arguments:
         unitID       : { type: t_uint8  , comment: "Modbus station address (1..247)"}
         address      : { type: t_uint16 , comment: "Modbus data address"}
-    variables:
+    variables_input:
         value        : { type: t_int16, comment: "Value of the register" }
         errorId      : { type: t_int16, comment: "Error Id. Modbus error code" }
 
@@ -1862,7 +1862,7 @@
         unitID       : { type: t_uint8  , comment: "Modbus station address (1..247)"}
         address      : { type: t_uint16 , comment: "Modbus data address"}
         value        : { type: t_int16  , comment: "Value to write on the register" }
-    variables:
+    variables_input:
         errorId      : { type: t_int16, comment: "Error Id. Modbus error code" }
 
   ########################################################################################################################
@@ -1874,7 +1874,7 @@
         unitID       : { type: t_uint8  , comment: "Modbus station address (1..247)"}
         subFunction  : { type: t_uint16 , comment: "Modbus subFunction code"}
         subData      : { type: t_int16  , comment: "Modbus data for subFunction " }
-    variables:
+    variables_input:
         value        : { type: t_int16, comment: "Value of the register" }
         errorId      : { type: t_int16, comment: "Error Id. Modbus error code" }
         
@@ -1884,7 +1884,7 @@
   !STATEMACHINE ModbusRTUBus:
     variables_hidden:
         isEnabled       : { type: t_bool , comment: "Is control enabled?" }
-    variables:
+    variables_input:
         retries         : { type: t_int16   , initial: !INT16 3     ,  comment: "Number of retries for a succesfull process" }
     proc:
         readCoil       : { type: ModbusRTUBusReadCoilProcess        , comment: "Read coil" }
@@ -2032,10 +2032,10 @@
   ########################################################################################################################
 
   !STATEMACHINE GigECamera:
-      variables:
+      variables_input:
           state                           : { type: beckhoff_vision.ETcVnCameraState            , comment: "Camera state" }
           source                          : { type: GigECameraSources                           , comment: "Camera source" }
-      variables_read_only:
+      variables_output:
           # general
           frameCounter                    : { type: t_uint32                                    , comment: "Number of frames taken"}
           # parameters
@@ -2155,9 +2155,9 @@
   !STATEMACHINE ELL14Stage:
     variables_hidden:
         isEnabled           : { type: t_bool                        , comment: "Is control enabled?" }
-    variables:
+    variables_input:
         simulated           : { type: t_bool                        , comment: "True if the device must be simulated" }
-    variables_read_only:
+    variables_output:
         commError           : { type: t_bool                        , comment: "True if the communication is in error" }
         homed               : { type: t_bool                        , comment: "True if the stage was homed" }
         position            : { type: t_double                      , comment: "Actual position in °"  }

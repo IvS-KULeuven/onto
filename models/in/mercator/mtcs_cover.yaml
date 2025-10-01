@@ -84,13 +84,13 @@
   ########################################################################################################################
 
   !STATEMACHINE Cover:
-    variables:
+    variables_input:
       editableConfig          : { type: CoverConfig                       , comment: "Editable configuration of the cover" }
     references:
       operatorStatus          : { type: mtcs_common.OperatorStatus }
       aziPos                  : { type: mtcs_common.AngularPosition       , comment: "Actual azimuth position of the telescope"}
       elePos                  : { type: mtcs_common.AngularPosition       , comment: "Actual elevation position of the telescope"}
-    variables_read_only:
+    variables_output:
       config                  : { type: CoverConfig                       , comment: "Active configuration of the cover" }
       currentMeasurement      : { type: mtcs_common.CurrentMeasurement    , comment: "The current measurement of the selected panels" }
       safeToOpenOrClose       : { type: t_bool                            , comment: "True if safe to open or close!" }
@@ -242,7 +242,7 @@
     typeOf: [ CoverParts.apertureProcedure ]
     variables_hidden:
       state         : { type: CoverApertureProcedureStates  , comment: "New state, to be set by the manual implementation" , expand: false }
-    variables_read_only:
+    variables_output:
       opening       : { type: t_bool                , comment: "Is the procedure busy with opening?" }
       closing       : { type: t_bool                , comment: "Is the procedure busy with closing?" }
       distance      : { type: mtcs_common.AngularPosition       , comment: "The closest distance between the top and bottom panels" , expand: false }
@@ -467,7 +467,7 @@
           type: CoverConfig
           comment: "Configuration of the cover"
           expand: false
-    variables:
+    variables_input:
       encoderErrorSignal:
           type: t_bool
           comment: 'Externally read error signal'

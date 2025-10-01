@@ -35,12 +35,12 @@
   ########################################################################################################################
   
   !STATEMACHINE M1:
-      variables:
+      variables_input:
           editableConfig                  : { type: M1Config                              , comment: "Editable configuration of the M1 subsystem" }
       references:
           operatorStatus                  : { type: mtcs_common.OperatorStatus            , comment: "Shared operator status"}
           tubeAngleMeasurement            : { type: mtcs_telemetry.TelemetryAccelerometer , comment: "Accelerometer box angle measurement"}
-      variables_read_only:
+      variables_output:
           config                          : { type: M1Config                              , comment: "Active configuration of the M1 subsystem" }
           pneumaticSupplyPressure         : { type: mtcs_common.PressureMeasurement       , comment: "Pressure measurement of the pneumatic supply" }
       parts:
@@ -158,9 +158,9 @@
       typeOf                  : [ M1Parts.inclinometer ]
       references:
           config              : { type: mtcs_common.MeasurementConfig   , comment: "Reference to the config" }
-      variables:
+      variables_input:
           voltageMeasurement  : { type: mtcs_common.VoltageMeasurement  , comment: 'Measured voltage' }
-      variables_read_only:
+      variables_output:
           actualElevation     : { type: mtcs_common.AngularPosition     , comment: 'Elevation actual value' }
           averageElevation    : { type: mtcs_common.AngularPosition     , comment: 'Elevation average value' }
       statuses:
@@ -223,7 +223,7 @@
           operatingStatus             : { type: mtcs_common.OperatingStatus }
       variables_hidden:
           pressureSetpointOutput      : { type: t_int16                                   , comment: "Output value", address: "%Q*" }
-      variables_read_only:
+      variables_output:
           # measured values
           regulatorPressure           : { type: mtcs_common.PressureMeasurement             , comment: "Pressure measurement at the regulator" }
           mirrorPressure              : { type: mtcs_common.PressureMeasurement             , comment: "Pressure measurement at the mirror" }
@@ -348,7 +348,7 @@
           tubeAngle                   : { type: mtcs_common.AngularPosition }
       variables_hidden:
           pressureSetpointOutput      : { type: t_int16                                   , comment: "Output value", address: "%Q*" }
-      variables_read_only:
+      variables_output:
           # measured values
           regulatorPressure           : { type: mtcs_common.PressureMeasurement             , comment: "Pressure measurement at the regulator" }
           mirrorPressure              : { type: mtcs_common.PressureMeasurement             , comment: "Pressure measurement at the mirror" }

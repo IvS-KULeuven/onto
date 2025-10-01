@@ -75,7 +75,7 @@
   ########################################################################################################################
   
   !STATEMACHINE Hydraulics:
-      variables:
+      variables_input:
           editableConfig                  : { type: HydraulicsConfig                    , comment: "Editable configuration of the Safety subsystem" }
           circulationFilterGOK            : { type: t_bool, address: "%I*"              , comment: "TRUE if there is no overpressure for circulation filter G" }
           circulationFilterDOK            : { type: t_bool, address: "%I*"              , comment: "TRUE if there is no overpressure for circulation filter D" }
@@ -86,7 +86,7 @@
           operatorStatus                  : { type: mtcs_common.OperatorStatus          , comment: "Shared operator status" }
           safetyHydraulics                : { type: mtcs_safety.SafetyHydraulics        , comment: "The hydraulics part of the safety system" }
           safetyIO                        : { type: mtcs_safety.SafetyIO                , comment: "The I/O part of the safety system"       , expand: false}
-      variables_read_only:
+      variables_output:
           config                          : { type: HydraulicsConfig                    , comment: "Active configuration of the Hydraulics subsystem" }
           bearingTemperature              : { type: mtcs_common.TemperatureMeasurement  , comment: "Temperature measured at the bearing" }
       parts:
@@ -235,12 +235,12 @@
           safetyHydraulics        : { type: mtcs_safety.SafetyHydraulics, expand: false }
           config                  : { type: HydraulicsSideConfig }
           hydraulicsConfig        : { type: HydraulicsConfig }
-      variables:
+      variables_input:
           entranceFilter1OK       : { type: t_bool, address: "%I*"        , comment: "TRUE if there is no overpressure for entrance filter 1" }
           entranceFilter2OK       : { type: t_bool, address: "%I*"        , comment: "TRUE if there is no overpressure for entrance filter 2" }
           entranceFilter3OK       : { type: t_bool, address: "%I*"        , comment: "TRUE if there is no overpressure for entrance filter 3" }
           entranceFilter4OK       : { type: t_bool, address: "%I*"        , comment: "TRUE if there is no overpressure for entrance filter 4" }
-      variables_read_only:
+      variables_output:
           driveTripOK             : { type: t_bool                        , comment: "TRIP output of the drive, as copied from the safety system"}
           driveRelease            : { type: t_bool                        , comment: "Release output of the drive (ReglerFreigabe RFR), as copied from the safety system"}
           driveMinFrequency       : { type: t_bool                        , comment: "Minimum frequency output of the drive (QMIN), as copied from the safety system"}
