@@ -1586,6 +1586,9 @@ def add_models(lib: Library):
                     assert(isinstance(proc.type, Process))
                     proc_struct_var.type = proc.type.model
                     proc_struct.items[proc.name] = proc_struct_var
+                v = Variable(name="proc", parent=m)
+                v.type = proc_struct
+                m.items[var.name] = v
             elif isinstance(var.type, Struct):
                 v = Variable(name=var.name, parent=m)
                 v.type = var.type
