@@ -798,7 +798,7 @@ class Statemachine(FunctionBlock):
         
         check_args("Statemachine", args,
                    ["variables_input", "variables_hidden", "variables_output",
-                    "statuses", "parts", "local", "methods", "calls", statuses(),
+                    "statuses", "parts", "local", "local_rw", "methods", "calls", statuses(),
                     "disabled_calls", "updates", "references", "extends",
                     processes(), "constraints", "render", "typeOf"])
         
@@ -1019,6 +1019,14 @@ class Statemachine(FunctionBlock):
                     m.implementation = [
                         ASSIGN([m, c])
                     ]
+
+        # add the local variables
+        if "local_rw" in args:
+            for var_name, var in args['local_rw'].items():
+                v = Variable(var_name, self, var)
+                v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.HMI_SHOW, QUALIFIERS.OPC_UA_ACCESS_RW]
+                self.var_local[var_name] = v
+                self.vars[var_name] = v
 
         # add the local variables
         if "local" in args:
@@ -1316,7 +1324,7 @@ class Process(FunctionBlock):
                 {
                     "type": struct,
                     "comment": "Arguments to be set, before writing do_request TRUE",
-                    "qualifiers": [ QUALIFIERS.OPC_UA_ACTIVATE ]
+                    "qualifiers": [ QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_RW ]
                 })
             self.var_out["get"] = Variable(
                 "get",

@@ -752,8 +752,9 @@
         busyStatus          : { type: BusyStatus       , comment: "Is the process busy or not?" }
         healthStatus        : { type: HealthStatus     , comment: "Is the process in a healthy state or not?" }
         startedStatus       : { type: StartedStatus    , comment: "Is the process started or not?" }
-    local:
+    local_rw:
         do_request          : { type: t_bool           , comment: "Write TRUE to request the start of the process" }
+    local:
         do_request_result   : { type: RequestResults   , comment: "Result of the request" }
     calls:
         enabledStatus:
