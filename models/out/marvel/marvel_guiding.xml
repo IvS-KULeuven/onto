@@ -339,6 +339,245 @@
           </struct>
         </baseType>
       </dataType>
+      <dataType name="M_SM_Guiding">
+        <baseType>
+          <struct>
+            <variable name="actualStatus">
+              <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="centroidXAbsCoo">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="centroidYAbsCoo">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="centroidXRelCoo">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="centroidYRelCoo">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="stat">
+              <type><derived name="GuidingStatuses" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="parts">
+              <type><derived name="M_SM_GuidingParts" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="M_GuidingAcquireTargetProcess">
+        <baseType>
+          <struct>
+          </struct>
+        </baseType>
+        <addData>
+        <data name="http://www.3s-software.com/plcopenxml/datatypeinheritance" handleUnknown="implementation">
+          <Inheritance>
+            <Extends>M_BaseProcess</Extends>
+          </Inheritance>
+        </data>
+        </addData>
+      </dataType>
+      <dataType name="M_GuidingStartGuidingProcess">
+        <baseType>
+          <struct>
+          </struct>
+        </baseType>
+        <addData>
+        <data name="http://www.3s-software.com/plcopenxml/datatypeinheritance" handleUnknown="implementation">
+          <Inheritance>
+            <Extends>M_BaseProcess</Extends>
+          </Inheritance>
+        </data>
+        </addData>
+      </dataType>
+      <dataType name="M_GuidingCameraParamSetProcess">
+        <baseType>
+          <struct>
+          </struct>
+        </baseType>
+        <addData>
+        <data name="http://www.3s-software.com/plcopenxml/datatypeinheritance" handleUnknown="implementation">
+          <Inheritance>
+            <Extends>M_BaseProcess</Extends>
+          </Inheritance>
+        </data>
+        </addData>
+      </dataType>
+      <dataType name="M_SM_GuidingParts">
+        <baseType>
+          <struct>
+            <variable name="camera">
+              <type><derived name="M_GigECamera" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="M_SM_GuidingProcesses">
+        <baseType>
+          <struct>
+            <variable name="initialize">
+              <type><derived name="M_Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="reset">
+              <type><derived name="M_Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="acquireTarget">
+              <type><derived name="M_GuidingAcquireTargetProcess" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="startGuiding">
+              <type><derived name="M_GuidingStartGuidingProcess" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="stop">
+              <type><derived name="M_Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="setCameraParamSet">
+              <type><derived name="M_GuidingCameraParamSetProcess" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
     </dataTypes>
     <pous>
       <pou name="SM_Guiding" pouType="functionBlock">
@@ -1093,6 +1332,20 @@ END_IF;
           <Folder Name="Functions">
           </Folder>
           <Folder Name="Models">
+            <Object Name="M_SM_Guiding">
+            </Object>
+            <Object Name="M_GuidingAcquireTargetProcess">
+            </Object>
+            <Object Name="M_GuidingStartGuidingProcess">
+            </Object>
+            <Object Name="M_GuidingCameraParamSetProcess">
+            </Object>
+            <Object Name="M_Guiding">
+            </Object>
+            <Object Name="M_SM_GuidingParts">
+            </Object>
+            <Object Name="M_SM_GuidingProcesses">
+            </Object>
           </Folder>
         </Folder>
       </ProjectStructure>

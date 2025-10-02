@@ -113,6 +113,24 @@ class Namespace(Object):
     def items(self):
         return self.children.items()
     
+    def get_statemachines(self, recursive: bool, statemachines: list):
+        for child in self.children.values():
+            if isinstance(child, Namespace):
+                if recursive:
+                    child.get_statemachines(recursive, statemachines)
+            elif isinstance(child, Statemachine):
+                if child not in statemachines:
+                    statemachines.append(child)
+    
+    def get_processes(self, recursive: bool, processes: list):
+        for child in self.children.values():
+            if isinstance(child, Namespace):
+                if recursive:
+                    child.get_processes(recursive, processes)
+            elif isinstance(child, Process):
+                if child not in processes:
+                    processes.append(child)
+    
     def get_namespaces(self, recursive: bool, namespaces: list):
         for child in self.children.values():
             if isinstance(child, Namespace):
@@ -198,10 +216,10 @@ class Library(Namespace):
                 sm = Statemachine(arg_k.name, self, arg_v)
                 self.statemachines[arg_k.name] = sm
             elif isinstance(arg_k, STATUS):
-                if versions.CODEGEN_VERSION == versions.CodeGenVersion.MTCS:
+                if is_mtcs():
                     sts = Status(arg_k.name, self, arg_v) 
                     self.statuses[arg_k.name] = sts
-                elif versions.CODEGEN_VERSION == versions.CodeGenVersion.MARVEL:
+                elif is_marvel():
                     enum, function = make_marvel_status(arg_k.name, self, arg_v)
                     self.functions[function.name] = function
                     self.enums[enum.name] = enum
@@ -218,13 +236,9 @@ class Library(Namespace):
             elif isinstance(arg_k, PROCESS):
                 proc = Process(arg_k.name, self, arg_v) 
                 self.processes[arg_k.name] = proc
-
-
-def add_models(lib: Library):
-    for sm in lib.statemachines:
-        m = Model(f"M_{sm.name}", lib.models, { 'items' : {}})
         
-
+        if is_marvel():
+            add_models(self)
 
 
 def check_args(name, args, allowed_args):
@@ -534,8 +548,11 @@ class Struct(Object):
         self.plc_symbol = None
         self.qualifiers = None
         self.is_ref = False
+        self.extends = None
+        self.render = True
+
         for arg in args:
-            if arg not in ["items", "comment", "typeOf", "qualifiers"]:
+            if arg not in ["items", "comment", "typeOf", "qualifiers", "extends"]:
                 raise Exception(f"Struct {name} contains illegal argument '{arg}'")
         
         if 'comment' in args:
@@ -558,10 +575,13 @@ class Struct(Object):
             for typeOf in typeOfList:
                 subject = resolve(typeOf, self)
                 subject.type = self
+        
+        if "extends" in args:
+            self.extends = resolve(args["extends"], self)
 
 class Model(Struct):
-    def __init__(self, name, parent, args={}) -> None:
-        super().__init__(name, parent, args)
+    def __init__(self, name, parent) -> None:
+        super().__init__(name, parent, { 'items' : {}})
 
 class Call:
     """
@@ -1225,8 +1245,9 @@ class Statemachine(FunctionBlock):
                 self.methods["_log"] = m
 
         # finally, also add the main state machine (to be implemented by the user):
-        main_sm = FunctionBlock(name, self.parent, { "extends": f"SM_{name}", "render": False })
-        self.parent.register_child(name, main_sm)
+        self.main_sm = FunctionBlock(name, self.parent, { "extends": f"SM_{name}", "render": False })
+        self.parent.register_child(name, self.main_sm)
+        self.main_sm.is_main_sm_of = self
 
         if 'typeOf' in args:
             typeOfList = args['typeOf']
@@ -1234,7 +1255,7 @@ class Statemachine(FunctionBlock):
                 typeOfList = [ typeOfList ]
             for typeOf in typeOfList:
                 subject = resolve(typeOf, self)
-                subject.type = main_sm
+                subject.type = self.main_sm
 
         
 
@@ -1502,3 +1523,130 @@ def make_marvel_status(name, parent, args={}):
     enum.calculated_by = function
 
     return enum, function
+
+
+
+def add_models(lib: Library):
+    fbs = []
+    lib.get_fbs(recursive=True, fbs=fbs)
+    for fb in fbs:
+        fb: Statemachine
+        fb.model = Model('M_' + fb.name, lib.models)
+        fb.model.render = fb.render
+    
+    for fb in fbs:
+        if fb.extends is not None:
+            fb.model.extends = fb.extends.model
+    
+    statemachines = []
+    lib.get_statemachines(recursive=True, statemachines=statemachines)
+    for sm in statemachines:
+        sm: Statemachine
+        assert(sm.name.startswith('SM_'))
+
+        #m = lib.models.get_child(sm.name.replace('SM_', 'M_'))
+        m = sm.model
+        m: Model
+
+        for var in list(sm.var_in.values()) + list(sm.var_local.values()) + list(sm.var_out.values()):
+            var: Variable
+
+            if var.type is None:
+                raise Exception(f"Adding model for variable {var.name} of {sm.name} failed, type is None!")
+            elif (QUALIFIERS.HMI_SHOW not in var.qualifiers) and (QUALIFIERS.HMI_SHOWRECURSIVELY not in var.qualifiers):
+                pass # skip
+            elif isinstance(var.type, Primitive):
+                v = Variable(name=var.name, parent=m)
+                v.type = var.type
+                m.items[var.name] = v
+            elif var.name == "stat":
+                v = Variable(name=var.name, parent=m)
+                v.type = var.type
+                m.items[var.name] = v
+            elif var.name == "parts":
+                parts_struct = Model(m.name + "Parts", parent=lib.models)
+                for part in resolve(f'{sm.name.replace("SM_", "")}Parts', sm.parent).items.values():
+                    part: Variable
+                    #print(f"VAR: {str(part)} {str(part.name)} {str(part.type)} {str(part.points_to_type)}")
+                    parts_struct_var = Variable(part.name, parts_struct)
+                    #assert(isinstance(part.type, FunctionBlock))
+                    #assert(isinstance(part.type.is_main_sm_of, Statemachine))
+                    #parts_struct_var.type = part.type.is_main_sm_of.model
+                    parts_struct_var.type = part.type.model
+                    parts_struct.items[part.name] = parts_struct_var
+                v = Variable(name="parts", parent=m)
+                v.type = parts_struct
+                m.items[var.name] = v
+            elif var.name == "proc":
+                proc_struct = Model(m.name + "Processes", parent=lib.models)
+                for proc in resolve(f'{sm.name.replace("SM_", "")}Processes', sm.parent).items.values():
+                    proc: Variable
+                    print(f"VAR: {str(proc)} {str(proc.name)} {str(proc.type)} {str(proc.points_to_type)}")
+                    proc_struct_var = Variable(proc.name, proc_struct)
+                    assert(isinstance(proc.type, Process))
+                    proc_struct_var.type = proc.type.model
+                    proc_struct.items[proc.name] = proc_struct_var
+
+
+
+# def add_models(lib: Library):
+#     statemachines = []
+#     lib.get_statemachines(recursive=True, statemachines=statemachines)
+#     for sm in statemachines:
+#         sm: Statemachine
+#         assert(sm.name.startswith('SM_'))
+#         sm.model = Model(sm.name.replace('SM_', 'M_'), lib.models)
+        
+#     processes = []
+#     lib.get_processes(recursive=True, processes=processes)
+#     for proc in processes:
+#         proc: Process
+#         proc.model = Model('M_' + proc.name, lib.models)
+
+#     for sm in statemachines:
+#         sm: Statemachine
+#         assert(sm.name.startswith('SM_'))
+
+#         #m = lib.models.get_child(sm.name.replace('SM_', 'M_'))
+#         m = sm.model
+#         m: Model
+
+#         for var in list(sm.var_in.values()) + list(sm.var_local.values()) + list(sm.var_out.values()):
+#             var: Variable
+
+#             if var.type is None:
+#                 raise Exception(f"Adding model for variable {var.name} of {sm.name} failed, type is None!")
+#             elif (QUALIFIERS.HMI_SHOW not in var.qualifiers) and (QUALIFIERS.HMI_SHOWRECURSIVELY not in var.qualifiers):
+#                 pass # skip
+#             elif isinstance(var.type, Primitive):
+#                 v = Variable(name=var.name, parent=m)
+#                 v.type = var.type
+#                 m.items[var.name] = v
+#             elif var.name == "stat":
+#                 v = Variable(name=var.name, parent=m)
+#                 v.type = var.type
+#                 m.items[var.name] = v
+#             elif var.name == "parts":
+#                 parts_struct = Model(m.name + "Parts", parent=lib.models)
+#                 for part in resolve(f'{sm.name.replace("SM_", "")}Parts', sm.parent).items.values():
+#                     part: Variable
+#                     #print(f"VAR: {str(part)} {str(part.name)} {str(part.type)} {str(part.points_to_type)}")
+#                     parts_struct_var = Variable(part.name, parts_struct)
+#                     assert(isinstance(part.type, FunctionBlock))
+#                     assert(isinstance(part.type.is_main_sm_of, Statemachine))
+#                     parts_struct_var.type = part.type.is_main_sm_of.model
+#                     parts_struct.items[part.name] = parts_struct_var
+#             elif var.name == "proc":
+#                 proc_struct = Model(m.name + "Processes", parent=lib.models)
+#                 for proc in resolve(f'{sm.name.replace("SM_", "")}Processes', sm.parent).items.values():
+#                     proc: Variable
+#                     print(f"VAR: {str(proc)} {str(proc.name)} {str(proc.type)} {str(proc.points_to_type)}")
+#                     proc_struct_var = Variable(proc.name, proc_struct)
+#                     assert(isinstance(proc.type, Process))
+#                     proc_struct_var.type = proc.type.model
+#                     proc_struct.items[proc.name] = proc_struct_var
+
+
+        
+        
+        

@@ -159,21 +159,23 @@
     lib.get_structs(recursive=True, structs=structs) 
 %>\
     % for enum in enums:
-      ${xml_enum(enum, '      ')}
+      ${xml_enum(lib, enum, '      ')}
     % endfor
     % for struct in structs:
-      ${xml_struct(struct, '      ')}
+      % if struct.render:
+      ${xml_struct(lib, struct, '      ')}
+      % endif
     % endfor
     </dataTypes>
     <pous>
     % for function in functions:
       % if function.render:
-      ${xml_pou_function(function, '      ')}
+      ${xml_pou_function(lib, function, '      ')}
       % endif
     % endfor
     % for fb in fbs:
       % if fb.render:
-      ${xml_pou_functionBlock(fb, '      ')}
+      ${xml_pou_functionBlock(lib, fb, '      ')}
       % endif
     % endfor
     </pous>
@@ -238,8 +240,8 @@ ${indent}  <Object Name="${method.name}" />
 ${indent}</Object>\
 </%def>
 
-<%def name="xml_enum(enum, indent='')">\
-<% info(f"Rendering enum {enum.name}") %>\
+<%def name="xml_enum(lib, enum, indent='')">\
+<% info(f"Rendering enum {lib.name}.{enum.name}") %>\
 <dataType name="${enum.name}">
 ${indent}  <baseType>
 ${indent}    <enum>
@@ -267,8 +269,8 @@ ${indent}  </addData>
 ${indent}</dataType>\
 </%def>
 
-<%def name="xml_pou_function(node, indent='')">\
-<% info(f"Rendering Function {node.name}") %>\
+<%def name="xml_pou_function(lib, node, indent='')">\
+<% info(f"Rendering Function {lib.name}.{node.name}") %>\
 <pou name="${node.name}" pouType="function">
 ${indent}    <interface>
 % if node.return_type is not None:
@@ -298,8 +300,8 @@ ${indent}    </body>
 ${indent}</pou>\
 </%def>
 
-<%def name="xml_pou_functionBlock(fb, indent='')">\
-<% info(f"Rendering FunctionBlock {fb.name}") %>\
+<%def name="xml_pou_functionBlock(lib, fb, indent='')">\
+<% info(f"Rendering FunctionBlock {lib.name}.{fb.name}") %>\
 <pou name="${fb.name}" pouType="functionBlock">
 ${indent}  <interface>
 ${indent}    ${xml_variables("input" , fb.var_in.values()    , indent+'    ')}
@@ -658,8 +660,8 @@ ${xml_type_element(node.type, node.is_ref)}\
 </%def>
 
 
-<%def name="xml_struct(node,indent='')">\
-<% info(f"Rendering Struct {node.name}") %>\
+<%def name="xml_struct(lib, node, indent='')">\
+<% info(f"Rendering Struct {lib.name}.{node.name}") %>\
 <dataType name="${node.name}">
 ${indent}  <baseType>
 ${indent}    <struct>
@@ -668,8 +670,16 @@ ${indent}      ${xml_variable(item, indent+'      ')}
              %endfor
 ${indent}    </struct>
 ${indent}  </baseType>
-        % if node.qualifiers is not None:
+        % if (node.extends is not None) or node.qualifiers is not None:
 ${indent}  <addData>
+        % if node.extends is not None:
+${indent}  <data name="http://www.3s-software.com/plcopenxml/datatypeinheritance" handleUnknown="implementation">
+${indent}    <Inheritance>
+${indent}      <Extends>${node.extends.name}</Extends>
+${indent}    </Inheritance>
+${indent}  </data>
+        % endif
+        % if node.qualifiers is not None:
 ${indent}    <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
 ${indent}      <Attributes>
                % for qualifier in node.qualifiers:
@@ -677,6 +687,7 @@ ${indent}        <Attribute Name="${qualifier.plc_symbol}" Value="${qualifier.va
                % endfor
 ${indent}      </Attributes>
 ${indent}    </data>
+        % endif
 ${indent}  </addData>
         % endif
 ${indent}</dataType>\
