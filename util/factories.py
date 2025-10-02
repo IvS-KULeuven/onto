@@ -1347,13 +1347,18 @@ class Process(FunctionBlock):
                     "comment": "Arguments to be set, before writing do_request TRUE",
                     "qualifiers": [ QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_RW ]
                 })
+            if is_mtcs():
+                qualifiers = [ QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_R ]
+            else:
+                qualifiers = [ QUALIFIERS.OPC_UA_DEACTIVATE, QUALIFIERS.HMI_HIDE ]
+            
             self.var_out["get"] = Variable(
                 "get",
                 self,
                 {
                     "type": struct,
                     "comment": "Arguments in use by the process, if do_request was accepted",
-                    "qualifiers": [ QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_R ]
+                    "qualifiers": qualifiers
                 })
 
         # add a start(...) method
@@ -1544,7 +1549,6 @@ def add_models(lib: Library):
         sm: Statemachine
         assert(sm.name.startswith('SM_'))
 
-        #m = lib.models.get_child(sm.name.replace('SM_', 'M_'))
         m = sm.model
         m: Model
 
@@ -1555,7 +1559,7 @@ def add_models(lib: Library):
                 raise Exception(f"Adding model for variable {var.name} of {sm.name} failed, type is None!")
             elif (QUALIFIERS.HMI_SHOW not in var.qualifiers) and (QUALIFIERS.HMI_SHOWRECURSIVELY not in var.qualifiers):
                 pass # skip
-            elif isinstance(var.type, Primitive):
+            elif isinstance(var.type, Primitive) or isinstance(var.type, Enum):
                 v = Variable(name=var.name, parent=m)
                 v.type = var.type
                 m.items[var.name] = v
@@ -1567,11 +1571,7 @@ def add_models(lib: Library):
                 parts_struct = Model(m.name + "Parts", parent=lib.models)
                 for part in resolve(f'{sm.name.replace("SM_", "")}Parts', sm.parent).items.values():
                     part: Variable
-                    #print(f"VAR: {str(part)} {str(part.name)} {str(part.type)} {str(part.points_to_type)}")
                     parts_struct_var = Variable(part.name, parts_struct)
-                    #assert(isinstance(part.type, FunctionBlock))
-                    #assert(isinstance(part.type.is_main_sm_of, Statemachine))
-                    #parts_struct_var.type = part.type.is_main_sm_of.model
                     parts_struct_var.type = part.type.model
                     parts_struct.items[part.name] = parts_struct_var
                 v = Variable(name="parts", parent=m)
@@ -1581,7 +1581,6 @@ def add_models(lib: Library):
                 proc_struct = Model(m.name + "Processes", parent=lib.models)
                 for proc in resolve(f'{sm.name.replace("SM_", "")}Processes', sm.parent).items.values():
                     proc: Variable
-                    print(f"VAR: {str(proc)} {str(proc.name)} {str(proc.type)} {str(proc.points_to_type)}")
                     proc_struct_var = Variable(proc.name, proc_struct)
                     assert(isinstance(proc.type, Process))
                     proc_struct_var.type = proc.type.model
@@ -1590,6 +1589,25 @@ def add_models(lib: Library):
                 v.type = proc_struct
                 m.items[var.name] = v
             elif isinstance(var.type, Struct):
+                v = Variable(name=var.name, parent=m)
+                v.type = var.type
+                m.items[var.name] = v
+
+    processes = []
+    lib.get_processes(recursive=True, processes=processes)
+    for proc in processes:
+        proc: Process
+        
+        m = proc.model
+        m: Model
+
+        for var in list(proc.var_in.values()) + list(proc.var_local.values()) + list(proc.var_out.values()):
+
+            if var.type is None:
+                raise Exception(f"Adding model for variable {var.name} of {proc.name} failed, type is None!")
+            elif (QUALIFIERS.HMI_SHOW not in var.qualifiers) and (QUALIFIERS.HMI_SHOWRECURSIVELY not in var.qualifiers):
+                pass # skip
+            elif isinstance(var.type, Primitive) or isinstance(var.type, Enum) or isinstance(var.type, Struct):
                 v = Variable(name=var.name, parent=m)
                 v.type = var.type
                 m.items[var.name] = v
