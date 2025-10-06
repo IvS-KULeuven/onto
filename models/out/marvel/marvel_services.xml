@@ -1844,6 +1844,100 @@ proc.changeOperatingState( isEnabled := FALSE );
           </ST>
         </body>
         <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyFromModel_SM_Services">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_SM_Services" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.parts.timing._copyFromModel_ServicesTiming( model := model.parts.timing );
+THIS^.parts.mercatorMeteo._copyFromModel_ServicesMercatorMeteo( model := model.parts.mercatorMeteo );
+THIS^.parts.configManager._copyFromModel_ConfigManager( model := model.parts.configManager );
+THIS^.proc.initialize._copyFromModel_Process( model := model.proc.initialize );
+THIS^.proc.lock._copyFromModel_Process( model := model.proc.lock );
+THIS^.proc.unlock._copyFromModel_Process( model := model.proc.unlock );
+THIS^.proc.changeOperatingState._copyFromModel_ChangeOperatingStateProcess( model := model.proc.changeOperatingState );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyToModel_SM_Services">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_SM_Services" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">model.editableConfig := THIS^.editableConfig;
+model.actualStatus := THIS^.actualStatus;
+model.config := THIS^.config;
+model.stat := THIS^.stat;
+THIS^.parts.timing._copyToModel_ServicesTiming( model := model.parts.timing );
+THIS^.parts.mercatorMeteo._copyToModel_ServicesMercatorMeteo( model := model.parts.mercatorMeteo );
+THIS^.parts.configManager._copyToModel_ConfigManager( model := model.parts.configManager );
+THIS^.proc.initialize._copyToModel_Process( model := model.proc.initialize );
+THIS^.proc.lock._copyToModel_Process( model := model.proc.lock );
+THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
+THIS^.proc.changeOperatingState._copyToModel_ChangeOperatingStateProcess( model := model.proc.changeOperatingState );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
         </addData>
       </pou>
       <pou name="SM_ServicesTiming" pouType="functionBlock">
@@ -2394,6 +2488,111 @@ isNtpSynchronized_ro := isNtpSynchronized;
           </ST>
         </body>
         <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyFromModel_SM_ServicesTiming">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_SM_ServicesTiming" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyToModel_SM_ServicesTiming">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_SM_ServicesTiming" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">model.sysTime_ro := THIS^.sysTime_ro;
+model.ntpExtTime_ro := THIS^.ntpExtTime_ro;
+model.ntpLastUpdated_ro := THIS^.ntpLastUpdated_ro;
+model.sysToNtpExtTimeOffset_ro := THIS^.sysToNtpExtTimeOffset_ro;
+model.isNtpConnected_ro := THIS^.isNtpConnected_ro;
+model.isNtpSynchronized_ro := THIS^.isNtpSynchronized_ro;
+model.actualStatus := THIS^.actualStatus;
+model.sysTime := THIS^.sysTime;
+model.ntpExtTime := THIS^.ntpExtTime;
+model.ntpLastUpdated := THIS^.ntpLastUpdated;
+model.sysToNtpExtTimeOffset := THIS^.sysToNtpExtTimeOffset;
+model.isNtpConnected := THIS^.isNtpConnected;
+model.isNtpSynchronized := THIS^.isNtpSynchronized;
+model.source := THIS^.source;
+model.utcFractionOfDay := THIS^.utcFractionOfDay;
+model.utcDateString := THIS^.utcDateString;
+model.utcTimeString := THIS^.utcTimeString;
+model.lastUpdatedString := THIS^.lastUpdatedString;
+model.sysToNtpOffset := THIS^.sysToNtpOffset;
+model.jd := THIS^.jd;
+model.jdSinceJ2000 := THIS^.jdSinceJ2000;
+model.gmst := THIS^.gmst;
+model.lst := THIS^.lst;
+model.sunAlpha := THIS^.sunAlpha;
+model.sunDelta := THIS^.sunDelta;
+model.sunAzi := THIS^.sunAzi;
+model.sunEle := THIS^.sunEle;
+model.sunAutoClose := THIS^.sunAutoClose;
+model.stat := THIS^.stat;
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
         </addData>
       </pou>
       <pou name="SM_ServicesMercatorMeteoMeasurement" pouType="functionBlock">
@@ -2512,6 +2711,87 @@ stat.alarm := F_HiHiLoLoAlarmStatus(
           </ST>
         </body>
         <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyFromModel_SM_ServicesMercatorMeteoMeasurement">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_SM_ServicesMercatorMeteoMeasurement" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyToModel_SM_ServicesMercatorMeteoMeasurement">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_SM_ServicesMercatorMeteoMeasurement" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">model.data := THIS^.data;
+model.valid := THIS^.valid;
+model.disconnected := THIS^.disconnected;
+model.actualStatus := THIS^.actualStatus;
+model.stat := THIS^.stat;
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
         </addData>
       </pou>
       <pou name="SM_ServicesMercatorMeteo" pouType="functionBlock">
@@ -3262,6 +3542,95 @@ mercatorDisconnected_ro := mercatorDisconnected;
           </ST>
         </body>
         <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyFromModel_SM_ServicesMercatorMeteo">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_SM_ServicesMercatorMeteo" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyToModel_SM_ServicesMercatorMeteo">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_SM_ServicesMercatorMeteo" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">model.weatherStatus := THIS^.weatherStatus;
+model.mercatorConnected := THIS^.mercatorConnected;
+model.heating := THIS^.heating;
+model.windDirectionMinimumString := THIS^.windDirectionMinimumString;
+model.windDirectionAverageString := THIS^.windDirectionAverageString;
+model.windDirectionMaximumString := THIS^.windDirectionMaximumString;
+model.fromSimulation := THIS^.fromSimulation;
+model.actualStatus := THIS^.actualStatus;
+model.alertActive := THIS^.alertActive;
+model.unknownDataYellowTimeout := THIS^.unknownDataYellowTimeout;
+model.unknownDataOrangeTimeout := THIS^.unknownDataOrangeTimeout;
+model.unknownDataRedTimeout := THIS^.unknownDataRedTimeout;
+model.stat := THIS^.stat;
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
         </addData>
       </pou>
     </pous>
@@ -3309,12 +3678,20 @@ mercatorDisconnected_ro := mercatorDisconnected;
             <Folder Name="Models">
             </Folder>
             <Object Name="SM_Services">
+              <Object Name="_copyFromModel_SM_Services" />
+              <Object Name="_copyToModel_SM_Services" />
             </Object>
             <Object Name="SM_ServicesTiming">
+              <Object Name="_copyFromModel_SM_ServicesTiming" />
+              <Object Name="_copyToModel_SM_ServicesTiming" />
             </Object>
             <Object Name="SM_ServicesMercatorMeteoMeasurement">
+              <Object Name="_copyFromModel_SM_ServicesMercatorMeteoMeasurement" />
+              <Object Name="_copyToModel_SM_ServicesMercatorMeteoMeasurement" />
             </Object>
             <Object Name="SM_ServicesMercatorMeteo">
+              <Object Name="_copyFromModel_SM_ServicesMercatorMeteo" />
+              <Object Name="_copyToModel_SM_ServicesMercatorMeteo" />
             </Object>
           </Folder>
           <Folder Name="Configs">

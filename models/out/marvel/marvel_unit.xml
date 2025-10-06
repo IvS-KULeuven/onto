@@ -686,6 +686,103 @@ proc.stop( isEnabled := parts.telescope.proc.abortSlew.isEnabled OR parts.dome.p
           </ST>
         </body>
         <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyFromModel_SM_Unit">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_SM_Unit" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.parts.dome._copyFromModel_Dome( model := model.parts.dome );
+THIS^.parts.guiding._copyFromModel_Guiding( model := model.parts.guiding );
+THIS^.parts.fem._copyFromModel_Fem( model := model.parts.fem );
+THIS^.parts.telescope._copyFromModel_Telescope( model := model.parts.telescope );
+THIS^.parts.configManager._copyFromModel_ConfigManager( model := model.parts.configManager );
+THIS^.proc.initialize._copyFromModel_Process( model := model.proc.initialize );
+THIS^.proc.point._copyFromModel_PointAlphaDeltaProcess( model := model.proc.point );
+THIS^.proc.stop._copyFromModel_Process( model := model.proc.stop );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyToModel_SM_Unit">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_SM_Unit" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">model.number := THIS^.number;
+model.editableConfig := THIS^.editableConfig;
+model.actualStatus := THIS^.actualStatus;
+model.config := THIS^.config;
+model.stat := THIS^.stat;
+THIS^.parts.dome._copyToModel_Dome( model := model.parts.dome );
+THIS^.parts.guiding._copyToModel_Guiding( model := model.parts.guiding );
+THIS^.parts.fem._copyToModel_Fem( model := model.parts.fem );
+THIS^.parts.telescope._copyToModel_Telescope( model := model.parts.telescope );
+THIS^.parts.configManager._copyToModel_ConfigManager( model := model.parts.configManager );
+THIS^.proc.initialize._copyToModel_Process( model := model.proc.initialize );
+THIS^.proc.point._copyToModel_PointAlphaDeltaProcess( model := model.proc.point );
+THIS^.proc.stop._copyToModel_Process( model := model.proc.stop );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
         </addData>
       </pou>
     </pous>
@@ -717,6 +814,8 @@ proc.stop( isEnabled := parts.telescope.proc.abortSlew.isEnabled OR parts.dome.p
             <Folder Name="Models">
             </Folder>
             <Object Name="SM_Unit">
+              <Object Name="_copyFromModel_SM_Unit" />
+              <Object Name="_copyToModel_SM_Unit" />
             </Object>
           </Folder>
           <Folder Name="Configs">

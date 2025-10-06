@@ -2308,6 +2308,114 @@ proc.moveKnownPosition( isEnabled := (stat.init = InitializationStatus.initializ
           </ST>
         </body>
         <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyFromModel_SM_Dome">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_SM_Dome" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.parts.shutter._copyFromModel_DomeShutter( model := model.parts.shutter );
+THIS^.parts.rotation._copyFromModel_DomeRotation( model := model.parts.rotation );
+THIS^.proc.initialize._copyFromModel_Process( model := model.proc.initialize );
+THIS^.proc.changeOperatingState._copyFromModel_ChangeOperatingStateProcess( model := model.proc.changeOperatingState );
+THIS^.proc.lock._copyFromModel_Process( model := model.proc.lock );
+THIS^.proc.unlock._copyFromModel_Process( model := model.proc.unlock );
+THIS^.proc.reset._copyFromModel_Process( model := model.proc.reset );
+THIS^.proc.syncWithAxes._copyFromModel_Process( model := model.proc.syncWithAxes );
+THIS^.proc.startTrackingTelescope._copyFromModel_Process( model := model.proc.startTrackingTelescope );
+THIS^.proc.stopTrackingTelescope._copyFromModel_Process( model := model.proc.stopTrackingTelescope );
+THIS^.proc.moveAbsolute._copyFromModel_DomeMoveProcess( model := model.proc.moveAbsolute );
+THIS^.proc.stop._copyFromModel_Process( model := model.proc.stop );
+THIS^.proc.moveKnownPosition._copyFromModel_DomeMoveKnownPositionProcess( model := model.proc.moveKnownPosition );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyToModel_SM_Dome">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_SM_Dome" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">model.actualStatus := THIS^.actualStatus;
+model.isTrackingTelescope := THIS^.isTrackingTelescope;
+model.isAtKnownPosition := THIS^.isAtKnownPosition;
+model.actualKnownPositionName := THIS^.actualKnownPositionName;
+model.contactor := THIS^.contactor;
+model.stat := THIS^.stat;
+THIS^.parts.shutter._copyToModel_DomeShutter( model := model.parts.shutter );
+THIS^.parts.rotation._copyToModel_DomeRotation( model := model.parts.rotation );
+THIS^.proc.initialize._copyToModel_Process( model := model.proc.initialize );
+THIS^.proc.changeOperatingState._copyToModel_ChangeOperatingStateProcess( model := model.proc.changeOperatingState );
+THIS^.proc.lock._copyToModel_Process( model := model.proc.lock );
+THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
+THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
+THIS^.proc.syncWithAxes._copyToModel_Process( model := model.proc.syncWithAxes );
+THIS^.proc.startTrackingTelescope._copyToModel_Process( model := model.proc.startTrackingTelescope );
+THIS^.proc.stopTrackingTelescope._copyToModel_Process( model := model.proc.stopTrackingTelescope );
+THIS^.proc.moveAbsolute._copyToModel_DomeMoveProcess( model := model.proc.moveAbsolute );
+THIS^.proc.stop._copyToModel_Process( model := model.proc.stop );
+THIS^.proc.moveKnownPosition._copyToModel_DomeMoveKnownPositionProcess( model := model.proc.moveKnownPosition );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
         </addData>
       </pou>
       <pou name="SM_DomeShutter" pouType="functionBlock">
@@ -2701,6 +2809,104 @@ proc.send( isEnabled := (operator_ref = OperatorStatus.tech) OR isConnected );
           </ST>
         </body>
         <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyFromModel_SM_DomeShutter">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_SM_DomeShutter" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.proc.open._copyFromModel_Process( model := model.proc.open );
+THIS^.proc.close._copyFromModel_Process( model := model.proc.close );
+THIS^.proc.stop._copyFromModel_Process( model := model.proc.stop );
+THIS^.proc.send._copyFromModel_DomeShutterSendProcess( model := model.proc.send );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyToModel_SM_DomeShutter">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_SM_DomeShutter" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">model.dataRead := THIS^.dataRead;
+model.dataWrite := THIS^.dataWrite;
+model.adsReadError := THIS^.adsReadError;
+model.adsReadErrorId := THIS^.adsReadErrorId;
+model.adsWriteError := THIS^.adsWriteError;
+model.adsWriteErrorId := THIS^.adsWriteErrorId;
+model.temperatureHealthStatus := THIS^.temperatureHealthStatus;
+model.temperatureActualStatus := THIS^.temperatureActualStatus;
+model.humidityHealthStatus := THIS^.humidityHealthStatus;
+model.humidityActualStatus := THIS^.humidityActualStatus;
+model.actualStatus := THIS^.actualStatus;
+model.isSimulated := THIS^.isSimulated;
+model.isConnected := THIS^.isConnected;
+model.stat := THIS^.stat;
+THIS^.proc.open._copyToModel_Process( model := model.proc.open );
+THIS^.proc.close._copyToModel_Process( model := model.proc.close );
+THIS^.proc.stop._copyToModel_Process( model := model.proc.stop );
+THIS^.proc.send._copyToModel_DomeShutterSendProcess( model := model.proc.send );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
         </addData>
       </pou>
       <pou name="SM_DomeEncoder" pouType="functionBlock">
@@ -2889,6 +3095,96 @@ proc.powerOff( isEnabled := NOT(stat.busy = BusyStatus.busy) );
           </ST>
         </body>
         <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyFromModel_SM_DomeEncoder">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_SM_DomeEncoder" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.proc.powerOn._copyFromModel_Process( model := model.proc.powerOn );
+THIS^.proc.powerOff._copyFromModel_Process( model := model.proc.powerOff );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyToModel_SM_DomeEncoder">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_SM_DomeEncoder" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">model.isSimulated := THIS^.isSimulated;
+model.actualStatus := THIS^.actualStatus;
+model.counterValue := THIS^.counterValue;
+model.dataError := THIS^.dataError;
+model.frameError := THIS^.frameError;
+model.powerFailure := THIS^.powerFailure;
+model.dataMismatch := THIS^.dataMismatch;
+model.syncError := THIS^.syncError;
+model.power := THIS^.power;
+model.stat := THIS^.stat;
+THIS^.proc.powerOn._copyToModel_Process( model := model.proc.powerOn );
+THIS^.proc.powerOff._copyToModel_Process( model := model.proc.powerOff );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
         </addData>
       </pou>
       <pou name="SM_DomeRotation" pouType="functionBlock">
@@ -3109,6 +3405,95 @@ proc.moveAbsolute( isEnabled := stat.busy = BusyStatus.idle );
           </ST>
         </body>
         <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyFromModel_SM_DomeRotation">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_SM_DomeRotation" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.parts.motorAxis._copyFromModel_AngularAxis( model := model.parts.motorAxis );
+THIS^.parts.encoderAxis._copyFromModel_AngularAxis( model := model.parts.encoderAxis );
+THIS^.proc.reset._copyFromModel_Process( model := model.proc.reset );
+THIS^.proc.stop._copyFromModel_Process( model := model.proc.stop );
+THIS^.proc.moveAbsolute._copyFromModel_DomeMoveProcess( model := model.proc.moveAbsolute );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyToModel_SM_DomeRotation">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_SM_DomeRotation" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">model.actualStatus := THIS^.actualStatus;
+model.isSimulated := THIS^.isSimulated;
+model.stat := THIS^.stat;
+THIS^.parts.motorAxis._copyToModel_AngularAxis( model := model.parts.motorAxis );
+THIS^.parts.encoderAxis._copyToModel_AngularAxis( model := model.parts.encoderAxis );
+THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
+THIS^.proc.stop._copyToModel_Process( model := model.proc.stop );
+THIS^.proc.moveAbsolute._copyToModel_DomeMoveProcess( model := model.proc.moveAbsolute );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
         </addData>
       </pou>
       <pou name="DomeMoveKnownPositionProcess" pouType="functionBlock">
@@ -3257,6 +3642,85 @@ END_IF;
               </body>
             </Method>
           </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyFromModel_DomeMoveKnownPositionProcess">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_DomeMoveKnownPositionProcess" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">SUPER^._copyFromModel_BaseProcess( model := model );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyToModel_DomeMoveKnownPositionProcess">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_DomeMoveKnownPositionProcess" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">model.set := THIS^.set;
+SUPER^._copyToModel_BaseProcess( model := model );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
         </addData>
       </pou>
       <pou name="DomeMoveProcess" pouType="functionBlock">
@@ -3400,6 +3864,85 @@ THIS^.stat.health := HealthStatus.good;
 ELSE
     request := RequestResults.REJECTED;
 END_IF;
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyFromModel_DomeMoveProcess">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_DomeMoveProcess" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">SUPER^._copyFromModel_BaseProcess( model := model );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyToModel_DomeMoveProcess">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_DomeMoveProcess" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">model.set := THIS^.set;
+SUPER^._copyToModel_BaseProcess( model := model );
 </xhtml>
                 </ST>
               </body>
@@ -3584,6 +4127,85 @@ END_IF;
               </body>
             </Method>
           </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyFromModel_DomeShutterSendProcess">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_DomeShutterSendProcess" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">SUPER^._copyFromModel_BaseProcess( model := model );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyToModel_DomeShutterSendProcess">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_DomeShutterSendProcess" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">model.set := THIS^.set;
+SUPER^._copyToModel_BaseProcess( model := model );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
         </addData>
       </pou>
     </pous>
@@ -3631,12 +4253,20 @@ END_IF;
             <Folder Name="Models">
             </Folder>
             <Object Name="SM_Dome">
+              <Object Name="_copyFromModel_SM_Dome" />
+              <Object Name="_copyToModel_SM_Dome" />
             </Object>
             <Object Name="SM_DomeShutter">
+              <Object Name="_copyFromModel_SM_DomeShutter" />
+              <Object Name="_copyToModel_SM_DomeShutter" />
             </Object>
             <Object Name="SM_DomeEncoder">
+              <Object Name="_copyFromModel_SM_DomeEncoder" />
+              <Object Name="_copyToModel_SM_DomeEncoder" />
             </Object>
             <Object Name="SM_DomeRotation">
+              <Object Name="_copyFromModel_SM_DomeRotation" />
+              <Object Name="_copyToModel_SM_DomeRotation" />
             </Object>
           </Folder>
           <Folder Name="Configs">
@@ -3665,14 +4295,20 @@ END_IF;
             <Object Name="DomeMoveKnownPositionProcess">
               <Object Name="start" />
               <Object Name="request" />
+              <Object Name="_copyFromModel_DomeMoveKnownPositionProcess" />
+              <Object Name="_copyToModel_DomeMoveKnownPositionProcess" />
             </Object>
             <Object Name="DomeMoveProcess">
               <Object Name="start" />
               <Object Name="request" />
+              <Object Name="_copyFromModel_DomeMoveProcess" />
+              <Object Name="_copyToModel_DomeMoveProcess" />
             </Object>
             <Object Name="DomeShutterSendProcess">
               <Object Name="start" />
               <Object Name="request" />
+              <Object Name="_copyFromModel_DomeShutterSendProcess" />
+              <Object Name="_copyToModel_DomeShutterSendProcess" />
             </Object>
           </Folder>
           <Folder Name="Functionblocks">

@@ -880,6 +880,103 @@ proc.setCameraParamSet( isEnabled := TRUE );
           </ST>
         </body>
         <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyFromModel_SM_Guiding">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_SM_Guiding" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.parts.camera._copyFromModel_GigECamera( model := model.parts.camera );
+THIS^.proc.initialize._copyFromModel_Process( model := model.proc.initialize );
+THIS^.proc.reset._copyFromModel_Process( model := model.proc.reset );
+THIS^.proc.acquireTarget._copyFromModel_GuidingAcquireTargetProcess( model := model.proc.acquireTarget );
+THIS^.proc.startGuiding._copyFromModel_GuidingStartGuidingProcess( model := model.proc.startGuiding );
+THIS^.proc.stop._copyFromModel_Process( model := model.proc.stop );
+THIS^.proc.setCameraParamSet._copyFromModel_GuidingCameraParamSetProcess( model := model.proc.setCameraParamSet );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyToModel_SM_Guiding">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_SM_Guiding" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">model.actualStatus := THIS^.actualStatus;
+model.state := THIS^.state;
+model.centroidXAbsCoo := THIS^.centroidXAbsCoo;
+model.centroidYAbsCoo := THIS^.centroidYAbsCoo;
+model.centroidXRelCoo := THIS^.centroidXRelCoo;
+model.centroidYRelCoo := THIS^.centroidYRelCoo;
+model.stat := THIS^.stat;
+THIS^.parts.camera._copyToModel_GigECamera( model := model.parts.camera );
+THIS^.proc.initialize._copyToModel_Process( model := model.proc.initialize );
+THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
+THIS^.proc.acquireTarget._copyToModel_GuidingAcquireTargetProcess( model := model.proc.acquireTarget );
+THIS^.proc.startGuiding._copyToModel_GuidingStartGuidingProcess( model := model.proc.startGuiding );
+THIS^.proc.stop._copyToModel_Process( model := model.proc.stop );
+THIS^.proc.setCameraParamSet._copyToModel_GuidingCameraParamSetProcess( model := model.proc.setCameraParamSet );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
         </addData>
       </pou>
       <pou name="GuidingAcquireTargetProcess" pouType="functionBlock">
@@ -1023,6 +1120,85 @@ THIS^.stat.health := HealthStatus.good;
 ELSE
     request := RequestResults.REJECTED;
 END_IF;
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyFromModel_GuidingAcquireTargetProcess">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_GuidingAcquireTargetProcess" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">SUPER^._copyFromModel_BaseProcess( model := model );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyToModel_GuidingAcquireTargetProcess">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_GuidingAcquireTargetProcess" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">model.set := THIS^.set;
+SUPER^._copyToModel_BaseProcess( model := model );
 </xhtml>
                 </ST>
               </body>
@@ -1176,6 +1352,85 @@ END_IF;
               </body>
             </Method>
           </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyFromModel_GuidingStartGuidingProcess">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_GuidingStartGuidingProcess" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">SUPER^._copyFromModel_BaseProcess( model := model );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyToModel_GuidingStartGuidingProcess">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_GuidingStartGuidingProcess" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">model.set := THIS^.set;
+SUPER^._copyToModel_BaseProcess( model := model );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
         </addData>
       </pou>
       <pou name="GuidingCameraParamSetProcess" pouType="functionBlock">
@@ -1324,6 +1579,85 @@ END_IF;
               </body>
             </Method>
           </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyFromModel_GuidingCameraParamSetProcess">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_GuidingCameraParamSetProcess" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">SUPER^._copyFromModel_BaseProcess( model := model );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyToModel_GuidingCameraParamSetProcess">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_GuidingCameraParamSetProcess" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">model.set := THIS^.set;
+SUPER^._copyToModel_BaseProcess( model := model );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
         </addData>
       </pou>
     </pous>
@@ -1359,6 +1693,8 @@ END_IF;
             <Folder Name="Models">
             </Folder>
             <Object Name="SM_Guiding">
+              <Object Name="_copyFromModel_SM_Guiding" />
+              <Object Name="_copyToModel_SM_Guiding" />
             </Object>
           </Folder>
           <Folder Name="Configs">
@@ -1379,14 +1715,20 @@ END_IF;
             <Object Name="GuidingAcquireTargetProcess">
               <Object Name="start" />
               <Object Name="request" />
+              <Object Name="_copyFromModel_GuidingAcquireTargetProcess" />
+              <Object Name="_copyToModel_GuidingAcquireTargetProcess" />
             </Object>
             <Object Name="GuidingStartGuidingProcess">
               <Object Name="start" />
               <Object Name="request" />
+              <Object Name="_copyFromModel_GuidingStartGuidingProcess" />
+              <Object Name="_copyToModel_GuidingStartGuidingProcess" />
             </Object>
             <Object Name="GuidingCameraParamSetProcess">
               <Object Name="start" />
               <Object Name="request" />
+              <Object Name="_copyFromModel_GuidingCameraParamSetProcess" />
+              <Object Name="_copyToModel_GuidingCameraParamSetProcess" />
             </Object>
           </Folder>
           <Folder Name="Functionblocks">

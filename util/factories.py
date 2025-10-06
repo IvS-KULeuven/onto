@@ -1535,7 +1535,6 @@ def add_models(lib: Library):
     fbs = []
     lib.get_fbs(recursive=True, fbs=fbs)
     for fb in fbs:
-        fb: Statemachine
         fb.model = Model('M_' + fb.name, lib.models)
         fb.model.render = fb.render
     
@@ -1613,65 +1612,113 @@ def add_models(lib: Library):
                 m.items[var.name] = v
 
 
+    fbs = []
+    lib.get_fbs(recursive=True, fbs=fbs)
+    for fb in fbs:
 
-# def add_models(lib: Library):
-#     statemachines = []
-#     lib.get_statemachines(recursive=True, statemachines=statemachines)
-#     for sm in statemachines:
-#         sm: Statemachine
-#         assert(sm.name.startswith('SM_'))
-#         sm.model = Model(sm.name.replace('SM_', 'M_'), lib.models)
-        
-#     processes = []
-#     lib.get_processes(recursive=True, processes=processes)
-#     for proc in processes:
-#         proc: Process
-#         proc.model = Model('M_' + proc.name, lib.models)
+        copyFromModel = Method('_copyFromModel_' + fb.name, fb.model, 
+            {
+                "inOutArgs" : {
+                    "model": {"type": fb.model, "qualifiers": [ QUALIFIERS.OPC_UA_DEACTIVATE ]}
+                }
+            })
+        fb.methods['_copyFromModel_' +  fb.name] = copyFromModel
+        copyFromModelArg = copyFromModel.var_inout["model"]
+        copyFromModelArg: Variable
 
-#     for sm in statemachines:
-#         sm: Statemachine
-#         assert(sm.name.startswith('SM_'))
+        copyToModel = Method('_copyToModel_' +  fb.name, fb.model, 
+            {
+                "inOutArgs" : {
+                    "model": {"type": fb.model, "qualifiers": [ QUALIFIERS.OPC_UA_DEACTIVATE ]}
+                }
+            })
+        fb.methods['_copyToModel_' +  fb.name] = copyToModel
+        copyToModelArg = copyToModel.var_inout["model"]
+        copyToModelArg: Variable
 
-#         #m = lib.models.get_child(sm.name.replace('SM_', 'M_'))
-#         m = sm.model
-#         m: Model
+        copyFromModel.implementation = []
+        copyToModel.implementation = []
 
-#         for var in list(sm.var_in.values()) + list(sm.var_local.values()) + list(sm.var_out.values()):
-#             var: Variable
+        for item in fb.model.items.values():
 
-#             if var.type is None:
-#                 raise Exception(f"Adding model for variable {var.name} of {sm.name} failed, type is None!")
-#             elif (QUALIFIERS.HMI_SHOW not in var.qualifiers) and (QUALIFIERS.HMI_SHOWRECURSIVELY not in var.qualifiers):
-#                 pass # skip
-#             elif isinstance(var.type, Primitive):
-#                 v = Variable(name=var.name, parent=m)
-#                 v.type = var.type
-#                 m.items[var.name] = v
-#             elif var.name == "stat":
-#                 v = Variable(name=var.name, parent=m)
-#                 v.type = var.type
-#                 m.items[var.name] = v
-#             elif var.name == "parts":
-#                 parts_struct = Model(m.name + "Parts", parent=lib.models)
-#                 for part in resolve(f'{sm.name.replace("SM_", "")}Parts', sm.parent).items.values():
-#                     part: Variable
-#                     #print(f"VAR: {str(part)} {str(part.name)} {str(part.type)} {str(part.points_to_type)}")
-#                     parts_struct_var = Variable(part.name, parts_struct)
-#                     assert(isinstance(part.type, FunctionBlock))
-#                     assert(isinstance(part.type.is_main_sm_of, Statemachine))
-#                     parts_struct_var.type = part.type.is_main_sm_of.model
-#                     parts_struct.items[part.name] = parts_struct_var
-#             elif var.name == "proc":
-#                 proc_struct = Model(m.name + "Processes", parent=lib.models)
-#                 for proc in resolve(f'{sm.name.replace("SM_", "")}Processes', sm.parent).items.values():
-#                     proc: Variable
-#                     print(f"VAR: {str(proc)} {str(proc.name)} {str(proc.type)} {str(proc.points_to_type)}")
-#                     proc_struct_var = Variable(proc.name, proc_struct)
-#                     assert(isinstance(proc.type, Process))
-#                     proc_struct_var.type = proc.type.model
-#                     proc_struct.items[proc.name] = proc_struct_var
+            if (isinstance(item.type, Primitive) or isinstance(item.type, Enum) or isinstance(item.type, Struct) or item.name == "stat") \
+                and not ((item.name == "parts") or (item.name == "proc")):
 
+                assignment = ASSIGN([copyToModelArg.get_child(item.name), fb.get_child(item.name)])
+                assignment.resolve_children(lib)
+                copyToModel.implementation.append(assignment)
 
-        
-        
-        
+            elif item.name == "parts" or item.name == "proc":
+
+                parts = []
+                if item.name == "parts":
+                    for part in resolve(f'{fb.name.replace("SM_", "")}Parts', fb.parent).items.values():
+                        parts.append(part)
+                if item.name == "proc":
+                    for proc in resolve(f'{fb.name.replace("SM_", "")}Processes', fb.parent).items.values():
+                        parts.append(proc)
+                
+                for part in parts:
+
+                    call_to = Call(f"call_to_{part.name}", fb)
+                    
+                    # fb.children[item.name].children[part.name] was already instantiated before we added the copyToModel and copyFromModel methods to 
+                    # their type.
+                    # So, these variables don't have copyToModel and copyFromModel children, and we must add them now:
+                    call_to.calls = Method('_copyToModel_' + part.type.name, fb.children[item.name].children[part.name], 
+                        {
+                            "inOutArgs" : {
+                                "model": {} # no need to specify the type, it's just a simple call
+                            }
+                        })
+                    
+                    call_to.assignments = [
+                        ASSIGN([call_to.calls.get_child("model"), copyToModelArg.get_child(item.name).get_child(part.name)])
+                    ]
+
+                    copyToModel.implementation.append(call_to)
+                    
+
+                    call_from = Call(f"call_from_{part.name}", fb)
+                    
+                    # fb.children["parts"].children[part.name] was already instantiated before we added the copyToModel and copyFromModel methods to 
+                    # their type.
+                    # So, these variables don't have copyFromModel and copyFromModel children, and we must add them now:
+                    call_from.calls = Method('_copyFromModel_' +  part.type.name, fb.children[item.name].children[part.name], 
+                        {
+                            "inOutArgs" : {
+                                "model": {} # no need to specify the type, it's just a simple call
+                            }
+                        })
+                    
+                    call_from.assignments = [
+                        ASSIGN([call_from.calls.get_child("model"), copyFromModelArg.get_child(item.name).get_child(part.name)])
+                    ]
+
+                    copyFromModel.implementation.append(call_from)
+
+        if fb.extends is not None:
+            
+            call_to_super = Call(f"call_to_super", fb)
+            call_to_super.calls = Method('_copyToModel_' + fb.extends.name, fb.children["SUPER"], 
+                {
+                    "inOutArgs" : {
+                        "model": {} # no need to specify the type, it's just a simple call
+                    }
+                })
+            call_to_super.assignments.append(
+                ASSIGN([call_to_super.calls.children['model'], copyToModelArg])
+            )
+            copyToModel.implementation.append(call_to_super)
+            
+            call_from_super = Call(f"call_from_super", fb)
+            call_from_super.calls = Method('_copyFromModel_' + fb.extends.name, fb.children["SUPER"], 
+                {
+                    "inOutArgs" : {
+                        "model": {} # no need to specify the type, it's just a simple call
+                    }
+                })
+            call_from_super.assignments.append(
+                ASSIGN([call_from_super.calls.children['model'], copyFromModelArg])
+            )
+            copyFromModel.implementation.append(call_from_super)

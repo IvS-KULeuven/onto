@@ -35,7 +35,11 @@
                 if isinstance(head, FunctionBlock):
                     ## only explicitely mention THIS^ if there can be confusion (i.e. when the scope is > 1)
                     if len(scope) > 1:
-                        return "THIS^", getPathToSubVariable(dest, head)
+                        pathToSubVariable = getPathToSubVariable(dest, head)
+                        if pathToSubVariable[0].name == 'SUPER':
+                            return "SUPER^", pathToSubVariable[1:]
+                        else:
+                            return "THIS^", pathToSubVariable
                     else:
                         return None, getPathToSubVariable(dest, head)
                 elif isinstance(head, Method):

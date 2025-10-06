@@ -1060,6 +1060,120 @@ proc.stopDomes( isEnabled := parts.u1.parts.dome.parts.shutter.proc.stop.isEnabl
           </ST>
         </body>
         <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyFromModel_SM_Marvel">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_SM_Marvel" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.parts.u1._copyFromModel_Unit( model := model.parts.u1 );
+THIS^.parts.u2._copyFromModel_Unit( model := model.parts.u2 );
+THIS^.parts.u3._copyFromModel_Unit( model := model.parts.u3 );
+THIS^.parts.u4._copyFromModel_Unit( model := model.parts.u4 );
+THIS^.parts.services._copyFromModel_Services( model := model.parts.services );
+THIS^.proc.initialize._copyFromModel_Process( model := model.proc.initialize );
+THIS^.proc.lock._copyFromModel_Process( model := model.proc.lock );
+THIS^.proc.unlock._copyFromModel_Process( model := model.proc.unlock );
+THIS^.proc.changeOperator._copyFromModel_ChangeOperatorStateProcess( model := model.proc.changeOperator );
+THIS^.proc.verifyPassword._copyFromModel_ChangeOperatorStateProcess( model := model.proc.verifyPassword );
+THIS^.proc.wakeUp._copyFromModel_Process( model := model.proc.wakeUp );
+THIS^.proc.goToSleep._copyFromModel_Process( model := model.proc.goToSleep );
+THIS^.proc.emergencyClose._copyFromModel_Process( model := model.proc.emergencyClose );
+THIS^.proc.point._copyFromModel_MarvelPointProcess( model := model.proc.point );
+THIS^.proc.openDomes._copyFromModel_MarvelMultiUnitProcess( model := model.proc.openDomes );
+THIS^.proc.closeDomes._copyFromModel_MarvelMultiUnitProcess( model := model.proc.closeDomes );
+THIS^.proc.stopDomes._copyFromModel_MarvelMultiUnitProcess( model := model.proc.stopDomes );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyToModel_SM_Marvel">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_SM_Marvel" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">model.actualStatus := THIS^.actualStatus;
+model.noOfFailedOperatorChanges := THIS^.noOfFailedOperatorChanges;
+model.shuttersStatus := THIS^.shuttersStatus;
+model.stat := THIS^.stat;
+THIS^.parts.u1._copyToModel_Unit( model := model.parts.u1 );
+THIS^.parts.u2._copyToModel_Unit( model := model.parts.u2 );
+THIS^.parts.u3._copyToModel_Unit( model := model.parts.u3 );
+THIS^.parts.u4._copyToModel_Unit( model := model.parts.u4 );
+THIS^.parts.services._copyToModel_Services( model := model.parts.services );
+THIS^.proc.initialize._copyToModel_Process( model := model.proc.initialize );
+THIS^.proc.lock._copyToModel_Process( model := model.proc.lock );
+THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
+THIS^.proc.changeOperator._copyToModel_ChangeOperatorStateProcess( model := model.proc.changeOperator );
+THIS^.proc.verifyPassword._copyToModel_ChangeOperatorStateProcess( model := model.proc.verifyPassword );
+THIS^.proc.wakeUp._copyToModel_Process( model := model.proc.wakeUp );
+THIS^.proc.goToSleep._copyToModel_Process( model := model.proc.goToSleep );
+THIS^.proc.emergencyClose._copyToModel_Process( model := model.proc.emergencyClose );
+THIS^.proc.point._copyToModel_MarvelPointProcess( model := model.proc.point );
+THIS^.proc.openDomes._copyToModel_MarvelMultiUnitProcess( model := model.proc.openDomes );
+THIS^.proc.closeDomes._copyToModel_MarvelMultiUnitProcess( model := model.proc.closeDomes );
+THIS^.proc.stopDomes._copyToModel_MarvelMultiUnitProcess( model := model.proc.stopDomes );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
         </addData>
       </pou>
       <pou name="MarvelPointProcess" pouType="functionBlock">
@@ -1355,6 +1469,85 @@ END_IF;
               </body>
             </Method>
           </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyFromModel_MarvelPointProcess">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_MarvelPointProcess" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">SUPER^._copyFromModel_BaseProcess( model := model );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyToModel_MarvelPointProcess">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_MarvelPointProcess" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">model.set := THIS^.set;
+SUPER^._copyToModel_BaseProcess( model := model );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
         </addData>
       </pou>
       <pou name="MarvelMultiUnitProcess" pouType="functionBlock">
@@ -1592,6 +1785,85 @@ END_IF;
               </body>
             </Method>
           </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyFromModel_MarvelMultiUnitProcess">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_MarvelMultiUnitProcess" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">SUPER^._copyFromModel_BaseProcess( model := model );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyToModel_MarvelMultiUnitProcess">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_MarvelMultiUnitProcess" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">model.set := THIS^.set;
+SUPER^._copyToModel_BaseProcess( model := model );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
         </addData>
       </pou>
     </pous>
@@ -1623,6 +1895,8 @@ END_IF;
             <Folder Name="Models">
             </Folder>
             <Object Name="SM_Marvel">
+              <Object Name="_copyFromModel_SM_Marvel" />
+              <Object Name="_copyToModel_SM_Marvel" />
             </Object>
           </Folder>
           <Folder Name="Configs">
@@ -1639,10 +1913,14 @@ END_IF;
             <Object Name="MarvelPointProcess">
               <Object Name="start" />
               <Object Name="request" />
+              <Object Name="_copyFromModel_MarvelPointProcess" />
+              <Object Name="_copyToModel_MarvelPointProcess" />
             </Object>
             <Object Name="MarvelMultiUnitProcess">
               <Object Name="start" />
               <Object Name="request" />
+              <Object Name="_copyFromModel_MarvelMultiUnitProcess" />
+              <Object Name="_copyToModel_MarvelMultiUnitProcess" />
             </Object>
           </Folder>
           <Folder Name="Functionblocks">

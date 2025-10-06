@@ -864,6 +864,100 @@ stat.health := F_HealthStatus(
           </ST>
         </body>
         <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyFromModel_SM_FemTemperatures">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_SM_FemTemperatures" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.parts.basePlate._copyFromModel_SimpleTemperature( model := model.parts.basePlate );
+THIS^.parts.electronics._copyFromModel_SimpleTemperature( model := model.parts.electronics );
+THIS^.parts.ambient._copyFromModel_SimpleTemperature( model := model.parts.ambient );
+THIS^.parts.fork._copyFromModel_SimpleTemperature( model := model.parts.fork );
+THIS^.parts.truss._copyFromModel_SimpleTemperature( model := model.parts.truss );
+THIS^.parts.spider._copyFromModel_SimpleTemperature( model := model.parts.spider );
+THIS^.parts.m1Cell._copyFromModel_SimpleTemperature( model := model.parts.m1Cell );
+THIS^.parts.spare._copyFromModel_SimpleTemperature( model := model.parts.spare );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyToModel_SM_FemTemperatures">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_SM_FemTemperatures" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">model.actualStatus := THIS^.actualStatus;
+model.stat := THIS^.stat;
+THIS^.parts.basePlate._copyToModel_SimpleTemperature( model := model.parts.basePlate );
+THIS^.parts.electronics._copyToModel_SimpleTemperature( model := model.parts.electronics );
+THIS^.parts.ambient._copyToModel_SimpleTemperature( model := model.parts.ambient );
+THIS^.parts.fork._copyToModel_SimpleTemperature( model := model.parts.fork );
+THIS^.parts.truss._copyToModel_SimpleTemperature( model := model.parts.truss );
+THIS^.parts.spider._copyToModel_SimpleTemperature( model := model.parts.spider );
+THIS^.parts.m1Cell._copyToModel_SimpleTemperature( model := model.parts.m1Cell );
+THIS^.parts.spare._copyToModel_SimpleTemperature( model := model.parts.spare );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
         </addData>
       </pou>
       <pou name="SM_Fem" pouType="functionBlock">
@@ -1039,6 +1133,96 @@ proc.initialize( isEnabled := NOT(stat.init = InitializationStatus.initializing)
           </ST>
         </body>
         <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyFromModel_SM_Fem">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_SM_Fem" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.parts.fs._copyFromModel_MTS50Axis( model := model.parts.fs );
+THIS^.parts.cm._copyFromModel_MTS50Axis( model := model.parts.cm );
+THIS^.parts.adc1._copyFromModel_ELL14Stage( model := model.parts.adc1 );
+THIS^.parts.adc2._copyFromModel_ELL14Stage( model := model.parts.adc2 );
+THIS^.parts.temp._copyFromModel_FemTemperatures( model := model.parts.temp );
+THIS^.proc.initialize._copyFromModel_Process( model := model.proc.initialize );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyToModel_SM_Fem">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_SM_Fem" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">model.actualStatus := THIS^.actualStatus;
+model.stat := THIS^.stat;
+THIS^.parts.fs._copyToModel_MTS50Axis( model := model.parts.fs );
+THIS^.parts.cm._copyToModel_MTS50Axis( model := model.parts.cm );
+THIS^.parts.adc1._copyToModel_ELL14Stage( model := model.parts.adc1 );
+THIS^.parts.adc2._copyToModel_ELL14Stage( model := model.parts.adc2 );
+THIS^.parts.temp._copyToModel_FemTemperatures( model := model.parts.temp );
+THIS^.proc.initialize._copyToModel_Process( model := model.proc.initialize );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
         </addData>
       </pou>
     </pous>
@@ -1074,8 +1258,12 @@ proc.initialize( isEnabled := NOT(stat.init = InitializationStatus.initializing)
             <Folder Name="Models">
             </Folder>
             <Object Name="SM_FemTemperatures">
+              <Object Name="_copyFromModel_SM_FemTemperatures" />
+              <Object Name="_copyToModel_SM_FemTemperatures" />
             </Object>
             <Object Name="SM_Fem">
+              <Object Name="_copyFromModel_SM_Fem" />
+              <Object Name="_copyToModel_SM_Fem" />
             </Object>
           </Folder>
           <Folder Name="Configs">
