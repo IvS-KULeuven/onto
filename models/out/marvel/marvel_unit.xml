@@ -290,6 +290,140 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
+            <variable name="parts">
+              <type><derived name="M_SM_UnitParts" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="proc">
+              <type><derived name="M_SM_UnitProcesses" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="M_SM_UnitParts">
+        <baseType>
+          <struct>
+            <variable name="dome">
+              <type><derived name="M_Dome" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="guiding">
+              <type><derived name="M_Guiding" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="fem">
+              <type><derived name="M_Fem" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="telescope">
+              <type><derived name="M_Telescope" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="configManager">
+              <type><derived name="M_ConfigManager" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="M_SM_UnitProcesses">
+        <baseType>
+          <struct>
+            <variable name="initialize">
+              <type><derived name="M_Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="point">
+              <type><derived name="M_PointAlphaDeltaProcess" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="stop">
+              <type><derived name="M_Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
           </struct>
         </baseType>
       </dataType>
@@ -538,7 +672,15 @@ proc.stop( isEnabled := parts.telescope.proc.abortSlew.isEnabled OR parts.dome.p
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.parts.dome._copyFromModel_Dome( model := model.parts.dome );
+THIS^.parts.guiding._copyFromModel_Guiding( model := model.parts.guiding );
+THIS^.parts.fem._copyFromModel_Fem( model := model.parts.fem );
+THIS^.parts.telescope._copyFromModel_Telescope( model := model.parts.telescope );
+THIS^.parts.configManager._copyFromModel_ConfigManager( model := model.parts.configManager );
+THIS^.proc.initialize._copyFromModel_Process( model := model.proc.initialize );
+THIS^.proc.point._copyFromModel_PointAlphaDeltaProcess( model := model.proc.point );
+THIS^.proc.stop._copyFromModel_Process( model := model.proc.stop );
+</xhtml>
                 </ST>
               </body>
             </Method>
@@ -580,6 +722,14 @@ proc.stop( isEnabled := parts.telescope.proc.abortSlew.isEnabled OR parts.dome.p
 model.editableConfig := THIS^.editableConfig;
 model.actualStatus := THIS^.actualStatus;
 model.config := THIS^.config;
+THIS^.parts.dome._copyToModel_Dome( model := model.parts.dome );
+THIS^.parts.guiding._copyToModel_Guiding( model := model.parts.guiding );
+THIS^.parts.fem._copyToModel_Fem( model := model.parts.fem );
+THIS^.parts.telescope._copyToModel_Telescope( model := model.parts.telescope );
+THIS^.parts.configManager._copyToModel_ConfigManager( model := model.parts.configManager );
+THIS^.proc.initialize._copyToModel_Process( model := model.proc.initialize );
+THIS^.proc.point._copyToModel_PointAlphaDeltaProcess( model := model.proc.point );
+THIS^.proc.stop._copyToModel_Process( model := model.proc.stop );
 </xhtml>
                 </ST>
               </body>
@@ -638,6 +788,10 @@ model.config := THIS^.config;
             <Object Name="M_SM_Unit">
             </Object>
             <Object Name="M_Unit">
+            </Object>
+            <Object Name="M_SM_UnitParts">
+            </Object>
+            <Object Name="M_SM_UnitProcesses">
             </Object>
           </Folder>
         </Folder>

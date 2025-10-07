@@ -1525,7 +1525,7 @@ def add_models(lib: Library):
 
             if var.type is None:
                 raise Exception(f"Adding model for variable {var.name} of {sm.name} failed, type is None!")
-            elif QUALIFIERS.OPC_UA_ACTIVATE not in var.qualifiers:
+            elif (QUALIFIERS.OPC_UA_ACTIVATE not in var.qualifiers) and (var.name not in ["parts", "proc"]):
                 pass # skip
             elif isinstance(var.type, Primitive) or isinstance(var.type, Enum):
                 v = Variable(name=var.name, parent=m)
