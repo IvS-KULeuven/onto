@@ -91,6 +91,9 @@ class QUALIFIERS:
     OPC_UA_ACCESS_W = PlcOpenAttribute(symbol = 'OPC.UA.DA.Access', value = '2')
     OPC_UA_ACCESS_RW = PlcOpenAttribute(symbol = 'OPC.UA.DA.Access', value = '3')
     QUALIFIED_ONLY = PlcOpenAttribute(symbol = 'qualified_only', value = '')
+    HMI_SHOW = PlcOpenAttribute(symbol = 'TcHmiSymbol.Show', value = '')
+    HMI_SHOWRECURSIVELY = PlcOpenAttribute(symbol = 'TcHmiSymbol.ShowRecursively', value = '')
+    HMI_HIDE = PlcOpenAttribute(symbol = 'TcHmiSymbol.Hide', value = '')
 
 
 class Namespace(Object):
@@ -900,7 +903,7 @@ class Statemachine(FunctionBlock):
             )
             if is_marvel():
                 for item in struct.items.values():
-                    item.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_R]
+                    item.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_R, QUALIFIERS.HMI_SHOW]
             
             self.parent.statemachines.statuses[struct.name] = struct
             self.var_out[statuses()] = Variable(
@@ -908,7 +911,8 @@ class Statemachine(FunctionBlock):
                 parent=self,
                 args = {
                     "comment": "Statuses of the state machine",
-                    "type": f'{name}Statuses'})
+                    "type": f'{name}Statuses',
+                    "qualifiers": [QUALIFIERS.OPC_UA_ACTIVATE]})
             for status_name in args[statuses()]:
                 self.statuses[status_name] = self.var_out[statuses()].get_child(status_name)
             
@@ -927,7 +931,8 @@ class Statemachine(FunctionBlock):
                 parent=self,
                 args = {
                     "comment": "Parts of the state machine",
-                    "type": f'{name}Parts'})
+                    "type": f'{name}Parts',
+                    "qualifiers": [QUALIFIERS.OPC_UA_ACTIVATE]})
             for part_name in args['parts']:
                 try:
                     self.parts[part_name] = self.var_out["parts"].get_child(part_name)
@@ -974,8 +979,8 @@ class Statemachine(FunctionBlock):
                 parent=self,
                 args = {
                     "comment": "Processes of the state machine",
-                    "type": f'{name}Processes'
-                })
+                    "type": f'{name}Processes',
+                    "qualifiers": [QUALIFIERS.OPC_UA_ACTIVATE]})
             for process_name in args[processes()]:
                 self.processes[process_name] = self.var_out[processes()].get_child(process_name)
 
@@ -1308,13 +1313,17 @@ class Process(FunctionBlock):
         
         # in case we have arguments, also add a 'set' and 'get' instance of this <ProcessName>Args struct
         if "arguments" in args:
+            if is_mtcs():
+                qualifiers = [ QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_RW ]
+            else:
+                qualifiers = [ QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_RW, QUALIFIERS.HMI_SHOW ]
             self.var_in["set"] = Variable(
                 "set",
                 self,
                 {
                     "type": struct,
                     "comment": "Arguments to be set, before writing do_request TRUE",
-                    "qualifiers": [ QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_RW ]
+                    "qualifiers": qualifiers
                 })
             if is_mtcs():
                 qualifiers = [ QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_R ]
@@ -1530,14 +1539,14 @@ def add_models(lib: Library):
             elif isinstance(var.type, Primitive) or isinstance(var.type, Enum):
                 v = Variable(name=var.name, parent=m)
                 if QUALIFIERS.OPC_UA_ACCESS_RW in var.qualifiers:
-                    v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_RW]
+                    v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_RW, QUALIFIERS.HMI_SHOW]
                 else:
-                    v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_R]
+                    v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_R, QUALIFIERS.HMI_SHOW]
                 v.type = var.type
                 m.items[var.name] = v
             elif var.name == "stat":
                 v = Variable(name=var.name, parent=m)
-                v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_R]
+                v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.HMI_SHOW]
                 v.type = var.type
                 m.items[var.name] = v
             elif var.name == "parts":
@@ -1545,10 +1554,11 @@ def add_models(lib: Library):
                 for part in resolve(f'{sm.name.replace("SM_", "")}Parts', sm.parent).items.values():
                     part: Variable
                     parts_struct_var = Variable(part.name, parts_struct)
+                    parts_struct_var.qualifiers = [ QUALIFIERS.HMI_SHOW ]
                     parts_struct_var.type = part.type.model
                     parts_struct.items[part.name] = parts_struct_var
                 v = Variable(name="parts", parent=m)
-                v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE]
+                v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.HMI_SHOW]
                 v.type = parts_struct
                 m.items[var.name] = v
             elif var.name == "proc":
@@ -1556,19 +1566,20 @@ def add_models(lib: Library):
                 for proc in resolve(f'{sm.name.replace("SM_", "")}Processes', sm.parent).items.values():
                     proc: Variable
                     proc_struct_var = Variable(proc.name, proc_struct)
+                    proc_struct_var.qualifiers = [ QUALIFIERS.HMI_SHOW ]
                     assert(isinstance(proc.type, Process))
                     proc_struct_var.type = proc.type.model
                     proc_struct.items[proc.name] = proc_struct_var
                 v = Variable(name="proc", parent=m)
-                v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE]
+                v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.HMI_SHOW]
                 v.type = proc_struct
                 m.items[var.name] = v
             elif isinstance(var.type, Struct):
                 v = Variable(name=var.name, parent=m)
                 if QUALIFIERS.OPC_UA_ACCESS_RW in var.qualifiers:
-                    v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_RW]
+                    v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_RW, QUALIFIERS.HMI_SHOW]
                 else:
-                    v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_R]
+                    v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_R, QUALIFIERS.HMI_SHOW]
                 v.type = var.type
                 m.items[var.name] = v
 
@@ -1589,9 +1600,9 @@ def add_models(lib: Library):
             elif isinstance(var.type, Primitive) or isinstance(var.type, Enum) or isinstance(var.type, Struct):
                 v = Variable(name=var.name, parent=m)
                 if QUALIFIERS.OPC_UA_ACCESS_RW in var.qualifiers:
-                    v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_RW]
+                    v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_RW, QUALIFIERS.HMI_SHOW]
                 else:
-                    v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_R]
+                    v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_R, QUALIFIERS.HMI_SHOW]
                 v.type = var.type
                 m.items[var.name] = v
 
