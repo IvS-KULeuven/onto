@@ -555,6 +555,8 @@ class Struct(Object):
             self.items = {}
             for item_k, item_v in args['items'].items():
                 self.items[item_k] = Variable(item_k, self, item_v)
+                if is_marvel():
+                    self.items[item_k].qualifiers = [ QUALIFIERS.HMI_SHOW ]
 
         if 'qualifiers' in args:
             self.qualifiers = []

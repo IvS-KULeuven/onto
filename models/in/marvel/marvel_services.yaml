@@ -381,7 +381,15 @@
       local:
           weatherStatus               : { type: t_string                          , comment: "Weather status as a string" }
           mercatorConnected           : { type: t_bool                            , comment: "True if MTCS is connected" }
-          # measurements
+          # other
+          durationOK                  : { type: marvel_common.Duration              , comment: "Duration that the meteo is OK" }
+          heating                     : { type: t_bool                            , comment: "Heating or not?"}
+          windDirectionMinimumString  : { type: t_string                          , comment: "Average direction of the wind as a string"}
+          windDirectionAverageString  : { type: t_string                          , comment: "Average direction of the wind as a string"}
+          windDirectionMaximumString  : { type: t_string                          , comment: "Average direction of the wind as a string"}
+          # simulation
+          fromSimulation              : { type: marvel_common.MercatorMeteoExchange , comment: "The simulated data (if config.simulated is TRUE)", expand: false }
+      parts:
           windSpeedMinimum            : { type: ServicesMercatorMeteoMeasurement  , comment: "Wind speed minimum" }
           windSpeedAverage            : { type: ServicesMercatorMeteoMeasurement  , comment: "Wind speed average" }
           windSpeedMaximum            : { type: ServicesMercatorMeteoMeasurement  , comment: "Wind speed maximum" }
@@ -405,14 +413,6 @@
           supplyVoltage               : { type: ServicesMercatorMeteoMeasurement  , comment: "Supply voltage" }
           referenceVoltage            : { type: ServicesMercatorMeteoMeasurement  , comment: "Reference voltage" }
           dewpoint                    : { type: ServicesMercatorMeteoMeasurement  , comment: "Calculated dew point temperature" }
-          # other
-          durationOK                  : { type: marvel_common.Duration              , comment: "Duration that the meteo is OK" }
-          heating                     : { type: t_bool                            , comment: "Heating or not?"}
-          windDirectionMinimumString  : { type: t_string                          , comment: "Average direction of the wind as a string"}
-          windDirectionAverageString  : { type: t_string                          , comment: "Average direction of the wind as a string"}
-          windDirectionMaximumString  : { type: t_string                          , comment: "Average direction of the wind as a string"}
-          # simulation
-          fromSimulation              : { type: marvel_common.MercatorMeteoExchange , comment: "The simulated data (if config.simulated is TRUE)", expand: false }
       references:
           config_ref                  : { type: ServicesMercatorMeteoConfig       , comment: "The config" }
       stat:
@@ -550,56 +550,56 @@
               isGood                  : !AND [
                                               !NOT [ unknownDataRedTimeout ],
                                               !MTCS_SUMMARIZE_GOOD_OR_DISABLED [
-                                                  windSpeedMinimum,
-                                                  windSpeedAverage,
-                                                  windSpeedMaximum,
-                                                  windDirectionMinimum,
-                                                  windDirectionAverage,
-                                                  windDirectionMaximum,
-                                                  airPressure,
-                                                  airTemperature,
-                                                  internalTemperature,
-                                                  relativeHumidity,
-                                                  rainAccumulation,
-                                                  rainDuration,
-                                                  rainIntensity,
-                                                  rainPeakIntensity,
-                                                  hailAccumulation,
-                                                  hailDuration,
-                                                  hailIntensity,
-                                                  hailPeakIntensity,
-                                                  heatingTemperature,
-                                                  heatingVoltage,
-                                                  supplyVoltage,
-                                                  referenceVoltage,
-                                                  dewpoint ]
+                                                  parts.windSpeedMinimum,
+                                                  parts.windSpeedAverage,
+                                                  parts.windSpeedMaximum,
+                                                  parts.windDirectionMinimum,
+                                                  parts.windDirectionAverage,
+                                                  parts.windDirectionMaximum,
+                                                  parts.airPressure,
+                                                  parts.airTemperature,
+                                                  parts.internalTemperature,
+                                                  parts.relativeHumidity,
+                                                  parts.rainAccumulation,
+                                                  parts.rainDuration,
+                                                  parts.rainIntensity,
+                                                  parts.rainPeakIntensity,
+                                                  parts.hailAccumulation,
+                                                  parts.hailDuration,
+                                                  parts.hailIntensity,
+                                                  parts.hailPeakIntensity,
+                                                  parts.heatingTemperature,
+                                                  parts.heatingVoltage,
+                                                  parts.supplyVoltage,
+                                                  parts.referenceVoltage,
+                                                  parts.dewpoint ]
                                             ]
               hasWarning               : !OR [ 
                                                 unknownDataYellowTimeout,
                                                 unknownDataOrangeTimeout,
                                                 !MTCS_SUMMARIZE_WARN [
-                                                  windSpeedMinimum,
-                                                  windSpeedAverage,
-                                                  windSpeedMaximum,
-                                                  windDirectionMinimum,
-                                                  windDirectionAverage,
-                                                  windDirectionMaximum,
-                                                  airPressure,
-                                                  airTemperature,
-                                                  internalTemperature,
-                                                  relativeHumidity,
-                                                  rainAccumulation,
-                                                  rainDuration,
-                                                  rainIntensity,
-                                                  rainPeakIntensity,
-                                                  hailAccumulation,
-                                                  hailDuration,
-                                                  hailIntensity,
-                                                  hailPeakIntensity,
-                                                  heatingTemperature,
-                                                  heatingVoltage,
-                                                  supplyVoltage,
-                                                  referenceVoltage,
-                                                  dewpoint ]
+                                                  parts.windSpeedMinimum,
+                                                  parts.windSpeedAverage,
+                                                  parts.windSpeedMaximum,
+                                                  parts.windDirectionMinimum,
+                                                  parts.windDirectionAverage,
+                                                  parts.windDirectionMaximum,
+                                                  parts.airPressure,
+                                                  parts.airTemperature,
+                                                  parts.internalTemperature,
+                                                  parts.relativeHumidity,
+                                                  parts.rainAccumulation,
+                                                  parts.rainDuration,
+                                                  parts.rainIntensity,
+                                                  parts.rainPeakIntensity,
+                                                  parts.hailAccumulation,
+                                                  parts.hailDuration,
+                                                  parts.hailIntensity,
+                                                  parts.hailPeakIntensity,
+                                                  parts.heatingTemperature,
+                                                  parts.heatingVoltage,
+                                                  parts.supplyVoltage,
+                                                  parts.referenceVoltage,
+                                                  parts.dewpoint ]
                                         ]
   

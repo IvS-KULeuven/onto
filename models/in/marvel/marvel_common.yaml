@@ -445,300 +445,315 @@
   ########################################################################################################################
   # QuantityValue
   ########################################################################################################################
-  !STATEMACHINE QuantityValue:
-    variables_input:
+  !STRUCT QuantityValue:
+    items:
         value: { type: t_double   , comment: "Numeric value" }
-        unit:  { type: Units      , comment: "Unit of the numeric value" }
+        # unit:  { type: Units      , comment: "Unit of the numeric value" }
 
 
   ########################################################################################################################
   # AngularPosition
   ########################################################################################################################
-  !STATEMACHINE AngularPosition:
-    variables_hidden:
-        newDegreesValue: { type: t_double, comment: "New position value in degrees" }
-    variables_output:
+  !STRUCT AngularPosition:
+    # variables_hidden:
+    #     newDegreesValue: { type: t_double, comment: "New position value in degrees" }
+    # variables_output:
+    items:
         radians     : { type: QuantityValue, comment: "Angular position in radians" }
         degrees     : { type: QuantityValue, comment: "Angular position in degrees" }
-        arcseconds  : { type: QuantityValue, comment: "Angular position in arcseconds" }
-    calls:
-        radians:
-            value : !MUL [newDegreesValue, !DOUBLE 0.017453292519943295 ] # PI/180
-            unit  : Units.RADIAN
-        degrees:
-            value : newDegreesValue
-            unit  : Units.DEGREE
-        arcseconds:
-            value : !MUL [newDegreesValue, !DOUBLE 3600.0]
-            unit  : Units.ARCSECONDS
+        # arcseconds  : { type: QuantityValue, comment: "Angular position in arcseconds" }
+    # calls:
+    #     radians:
+    #         value : !MUL [newDegreesValue, !DOUBLE 0.017453292519943295 ] # PI/180
+    #         unit  : Units.RADIAN
+    #     degrees:
+    #         value : newDegreesValue
+    #         unit  : Units.DEGREE
+    #     arcseconds:
+    #         value : !MUL [newDegreesValue, !DOUBLE 3600.0]
+    #         unit  : Units.ARCSECONDS
 
 
   ########################################################################################################################
   # LinearPosition
   ########################################################################################################################
-  !STATEMACHINE LinearPosition:
-    variables_hidden:
-        newMillimetersValue: { type: t_double, comment: "New position value in millimeters" }
-    variables_output:
+  !STRUCT LinearPosition:
+    # variables_hidden:
+        # newMillimetersValue: { type: t_double, comment: "New position value in millimeters" }
+    # variables_output:
+    items:
         millimeters: { type: QuantityValue, comment: "Linear position in millimeters" }
         micrometers: { type: QuantityValue, comment: "Linear position in micrometers" }
-    calls:
-        millimeters:
-            value : newMillimetersValue
-            unit  : Units.MILLIMETER
-        micrometers:
-            value : !MUL [ newMillimetersValue, !DOUBLE 1000.0 ]
-            unit  : Units.MICROMETER
+    # calls:
+    #     millimeters:
+    #         value : newMillimetersValue
+    #         unit  : Units.MILLIMETER
+    #     micrometers:
+    #         value : !MUL [ newMillimetersValue, !DOUBLE 1000.0 ]
+    #         unit  : Units.MICROMETER
 
   ########################################################################################################################
   # AngularVelocity
   ########################################################################################################################
-  !STATEMACHINE AngularVelocity:
-    variables_hidden:
-        newDegreesPerSecondValue: { type: t_double, comment: "New velocity value in degrees per second" }
-    variables_output:
+  !STRUCT AngularVelocity:
+    # variables_hidden:
+    #     newDegreesPerSecondValue: { type: t_double, comment: "New velocity value in degrees per second" }
+    # variables_output:
+    items:
         radiansPerSecond    : { type: QuantityValue, comment: "Angular velocity in radians per second" }
         degreesPerSecond    : { type: QuantityValue, comment: "Angular velocity in degrees per second" }
-        arcsecondsPerSecond : { type: QuantityValue, comment: "Angular velocity in arcseconds per second" }
-    calls:
-        radiansPerSecond:
-            value : !MUL [newDegreesPerSecondValue, !DOUBLE 0.017453292519943295 ]
-            unit  : Units.RADIANS_PER_SECOND
-        degreesPerSecond:
-            value : newDegreesPerSecondValue
-            unit  : Units.DEGREES_PER_SECOND
-        arcsecondsPerSecond:
-            value : !MUL [newDegreesPerSecondValue, !DOUBLE 3600.0 ]
-            unit  : Units.ARCSECONDS_PER_SECOND
+        # arcsecondsPerSecond : { type: QuantityValue, comment: "Angular velocity in arcseconds per second" }
+    # calls:
+    #     radiansPerSecond:
+    #         value : !MUL [newDegreesPerSecondValue, !DOUBLE 0.017453292519943295 ]
+    #         unit  : Units.RADIANS_PER_SECOND
+    #     degreesPerSecond:
+    #         value : newDegreesPerSecondValue
+    #         unit  : Units.DEGREES_PER_SECOND
+    #     arcsecondsPerSecond:
+    #         value : !MUL [newDegreesPerSecondValue, !DOUBLE 3600.0 ]
+    #         unit  : Units.ARCSECONDS_PER_SECOND
 
   ########################################################################################################################
   # AngularAcceleration
   ########################################################################################################################
-  !STATEMACHINE AngularAcceleration:
-    variables_hidden:
-        newDegreesPerSquareSecondValue: { type: t_double, comment: "New velocity value in degrees per second^2" }
-    variables_output:
+  !STRUCT AngularAcceleration:
+#     variables_hidden:
+#         newDegreesPerSquareSecondValue: { type: t_double, comment: "New velocity value in degrees per second^2" }
+#     variables_output:
+    items:
         radiansPerSquareSecond   : { type: QuantityValue, comment: "Angular velocity in radians per second^2" }
         degreesPerSquareSecond   : { type: QuantityValue, comment: "Angular velocity in degrees per second^2" }
-        arcsecondsPerSquareSecond: { type: QuantityValue, comment: "Angular velocity in arcseconds per second^2" }
-    calls:
-        radiansPerSquareSecond:
-            value : !MUL [newDegreesPerSquareSecondValue, !DOUBLE 0.017453292519943295 ]
-            unit  : Units.RADIANS_PER_SQUARE_SECOND
-        degreesPerSquareSecond:
-            value : newDegreesPerSquareSecondValue
-            unit  : Units.DEGREES_PER_SQUARE_SECOND
-        arcsecondsPerSquareSecond:
-            value : !MUL [newDegreesPerSquareSecondValue, !DOUBLE 3600.0 ]
-            unit  : Units.ARCSECONDS_PER_SQUARE_SECOND
+#         arcsecondsPerSquareSecond: { type: QuantityValue, comment: "Angular velocity in arcseconds per second^2" }
+#     calls:
+#         radiansPerSquareSecond:
+#             value : !MUL [newDegreesPerSquareSecondValue, !DOUBLE 0.017453292519943295 ]
+#             unit  : Units.RADIANS_PER_SQUARE_SECOND
+#         degreesPerSquareSecond:
+#             value : newDegreesPerSquareSecondValue
+#             unit  : Units.DEGREES_PER_SQUARE_SECOND
+#         arcsecondsPerSquareSecond:
+#             value : !MUL [newDegreesPerSquareSecondValue, !DOUBLE 3600.0 ]
+#             unit  : Units.ARCSECONDS_PER_SQUARE_SECOND
 
   ########################################################################################################################
   # AngularVelocity
   ########################################################################################################################
-  !STATEMACHINE LinearVelocity:
-    variables_hidden:
-        newMillimetersPerSecondValue: { type: t_double, comment: "New velocity value in millimeters per second" }
-    variables_output:
+  !STRUCT LinearVelocity:
+    # variables_hidden:
+    #     newMillimetersPerSecondValue: { type: t_double, comment: "New velocity value in millimeters per second" }
+    # variables_output:
+    items:
         millimetersPerSecond: { type: QuantityValue, comment: "Linear velocity in millimeters per second" }
-    calls:
-        millimetersPerSecond:
-            value : newMillimetersPerSecondValue
-            unit  : Units.MILLIMETERS_PER_SECOND
+    # calls:
+    #     millimetersPerSecond:
+    #         value : newMillimetersPerSecondValue
+    #         unit  : Units.MILLIMETERS_PER_SECOND
 
   ########################################################################################################################
   # Voltage
   ########################################################################################################################
-  !STATEMACHINE Voltage:
-    variables_hidden:
-        newVoltValue: { type: t_double, comment: "New voltage" }
-    variables_output:
+  !STRUCT Voltage:
+    # variables_hidden:
+    #     newVoltValue: { type: t_double, comment: "New voltage" }
+    # variables_output:
+    items:
         volt       : { type: QuantityValue, comment: "Voltage in Volt" }
         milliVolt  : { type: QuantityValue, comment: "Voltage in millivolt" }
-    calls:
-        volt:
-            value : newVoltValue
-            unit  : Units.VOLT
-        milliVolt:
-            value : !MUL [newVoltValue, !DOUBLE 1000.0 ]
-            unit  : Units.MILLIVOLT
+    # calls:
+    #     volt:
+    #         value : newVoltValue
+    #         unit  : Units.VOLT
+    #     milliVolt:
+    #         value : !MUL [newVoltValue, !DOUBLE 1000.0 ]
+    #         unit  : Units.MILLIVOLT
 
   ########################################################################################################################
   # GForce
   ########################################################################################################################
-  !STATEMACHINE GForce:
-    variables_hidden:
-        newMilliGValue: { type: t_double, comment: "New milliG value" }
-    variables_output:
+  !STRUCT GForce:
+    # variables_hidden:
+    #     newMilliGValue: { type: t_double, comment: "New milliG value" }
+    # variables_output:
+    items:
         g       : { type: QuantityValue, comment: "Acceleration in g units" }
         milliG  : { type: QuantityValue, comment: "Acceleration in in milli g units" }
-    calls:
-        g:
-            value : !DIV [ newMilliGValue, !DOUBLE 1000.0 ]
-            unit  : Units.G
-        milliG:
-            value : newMilliGValue
-            unit  : Units.MILLIG
+    # calls:
+    #     g:
+    #         value : !DIV [ newMilliGValue, !DOUBLE 1000.0 ]
+    #         unit  : Units.G
+    #     milliG:
+    #         value : newMilliGValue
+    #         unit  : Units.MILLIG
 
   ########################################################################################################################
   # Current
   ########################################################################################################################
-  !STATEMACHINE Current:
-    variables_hidden:
-        newAmpsValue: { type: t_double, comment: "New current in amps" }
-    variables_output:
+  !STRUCT Current:
+    # variables_hidden:
+    #     newAmpsValue: { type: t_double, comment: "New current in amps" }
+    # variables_output:
+    items:
         amps        : { type: QuantityValue, comment: "Current in amps" }
         milliAmps   : { type: QuantityValue, comment: "Current in milliamps" }
-    calls:
-        amps:
-            value : newAmpsValue
-            unit  : Units.AMPS
-        milliAmps:
-            value : !MUL [newAmpsValue, !DOUBLE 1000.0 ]
-            unit  : Units.MILLIAMPS
+    # calls:
+    #     amps:
+    #         value : newAmpsValue
+    #         unit  : Units.AMPS
+    #     milliAmps:
+    #         value : !MUL [newAmpsValue, !DOUBLE 1000.0 ]
+    #         unit  : Units.MILLIAMPS
 
 
   ########################################################################################################################
   # Torque
   ########################################################################################################################
-  !STATEMACHINE Torque:
-    variables_hidden:
-        newNewtonmeterValue: { type: t_double, comment: "New torque in Nm" }
-    variables_output:
+  !STRUCT Torque:
+    # variables_hidden:
+    #     newNewtonmeterValue: { type: t_double, comment: "New torque in Nm" }
+    items:
         newtonmeter: { type: QuantityValue, comment: "Torque in Nm" }
-    calls:
-        newtonmeter:
-            value : newNewtonmeterValue
-            unit  : Units.NEWTONMETER
+    # calls:
+    #     newtonmeter:
+    #         value : newNewtonmeterValue
+    #         unit  : Units.NEWTONMETER
 
   ########################################################################################################################
   # TorqueLimit
   ########################################################################################################################
-  !STATEMACHINE TorqueLimit:
-    variables_hidden:
-        newFractionValue : { type: t_double, comment: "New torque limit as a unitless fraction (between 0 and 1)" }
-        maxNewtonmeter   : { type: t_double, comment: "Newtonmeters corresponding to 100 percent (fraction=1)" }
-    variables_output:
+  !STRUCT TorqueLimit:
+    # variables_hidden:
+        # newFractionValue : { type: t_double, comment: "New torque limit as a unitless fraction (between 0 and 1)" }
+        # maxNewtonmeter   : { type: t_double, comment: "Newtonmeters corresponding to 100 percent (fraction=1)" }
+    # variables_output:
+    items:
         unitless        : { type: QuantityValue, comment: "Torque limit as a unitless fraction" }
         percent         : { type: QuantityValue, comment: "Torque limit in percent" }
         newtonmeter     : { type: QuantityValue, comment: "Torque in Nm" }
-    calls:
-        unitless:
-            value : newFractionValue
-            unit  : Units.UNITLESS
-        percent:
-            value : !MUL [newFractionValue, !DOUBLE 100.0 ]
-            unit  : Units.PERCENT
-        newtonmeter:
-            value : !MUL [newFractionValue, maxNewtonmeter]
-            unit  : Units.NEWTONMETER
+    # calls:
+    #     unitless:
+    #         value : newFractionValue
+    #         unit  : Units.UNITLESS
+    #     percent:
+    #         value : !MUL [newFractionValue, !DOUBLE 100.0 ]
+    #         unit  : Units.PERCENT
+    #     newtonmeter:
+    #         value : !MUL [newFractionValue, maxNewtonmeter]
+    #         unit  : Units.NEWTONMETER
 
 
-  ########################################################################################################################
-  # AverageCurrent
-  ########################################################################################################################
-  !STATEMACHINE AverageCurrent:
-    extends: Current
+#   ########################################################################################################################
+#   # AverageCurrent
+#   ########################################################################################################################
+#   !STRUCT AverageCurrent:
+#     extends: Current
 
 
   ########################################################################################################################
   # Duration
   ########################################################################################################################
-  !STATEMACHINE Duration:
-    variables_hidden:
-        newSecondsValue: { type: t_double, comment: "New duration in seconds" }
-    variables_output:
+  !STRUCT Duration:
+    # variables_hidden:
+        # newSecondsValue: { type: t_double, comment: "New duration in seconds" }
+    # variables_output:
+    items:
         seconds     : { type: QuantityValue, comment: "Duration in seconds" }
         minutes     : { type: QuantityValue, comment: "Duration in minutes" }
-    calls:
-        seconds:
-            value : newSecondsValue
-            unit  : Units.SECONDS
-        minutes:
-            value : !DIV [newSecondsValue, !DOUBLE 60.0 ]
-            unit  : Units.MINUTES
+    # calls:
+    #     seconds:
+    #         value : newSecondsValue
+    #         unit  : Units.SECONDS
+    #     minutes:
+    #         value : !DIV [newSecondsValue, !DOUBLE 60.0 ]
+    #         unit  : Units.MINUTES
 
   ########################################################################################################################
   # Temperature
   ########################################################################################################################
-  !STATEMACHINE Temperature:
-    variables_hidden:
-        newCelsiusValue: { type: t_double, comment: "New temperature in degrees Celsius" }
-    variables_output:
+  !STRUCT Temperature:
+    # variables_hidden:
+    #     newCelsiusValue: { type: t_double, comment: "New temperature in degrees Celsius" }
+    # variables_output:
+    items:
         celsius     : { type: QuantityValue, comment: "Temperature in degrees Celsius" }
         kelvin      : { type: QuantityValue, comment: "Temperature in Kelvin" }
-    calls:
-        celsius:
-            value : newCelsiusValue
-            unit  : Units.DEGREES_CELSIUS
-        kelvin:
-            value : !SUM [ newCelsiusValue, !DOUBLE 273.15 ]
-            unit  : Units.KELVIN
+    # calls:
+    #     celsius:
+    #         value : newCelsiusValue
+    #         unit  : Units.DEGREES_CELSIUS
+    #     kelvin:
+    #         value : !SUM [ newCelsiusValue, !DOUBLE 273.15 ]
+    #         unit  : Units.KELVIN
 
 
   ########################################################################################################################
   # Pressure
   ########################################################################################################################
-  !STATEMACHINE Pressure:
-    variables_hidden:
-        newBarValue: { type: t_double, comment: "New pressure in Bar" }
-    variables_output:
+  !STRUCT Pressure:
+    # variables_hidden:
+        # newBarValue: { type: t_double, comment: "New pressure in Bar" }
+    # variables_output:
+    items:
         bar        : { type: QuantityValue, comment: "Pressure in Bar" }
         pascal     : { type: QuantityValue, comment: "Pressure in Pascal" }
         hectoPascal: { type: QuantityValue, comment: "Pressure in HectoPascal" }
-    calls:
-        bar:
-            value  : newBarValue
-            unit   : Units.BAR
-        pascal:
-            value  : !MUL [newBarValue, !DOUBLE 100000 ]
-            unit   : Units.PASCAL
+    # calls:
+    #     bar:
+    #         value  : newBarValue
+    #         unit   : Units.BAR
+    #     pascal:
+    #         value  : !MUL [newBarValue, !DOUBLE 100000 ]
+    #         unit   : Units.PASCAL
 
   ########################################################################################################################
   # Frequency
   ########################################################################################################################
-  !STATEMACHINE Frequency:
-    variables_hidden:
-        newHertzValue: { type: t_double, comment: "New frequency in Hz" }
-    variables_output:
+  !STRUCT Frequency:
+    # variables_hidden:
+    #     newHertzValue: { type: t_double, comment: "New frequency in Hz" }
+    # variables_output:
+    items:
         hertz       : { type: QuantityValue, comment: "Frequency in Hertz" }
-    calls:
-        hertz:
-            value : newHertzValue
-            unit  : Units.HERTZ
+    # calls:
+    #     hertz:
+    #         value : newHertzValue
+    #         unit  : Units.HERTZ
 
   ########################################################################################################################
   # Force
   ########################################################################################################################
-  !STATEMACHINE Force:
-    variables_hidden:
-        newNewtonValue  : { type: t_double, comment: "New force in Newton" }
-    variables_output:
+  !STRUCT Force:
+    #variables_hidden:
+    #    newNewtonValue  : { type: t_double, comment: "New force in Newton" }
+    #variables_output:
+    items:
         newton          : { type: QuantityValue, comment: "Force in Newton" }
         decaNewton      : { type: QuantityValue, comment: "Force in decaNewton" }
-    calls:
-        newton:
-            value  : newNewtonValue
-            unit   : Units.NEWTON
-        decaNewton:
-            value  : !DIV [ newNewtonValue, !DOUBLE 10 ]
-            unit   : Units.DECANEWTON
+    # calls:
+    #     newton:
+    #         value  : newNewtonValue
+    #         unit   : Units.NEWTON
+    #     decaNewton:
+    #         value  : !DIV [ newNewtonValue, !DOUBLE 10 ]
+    #         unit   : Units.DECANEWTON
 
   ########################################################################################################################
   # Fraction
   ########################################################################################################################
-  !STATEMACHINE Fraction:
-    variables_hidden:
-        newFractionValue: { type: t_double, comment: "New fraction (between 0 and 1)" }
-    variables_output:
+  !STRUCT Fraction:
+    # variables_hidden:
+    #     newFractionValue: { type: t_double, comment: "New fraction (between 0 and 1)" }
+    # variables_output:
+    items:
         unitless   : { type: QuantityValue, comment: "Fraction as a unitless value between 0 and 1" }
         percent    : { type: QuantityValue, comment: "Fraction as a percentage value between 0 and 100" }
-    calls:
-        unitless:
-            value : newFractionValue
-            unit  : Units.UNITLESS
-        percent:
-            value : !MUL [newFractionValue, !DOUBLE 100 ]
-            unit  : Units.PERCENT
+    # calls:
+    #     unitless:
+    #         value : newFractionValue
+    #         unit  : Units.UNITLESS
+    #     percent:
+    #         value : !MUL [newFractionValue, !DOUBLE 100 ]
+    #         unit  : Units.PERCENT
 
   ########################################################################################################################
   # BaseProcess
@@ -1098,17 +1113,17 @@
         setPos              : { type: AngularPosition       , comment: "Setpoint position of the axis" }
         setVel              : { type: AngularVelocity       , comment: "Setpoint velocity of the axis" }
         targetPos           : { type: AngularPosition       , comment: "Target position of the axis" }
-    calls:
-        actPos:
-            newDegreesValue             : _axis_ref.NcToPlc.ActPos
-        actVel:
-            newDegreesPerSecondValue    : _axis_ref.NcToPlc.ActVelo
-        setPos:
-            newDegreesValue             : _axis_ref.NcToPlc.SetPos
-        setVel:
-            newDegreesPerSecondValue    : _axis_ref.NcToPlc.SetVelo
-        targetPos:
-            newDegreesValue             : _axis_ref.NcToPlc.TargetPos
+    # calls:
+    #     actPos:
+    #         newDegreesValue             : _axis_ref.NcToPlc.ActPos
+    #     actVel:
+    #         newDegreesPerSecondValue    : _axis_ref.NcToPlc.ActVelo
+    #     setPos:
+    #         newDegreesValue             : _axis_ref.NcToPlc.SetPos
+    #     setVel:
+    #         newDegreesPerSecondValue    : _axis_ref.NcToPlc.SetVelo
+    #     targetPos:
+    #         newDegreesValue             : _axis_ref.NcToPlc.TargetPos
 
   ########################################################################################################################
   # LinearAxis
@@ -1121,17 +1136,17 @@
         setPos              : { type: LinearPosition       , comment: "Setpoint position of the axis" }
         setVel              : { type: LinearVelocity       , comment: "Setpoint velocity of the axis" }
         targetPos           : { type: LinearPosition       , comment: "Target position of the axis" }
-    calls:
-        actPos:
-            newMillimetersValue             : _axis_ref.NcToPlc.ActPos
-        actVel:
-            newMillimetersPerSecondValue    : _axis_ref.NcToPlc.ActVelo
-        setPos:
-            newMillimetersValue             : _axis_ref.NcToPlc.SetPos
-        setVel:
-            newMillimetersPerSecondValue    : _axis_ref.NcToPlc.SetVelo
-        targetPos:
-            newMillimetersValue             : _axis_ref.NcToPlc.TargetPos
+    # calls:
+    #     actPos:
+    #         newMillimetersValue             : _axis_ref.NcToPlc.ActPos
+    #     actVel:
+    #         newMillimetersPerSecondValue    : _axis_ref.NcToPlc.ActVelo
+    #     setPos:
+    #         newMillimetersValue             : _axis_ref.NcToPlc.SetPos
+    #     setVel:
+    #         newMillimetersPerSecondValue    : _axis_ref.NcToPlc.SetVelo
+    #     targetPos:
+    #         newMillimetersValue             : _axis_ref.NcToPlc.TargetPos
 
 
   ########################################################################################################################
@@ -1261,8 +1276,8 @@
             superState   : !BOOL TRUE
             hasWarning   : !BOOL FALSE
             isGood       : !NOT [ error ]
-        current:
-            newAmpsValue : !DIV [ microAmpsValue, !DOUBLE 1000000 ]
+        # current:
+        #     newAmpsValue : !DIV [ microAmpsValue, !DOUBLE 1000000 ]
 
   ########################################################################################################################
   # VoltageMeasurement
@@ -1300,8 +1315,8 @@
                                        !EQ [ stat.alarm, HiHiLoLoAlarmStatus.loLo ] ] ]
             hasWarning   : !OR [!EQ [ stat.alarm, HiHiLoLoAlarmStatus.hi ],
                                 !EQ [ stat.alarm, HiHiLoLoAlarmStatus.lo ]]
-        actual:
-            newVoltValue : !SUM [ !MUL [rawValue, conversionFactor], config.offset]
+        # actual:
+        #     newVoltValue : !SUM [ !MUL [rawValue, conversionFactor], config.offset]
 
 
   ########################################################################################################################
@@ -1375,8 +1390,8 @@
                                        !EQ [ stat.alarm, HiHiLoLoAlarmStatus.loLo ]] ]
             hasWarning   : !OR [!EQ [ stat.alarm, HiHiLoLoAlarmStatus.hi ],
                                 !EQ [ stat.alarm, HiHiLoLoAlarmStatus.lo ]]
-        actual:
-            newCelsiusValue : !SUM [ !MUL [rawValue, conversionFactor], config.offset]
+        # actual:
+        #     newCelsiusValue : !SUM [ !MUL [rawValue, conversionFactor], config.offset]
 
 
   ########################################################################################################################
@@ -1416,8 +1431,8 @@
                                        !EQ [ stat.alarm, HiHiLoLoAlarmStatus.loLo ] ] ]
             hasWarning   : !OR [!EQ [ stat.alarm, HiHiLoLoAlarmStatus.hi ],
                                 !EQ [ stat.alarm, HiHiLoLoAlarmStatus.lo ]]
-        actual:
-            newBarValue  : !SUM [ !MUL [rawValue, conversionFactor], config.offset ]
+        # actual:
+        #     newBarValue  : !SUM [ !MUL [rawValue, conversionFactor], config.offset ]
 
 
   ########################################################################################################################
@@ -1457,8 +1472,8 @@
                                        !EQ [ stat.alarm, HiHiLoLoAlarmStatus.loLo ] ] ]
             hasWarning   : !OR [!EQ [ stat.alarm, HiHiLoLoAlarmStatus.hi ],
                                 !EQ [ stat.alarm, HiHiLoLoAlarmStatus.lo ]]
-        actual:
-            newHertzValue: !SUM [ !MUL [rawValue, conversionFactor], config.offset]
+        # actual:
+        #     newHertzValue: !SUM [ !MUL [rawValue, conversionFactor], config.offset]
 
 
 
@@ -1498,8 +1513,8 @@
             superState   : !BOOL TRUE
             hasWarning   : !BOOL FALSE
             isGood       : !NOT [ error ]
-        actual:
-            newMilliGValue: milliGValue
+        # actual:
+        #     newMilliGValue: milliGValue
 
 
   ########################################################################################################################
@@ -1538,8 +1553,8 @@
                                         !EQ [ stat.alarm, HiHiLoLoAlarmStatus.loLo ] ] ]
             hasWarning   : !OR [ !EQ [ stat.alarm, HiHiLoLoAlarmStatus.hi ],
                                  !EQ [ stat.alarm, HiHiLoLoAlarmStatus.lo ] ]
-        actual:
-            newFractionValue : !SUM [ !MUL [ !MUL [ rawValue, conversionFactor ], config.gain ], config.offset ]
+        # actual:
+        #     newFractionValue : !SUM [ !MUL [ !MUL [ rawValue, conversionFactor ], config.gain ], config.offset ]
 
 
 
@@ -1582,8 +1597,8 @@
                                         !EQ [ stat.alarm, HiHiLoLoAlarmStatus.loLo ] ] ]
             hasWarning   : !OR [!EQ [ stat.alarm, HiHiLoLoAlarmStatus.hi ],
                                 !EQ [ stat.alarm, HiHiLoLoAlarmStatus.lo ]]
-        actual:
-            newNewtonValue: !SUM [ !MUL [ rawValue, conversionFactor], config.offset ]
+        # actual:
+        #     newNewtonValue: !SUM [ !MUL [ rawValue, conversionFactor], config.offset ]
 
   ########################################################################################################################
   # LinearPositionMeasurement16
@@ -1622,8 +1637,8 @@
                                         !EQ [ stat.alarm, HiHiLoLoAlarmStatus.loLo ] ] ]
             hasWarning   : !OR [ !EQ [ stat.alarm, HiHiLoLoAlarmStatus.hi ],
                                  !EQ [ stat.alarm, HiHiLoLoAlarmStatus.lo ] ]
-        actual:
-            newMillimetersValue: !SUM [ !MUL [ rawValue, conversionFactor ], config.offset ]
+        # actual:
+        #     newMillimetersValue: !SUM [ !MUL [ rawValue, conversionFactor ], config.offset ]
 
   ########################################################################################################################
   # LinearPositionMeasurementU32
@@ -1662,8 +1677,8 @@
                                         !EQ [ stat.alarm, HiHiLoLoAlarmStatus.loLo ] ] ]
             hasWarning   : !OR [ !EQ [ stat.alarm, HiHiLoLoAlarmStatus.hi ],
                                  !EQ [ stat.alarm, HiHiLoLoAlarmStatus.lo ] ]
-        actual:
-            newMillimetersValue: !SUM [ !MUL [ rawValue, conversionFactor ], config.offset ]
+        # actual:
+        #     newMillimetersValue: !SUM [ !MUL [ rawValue, conversionFactor ], config.offset ]
 
   ########################################################################################################################
   # SimpleRelay
