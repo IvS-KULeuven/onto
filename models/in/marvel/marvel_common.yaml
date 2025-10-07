@@ -987,20 +987,20 @@
         stopParametrized    : { type: McStopProcess         , comment: "Stop any movement" }
         power               : { type: McPowerProcess        , comment: "Power on/off the axis" }
         home                : { type: McProcess             , comment: "Peform a homing" }
-        gearIn              : { type: McProcess             , comment: "Couple to master axis" }
-        gearOut             : { type: McProcess             , comment: "Decouple from master axis" }
+        #gearIn              : { type: McProcess             , comment: "Couple to master axis" }
+        #gearOut             : { type: McProcess             , comment: "Decouple from master axis" }
         initialize          : { type: Process               , comment: "Start initializing the axis" }
         setPosition         : { type: McSetPositionProcess  , comment: "Set the axis position" }
-        enableExtSetGen     : { type: McProcess             , comment: "Enable the external setpoint generator" }
-        disableExtSetGen    : { type: McProcess             , comment: "Disable the external setpoint generator" }
-        forceCalibration    : { type: McProcess             , comment: "Force the calibration (homing) flag to TRUE" }
-        resetCalibration    : { type: McProcess             , comment: "Reset the calibration (homing) flag to FALSE" }
+        #enableExtSetGen     : { type: McProcess             , comment: "Enable the external setpoint generator" }
+        #disableExtSetGen    : { type: McProcess             , comment: "Disable the external setpoint generator" }
+        #forceCalibration    : { type: McProcess             , comment: "Force the calibration (homing) flag to TRUE" }
+        #resetCalibration    : { type: McProcess             , comment: "Reset the calibration (homing) flag to FALSE" }
         readParameter       : { type: McReadParameter       , comment: "Read a numerical parameter" }
         readBoolParameter   : { type: McReadBoolParameter   , comment: "Read a boolean parameter" }
         writeParameter      : { type: McWriteParameter      , comment: "Write a numerical parameter" }
         writeBoolParameter  : { type: McWriteBoolParameter  , comment: "Write a boolean parameter" }
-        probeStart          : { type: McProbe               , comment: "Start probing a hardware pulse, until a pulse is found" }
-        probeAbort          : { type: McProcess             , comment: "Stop probing even though the probe position is not found (yet)" }
+        #probeStart          : { type: McProbe               , comment: "Start probing a hardware pulse, until a pulse is found" }
+        #probeAbort          : { type: McProcess             , comment: "Stop probing even though the probe position is not found (yet)" }
     calls:
         busy:
             superState                  : !BOOL TRUE
@@ -1009,19 +1009,19 @@
                                                 proc.moveRelative,
                                                 proc.reset,
                                                 proc.power,
-                                                proc.gearIn,
-                                                proc.gearOut,
+                                                #proc.gearIn,
+                                                #proc.gearOut,
                                                 proc.initialize,
                                                 proc.setPosition,
-                                                proc.enableExtSetGen,
-                                                proc.disableExtSetGen,
-                                                proc.forceCalibration,
-                                                proc.resetCalibration,
+                                                #proc.enableExtSetGen,
+                                                #proc.disableExtSetGen,
+                                                #proc.forceCalibration,
+                                                #proc.resetCalibration,
                                                 proc.readParameter,
                                                 proc.readBoolParameter,
                                                 proc.writeParameter,
                                                 proc.writeBoolParameter,
-                                                proc.probeAbort,
+                                                #proc.probeAbort,
                                                 proc.home ]
         health:
             superState                  : !BOOL TRUE
@@ -1050,26 +1050,26 @@
             isEnabled                   : !AND [ isEnabled, !EQ [ proc.moveVelocity.stat.busy, BusyStatus.idle ] ]
         reset:
             isEnabled                   : !AND [ isEnabled, !EQ [ proc.reset.stat.busy, BusyStatus.idle ] ]
-        gearIn:
-            isEnabled                   : !AND [ isEnabled, 
-                                                 !EQ [ proc.gearIn.stat.busy, BusyStatus.idle ],
-                                                 isGearingSupported ]
-        gearOut:
-            isEnabled                   : !AND [ isEnabled, 
-                                                 !EQ [ proc.gearOut.stat.busy, BusyStatus.idle ],
-                                                 isGearingSupported ]
+        # gearIn:
+        #     isEnabled                   : !AND [ isEnabled, 
+        #                                          !EQ [ proc.gearIn.stat.busy, BusyStatus.idle ],
+        #                                          isGearingSupported ]
+        # gearOut:
+        #     isEnabled                   : !AND [ isEnabled, 
+        #                                          !EQ [ proc.gearOut.stat.busy, BusyStatus.idle ],
+        #                                          isGearingSupported ]
         stop:
             isEnabled                   : !AND [ isEnabled, !EQ [ proc.stop.stat.busy, BusyStatus.idle ] ]
         setPosition:
             isEnabled                   : !AND [ isEnabled, !EQ [ proc.setPosition.stat.busy, BusyStatus.idle ] ]
-        enableExtSetGen:
-            isEnabled                   : !AND [ isEnabled, !EQ [ proc.enableExtSetGen.stat.busy, BusyStatus.idle ] ]
-        disableExtSetGen:
-            isEnabled                   : !AND [ isEnabled, !EQ [ proc.disableExtSetGen.stat.busy, BusyStatus.idle ] ]
-        forceCalibration:
-            isEnabled                   : !AND [ isEnabled, !EQ [ stat.busy, BusyStatus.idle ] ]
-        resetCalibration:
-            isEnabled                   : !AND [ isEnabled, !EQ [ stat.busy, BusyStatus.idle ] ]
+        # enableExtSetGen:
+        #     isEnabled                   : !AND [ isEnabled, !EQ [ proc.enableExtSetGen.stat.busy, BusyStatus.idle ] ]
+        # disableExtSetGen:
+        #     isEnabled                   : !AND [ isEnabled, !EQ [ proc.disableExtSetGen.stat.busy, BusyStatus.idle ] ]
+        # forceCalibration:
+        #     isEnabled                   : !AND [ isEnabled, !EQ [ stat.busy, BusyStatus.idle ] ]
+        # resetCalibration:
+        #     isEnabled                   : !AND [ isEnabled, !EQ [ stat.busy, BusyStatus.idle ] ]
         readParameter:
             isEnabled                   : !AND [ isEnabled, !EQ [ stat.busy, BusyStatus.idle ] ]
         readBoolParameter:
@@ -1078,10 +1078,10 @@
             isEnabled                   : !AND [ isEnabled, !EQ [ stat.busy, BusyStatus.idle ] ]
         writeBoolParameter:
             isEnabled                   : !AND [ isEnabled, !EQ [ stat.busy, BusyStatus.idle ] ]
-        probeStart:
-            isEnabled                   : !AND [ isEnabled, !EQ [ stat.busy, BusyStatus.idle ] ]
-        probeAbort:
-            isEnabled                   : !AND [ isEnabled, !EQ [ stat.busy, BusyStatus.idle ] ]
+        # probeStart:
+        #     isEnabled                   : !AND [ isEnabled, !EQ [ stat.busy, BusyStatus.idle ] ]
+        # probeAbort:
+        #     isEnabled                   : !AND [ isEnabled, !EQ [ stat.busy, BusyStatus.idle ] ]
         home:
             isEnabled                   : !AND [ isEnabled, !EQ [ stat.busy, BusyStatus.idle ] ]
 
