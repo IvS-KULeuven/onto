@@ -1629,11 +1629,13 @@ def add_models(lib: Library):
             if (isinstance(item.type, Primitive) or isinstance(item.type, Enum) or isinstance(item.type, Struct) or item.name == "stat") \
                 and not ((item.name == "parts") or (item.name == "proc")):
 
-                if (QUALIFIERS.OPC_UA_ACCESS_RW in item.qualifiers) or (QUALIFIERS.OPC_UA_ACCESS_W in item.qualifiers):
+                add_to_copyFromModel = (QUALIFIERS.OPC_UA_ACCESS_RW in item.qualifiers) or (QUALIFIERS.OPC_UA_ACCESS_W in item.qualifiers)
+                add_to_copyToModel = not (QUALIFIERS.OPC_UA_ACCESS_W in item.qualifiers)
+                if add_to_copyFromModel:
                     assignment = ASSIGN([fb.get_child(item.name), copyFromModelArg.get_child(item.name)])
                     assignment.resolve_children(lib)
                     copyFromModel.implementation.append(assignment)
-                else:
+                if add_to_copyToModel:
                     assignment = ASSIGN([copyToModelArg.get_child(item.name), fb.get_child(item.name)])
                     assignment.resolve_children(lib)
                     copyToModel.implementation.append(assignment)
