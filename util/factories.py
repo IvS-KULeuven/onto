@@ -1110,20 +1110,20 @@ class Statemachine(FunctionBlock):
             self.implementation.append(c)
         
 
-
-        for var in self.vars.values():
-            if var.address is not None:
-                if var.address.startswith("%I"):
-                    name_ro = f"{var.name}_ro"
-                    var_ro = Variable(name_ro, self)
-                    var_ro.type = var.type
-                    var_ro.qualifiers = var.qualifiers
-                    self.var_local[name_ro] = var_ro
-                                
-                    if self.implementation is None:
-                        self.implementation = []
-                        
-                    self.implementation.append(ASSIGN([var_ro, var]))
+        if is_mtcs():
+            for var in self.vars.values():
+                if var.address is not None:
+                    if var.address.startswith("%I"):
+                        name_ro = f"{var.name}_ro"
+                        var_ro = Variable(name_ro, self)
+                        var_ro.type = var.type
+                        var_ro.qualifiers = var.qualifiers
+                        self.var_local[name_ro] = var_ro
+                                    
+                        if self.implementation is None:
+                            self.implementation = []
+                            
+                        self.implementation.append(ASSIGN([var_ro, var]))
 
 
         if self.extends is not None:
