@@ -90,9 +90,6 @@ class QUALIFIERS:
     OPC_UA_ACCESS_R = PlcOpenAttribute(symbol = 'OPC.UA.DA.Access', value = '1')
     OPC_UA_ACCESS_W = PlcOpenAttribute(symbol = 'OPC.UA.DA.Access', value = '2')
     OPC_UA_ACCESS_RW = PlcOpenAttribute(symbol = 'OPC.UA.DA.Access', value = '3')
-    HMI_SHOW = PlcOpenAttribute(symbol = 'TcHmiSymbol.Show', value = '')
-    HMI_SHOWRECURSIVELY = PlcOpenAttribute(symbol = 'TcHmiSymbol.ShowRecursively', value = '')
-    HMI_HIDE = PlcOpenAttribute(symbol = 'TcHmiSymbol.Hide', value = '')
     QUALIFIED_ONLY = PlcOpenAttribute(symbol = 'qualified_only', value = '')
 
 
@@ -504,13 +501,6 @@ class Variable(Object):
 
         if 'address' in args:
             self.address = args['address']
-
-        if not name.startswith('_'):
-            if QUALIFIERS.HMI_SHOW not in self.qualifiers:
-                if QUALIFIERS.OPC_UA_DEACTIVATE not in self.qualifiers:
-                    if QUALIFIERS.HMI_SHOWRECURSIVELY not in self.qualifiers:
-                        if QUALIFIERS.HMI_HIDE not in self.qualifiers:
-                            self.qualifiers.append(QUALIFIERS.HMI_SHOW)
         
         if 'isRef' in args:
             self.is_ref = str(args['isRef']).upper() == "TRUE"
@@ -764,7 +754,7 @@ class Status(FunctionBlock):
                         "type": "t_bool",
                         "comment": var_args["comment"] 
                     })
-                v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_R, QUALIFIERS.HMI_SHOW]
+                v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_R]
                 self.var_out[var_name] = v
         
         self.implementation = []
@@ -851,7 +841,7 @@ class Statemachine(FunctionBlock):
             v = Variable("actualStatus", self)
             v.type = PRIMITIVE_TYPES.t_string
             v.comment = "Current status description"
-            v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_R, QUALIFIERS.HMI_SHOW]
+            v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_R]
             self.var_out['actualStatus'] = v
             self.vars['actualStatus'] = v
             # if is_marvel():
@@ -862,9 +852,6 @@ class Statemachine(FunctionBlock):
                 v = Variable("previousStatus", self)
                 v.type = PRIMITIVE_TYPES.t_string
                 v.comment = "Previous status description"
-                if QUALIFIERS.HMI_SHOW in v.qualifiers:
-                    v.qualifiers.remove(QUALIFIERS.HMI_SHOW)
-                v.qualifiers.append(QUALIFIERS.HMI_HIDE)
                 v.qualifiers.append(QUALIFIERS.OPC_UA_DEACTIVATE)
                 self.var_out["previousStatus"] = v
                 self.vars['previousStatus'] = v
@@ -876,15 +863,8 @@ class Statemachine(FunctionBlock):
                     v.qualifiers.append(QUALIFIERS.OPC_UA_ACTIVATE)
                 if QUALIFIERS.OPC_UA_ACCESS_R not in v.qualifiers:
                     v.qualifiers.append(QUALIFIERS.OPC_UA_ACCESS_R)
-                if QUALIFIERS.HMI_SHOW not in v.qualifiers \
-                  and QUALIFIERS.HMI_SHOWRECURSIVELY not in v.qualifiers \
-                  and QUALIFIERS.HMI_HIDE not in v.qualifiers:
-                    v.qualifiers.append(QUALIFIERS.HMI_SHOW)
                 self.var_in[var_name] = v
                 self.vars[var_name] = v
-                # if is_marvel():
-                #     if QUALIFIERS.HMI_SHOW in v.qualifiers:
-                #         self.model.items[var_name] = Variable(var_name, self.model)
 
         if "variables_output" in args:
             for var_name, var in args['variables_output'].items():
@@ -893,23 +873,14 @@ class Statemachine(FunctionBlock):
                     v.qualifiers.append(QUALIFIERS.OPC_UA_ACTIVATE)
                 if QUALIFIERS.OPC_UA_ACCESS_R not in v.qualifiers:
                     v.qualifiers.append(QUALIFIERS.OPC_UA_ACCESS_R)
-                if QUALIFIERS.HMI_SHOW not in v.qualifiers and QUALIFIERS.HMI_SHOWRECURSIVELY not in v.qualifiers:
-                    v.qualifiers.append(QUALIFIERS.HMI_SHOW)
                 self.var_out[var_name] = v
                 self.vars[var_name] = v
-                # if is_marvel():
-                #     if QUALIFIERS.HMI_SHOW in v.qualifiers:
-                #         self.model.items[var_name] = Variable(var_name, self.model)
 
         if "variables_hidden" in args:
             for var_name, var in args['variables_hidden'].items():
                 v = Variable(var_name, self, var)
-                if QUALIFIERS.HMI_SHOW in v.qualifiers:
-                    v.qualifiers.remove(QUALIFIERS.HMI_SHOW)
                 if QUALIFIERS.OPC_UA_DEACTIVATE not in v.qualifiers:
                     v.qualifiers.append(QUALIFIERS.OPC_UA_DEACTIVATE)
-                if QUALIFIERS.HMI_HIDE not in v.qualifiers:
-                    v.qualifiers.append(QUALIFIERS.HMI_HIDE)
                 self.var_in[var_name] = v
                 self.vars[var_name] = v
 
@@ -918,8 +889,6 @@ class Statemachine(FunctionBlock):
                 v = Variable(var_name, self, var)
                 if QUALIFIERS.OPC_UA_DEACTIVATE not in v.qualifiers:
                     v.qualifiers.append(QUALIFIERS.OPC_UA_DEACTIVATE)
-                if QUALIFIERS.HMI_HIDE not in v.qualifiers:
-                    v.qualifiers.append(QUALIFIERS.HMI_HIDE)
                 self.var_inout[var_name] = v
                 self.vars[var_name] = v
 
@@ -931,7 +900,7 @@ class Statemachine(FunctionBlock):
             )
             if is_marvel():
                 for item in struct.items.values():
-                    item.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_R, QUALIFIERS.HMI_SHOW]
+                    item.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_R]
             
             self.parent.statemachines.statuses[struct.name] = struct
             self.var_out[statuses()] = Variable(
@@ -1044,7 +1013,7 @@ class Statemachine(FunctionBlock):
         if "local_rw" in args:
             for var_name, var in args['local_rw'].items():
                 v = Variable(var_name, self, var)
-                v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.HMI_SHOW, QUALIFIERS.OPC_UA_ACCESS_RW]
+                v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_RW]
                 self.var_local[var_name] = v
                 self.vars[var_name] = v
 
@@ -1052,7 +1021,7 @@ class Statemachine(FunctionBlock):
         if "local" in args:
             for var_name, var in args['local'].items():
                 v = Variable(var_name, self, var)
-                v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.HMI_SHOW]
+                v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE]
                 self.var_local[var_name] = v
                 self.vars[var_name] = v
 
@@ -1350,7 +1319,7 @@ class Process(FunctionBlock):
             if is_mtcs():
                 qualifiers = [ QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_R ]
             else:
-                qualifiers = [ QUALIFIERS.OPC_UA_DEACTIVATE, QUALIFIERS.HMI_HIDE ]
+                qualifiers = [ QUALIFIERS.OPC_UA_DEACTIVATE ]
             
             self.var_out["get"] = Variable(
                 "get",
@@ -1556,14 +1525,19 @@ def add_models(lib: Library):
 
             if var.type is None:
                 raise Exception(f"Adding model for variable {var.name} of {sm.name} failed, type is None!")
-            elif (QUALIFIERS.HMI_SHOW not in var.qualifiers) and (QUALIFIERS.HMI_SHOWRECURSIVELY not in var.qualifiers):
+            elif QUALIFIERS.OPC_UA_ACTIVATE not in var.qualifiers:
                 pass # skip
             elif isinstance(var.type, Primitive) or isinstance(var.type, Enum):
                 v = Variable(name=var.name, parent=m)
+                if QUALIFIERS.OPC_UA_ACCESS_RW in var.qualifiers:
+                    v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_RW]
+                else:
+                    v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_R]
                 v.type = var.type
                 m.items[var.name] = v
             elif var.name == "stat":
                 v = Variable(name=var.name, parent=m)
+                v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_R]
                 v.type = var.type
                 m.items[var.name] = v
             elif var.name == "parts":
@@ -1574,6 +1548,7 @@ def add_models(lib: Library):
                     parts_struct_var.type = part.type.model
                     parts_struct.items[part.name] = parts_struct_var
                 v = Variable(name="parts", parent=m)
+                v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE]
                 v.type = parts_struct
                 m.items[var.name] = v
             elif var.name == "proc":
@@ -1585,10 +1560,15 @@ def add_models(lib: Library):
                     proc_struct_var.type = proc.type.model
                     proc_struct.items[proc.name] = proc_struct_var
                 v = Variable(name="proc", parent=m)
+                v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE]
                 v.type = proc_struct
                 m.items[var.name] = v
             elif isinstance(var.type, Struct):
                 v = Variable(name=var.name, parent=m)
+                if QUALIFIERS.OPC_UA_ACCESS_RW in var.qualifiers:
+                    v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_RW]
+                else:
+                    v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_R]
                 v.type = var.type
                 m.items[var.name] = v
 
@@ -1604,10 +1584,14 @@ def add_models(lib: Library):
 
             if var.type is None:
                 raise Exception(f"Adding model for variable {var.name} of {proc.name} failed, type is None!")
-            elif (QUALIFIERS.HMI_SHOW not in var.qualifiers) and (QUALIFIERS.HMI_SHOWRECURSIVELY not in var.qualifiers):
+            elif QUALIFIERS.OPC_UA_ACTIVATE not in var.qualifiers:
                 pass # skip
             elif isinstance(var.type, Primitive) or isinstance(var.type, Enum) or isinstance(var.type, Struct):
                 v = Variable(name=var.name, parent=m)
+                if QUALIFIERS.OPC_UA_ACCESS_RW in var.qualifiers:
+                    v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_RW]
+                else:
+                    v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_R]
                 v.type = var.type
                 m.items[var.name] = v
 
@@ -1640,13 +1624,20 @@ def add_models(lib: Library):
         copyToModel.implementation = []
 
         for item in fb.model.items.values():
+            item: Variable
 
             if (isinstance(item.type, Primitive) or isinstance(item.type, Enum) or isinstance(item.type, Struct) or item.name == "stat") \
                 and not ((item.name == "parts") or (item.name == "proc")):
 
-                assignment = ASSIGN([copyToModelArg.get_child(item.name), fb.get_child(item.name)])
-                assignment.resolve_children(lib)
-                copyToModel.implementation.append(assignment)
+                if (QUALIFIERS.OPC_UA_ACCESS_RW in item.qualifiers) or (QUALIFIERS.OPC_UA_ACCESS_W in item.qualifiers):
+                    assignment = ASSIGN([fb.get_child(item.name), copyFromModelArg.get_child(item.name)])
+                    assignment.resolve_children(lib)
+                    copyFromModel.implementation.append(assignment)
+                else:
+                    assignment = ASSIGN([copyToModelArg.get_child(item.name), fb.get_child(item.name)])
+                    assignment.resolve_children(lib)
+                    copyToModel.implementation.append(assignment)
+
 
             elif item.name == "parts" or item.name == "proc":
 
