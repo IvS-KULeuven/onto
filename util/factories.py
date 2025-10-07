@@ -1297,6 +1297,9 @@ class Process(FunctionBlock):
                 name = f"{name}Args", 
                 parent = self.parent,
                 args = { "items": args['arguments'] })
+            if is_marvel():
+                for item in struct.items.values():
+                    item.qualifiers = [ QUALIFIERS.HMI_SHOW ]
             self.parent.processes.args[struct.name] = struct
 
         if is_mtcs():
