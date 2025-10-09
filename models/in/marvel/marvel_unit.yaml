@@ -35,11 +35,12 @@
   # Unit
   ########################################################################################################################
   !STATEMACHINE Unit:
+      variables_input_rw:
+          editableConfig            : { type: UnitConfig                          , comment: "Editable configuration of the unit" , expand: false }
       variables_input:
-          number                    : { type: t_uint8                           , comment: "Number of the unit (1-4)" }
-          editableConfig            : { type: UnitConfig                        , comment: "Editable configuration of the unit" , expand: false }
+          number                    : { type: t_uint8                             , comment: "Number of the unit (1-4)" }
       variables_output:
-          config                    : { type: UnitConfig                        , comment: "Active configuration of the unit" }
+          config                    : { type: UnitConfig                          , comment: "Active configuration of the unit" }
           targetAlpha               : { type: marvel_common.AngularPosition       , comment: "The target alpha coordinate (Right Ascention)" , expand: false}
           targetDelta               : { type: marvel_common.AngularPosition       , comment: "The target delta coordinate (Declination)" , expand: false }
       references:

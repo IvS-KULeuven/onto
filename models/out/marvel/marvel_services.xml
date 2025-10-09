@@ -1167,7 +1167,7 @@
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
                     <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="3" />
                     <Attribute Name="TcHmiSymbol.Show" Value="" />
                   </Attributes>
                 </data>
@@ -2369,7 +2369,7 @@
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
                     <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="3" />
                   </Attributes>
                 </data>
               </addData>
@@ -2523,7 +2523,8 @@ proc.changeOperatingState( isEnabled := FALSE );
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.parts.timing._copyFromModel_ServicesTiming( model := model.parts.timing );
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.editableConfig := model.editableConfig;
+THIS^.parts.timing._copyFromModel_ServicesTiming( model := model.parts.timing );
 THIS^.parts.mercatorMeteo._copyFromModel_ServicesMercatorMeteo( model := model.parts.mercatorMeteo );
 THIS^.parts.configManager._copyFromModel_ConfigManager( model := model.parts.configManager );
 THIS^.proc.initialize._copyFromModel_Process( model := model.proc.initialize );

@@ -270,7 +270,7 @@
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
                     <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="3" />
                     <Attribute Name="TcHmiSymbol.Show" Value="" />
                   </Attributes>
                 </data>
@@ -525,7 +525,7 @@
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
                     <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="3" />
                   </Attributes>
                 </data>
               </addData>
@@ -748,7 +748,8 @@ proc.stop( isEnabled := parts.telescope.proc.abortSlew.isEnabled OR parts.dome.p
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.parts.dome._copyFromModel_Dome( model := model.parts.dome );
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.editableConfig := model.editableConfig;
+THIS^.parts.dome._copyFromModel_Dome( model := model.parts.dome );
 THIS^.parts.guiding._copyFromModel_Guiding( model := model.parts.guiding );
 THIS^.parts.fem._copyFromModel_Fem( model := model.parts.fem );
 THIS^.parts.telescope._copyFromModel_Telescope( model := model.parts.telescope );

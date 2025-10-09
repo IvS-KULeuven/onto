@@ -812,7 +812,7 @@ class Statemachine(FunctionBlock):
             super().__init__(f"SM_{name}", parent)
         
         check_args("Statemachine", args,
-                   ["variables_input", "variables_hidden", "variables_output",
+                   ["variables_input", "variables_input_rw", "variables_hidden", "variables_output",
                     "statuses", "parts", "local", "local_rw", "methods", "calls", statuses(),
                     "disabled_calls", "updates", "references", "extends",
                     processes(), "constraints", "render", "typeOf"])
@@ -868,6 +868,16 @@ class Statemachine(FunctionBlock):
                     v.qualifiers.append(QUALIFIERS.OPC_UA_ACTIVATE)
                 if QUALIFIERS.OPC_UA_ACCESS_R not in v.qualifiers:
                     v.qualifiers.append(QUALIFIERS.OPC_UA_ACCESS_R)
+                self.var_in[var_name] = v
+                self.vars[var_name] = v
+
+        if "variables_input_rw" in args:
+            for var_name, var in args['variables_input_rw'].items():
+                v = Variable(var_name, self, var)
+                if QUALIFIERS.OPC_UA_ACTIVATE not in v.qualifiers:
+                    v.qualifiers.append(QUALIFIERS.OPC_UA_ACTIVATE)
+                if QUALIFIERS.OPC_UA_ACCESS_RW not in v.qualifiers:
+                    v.qualifiers.append(QUALIFIERS.OPC_UA_ACCESS_RW)
                 self.var_in[var_name] = v
                 self.vars[var_name] = v
 
