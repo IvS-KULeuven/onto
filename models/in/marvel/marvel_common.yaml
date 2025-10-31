@@ -1697,7 +1697,28 @@
             isEnabled   : !AND [ isEnabled, !EQ [ proc.setEnabled.stat.busy, BusyStatus.idle ] ]
         busy:
             superState  : !BOOL TRUE
-            isBusy      : proc.setEnabled.stat.busy.busy
+            isBusy      : !EQ [ proc.setEnabled.stat.busy, BusyStatus.busy ]
+
+
+
+  ########################################################################################################################
+  # Led
+  ########################################################################################################################
+  !STATEMACHINE Led:
+    variables_hidden:
+        isEnabled       : { type: t_bool                , comment: "Is control enabled?" }
+    variables_output:
+        milliAmps       : { type: t_double              , comment: "Actual output in milli amps" }
+    proc:
+        setMilliAmps    : { type: ChangeSetpointProcess  , comment: "Set the output in milliampere" }
+    stat:
+        busy            : { type: BusyStatus            , comment: "Is the Led in a busy state?" }
+    calls:
+        setEnabled:
+            isEnabled   : !AND [ isEnabled, !EQ [ proc.setEnabled.stat.busy, BusyStatus.idle ] ]
+        busy:
+            superState  : !BOOL TRUE
+            isBusy      : !EQ [ proc.setMilliAmps.stat.busy, BusyStatus.busy ]
 
 
 
@@ -2134,6 +2155,9 @@
         - SEARCHFREQ_MOT2
         - GET_STATUS
         - GET_POSITION
+        - MOVE_ABS
+        - MOVE_REL
+        - CUSTOM
         - _END_
 
   ########################################################################################################################
@@ -2143,6 +2167,7 @@
     extends: BaseProcess
     arguments:
         cmd : { type: ELL14Command, comment: "The command to be sent" }
+        arg : { type: t_string,     comment: "The payload of the command to be sent (excluding '0gs' or similar header, excluding $R$N suffix). Custom commands must include the header!" }
 
 
   ########################################################################################################################
@@ -2164,6 +2189,7 @@
         - MOTOR_ERROR           # 11
         - OUT_OF_RANGE          # 12
         - OVERCURRENT_ERROR     # 13
+        - UNKNOWN               # 14, custom
 
   ########################################################################################################################
   # ELL14Stage

@@ -529,7 +529,10 @@
               <value name="SEARCHFREQ_MOT2" value="3" />
               <value name="GET_STATUS" value="4" />
               <value name="GET_POSITION" value="5" />
-              <value name="_END_" value="6" />
+              <value name="MOVE_ABS" value="6" />
+              <value name="MOVE_REL" value="7" />
+              <value name="CUSTOM" value="8" />
+              <value name="_END_" value="9" />
             </values>
           </enum>
         </baseType>
@@ -559,6 +562,7 @@
               <value name="MOTOR_ERROR" value="11" />
               <value name="OUT_OF_RANGE" value="12" />
               <value name="OVERCURRENT_ERROR" value="13" />
+              <value name="UNKNOWN" value="14" />
             </values>
           </enum>
         </baseType>
@@ -804,6 +808,25 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Set the relay enabled or disabled</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="LedProcesses">
+        <baseType>
+          <struct>
+            <variable name="setMilliAmps">
+              <type><derived name="ChangeSetpointProcess" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Set the output in milliampere</xhtml>
               </documentation>
             </variable>
           </struct>
@@ -1864,6 +1887,27 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Is the SimpleRelay in a busy state?</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="LedStatuses">
+        <baseType>
+          <struct>
+            <variable name="busy">
+              <type><derived name="BusyStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Is the Led in a busy state?</xhtml>
               </documentation>
             </variable>
           </struct>
@@ -4207,6 +4251,19 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">The command to be sent</xhtml>
               </documentation>
             </variable>
+            <variable name="arg">
+              <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The payload of the command to be sent (excluding &#39;0gs&#39; or similar header, excluding $R$N suffix). Custom commands must include the header!</xhtml>
+              </documentation>
+            </variable>
           </struct>
         </baseType>
       </dataType>
@@ -6167,6 +6224,70 @@
           </struct>
         </baseType>
       </dataType>
+      <dataType name="M_SM_Led">
+        <baseType>
+          <struct>
+            <variable name="actualStatus">
+              <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="milliAmps">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="stat">
+              <type><derived name="LedStatuses" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="proc">
+              <type><derived name="M_SM_LedProcesses" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
       <dataType name="M_SM_ConfigManager">
         <baseType>
           <struct>
@@ -7784,6 +7905,25 @@
           <struct>
             <variable name="setEnabled">
               <type><derived name="M_SetEnabledProcess" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="M_SM_LedProcesses">
+        <baseType>
+          <struct>
+            <variable name="setMilliAmps">
+              <type><derived name="M_ChangeSetpointProcess" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -14061,7 +14201,7 @@ model.stat := THIS^.stat;
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">stat.busy := F_BusyStatus(
     superState := TRUE,
-    isBusy := proc.setEnabled.stat.busy.busy);
+    isBusy := proc.setEnabled.stat.busy = BusyStatus.busy);
 proc.setEnabled( isEnabled := isEnabled AND (proc.setEnabled.stat.busy = BusyStatus.idle) );
 </xhtml>
           </ST>
@@ -14143,6 +14283,177 @@ proc.setEnabled( isEnabled := isEnabled AND (proc.setEnabled.stat.busy = BusySta
 model.digitalOutput := THIS^.digitalOutput;
 model.stat := THIS^.stat;
 THIS^.proc.setEnabled._copyToModel_SetEnabledProcess( model := model.proc.setEnabled );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+        </addData>
+      </pou>
+      <pou name="SM_Led" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="isEnabled">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Is control enabled?</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="actualStatus">
+              <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Current status description</xhtml>
+              </documentation>
+            </variable>
+            <variable name="milliAmps">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Actual output in milli amps</xhtml>
+              </documentation>
+            </variable>
+            <variable name="stat">
+              <type><derived name="LedStatuses" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Statuses of the state machine</xhtml>
+              </documentation>
+            </variable>
+            <variable name="proc">
+              <type><derived name="LedProcesses" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Processes of the state machine</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <inOutVars>
+          </inOutVars>
+          <localVars>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">stat.busy := F_BusyStatus(
+    superState := TRUE,
+    isBusy := proc.setMilliAmps.stat.busy = BusyStatus.busy);
+proc.setMilliAmps();
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyFromModel_SM_Led">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_SM_Led" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.proc.setMilliAmps._copyFromModel_ChangeSetpointProcess( model := model.proc.setMilliAmps );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyToModel_SM_Led">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_SM_Led" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">model.actualStatus := THIS^.actualStatus;
+model.milliAmps := THIS^.milliAmps;
+model.stat := THIS^.stat;
+THIS^.proc.setMilliAmps._copyToModel_ChangeSetpointProcess( model := model.proc.setMilliAmps );
 </xhtml>
                 </ST>
               </body>
@@ -22669,7 +22980,9 @@ SUPER^._copyToModel_BaseProcess( model := model );
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
-    do_request_result := request( cmd := set.cmd );
+    do_request_result := request(
+    cmd := set.cmd,
+    arg := set.arg);
     do_request := FALSE;
 END_IF;
 SUPER^();
@@ -22693,6 +23006,18 @@ SUPER^();
                       <xhtml xmlns="http://www.w3.org/1999/xhtml">The command to be sent</xhtml>
                     </documentation>
                   </variable>
+                  <variable name="arg">
+                    <type><string /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">The payload of the command to be sent (excluding &#39;0gs&#39; or similar header, excluding $R$N suffix). Custom commands must include the header!</xhtml>
+                    </documentation>
+                  </variable>
                 </inputVars>
                 <outputVars>
                 </outputVars>
@@ -22711,6 +23036,7 @@ SUPER^();
               <body>
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.cmd := cmd;
+THIS^.get.arg := arg;
 THIS^.stat.busy := BusyStatus.busy;
 THIS^.stat.health := HealthStatus.good;
 </xhtml>
@@ -22735,6 +23061,18 @@ THIS^.stat.health := HealthStatus.good;
                       <xhtml xmlns="http://www.w3.org/1999/xhtml">The command to be sent</xhtml>
                     </documentation>
                   </variable>
+                  <variable name="arg">
+                    <type><string /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">The payload of the command to be sent (excluding &#39;0gs&#39; or similar header, excluding $R$N suffix). Custom commands must include the header!</xhtml>
+                    </documentation>
+                  </variable>
                 </inputVars>
                 <outputVars>
                 </outputVars>
@@ -22754,7 +23092,9 @@ THIS^.stat.health := HealthStatus.good;
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">IF THIS^.stat.enabled = EnabledStatus.enabled THEN
     request := RequestResults.ACCEPTED;
-    THIS^.start( cmd := cmd );
+    THIS^.start(
+        cmd := cmd,
+        arg := arg);
 ELSE
     request := RequestResults.REJECTED;
 END_IF;
@@ -22918,6 +23258,8 @@ SUPER^._copyToModel_BaseProcess( model := model );
               </Object>
               <Object Name="SimpleRelayProcesses">
               </Object>
+              <Object Name="LedProcesses">
+              </Object>
               <Object Name="ConfigManagerProcesses">
               </Object>
               <Object Name="ModbusRTUBusProcesses">
@@ -22965,6 +23307,8 @@ SUPER^._copyToModel_BaseProcess( model := model );
               <Object Name="LinearPositionMeasurementU32Statuses">
               </Object>
               <Object Name="SimpleRelayStatuses">
+              </Object>
+              <Object Name="LedStatuses">
               </Object>
               <Object Name="ConfigManagerStatuses">
               </Object>
@@ -23072,6 +23416,10 @@ SUPER^._copyToModel_BaseProcess( model := model );
             <Object Name="SM_SimpleRelay">
               <Object Name="_copyFromModel_SM_SimpleRelay" />
               <Object Name="_copyToModel_SM_SimpleRelay" />
+            </Object>
+            <Object Name="SM_Led">
+              <Object Name="_copyFromModel_SM_Led" />
+              <Object Name="_copyToModel_SM_Led" />
             </Object>
             <Object Name="SM_ConfigManager">
               <Object Name="_copyFromModel_SM_ConfigManager" />
@@ -23471,6 +23819,8 @@ SUPER^._copyToModel_BaseProcess( model := model );
             </Object>
             <Object Name="M_SM_SimpleRelay">
             </Object>
+            <Object Name="M_SM_Led">
+            </Object>
             <Object Name="M_SM_ConfigManager">
             </Object>
             <Object Name="M_SM_ModbusRTUBus">
@@ -23591,6 +23941,8 @@ SUPER^._copyToModel_BaseProcess( model := model );
             </Object>
             <Object Name="M_SimpleRelay">
             </Object>
+            <Object Name="M_Led">
+            </Object>
             <Object Name="M_ConfigManager">
             </Object>
             <Object Name="M_ModbusRTUBus">
@@ -23604,6 +23956,8 @@ SUPER^._copyToModel_BaseProcess( model := model );
             <Object Name="M_SM_IncrementalEncoderProcesses">
             </Object>
             <Object Name="M_SM_SimpleRelayProcesses">
+            </Object>
+            <Object Name="M_SM_LedProcesses">
             </Object>
             <Object Name="M_SM_ConfigManagerProcesses">
             </Object>

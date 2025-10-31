@@ -183,7 +183,7 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">The ADC rotation 1 stage</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The ADC rotation 2 stage</xhtml>
               </documentation>
             </variable>
             <variable name="temp">
@@ -197,6 +197,110 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Temperatures measured by the front end</xhtml>
+              </documentation>
+            </variable>
+            <variable name="relayGuideCam">
+              <type><derived name="SimpleRelay" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Relay to power on/off the guiding camera</xhtml>
+              </documentation>
+            </variable>
+            <variable name="relayAcqCam">
+              <type><derived name="SimpleRelay" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Relay to power on/off the acquisition camera</xhtml>
+              </documentation>
+            </variable>
+            <variable name="relayAdc">
+              <type><derived name="SimpleRelay" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Relay to power on/off both ADC controllers</xhtml>
+              </documentation>
+            </variable>
+            <variable name="relayTT">
+              <type><derived name="SimpleRelay" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Relay to power on/off the Tip Tilt piezo driver</xhtml>
+              </documentation>
+            </variable>
+            <variable name="ledHGF">
+              <type><derived name="Led" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">HGF LED</xhtml>
+              </documentation>
+            </variable>
+            <variable name="ledHSF">
+              <type><derived name="Led" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">HSF LED</xhtml>
+              </documentation>
+            </variable>
+            <variable name="ledUGF">
+              <type><derived name="Led" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">UGF LED</xhtml>
+              </documentation>
+            </variable>
+            <variable name="ledUSF">
+              <type><derived name="Led" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">USF LED</xhtml>
               </documentation>
             </variable>
           </struct>
@@ -541,6 +645,66 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
+            <variable name="power5VOK">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="power5VOverload">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="power10VOK">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="power10VOverload">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
             <variable name="stat">
               <type><derived name="FemStatuses" /></type>
               <addData>
@@ -753,6 +917,110 @@
             </variable>
             <variable name="temp">
               <type><derived name="M_FemTemperatures" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="relayGuideCam">
+              <type><derived name="M_SimpleRelay" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="relayAcqCam">
+              <type><derived name="M_SimpleRelay" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="relayAdc">
+              <type><derived name="M_SimpleRelay" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="relayTT">
+              <type><derived name="M_SimpleRelay" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="ledHGF">
+              <type><derived name="M_Led" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="ledHSF">
+              <type><derived name="M_Led" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="ledUGF">
+              <type><derived name="M_Led" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="ledUSF">
+              <type><derived name="M_Led" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -985,6 +1253,62 @@ THIS^.parts.spare._copyToModel_SimpleTemperature( model := model.parts.spare );
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Current status description</xhtml>
               </documentation>
             </variable>
+            <variable name="power5VOK" address="%I*">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">5V power supply is OK</xhtml>
+              </documentation>
+            </variable>
+            <variable name="power5VOverload" address="%I*">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">5V power supply is overloaded</xhtml>
+              </documentation>
+            </variable>
+            <variable name="power10VOK" address="%I*">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">10V power supply is OK</xhtml>
+              </documentation>
+            </variable>
+            <variable name="power10VOverload" address="%I*">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">10V power supply is overloaded</xhtml>
+              </documentation>
+            </variable>
             <variable name="stat">
               <type><derived name="FemStatuses" /></type>
               <addData>
@@ -1116,13 +1440,21 @@ parts.adc2(
     isEnabled := (NOT(stat.init = InitializationStatus.locked)) AND (operator_ref = OperatorStatus.tech),
     simulated := config_ref.adc2Sim);
 parts.temp( config_ref := config_ref.temp );
+parts.relayGuideCam();
+parts.relayAcqCam();
+parts.relayAdc();
+parts.relayTT();
+parts.ledHGF();
+parts.ledHSF();
+parts.ledUGF();
+parts.ledUSF();
 stat.health := F_HealthStatus(
     superState := NOT(stat.init = InitializationStatus.shutdown),
-    isGood := (NOT(stat.init = InitializationStatus.initializingFailed)) AND (((parts.fs.stat.health = HealthStatus.good) OR (parts.fs.stat.health = HealthStatus.warning)) AND (((parts.cm.stat.health = HealthStatus.good) OR (parts.cm.stat.health = HealthStatus.warning)) AND (((parts.temp.stat.health = HealthStatus.good) OR (parts.temp.stat.health = HealthStatus.warning)) AND (((parts.adc1.stat.health = HealthStatus.good) OR (parts.adc1.stat.health = HealthStatus.warning)) AND ((parts.adc2.stat.health = HealthStatus.good) OR (parts.adc2.stat.health = HealthStatus.warning)))))),
+    isGood := (NOT(stat.init = InitializationStatus.initializingFailed)) AND (power5VOK AND (power10VOK AND (((parts.fs.stat.health = HealthStatus.good) OR (parts.fs.stat.health = HealthStatus.warning)) AND (((parts.cm.stat.health = HealthStatus.good) OR (parts.cm.stat.health = HealthStatus.warning)) AND (((parts.temp.stat.health = HealthStatus.good) OR (parts.temp.stat.health = HealthStatus.warning)) AND (((parts.adc1.stat.health = HealthStatus.good) OR (parts.adc1.stat.health = HealthStatus.warning)) AND ((parts.adc2.stat.health = HealthStatus.good) OR (parts.adc2.stat.health = HealthStatus.warning)))))))),
     hasWarning := (parts.fs.stat.health = HealthStatus.warning) OR ((parts.cm.stat.health = HealthStatus.warning) OR ((parts.temp.stat.health = HealthStatus.warning) OR ((parts.adc1.stat.health = HealthStatus.warning) OR (parts.adc2.stat.health = HealthStatus.warning)))));
 stat.busy := F_BusyStatus(
     superState := NOT(stat.init = InitializationStatus.shutdown),
-    isBusy := (parts.fs.stat.busy = BusyStatus.busy) OR ((parts.cm.stat.busy = BusyStatus.busy) OR ((parts.adc1.stat.busy = BusyStatus.busy) OR (parts.adc2.stat.busy = BusyStatus.busy))));
+    isBusy := (parts.fs.stat.busy = BusyStatus.busy) OR ((parts.cm.stat.busy = BusyStatus.busy) OR ((parts.adc1.stat.busy = BusyStatus.busy) OR ((parts.adc2.stat.busy = BusyStatus.busy) OR ((parts.relayGuideCam.stat.busy = BusyStatus.busy) OR ((parts.relayAcqCam.stat.busy = BusyStatus.busy) OR ((parts.relayAdc.stat.busy = BusyStatus.busy) OR ((parts.relayTT.stat.busy = BusyStatus.busy) OR ((parts.ledHGF.stat.busy = BusyStatus.busy) OR ((parts.ledHSF.stat.busy = BusyStatus.busy) OR ((parts.ledUGF.stat.busy = BusyStatus.busy) OR (parts.ledUSF.stat.busy = BusyStatus.busy))))))))))));
 proc.initialize( isEnabled := NOT(stat.init = InitializationStatus.initializing) );
 </xhtml>
           </ST>
@@ -1166,6 +1498,14 @@ THIS^.parts.cm._copyFromModel_MTS50Axis( model := model.parts.cm );
 THIS^.parts.adc1._copyFromModel_ELL14Stage( model := model.parts.adc1 );
 THIS^.parts.adc2._copyFromModel_ELL14Stage( model := model.parts.adc2 );
 THIS^.parts.temp._copyFromModel_FemTemperatures( model := model.parts.temp );
+THIS^.parts.relayGuideCam._copyFromModel_SimpleRelay( model := model.parts.relayGuideCam );
+THIS^.parts.relayAcqCam._copyFromModel_SimpleRelay( model := model.parts.relayAcqCam );
+THIS^.parts.relayAdc._copyFromModel_SimpleRelay( model := model.parts.relayAdc );
+THIS^.parts.relayTT._copyFromModel_SimpleRelay( model := model.parts.relayTT );
+THIS^.parts.ledHGF._copyFromModel_Led( model := model.parts.ledHGF );
+THIS^.parts.ledHSF._copyFromModel_Led( model := model.parts.ledHSF );
+THIS^.parts.ledUGF._copyFromModel_Led( model := model.parts.ledUGF );
+THIS^.parts.ledUSF._copyFromModel_Led( model := model.parts.ledUSF );
 THIS^.proc.initialize._copyFromModel_Process( model := model.proc.initialize );
 </xhtml>
                 </ST>
@@ -1206,12 +1546,24 @@ THIS^.proc.initialize._copyFromModel_Process( model := model.proc.initialize );
               <body>
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">model.actualStatus := THIS^.actualStatus;
+model.power5VOK := THIS^.power5VOK;
+model.power5VOverload := THIS^.power5VOverload;
+model.power10VOK := THIS^.power10VOK;
+model.power10VOverload := THIS^.power10VOverload;
 model.stat := THIS^.stat;
 THIS^.parts.fs._copyToModel_MTS50Axis( model := model.parts.fs );
 THIS^.parts.cm._copyToModel_MTS50Axis( model := model.parts.cm );
 THIS^.parts.adc1._copyToModel_ELL14Stage( model := model.parts.adc1 );
 THIS^.parts.adc2._copyToModel_ELL14Stage( model := model.parts.adc2 );
 THIS^.parts.temp._copyToModel_FemTemperatures( model := model.parts.temp );
+THIS^.parts.relayGuideCam._copyToModel_SimpleRelay( model := model.parts.relayGuideCam );
+THIS^.parts.relayAcqCam._copyToModel_SimpleRelay( model := model.parts.relayAcqCam );
+THIS^.parts.relayAdc._copyToModel_SimpleRelay( model := model.parts.relayAdc );
+THIS^.parts.relayTT._copyToModel_SimpleRelay( model := model.parts.relayTT );
+THIS^.parts.ledHGF._copyToModel_Led( model := model.parts.ledHGF );
+THIS^.parts.ledHSF._copyToModel_Led( model := model.parts.ledHSF );
+THIS^.parts.ledUGF._copyToModel_Led( model := model.parts.ledUGF );
+THIS^.parts.ledUSF._copyToModel_Led( model := model.parts.ledUSF );
 THIS^.proc.initialize._copyToModel_Process( model := model.proc.initialize );
 </xhtml>
                 </ST>

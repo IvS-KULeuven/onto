@@ -97,33 +97,36 @@
   ########################################################################################################################
   !STATEMACHINE Fem:
       references:
-          number                      : { type: t_uint8                             , comment: "Number of the unit (1-4)" }
-          operator_ref                : { type: marvel_common.OperatorStatus        , comment: "Reference to the operator (observer/tech)"}
-          activity_ref                : { type: marvel_common.ActivityStatus        , comment: "Shared activity status"}
-          services_ref                : { type: marvel_services.Services            , comment: "Shared services", expand: false}
-          config_ref                  : { type: FemConfig                           , comment: "Active configuration of the FEM" }
+          number                    : { type: t_uint8                             , comment: "Number of the unit (1-4)" }
+          operator_ref              : { type: marvel_common.OperatorStatus        , comment: "Reference to the operator (observer/tech)"}
+          activity_ref              : { type: marvel_common.ActivityStatus        , comment: "Shared activity status"}
+          services_ref              : { type: marvel_services.Services            , comment: "Shared services", expand: false}
+          config_ref                : { type: FemConfig                           , comment: "Active configuration of the FEM" }
+      variables_output:
+          power5VOK                 : { type: t_bool                              , comment: "5V power supply is OK"          , address: "%I*" }
+          power5VOverload           : { type: t_bool                              , comment: "5V power supply is overloaded"  , address: "%I*" }
+          power10VOK                : { type: t_bool                              , comment: "10V power supply is OK"         , address: "%I*" }
+          power10VOverload          : { type: t_bool                              , comment: "10V power supply is overloaded" , address: "%I*" }
       parts:
-          fs:
-              type : marvel_common.MTS50Axis
-              comment: "The fibre selector stage"
-          cm:
-              type : marvel_common.MTS50Axis
-              comment: "The calibration mirror stage"
-          adc1:
-              type : marvel_common.ELL14Stage
-              comment: "The ADC rotation 1 stage"
-          adc2:
-              type : marvel_common.ELL14Stage
-              comment: "The ADC rotation 1 stage"
-          temp:
-              type: FemTemperatures
-              comment: "Temperatures measured by the front end"
+          fs                        : { type : marvel_common.MTS50Axis            , comment: "The fibre selector stage" }
+          cm                        : { type : marvel_common.MTS50Axis            , comment: "The calibration mirror stage" }
+          adc1                      : { type : marvel_common.ELL14Stage           , comment: "The ADC rotation 1 stage" }
+          adc2                      : { type : marvel_common.ELL14Stage           , comment: "The ADC rotation 2 stage" }
+          temp                      : { type: FemTemperatures                     , comment: "Temperatures measured by the front end" }
+          relayGuideCam             : { type: marvel_common.SimpleRelay           , comment: "Relay to power on/off the guiding camera" }
+          relayAcqCam               : { type: marvel_common.SimpleRelay           , comment: "Relay to power on/off the acquisition camera" }
+          relayAdc                  : { type: marvel_common.SimpleRelay           , comment: "Relay to power on/off both ADC controllers" }
+          relayTT                   : { type: marvel_common.SimpleRelay           , comment: "Relay to power on/off the Tip Tilt piezo driver" }
+          ledHGF                    : { type: marvel_common.Led                   , comment: "HGF LED" }
+          ledHSF                    : { type: marvel_common.Led                   , comment: "HSF LED" }
+          ledUGF                    : { type: marvel_common.Led                   , comment: "UGF LED" }
+          ledUSF                    : { type: marvel_common.Led                   , comment: "USF LED" }
       stat:
-          init                       : { type: marvel_common.InitializationStatus }
-          health                     : { type: marvel_common.HealthStatus }
-          busy                       : { type: marvel_common.BusyStatus }
+          init                      : { type: marvel_common.InitializationStatus }
+          health                    : { type: marvel_common.HealthStatus }
+          busy                      : { type: marvel_common.BusyStatus }
       proc:
-          initialize                 : { type: marvel_common.Process                     , comment: "Start initializing the FEM" }
+          initialize                : { type: marvel_common.Process                     , comment: "Start initializing the FEM" }
       calls:
           initialize:
               isEnabled           : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.initializing ] ]
@@ -154,9 +157,13 @@
           health:
               superState          : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ] ]
               isGood              : !AND [ !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.initializingFailed ] ],
+                                           power5VOK,
+                                           power10VOK,
                                            !MTCS_SUMMARIZE_GOOD [ parts.fs, parts.cm, parts.temp, parts.adc1, parts.adc2 ]
                                          ]
               hasWarning          : !MTCS_SUMMARIZE_WARN [ parts.fs, parts.cm, parts.temp, parts.adc1, parts.adc2 ]
           busy:
               superState          : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ] ]
-              isBusy              : !MTCS_SUMMARIZE_BUSY [ parts.fs, parts.cm, parts.adc1, parts.adc2 ]
+              isBusy              : !MTCS_SUMMARIZE_BUSY [ parts.fs, parts.cm, parts.adc1, parts.adc2,
+                                                           parts.relayGuideCam, parts.relayAcqCam, parts.relayAdc, parts.relayTT,
+                                                           parts.ledHGF, parts.ledHSF, parts.ledUGF, parts.ledUSF ]
