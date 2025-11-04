@@ -1293,6 +1293,9 @@ class Process(FunctionBlock):
         if "variables_input" in args:
             for var_name, var in args['variables_input'].items():
                 v = Variable(var_name, self, var)
+                if is_marvel():
+                    if QUALIFIERS.OPC_UA_ACTIVATE not in v.qualifiers:
+                        v.qualifiers.append(QUALIFIERS.OPC_UA_ACTIVATE)
                 self.var_in[var_name] = v
         
         if "references" in args:

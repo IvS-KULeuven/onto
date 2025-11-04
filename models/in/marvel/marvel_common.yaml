@@ -2168,6 +2168,8 @@
     arguments:
         cmd : { type: ELL14Command, comment: "The command to be sent" }
         arg : { type: t_string,     comment: "The payload of the command to be sent (excluding '0gs' or similar header, excluding $R$N suffix). Custom commands must include the header!" }
+    variables_input:
+        reply: { type: t_string,     comment: "Raw reply by the stage" }
 
 
   ########################################################################################################################
