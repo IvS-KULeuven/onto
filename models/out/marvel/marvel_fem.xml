@@ -1440,14 +1440,14 @@ parts.adc2(
     isEnabled := (NOT(stat.init = InitializationStatus.locked)) AND (operator_ref = OperatorStatus.tech),
     simulated := config_ref.adc2Sim);
 parts.temp( config_ref := config_ref.temp );
-parts.relayGuideCam();
-parts.relayAcqCam();
-parts.relayAdc();
-parts.relayTT();
-parts.ledHGF();
-parts.ledHSF();
-parts.ledUGF();
-parts.ledUSF();
+parts.relayGuideCam( isEnabled := (NOT(stat.init = InitializationStatus.locked)) AND (operator_ref = OperatorStatus.tech) );
+parts.relayAcqCam( isEnabled := (NOT(stat.init = InitializationStatus.locked)) AND (operator_ref = OperatorStatus.tech) );
+parts.relayAdc( isEnabled := (NOT(stat.init = InitializationStatus.locked)) AND (operator_ref = OperatorStatus.tech) );
+parts.relayTT( isEnabled := (NOT(stat.init = InitializationStatus.locked)) AND (operator_ref = OperatorStatus.tech) );
+parts.ledHGF( isEnabled := (NOT(stat.init = InitializationStatus.locked)) AND (operator_ref = OperatorStatus.tech) );
+parts.ledHSF( isEnabled := (NOT(stat.init = InitializationStatus.locked)) AND (operator_ref = OperatorStatus.tech) );
+parts.ledUGF( isEnabled := (NOT(stat.init = InitializationStatus.locked)) AND (operator_ref = OperatorStatus.tech) );
+parts.ledUSF( isEnabled := (NOT(stat.init = InitializationStatus.locked)) AND (operator_ref = OperatorStatus.tech) );
 stat.health := F_HealthStatus(
     superState := NOT(stat.init = InitializationStatus.shutdown),
     isGood := (NOT(stat.init = InitializationStatus.initializingFailed)) AND (power5VOK AND (power10VOK AND (((parts.fs.stat.health = HealthStatus.good) OR (parts.fs.stat.health = HealthStatus.warning)) AND (((parts.cm.stat.health = HealthStatus.good) OR (parts.cm.stat.health = HealthStatus.warning)) AND (((parts.temp.stat.health = HealthStatus.good) OR (parts.temp.stat.health = HealthStatus.warning)) AND (((parts.adc1.stat.health = HealthStatus.good) OR (parts.adc1.stat.health = HealthStatus.warning)) AND ((parts.adc2.stat.health = HealthStatus.good) OR (parts.adc2.stat.health = HealthStatus.warning)))))))),

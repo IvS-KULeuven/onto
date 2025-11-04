@@ -1709,13 +1709,14 @@
         isEnabled       : { type: t_bool                , comment: "Is control enabled?" }
     variables_output:
         milliAmps       : { type: t_double              , comment: "Actual output in milli amps" }
+        relayOn         : { type: t_bool                , comment: "In case the wires are passing through a relay, is the relay actuated?" }
     proc:
         setMilliAmps    : { type: ChangeSetpointProcess  , comment: "Set the output in milliampere" }
     stat:
         busy            : { type: BusyStatus            , comment: "Is the Led in a busy state?" }
     calls:
-        setEnabled:
-            isEnabled   : !AND [ isEnabled, !EQ [ proc.setEnabled.stat.busy, BusyStatus.idle ] ]
+        setMilliAmps:
+            isEnabled   : !AND [ isEnabled, !EQ [ proc.setMilliAmps.stat.busy, BusyStatus.idle ] ]
         busy:
             superState  : !BOOL TRUE
             isBusy      : !EQ [ proc.setMilliAmps.stat.busy, BusyStatus.busy ]

@@ -154,6 +154,30 @@
               simulated           : config_ref.adc2Sim
           temp:
               config_ref          : config_ref.temp
+          relayGuideCam:
+              isEnabled           : !AND [ !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ], 
+                                                  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ]
+          relayAcqCam:
+              isEnabled           : !AND [ !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ], 
+                                                  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ]
+          relayAdc:
+              isEnabled           : !AND [ !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ], 
+                                                  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ]
+          relayTT:
+              isEnabled           : !AND [ !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ], 
+                                                  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ]
+          ledHGF:
+              isEnabled           : !AND [ !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ], 
+                                                  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ]
+          ledHSF:
+              isEnabled           : !AND [ !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ], 
+                                                  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ]
+          ledUGF:
+              isEnabled           : !AND [ !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ], 
+                                                  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ]
+          ledUSF:
+              isEnabled           : !AND [ !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ], 
+                                                  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ]
           health:
               superState          : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ] ]
               isGood              : !AND [ !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.initializingFailed ] ],

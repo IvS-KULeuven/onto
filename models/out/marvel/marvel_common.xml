@@ -6257,6 +6257,21 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
+            <variable name="relayOn">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
             <variable name="stat">
               <type><derived name="LedStatuses" /></type>
               <addData>
@@ -14516,6 +14531,20 @@ THIS^.proc.setEnabled._copyToModel_SetEnabledProcess( model := model.proc.setEna
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Actual output in milli amps</xhtml>
               </documentation>
             </variable>
+            <variable name="relayOn">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">In case the wires are passing through a relay, is the relay actuated?</xhtml>
+              </documentation>
+            </variable>
             <variable name="stat">
               <type><derived name="LedStatuses" /></type>
               <addData>
@@ -14553,7 +14582,7 @@ THIS^.proc.setEnabled._copyToModel_SetEnabledProcess( model := model.proc.setEna
             <xhtml xmlns="http://www.w3.org/1999/xhtml">stat.busy := F_BusyStatus(
     superState := TRUE,
     isBusy := proc.setMilliAmps.stat.busy = BusyStatus.busy);
-proc.setMilliAmps();
+proc.setMilliAmps( isEnabled := isEnabled AND (proc.setMilliAmps.stat.busy = BusyStatus.idle) );
 </xhtml>
           </ST>
         </body>
@@ -14632,6 +14661,7 @@ proc.setMilliAmps();
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">model.actualStatus := THIS^.actualStatus;
 model.milliAmps := THIS^.milliAmps;
+model.relayOn := THIS^.relayOn;
 model.stat := THIS^.stat;
 THIS^.proc.setMilliAmps._copyToModel_ChangeSetpointProcess( model := model.proc.setMilliAmps );
 </xhtml>
