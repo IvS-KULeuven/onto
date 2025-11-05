@@ -303,6 +303,32 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">USF LED</xhtml>
               </documentation>
             </variable>
+            <variable name="guideCam">
+              <type><derived name="GigECamera" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Guiding camera</xhtml>
+              </documentation>
+            </variable>
+            <variable name="fvCam">
+              <type><derived name="GigECamera" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Fibre View camera</xhtml>
+              </documentation>
+            </variable>
           </struct>
         </baseType>
       </dataType>
@@ -450,6 +476,19 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if the ADC stage 2 is simulated</xhtml>
+              </documentation>
+            </variable>
+            <variable name="psSim">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if the 10V and 5V power supplies are simulated</xhtml>
               </documentation>
             </variable>
             <variable name="temp">
@@ -1032,6 +1071,32 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
+            <variable name="guideCam">
+              <type><derived name="M_GigECamera" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="fvCam">
+              <type><derived name="M_GigECamera" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
           </struct>
         </baseType>
       </dataType>
@@ -1448,13 +1513,15 @@ parts.ledHGF( isEnabled := (NOT(stat.init = InitializationStatus.locked)) AND (o
 parts.ledHSF( isEnabled := (NOT(stat.init = InitializationStatus.locked)) AND (operator_ref = OperatorStatus.tech) );
 parts.ledUGF( isEnabled := (NOT(stat.init = InitializationStatus.locked)) AND (operator_ref = OperatorStatus.tech) );
 parts.ledUSF( isEnabled := (NOT(stat.init = InitializationStatus.locked)) AND (operator_ref = OperatorStatus.tech) );
+parts.guideCam();
+parts.fvCam();
 stat.health := F_HealthStatus(
     superState := NOT(stat.init = InitializationStatus.shutdown),
-    isGood := (NOT(stat.init = InitializationStatus.initializingFailed)) AND (power5VOK AND (power10VOK AND (((parts.fs.stat.health = HealthStatus.good) OR (parts.fs.stat.health = HealthStatus.warning)) AND (((parts.cm.stat.health = HealthStatus.good) OR (parts.cm.stat.health = HealthStatus.warning)) AND (((parts.temp.stat.health = HealthStatus.good) OR (parts.temp.stat.health = HealthStatus.warning)) AND (((parts.adc1.stat.health = HealthStatus.good) OR (parts.adc1.stat.health = HealthStatus.warning)) AND ((parts.adc2.stat.health = HealthStatus.good) OR (parts.adc2.stat.health = HealthStatus.warning)))))))),
-    hasWarning := (parts.fs.stat.health = HealthStatus.warning) OR ((parts.cm.stat.health = HealthStatus.warning) OR ((parts.temp.stat.health = HealthStatus.warning) OR ((parts.adc1.stat.health = HealthStatus.warning) OR (parts.adc2.stat.health = HealthStatus.warning)))));
+    isGood := (NOT(stat.init = InitializationStatus.initializingFailed)) AND (power5VOK AND (power10VOK AND (((parts.fs.stat.health = HealthStatus.good) OR (parts.fs.stat.health = HealthStatus.warning)) AND (((parts.cm.stat.health = HealthStatus.good) OR (parts.cm.stat.health = HealthStatus.warning)) AND (((parts.temp.stat.health = HealthStatus.good) OR (parts.temp.stat.health = HealthStatus.warning)) AND (((parts.adc1.stat.health = HealthStatus.good) OR (parts.adc1.stat.health = HealthStatus.warning)) AND (((parts.adc2.stat.health = HealthStatus.good) OR (parts.adc2.stat.health = HealthStatus.warning)) AND (((parts.guideCam.stat.health = HealthStatus.good) OR (parts.guideCam.stat.health = HealthStatus.warning)) AND ((parts.fvCam.stat.health = HealthStatus.good) OR (parts.fvCam.stat.health = HealthStatus.warning)))))))))),
+    hasWarning := (parts.fs.stat.health = HealthStatus.warning) OR ((parts.cm.stat.health = HealthStatus.warning) OR ((parts.temp.stat.health = HealthStatus.warning) OR ((parts.adc1.stat.health = HealthStatus.warning) OR ((parts.adc2.stat.health = HealthStatus.warning) OR ((parts.guideCam.stat.health = HealthStatus.warning) OR (parts.fvCam.stat.health = HealthStatus.warning)))))));
 stat.busy := F_BusyStatus(
     superState := NOT(stat.init = InitializationStatus.shutdown),
-    isBusy := (parts.fs.stat.busy = BusyStatus.busy) OR ((parts.cm.stat.busy = BusyStatus.busy) OR ((parts.adc1.stat.busy = BusyStatus.busy) OR ((parts.adc2.stat.busy = BusyStatus.busy) OR ((parts.relayGuideCam.stat.busy = BusyStatus.busy) OR ((parts.relayAcqCam.stat.busy = BusyStatus.busy) OR ((parts.relayAdc.stat.busy = BusyStatus.busy) OR ((parts.relayTT.stat.busy = BusyStatus.busy) OR ((parts.ledHGF.stat.busy = BusyStatus.busy) OR ((parts.ledHSF.stat.busy = BusyStatus.busy) OR ((parts.ledUGF.stat.busy = BusyStatus.busy) OR (parts.ledUSF.stat.busy = BusyStatus.busy))))))))))));
+    isBusy := (parts.fs.stat.busy = BusyStatus.busy) OR ((parts.cm.stat.busy = BusyStatus.busy) OR ((parts.adc1.stat.busy = BusyStatus.busy) OR ((parts.adc2.stat.busy = BusyStatus.busy) OR ((parts.relayGuideCam.stat.busy = BusyStatus.busy) OR ((parts.relayAcqCam.stat.busy = BusyStatus.busy) OR ((parts.relayAdc.stat.busy = BusyStatus.busy) OR ((parts.relayTT.stat.busy = BusyStatus.busy) OR ((parts.ledHGF.stat.busy = BusyStatus.busy) OR ((parts.ledHSF.stat.busy = BusyStatus.busy) OR ((parts.ledUGF.stat.busy = BusyStatus.busy) OR ((parts.ledUSF.stat.busy = BusyStatus.busy) OR ((parts.guideCam.stat.busy = BusyStatus.busy) OR (parts.fvCam.stat.busy = BusyStatus.busy))))))))))))));
 proc.initialize( isEnabled := NOT(stat.init = InitializationStatus.initializing) );
 </xhtml>
           </ST>
@@ -1506,6 +1573,8 @@ THIS^.parts.ledHGF._copyFromModel_Led( model := model.parts.ledHGF );
 THIS^.parts.ledHSF._copyFromModel_Led( model := model.parts.ledHSF );
 THIS^.parts.ledUGF._copyFromModel_Led( model := model.parts.ledUGF );
 THIS^.parts.ledUSF._copyFromModel_Led( model := model.parts.ledUSF );
+THIS^.parts.guideCam._copyFromModel_GigECamera( model := model.parts.guideCam );
+THIS^.parts.fvCam._copyFromModel_GigECamera( model := model.parts.fvCam );
 THIS^.proc.initialize._copyFromModel_Process( model := model.proc.initialize );
 </xhtml>
                 </ST>
@@ -1564,6 +1633,8 @@ THIS^.parts.ledHGF._copyToModel_Led( model := model.parts.ledHGF );
 THIS^.parts.ledHSF._copyToModel_Led( model := model.parts.ledHSF );
 THIS^.parts.ledUGF._copyToModel_Led( model := model.parts.ledUGF );
 THIS^.parts.ledUSF._copyToModel_Led( model := model.parts.ledUSF );
+THIS^.parts.guideCam._copyToModel_GigECamera( model := model.parts.guideCam );
+THIS^.parts.fvCam._copyToModel_GigECamera( model := model.parts.fvCam );
 THIS^.proc.initialize._copyToModel_Process( model := model.proc.initialize );
 </xhtml>
                 </ST>

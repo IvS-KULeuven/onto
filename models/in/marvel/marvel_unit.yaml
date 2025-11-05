@@ -81,6 +81,7 @@
                   operator_ref            : { type: marvel_common.OperatorStatus          , expand: false }
                   activity_ref            : { type: marvel_common.ActivityStatus          , expand: false }
                   services_ref            : { type: marvel_services.Services              , expand: false }
+                  camera_ref              : { type: marvel_common.GigECamera              , expand: false }
                   config_ref              : { type: marvel_guiding.GuidingConfig          , expand: false }
               attributes:
                   stat:
@@ -98,6 +99,10 @@
                   services_ref            : { type: marvel_services.Services              , expand: false }
                   config_ref              : { type: marvel_fem.FemConfig                  , expand: false }
               attributes:
+                  parts:
+                      attributes:
+                          fvCam           : { type: marvel_common.GigECamera              , expand: false }
+                          guideCam        : { type: marvel_common.GigECamera              , expand: false }
                   stat:
                       attributes:
                           health          : { type: marvel_common.HealthStatus }
@@ -162,6 +167,7 @@
               operator_ref        : operator_ref
               activity_ref        : activity_ref
               services_ref        : services_ref
+              camera_ref          : parts.fem.parts.guideCam
               config_ref          : config.guiding
           fem:
               number              : number

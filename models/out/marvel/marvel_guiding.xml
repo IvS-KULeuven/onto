@@ -57,25 +57,6 @@
           </data>
         </addData>
       </dataType>
-      <dataType name="GuidingParts">
-        <baseType>
-          <struct>
-            <variable name="camera">
-              <type><derived name="GigECamera" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-          </struct>
-        </baseType>
-      </dataType>
       <dataType name="GuidingProcesses">
         <baseType>
           <struct>
@@ -446,20 +427,6 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="parts">
-              <type><derived name="M_SM_GuidingParts" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
             <variable name="proc">
               <type><derived name="M_SM_GuidingProcesses" /></type>
               <addData>
@@ -560,25 +527,6 @@
           </Inheritance>
         </data>
         </addData>
-      </dataType>
-      <dataType name="M_SM_GuidingParts">
-        <baseType>
-          <struct>
-            <variable name="camera">
-              <type><derived name="M_GigECamera" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-          </struct>
-        </baseType>
       </dataType>
       <dataType name="M_SM_GuidingProcesses">
         <baseType>
@@ -768,19 +716,6 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Statuses of the state machine</xhtml>
               </documentation>
             </variable>
-            <variable name="parts">
-              <type><derived name="GuidingParts" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Parts of the state machine</xhtml>
-              </documentation>
-            </variable>
             <variable name="proc">
               <type><derived name="GuidingProcesses" /></type>
               <addData>
@@ -848,6 +783,19 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Shared services</xhtml>
               </documentation>
             </variable>
+            <variable name="camera_ref">
+              <type><derived name="GigECamera" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Shared camera instance</xhtml>
+              </documentation>
+            </variable>
             <variable name="config_ref">
               <type><derived name="GuidingConfig" /></type>
               <addData>
@@ -867,14 +815,13 @@
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">parts.camera();
-stat.health := F_HealthStatus(
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">stat.health := F_HealthStatus(
     superState := TRUE,
-    isGood := parts.camera.stat.health = HealthStatus.good,
-    hasWarning := parts.camera.stat.health = HealthStatus.warning);
+    isGood := camera_ref.stat.health = HealthStatus.good,
+    hasWarning := camera_ref.stat.health = HealthStatus.warning);
 stat.busy := F_BusyStatus(
     superState := TRUE,
-    isBusy := parts.camera.stat.busy = BusyStatus.busy);
+    isBusy := camera_ref.stat.busy = BusyStatus.busy);
 proc.initialize( isEnabled := (NOT(stat.init = InitializationStatus.locked)) AND ((stat.init = InitializationStatus.shutdown) OR ((stat.init = InitializationStatus.initializingFailed) OR (stat.init = InitializationStatus.initialized))) );
 proc.reset( isEnabled := TRUE );
 proc.acquireTarget( isEnabled := TRUE );
@@ -918,8 +865,7 @@ proc.setCameraParamSet( isEnabled := TRUE );
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.parts.camera._copyFromModel_GigECamera( model := model.parts.camera );
-THIS^.proc.initialize._copyFromModel_Process( model := model.proc.initialize );
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.proc.initialize._copyFromModel_Process( model := model.proc.initialize );
 THIS^.proc.reset._copyFromModel_Process( model := model.proc.reset );
 THIS^.proc.acquireTarget._copyFromModel_GuidingAcquireTargetProcess( model := model.proc.acquireTarget );
 THIS^.proc.startGuiding._copyFromModel_GuidingStartGuidingProcess( model := model.proc.startGuiding );
@@ -970,7 +916,6 @@ model.centroidYAbsCoo := THIS^.centroidYAbsCoo;
 model.centroidXRelCoo := THIS^.centroidXRelCoo;
 model.centroidYRelCoo := THIS^.centroidYRelCoo;
 model.stat := THIS^.stat;
-THIS^.parts.camera._copyToModel_GigECamera( model := model.parts.camera );
 THIS^.proc.initialize._copyToModel_Process( model := model.proc.initialize );
 THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
 THIS^.proc.acquireTarget._copyToModel_GuidingAcquireTargetProcess( model := model.proc.acquireTarget );
@@ -1678,8 +1623,6 @@ SUPER^._copyToModel_BaseProcess( model := model );
           </Folder>
           <Folder Name="StateMachines">
             <Folder Name="Parts">
-              <Object Name="GuidingParts">
-              </Object>
             </Folder>
             <Folder Name="Processes">
               <Object Name="GuidingProcesses">
@@ -1744,8 +1687,6 @@ SUPER^._copyToModel_BaseProcess( model := model );
             <Object Name="M_GuidingCameraParamSetProcess">
             </Object>
             <Object Name="M_Guiding">
-            </Object>
-            <Object Name="M_SM_GuidingParts">
             </Object>
             <Object Name="M_SM_GuidingProcesses">
             </Object>

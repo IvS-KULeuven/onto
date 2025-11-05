@@ -93,6 +93,7 @@
           operator_ref                    : { type: marvel_common.OperatorStatus              , comment: "Shared operator status" }
           activity_ref                    : { type: marvel_common.ActivityStatus              , comment: "Shared activity status"}
           services_ref                    : { type: marvel_services.Services                  , comment: "Shared services", expand: false}
+          camera_ref                      : { type: marvel_common.GigECamera                  , comment: "Shared camera instance"}
           config_ref                      : { type: GuidingConfig                             , comment: "Active configuration of the guiding" }
       variables_output:
           state                           : { type: GuidingStates                             , comment: "Actual guiding state" }
@@ -100,8 +101,6 @@
           centroidYAbsCoo                 : { type: t_double                                  , comment: "Centroid Y absolute coordinate" }
           centroidXRelCoo                 : { type: t_double                                  , comment: "Centroid X relative coordinate" }
           centroidYRelCoo                 : { type: t_double                                  , comment: "Centroid Y relative coordinate" }
-      parts:
-          camera                          : { type: marvel_common.GigECamera }
       stat:
           init                            : { type: marvel_common.InitializationStatus }
           health                          : { type: marvel_common.HealthStatus }
@@ -119,8 +118,6 @@
                                                    !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ],
                                                          !EQ [ stat.init, marvel_common.InitializationStatus.initializingFailed ],
                                                          !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ] ]
-          camera:
-              {}
           reset:
               isEnabled                   : !BOOL TRUE
           startAcquisition:
@@ -134,10 +131,10 @@
           # stat
           health:
               superState                  : !BOOL TRUE
-              isGood                      : !EQ [ parts.camera.stat.health, marvel_common.HealthStatus.good ]
-              hasWarning                  : !EQ [ parts.camera.stat.health, marvel_common.HealthStatus.warning ]
+              isGood                      : !EQ [ camera_ref.stat.health, marvel_common.HealthStatus.good ]
+              hasWarning                  : !EQ [ camera_ref.stat.health, marvel_common.HealthStatus.warning ]
           busy:
               superState                  : !BOOL TRUE
-              isBusy                      : !EQ [ parts.camera.stat.busy, marvel_common.BusyStatus.busy ]
+              isBusy                      : !EQ [ camera_ref.stat.busy, marvel_common.BusyStatus.busy ]
   
   

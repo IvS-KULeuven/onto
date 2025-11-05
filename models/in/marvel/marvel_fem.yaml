@@ -26,6 +26,7 @@
           cmSim     : { type: t_bool    , comment: "TRUE if the calibration mirror motor is simulated" }
           adc1Sim   : { type: t_bool    , comment: "TRUE if the ADC stage 1 is simulated" }
           adc2Sim   : { type: t_bool    , comment: "TRUE if the ADC stage 2 is simulated" }
+          psSim     : { type: t_bool    , comment: "TRUE if the 10V and 5V power supplies are simulated" }
           temp      : {                   comment: "Temperatures config" }
             
   ########################################################################################################################
@@ -121,6 +122,8 @@
           ledHSF                    : { type: marvel_common.Led                   , comment: "HSF LED" }
           ledUGF                    : { type: marvel_common.Led                   , comment: "UGF LED" }
           ledUSF                    : { type: marvel_common.Led                   , comment: "USF LED" }
+          guideCam                  : { type: marvel_common.GigECamera            , comment: "Guiding camera" }
+          fvCam                     : { type: marvel_common.GigECamera            , comment: "Fibre View camera" }
       stat:
           init                      : { type: marvel_common.InitializationStatus }
           health                    : { type: marvel_common.HealthStatus }
@@ -178,16 +181,23 @@
           ledUSF:
               isEnabled           : !AND [ !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ], 
                                                   !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ]
+          guideCam:
+              {}
+          fvCam:
+              {}
           health:
               superState          : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ] ]
               isGood              : !AND [ !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.initializingFailed ] ],
                                            power5VOK,
                                            power10VOK,
-                                           !MTCS_SUMMARIZE_GOOD [ parts.fs, parts.cm, parts.temp, parts.adc1, parts.adc2 ]
+                                           !MTCS_SUMMARIZE_GOOD [ parts.fs, parts.cm, parts.temp, parts.adc1, parts.adc2,
+                                                                  parts.guideCam, parts.fvCam ]
                                          ]
-              hasWarning          : !MTCS_SUMMARIZE_WARN [ parts.fs, parts.cm, parts.temp, parts.adc1, parts.adc2 ]
+              hasWarning          : !MTCS_SUMMARIZE_WARN [ parts.fs, parts.cm, parts.temp, parts.adc1, parts.adc2,
+                                                                  parts.guideCam, parts.fvCam ]
           busy:
               superState          : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ] ]
               isBusy              : !MTCS_SUMMARIZE_BUSY [ parts.fs, parts.cm, parts.adc1, parts.adc2,
                                                            parts.relayGuideCam, parts.relayAcqCam, parts.relayAdc, parts.relayTT,
-                                                           parts.ledHGF, parts.ledHSF, parts.ledUGF, parts.ledUSF ]
+                                                           parts.ledHGF, parts.ledHSF, parts.ledUGF, parts.ledUSF,
+                                                           parts.guideCam, parts.fvCam ]
