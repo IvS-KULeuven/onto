@@ -89,6 +89,19 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Services</xhtml>
               </documentation>
             </variable>
+            <variable name="configManager">
+              <type><derived name="ConfigManager" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The config manager (to load/save/activate configuration data)</xhtml>
+              </documentation>
+            </variable>
           </struct>
         </baseType>
       </dataType>
@@ -395,6 +408,32 @@
           </struct>
         </baseType>
       </dataType>
+      <dataType name="MarvelConfig">
+        <baseType>
+          <struct>
+            <variable name="endOfNight">
+              <type>
+                <array>
+                  <dimension lower="0" upper="10" />
+                  <baseType>
+                    <derived name="ActionConfig" />
+                  </baseType>
+                </array>
+              </type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
       <dataType name="MarvelPointProcessArgs">
         <baseType>
           <struct>
@@ -540,8 +579,45 @@
       <dataType name="M_SM_Marvel">
         <baseType>
           <struct>
+            <variable name="editableConfig">
+              <type><derived name="MarvelConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="3" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
             <variable name="actualStatus">
               <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="actions">
+              <type>
+                <array>
+                  <dimension lower="0" upper="10" />
+                  <baseType>
+                    <derived name="ActionStatus" />
+                  </baseType>
+                </array>
+              </type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -572,6 +648,21 @@
             </variable>
             <variable name="shuttersStatus">
               <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="config">
+              <type><derived name="MarvelConfig" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -754,6 +845,19 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
+            <variable name="configManager">
+              <type><derived name="M_ConfigManager" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
           </struct>
         </baseType>
       </dataType>
@@ -924,6 +1028,20 @@
       <pou name="SM_Marvel" pouType="functionBlock">
         <interface>
           <inputVars>
+            <variable name="editableConfig">
+              <type><derived name="MarvelConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="3" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Editable configuration</xhtml>
+              </documentation>
+            </variable>
           </inputVars>
           <outputVars>
             <variable name="actualStatus">
@@ -938,6 +1056,27 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Current status description</xhtml>
+              </documentation>
+            </variable>
+            <variable name="actions">
+              <type>
+                <array>
+                  <dimension lower="0" upper="10" />
+                  <baseType>
+                    <derived name="ActionStatus" />
+                  </baseType>
+                </array>
+              </type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
             <variable name="noOfFailedOperatorChanges">
@@ -966,6 +1105,20 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Summary of the domes open/closed state</xhtml>
+              </documentation>
+            </variable>
+            <variable name="config">
+              <type><derived name="MarvelConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Active configuration</xhtml>
               </documentation>
             </variable>
             <variable name="stat">
@@ -1036,6 +1189,7 @@ parts.u4(
     activity_ref := stat.activity,
     services_ref := parts.services);
 parts.services( operator_ref := stat.operator );
+parts.configManager( isEnabled := stat.operator = OperatorStatus.tech );
 stat.health := F_HealthStatus(
     superState := NOT(stat.init = InitializationStatus.shutdown),
     isGood := (NOT(stat.init = InitializationStatus.initializingFailed)) AND (((parts.u1.stat.health = HealthStatus.good) OR (parts.u1.stat.health = HealthStatus.warning)) AND (((parts.u2.stat.health = HealthStatus.good) OR (parts.u2.stat.health = HealthStatus.warning)) AND (((parts.u3.stat.health = HealthStatus.good) OR (parts.u3.stat.health = HealthStatus.warning)) AND (((parts.u4.stat.health = HealthStatus.good) OR (parts.u4.stat.health = HealthStatus.warning)) AND ((parts.services.stat.health = HealthStatus.good) OR (parts.services.stat.health = HealthStatus.warning)))))),
@@ -1103,11 +1257,13 @@ proc.stopDomes( isEnabled := parts.u1.parts.dome.parts.shutter.proc.stop.isEnabl
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.parts.u1._copyFromModel_Unit( model := model.parts.u1 );
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.editableConfig := model.editableConfig;
+THIS^.parts.u1._copyFromModel_Unit( model := model.parts.u1 );
 THIS^.parts.u2._copyFromModel_Unit( model := model.parts.u2 );
 THIS^.parts.u3._copyFromModel_Unit( model := model.parts.u3 );
 THIS^.parts.u4._copyFromModel_Unit( model := model.parts.u4 );
 THIS^.parts.services._copyFromModel_Services( model := model.parts.services );
+THIS^.parts.configManager._copyFromModel_ConfigManager( model := model.parts.configManager );
 THIS^.proc.initialize._copyFromModel_Process( model := model.proc.initialize );
 THIS^.proc.lock._copyFromModel_Process( model := model.proc.lock );
 THIS^.proc.unlock._copyFromModel_Process( model := model.proc.unlock );
@@ -1158,15 +1314,19 @@ THIS^.proc.stopDomes._copyFromModel_MarvelMultiUnitProcess( model := model.proc.
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">model.actualStatus := THIS^.actualStatus;
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">model.editableConfig := THIS^.editableConfig;
+model.actualStatus := THIS^.actualStatus;
+model.actions := THIS^.actions;
 model.noOfFailedOperatorChanges := THIS^.noOfFailedOperatorChanges;
 model.shuttersStatus := THIS^.shuttersStatus;
+model.config := THIS^.config;
 model.stat := THIS^.stat;
 THIS^.parts.u1._copyToModel_Unit( model := model.parts.u1 );
 THIS^.parts.u2._copyToModel_Unit( model := model.parts.u2 );
 THIS^.parts.u3._copyToModel_Unit( model := model.parts.u3 );
 THIS^.parts.u4._copyToModel_Unit( model := model.parts.u4 );
 THIS^.parts.services._copyToModel_Services( model := model.parts.services );
+THIS^.parts.configManager._copyToModel_ConfigManager( model := model.parts.configManager );
 THIS^.proc.initialize._copyToModel_Process( model := model.proc.initialize );
 THIS^.proc.lock._copyToModel_Process( model := model.proc.lock );
 THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
@@ -1890,6 +2050,8 @@ SUPER^._copyToModel_BaseProcess( model := model );
             </Object>
           </Folder>
           <Folder Name="Configs">
+            <Object Name="MarvelConfig">
+            </Object>
           </Folder>
           <Folder Name="Structs">
           </Folder>

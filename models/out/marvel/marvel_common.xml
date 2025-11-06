@@ -574,6 +574,93 @@
           </data>
         </addData>
       </dataType>
+      <dataType name="ActionActor">
+        <baseType>
+          <enum>
+            <values>
+              <value name="NONE" value="0" />
+              <value name="MARVEL" value="1" />
+              <value name="U" value="2" />
+              <value name="U_DOME" value="3" />
+              <value name="U_DOME_SHUTTER" value="4" />
+              <value name="U_DOME_ROTATION" value="5" />
+              <value name="U_TELESCOPE" value="6" />
+              <value name="U_TELESCOPE_COVER" value="7" />
+              <value name="U_FEM" value="8" />
+              <value name="U_FEM_PWR_GUIDECAM" value="9" />
+              <value name="U_FEM_PWR_FIBREVIEWCAM" value="10" />
+              <value name="U_FEM_PWR_ADC" value="11" />
+              <value name="U_FEM_PWR_TIPTILT" value="12" />
+              <value name="U_FEM_CALMIRROR" value="13" />
+              <value name="U_FEM_ADC1" value="14" />
+              <value name="U_FEM_ADC2" value="15" />
+              <value name="U_FEM_FIBRESELECTOR" value="16" />
+              <value name="U_FEM_LED_HGF" value="17" />
+              <value name="U_FEM_LED_UGF" value="18" />
+              <value name="U_FEM_LED_HSF" value="19" />
+              <value name="U_FEM_LED_USF" value="20" />
+              <value name="U_FEM_GUIDECAM" value="21" />
+              <value name="U_FEM_FIBREVIEWCAM" value="22" />
+            </values>
+          </enum>
+        </baseType>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+            <Attributes>
+              <Attribute Name="qualified_only" Value="" />
+            </Attributes>
+          </data>
+        </addData>
+      </dataType>
+      <dataType name="ActionStatus">
+        <baseType>
+          <enum>
+            <values>
+              <value name="IDLE" value="0" />
+              <value name="REQUESTED" value="1" />
+              <value name="BUSY" value="2" />
+              <value name="DONE_SUCCESS" value="3" />
+              <value name="DONE_ERROR" value="4" />
+              <value name="DONE_ERROR_ABORTED" value="5" />
+              <value name="DONE_ERROR_PROCESS_FAILED" value="6" />
+              <value name="DONE_ERROR_INVALID_TYPE" value="7" />
+              <value name="DONE_ERROR_INVALID_ARG" value="8" />
+              <value name="DONE_ERROR_INVALID_ACTOR" value="9" />
+            </values>
+          </enum>
+        </baseType>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+            <Attributes>
+              <Attribute Name="qualified_only" Value="" />
+            </Attributes>
+          </data>
+        </addData>
+      </dataType>
+      <dataType name="ActionKind">
+        <baseType>
+          <enum>
+            <values>
+              <value name="NONE" value="0" />
+              <value name="SLEEP" value="1" />
+              <value name="WAIT_FOR_COMPLETION" value="2" />
+              <value name="INITIALIZE" value="3" />
+              <value name="OPEN" value="4" />
+              <value name="CLOSE" value="5" />
+              <value name="STOP" value="6" />
+              <value name="MOVE_ABS" value="7" />
+              <value name="MOVE_ALT_AZ" value="8" />
+            </values>
+          </enum>
+        </baseType>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+            <Attributes>
+              <Attribute Name="qualified_only" Value="" />
+            </Attributes>
+          </data>
+        </addData>
+      </dataType>
       <dataType name="BaseAxisProcesses">
         <baseType>
           <struct>
@@ -2329,6 +2416,142 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the Nasmyth rotator is active (irrespective of its power status)</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="ActionConfig">
+        <baseType>
+          <struct>
+            <variable name="actor">
+              <type><derived name="ActionActor" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Actor of the action</xhtml>
+              </documentation>
+            </variable>
+            <variable name="kind">
+              <type><derived name="ActionKind" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Kind of the action</xhtml>
+              </documentation>
+            </variable>
+            <variable name="block">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if the action is blocking (for the next one)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="string_0">
+              <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Arg0 as a STRING</xhtml>
+              </documentation>
+            </variable>
+            <variable name="lreal_0">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Arg0 as an LREAL</xhtml>
+              </documentation>
+            </variable>
+            <variable name="lreal_1">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Arg1 as an LREAL</xhtml>
+              </documentation>
+            </variable>
+            <variable name="u1">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Apply to U1 (if relevant)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="u2">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Apply to U2 (if relevant)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="u3">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Apply to U3 (if relevant)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="u4">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Apply to U4 (if relevant)</xhtml>
               </documentation>
             </variable>
           </struct>
@@ -23491,6 +23714,12 @@ SUPER^._copyToModel_BaseProcess( model := model );
             </Object>
             <Object Name="ELL14StatusCode">
             </Object>
+            <Object Name="ActionActor">
+            </Object>
+            <Object Name="ActionStatus">
+            </Object>
+            <Object Name="ActionKind">
+            </Object>
           </Folder>
           <Folder Name="Statuses">
           </Folder>
@@ -23690,6 +23919,8 @@ SUPER^._copyToModel_BaseProcess( model := model );
             <Object Name="MeasurementConfig">
             </Object>
             <Object Name="InstrumentConfig">
+            </Object>
+            <Object Name="ActionConfig">
             </Object>
           </Folder>
           <Folder Name="Structs">

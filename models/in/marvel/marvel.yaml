@@ -18,11 +18,12 @@
 !LIBRARY marvel:
 
 
-#   ########################################################################################################################
-#   # MarvelConfig
-#   ########################################################################################################################
-#   !CONFIG MarvelConfig:
-#       items:
+  ########################################################################################################################
+  # MarvelConfig
+  ########################################################################################################################
+  !CONFIG MarvelConfig:
+      items:
+        endOfNight          : { type: !ARRAY [0, 10, marvel_common.ActionConfig] } 
 
 
   ########################################################################################################################
@@ -55,18 +56,19 @@
   # Marvel
   ########################################################################################################################
   !STATEMACHINE Marvel:
-      # variables_input_rw:
-          # editableConfig              : { type: MTCSConfig                  , comment: "Editable configuration of the MTCS" , expand: false }
-      # variables_input:
+      variables_input_rw:
+          editableConfig              : { type: MarvelConfig                  , comment: "Editable configuration" , expand: false }
+    #   variables_input:
           # remoteOperationEnable       : { type: t_bool                      , comment: "True to Remote operation enabled" }
           # mocsObservationStatus       : { type: t_bool                      , comment: "True to notify that there is an observation running" }
           # remoteConnectionStatus      : { type: t_bool                      , comment: "True to notify that there is a remote connection" }
           # remoteconnectionPortStatus  : { type: t_bool                      , comment: "True to notify that there is a connection port established" }
           
       variables_output:
-          noOfFailedOperatorChanges   : { type: t_uint16                    , comment: "How many times has a wrong password been entered?"}
-          shuttersStatus              : { type: t_string                    , comment: "Summary of the domes open/closed state" }
-      #    config                      : { type: MTCSConfig                  , comment: "Active configuration of the ServicesTiming subsystem" }
+          actions                       : { type: !ARRAY [0, 10, marvel_common.ActionStatus] } 
+          noOfFailedOperatorChanges     : { type: t_uint16                    , comment: "How many times has a wrong password been entered?"}
+          shuttersStatus                : { type: t_string                    , comment: "Summary of the domes open/closed state" }
+          config                        : { type: MarvelConfig                , comment: "Active configuration", expand: false }
       parts:
           u1:
               type : marvel_unit.Unit
@@ -219,9 +221,9 @@
                       attributes:
                           health          : { type: marvel_common.HealthStatus }
                           busy            : { type: marvel_common.BusyStatus }
-        #   configManager:
-        #       comment                     : "The config manager (to load/save/activate configuration data)"
-        #       type                        : marvel_common.ConfigManager
+          configManager:
+              comment                     : "The config manager (to load/save/activate configuration data)"
+              type                        : marvel_common.ConfigManager
       stat:
           init                        : { type: marvel_common.InitializationStatus }
           health                      : { type: marvel_common.HealthStatus }

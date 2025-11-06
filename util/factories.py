@@ -454,7 +454,7 @@ class Variable(Object):
         if 'type' in args:
             self.type = resolve(args['type'], self)
 
-            if self.expand:
+            if self.expand and not isinstance(self.type, Array):
                 for child_name, child in self.type.children.items():
                     if hasattr(child, 'type'):
                         if child.type is not None:
@@ -1554,7 +1554,7 @@ def add_models(lib: Library):
                 raise Exception(f"Adding model for variable {var.name} of {sm.name} failed, type is None!")
             elif (QUALIFIERS.OPC_UA_ACTIVATE not in var.qualifiers) and (var.name not in ["parts", "proc"]):
                 pass # skip
-            elif isinstance(var.type, Primitive) or isinstance(var.type, Enum):
+            elif isinstance(var.type, Primitive) or isinstance(var.type, Enum) or isinstance(var.type, Array):
                 v = Variable(name=var.name, parent=m)
                 if QUALIFIERS.OPC_UA_ACCESS_RW in var.qualifiers:
                     v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_RW, QUALIFIERS.HMI_SHOW]
@@ -1655,7 +1655,7 @@ def add_models(lib: Library):
         for item in fb.model.items.values():
             item: Variable
 
-            if (isinstance(item.type, Primitive) or isinstance(item.type, Enum) or isinstance(item.type, Struct) or item.name == "stat") \
+            if (isinstance(item.type, Primitive) or isinstance(item.type, Enum) or isinstance(item.type, Struct) or isinstance(item.type, Array) or item.name == "stat") \
                 and not ((item.name == "parts") or (item.name == "proc")):
 
                 add_to_copyFromModel = (QUALIFIERS.OPC_UA_ACCESS_RW in item.qualifiers) or (QUALIFIERS.OPC_UA_ACCESS_W in item.qualifiers)

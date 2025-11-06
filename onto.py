@@ -79,6 +79,7 @@ def get_loader():
     loader.add_constructor('!MTCS_SUMMARIZE_GOOD', expressions.MTCS_SUMMARIZE_GOOD_constructor)
     loader.add_constructor('!MTCS_SUMMARIZE_WARN', expressions.MTCS_SUMMARIZE_WARN_constructor)
     loader.add_constructor('!MTCS_SUMMARIZE_GOOD_OR_DISABLED', expressions.MTCS_SUMMARIZE_GOOD_OR_DISABLED_constructor)
+    loader.add_constructor('!ARRAY', expressions.ARRAY_constructor)
     return loader
 
 

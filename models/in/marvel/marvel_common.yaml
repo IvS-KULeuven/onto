@@ -2230,3 +2230,84 @@
             isEnabled       : !AND [ isEnabled, homed ]
         send:
             isEnabled       : isEnabled
+
+  ########################################################################################################################
+  # ActionActor
+  ########################################################################################################################
+  !ENUMERATION ActionActor:
+    items:
+        - NONE
+        - MARVEL
+        - U
+        - U_DOME
+        - U_DOME_SHUTTER
+        - U_DOME_ROTATION
+        - U_TELESCOPE
+        - U_TELESCOPE_COVER
+        - U_FEM
+        - U_FEM_PWR_GUIDECAM
+        - U_FEM_PWR_FIBREVIEWCAM
+        - U_FEM_PWR_ADC
+        - U_FEM_PWR_TIPTILT
+        - U_FEM_CALMIRROR
+        - U_FEM_ADC1
+        - U_FEM_ADC2
+        - U_FEM_FIBRESELECTOR
+        - U_FEM_LED_HGF
+        - U_FEM_LED_UGF
+        - U_FEM_LED_HSF
+        - U_FEM_LED_USF
+        - U_FEM_GUIDECAM
+        - U_FEM_FIBREVIEWCAM
+
+  ########################################################################################################################
+  # ActionStatus
+  ########################################################################################################################
+  !ENUMERATION ActionStatus:
+    items:
+        - IDLE
+        - REQUESTED
+        - BUSY
+        - DONE_SUCCESS
+        - DONE_ERROR
+        - DONE_ERROR_ABORTED
+        - DONE_ERROR_PROCESS_FAILED
+        - DONE_ERROR_INVALID_TYPE
+        - DONE_ERROR_INVALID_ARG
+        - DONE_ERROR_INVALID_ACTOR
+
+
+  ########################################################################################################################
+  # ActionKind
+  ########################################################################################################################
+  !ENUMERATION ActionKind:
+    items:
+        - NONE
+        - SLEEP
+        - WAIT_FOR_COMPLETION
+        - INITIALIZE
+        - OPEN
+        - CLOSE
+        - STOP
+        - MOVE_ABS
+        - MOVE_ALT_AZ
+
+
+  ########################################################################################################################
+  # ActionConfig
+  ########################################################################################################################
+  !CONFIG ActionConfig:
+    items:
+        actor       : { type: ActionActor   , comment: "Actor of the action" }
+        kind        : { type: ActionKind    , comment: "Kind of the action" }
+        block       : { type: t_bool        , comment: "TRUE if the action is blocking (for the next one)" }
+        # arg0
+        string_0    : { type: t_string      , comment: "Arg0 as a STRING" }
+        lreal_0     : { type: t_double      , comment: "Arg0 as an LREAL" }
+        # arg1
+        lreal_1     : { type: t_double      , comment: "Arg1 as an LREAL" }
+        # unit selector
+        u1          : { type: t_bool        , comment: "Apply to U1 (if relevant)" }
+        u2          : { type: t_bool        , comment: "Apply to U2 (if relevant)" }
+        u3          : { type: t_bool        , comment: "Apply to U3 (if relevant)" }
+        u4          : { type: t_bool        , comment: "Apply to U4 (if relevant)" }

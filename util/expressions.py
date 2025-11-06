@@ -417,3 +417,30 @@ def MTCS_SUMMARIZE_GOOD_OR_DISABLED_constructor(loader, node):
     values = load_binary_sequence("MTCS_SUMMARIZE_GOOD_OR_DISABLED", loader, node)
     return MTCS_SUMMARIZE_GOOD_OR_DISABLED(values)
 
+
+
+
+
+
+
+class Array(Object):
+    """
+    Representation of arrays.
+    """
+    def __init__(self, lower, upper, baseType) -> None:
+        super().__init__(None, None)
+        self.lower = lower
+        self.upper = upper
+        self.baseType = baseType
+        self.register_child("baseType", baseType)
+    
+    def resolve_children(self, context):
+        super().resolve_children(context)
+        self.baseType = self.children["baseType"]
+
+def ARRAY_constructor(loader, node):
+    values = loader.construct_sequence(node)
+    if len(values) != 3:
+        raise Exception(f"Array [{str(values)}] requires exactly 3 " \
+                        f"arguments (lower, upper, baseType), not {len(values)}!")
+    return Array(values[0], values[1], values[2])

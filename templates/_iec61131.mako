@@ -1,7 +1,7 @@
 <%namespace name="iec61131" file="_iec61131.mako"/>\
 <%! 
     import pprint
-    from util.expressions import IfThen, BinaryOperation, UnaryOperation, Primitive, Bool, String
+    from util.expressions import IfThen, BinaryOperation, UnaryOperation, Primitive, Bool, String, Array
     from util.factories import Variable, Method, Call, EnumItem, FunctionBlock, GlobalVariable, Function
     from xml.sax.saxutils import escape as sax_escape
     from util.logger import debug, info
@@ -606,7 +606,7 @@ ${node.operator.plc_symbol}(${layoutExpression(node.operand, scope)})\
 % else:
 <variable name="${node.name}">
 % endif
-${indent}  ${xml_type(node)}
+${indent}  ${xml_type(node, indent=indent + '  ')}
         % if node.initial is not None:
 ${indent}  <initialValue><simpleValue value="${escape(str(node.initial.value).upper())}" /></initialValue>
         % endif
@@ -630,9 +630,9 @@ ${indent}</variable>\
 </%def>
 
 
-<%def name="xml_type(node)">\
+<%def name="xml_type(node, indent)">\
 <% debug(f"xml_type({node})") %>\
-<type>${xml_type_contents(node)}</type>\
+<type>${xml_type_contents(node, indent)}</type>\
 </%def>
 
 
@@ -654,10 +654,21 @@ ${indent}</variable>\
   % endif
 </%def>
 
-<%def name="xml_type_contents(node)">\
+<%def name="xml_type_contents(node, indent)">\
 <% debug(f"xml_type_contents {node}") %>\
     %if node.type is not None:
+      %if isinstance(node.type, Array):
+
+${indent}  <array>
+${indent}    <dimension lower="${node.type.lower}" upper="${node.type.upper}" />
+${indent}    <baseType>
+${indent}      ${xml_type_element(node.type.baseType)}
+${indent}    </baseType>
+${indent}  </array>
+${indent}\
+      %else:
 ${xml_type_element(node.type, node.is_ref)}\
+      %endif
     %elif node.points_to_type is not None:
 <pointer><baseType>${xml_type_element(node.points_to_type)}</baseType></pointer>\
     %endif
