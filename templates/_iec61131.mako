@@ -662,7 +662,11 @@ ${indent}</variable>\
 ${indent}  <array>
 ${indent}    <dimension lower="${node.type.lower}" upper="${node.type.upper}" />
 ${indent}    <baseType>
-${indent}      ${xml_type_element(node.type.baseType)}
+        %if isinstance(node.type.type, Array):
+${xml_type_contents(node.type, indent + '    ')}
+        %else:
+${indent}      ${xml_type_element(node.type.type)}
+        %endif
 ${indent}    </baseType>
 ${indent}  </array>
 ${indent}\

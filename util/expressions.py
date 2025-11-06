@@ -427,20 +427,20 @@ class Array(Object):
     """
     Representation of arrays.
     """
-    def __init__(self, lower, upper, baseType) -> None:
+    def __init__(self, lower, upper, type) -> None:
         super().__init__(None, None)
         self.lower = lower
         self.upper = upper
-        self.baseType = baseType
-        self.register_child("baseType", baseType)
+        self.type = type
+        self.register_child("type", type)
     
     def resolve_children(self, context):
         super().resolve_children(context)
-        self.baseType = self.children["baseType"]
+        self.type = self.children["type"]
 
 def ARRAY_constructor(loader, node):
     values = loader.construct_sequence(node)
     if len(values) != 3:
         raise Exception(f"Array [{str(values)}] requires exactly 3 " \
-                        f"arguments (lower, upper, baseType), not {len(values)}!")
+                        f"arguments (lower, upper, type), not {len(values)}!")
     return Array(values[0], values[1], values[2])

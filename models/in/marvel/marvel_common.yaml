@@ -815,6 +815,13 @@
   !PROCESS Process: # default process
     extends: BaseProcess
 
+  ########################################################################################################################
+  # IdProcess
+  ########################################################################################################################
+  !PROCESS IdProcess:
+    extends: BaseProcess
+    arguments:
+        id: { type: t_string }
 
   ########################################################################################################################
   # McProcess
@@ -2311,3 +2318,37 @@
         u2          : { type: t_bool        , comment: "Apply to U2 (if relevant)" }
         u3          : { type: t_bool        , comment: "Apply to U3 (if relevant)" }
         u4          : { type: t_bool        , comment: "Apply to U4 (if relevant)" }
+
+  ########################################################################################################################
+  # Sequence15Config
+  ########################################################################################################################
+  !CONFIG Sequence15Config:
+    items:
+        id            : { type: t_string                                    , comment: "ID of the sequence" }
+        actions       : { type: !ARRAY [0, 10, marvel_common.ActionConfig]  , comment: "Actions" }
+
+  ########################################################################################################################
+  # Sequence15Status
+  ########################################################################################################################
+  !STRUCT Sequence15Status:
+    items:
+        actions       : { type: !ARRAY [0, 10, ActionStatus ] }
+
+
+  ########################################################################################################################
+  # Sequencer
+  ########################################################################################################################
+  !STATEMACHINE Sequencer:
+    variables_hidden:
+        isEnabled           : { type: t_bool                        , comment: "Is control enabled?" }
+    stat:
+        health              : { type: HealthStatus                  , comment: "Is the sequencer in a healthy state?" }
+        busy                : { type: BusyStatus                    , comment: "Is the sequencer in a busy state?" }
+    proc:
+        start               : { type: IdProcess                     , comment: "Start running the actions" }
+        stop                : { type: IdProcess                     , comment: "Stop running the actions" }
+    calls:
+        start:
+            isEnabled       : isEnabled
+        stop:
+            isEnabled       : isEnabled

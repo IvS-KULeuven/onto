@@ -23,7 +23,21 @@
   ########################################################################################################################
   !CONFIG MarvelConfig:
       items:
-        endOfNight          : { type: !ARRAY [0, 10, marvel_common.ActionConfig] } 
+        seqs               : { type: !ARRAY [0, 5, marvel_common.Sequence15Config ]  , comment: "Sequences"}
+
+        # endOfNight          : { type: !ARRAY [0, 10, marvel_common.ActionConfig]    , comment: "End of night actions"}
+        # endOfNightName      : { type: t_string  , initial: "'EndOfNight'"           , comment: "End of night actions name"}
+        # # free-to-choose actions
+        # actions0            : { type: !ARRAY [0, 10, marvel_common.ActionConfig]    , comment: "Free-to-choose actions set 0"}
+        # actions1            : { type: !ARRAY [0, 10, marvel_common.ActionConfig]    , comment: "Free-to-choose actions set 1"}
+        # actions2            : { type: !ARRAY [0, 10, marvel_common.ActionConfig]    , comment: "Free-to-choose actions set 2"}
+        # actions3            : { type: !ARRAY [0, 10, marvel_common.ActionConfig]    , comment: "Free-to-choose actions set 3"}
+        # actions4            : { type: !ARRAY [0, 10, marvel_common.ActionConfig]    , comment: "Free-to-choose actions set 4"}
+        # actions0Name        : { type: t_string                                      , comment: "Free-to-choose actions set 0 name"}
+        # actions1Name        : { type: t_string                                      , comment: "Free-to-choose actions set 1 name"}
+        # actions2Name        : { type: t_string                                      , comment: "Free-to-choose actions set 2 name"}
+        # actions3Name        : { type: t_string                                      , comment: "Free-to-choose actions set 3 name"}
+        # actions4Name        : { type: t_string                                      , comment: "Free-to-choose actions set 4 name"}
 
 
   ########################################################################################################################
@@ -65,7 +79,7 @@
           # remoteconnectionPortStatus  : { type: t_bool                      , comment: "True to notify that there is a connection port established" }
           
       variables_output:
-          actions                       : { type: !ARRAY [0, 10, marvel_common.ActionStatus] } 
+          seqs                          : { type: !ARRAY [0, 5, marvel_common.Sequence15Status ] , comment: "Sequences" }
           noOfFailedOperatorChanges     : { type: t_uint16                    , comment: "How many times has a wrong password been entered?"}
           shuttersStatus                : { type: t_string                    , comment: "Summary of the domes open/closed state" }
           config                        : { type: MarvelConfig                , comment: "Active configuration", expand: false }
@@ -221,6 +235,9 @@
                       attributes:
                           health          : { type: marvel_common.HealthStatus }
                           busy            : { type: marvel_common.BusyStatus }
+          sequencer:
+              comment                     : "The main sequencer of Marvel"
+              type                        : marvel_common.Sequencer
           configManager:
               comment                     : "The config manager (to load/save/activate configuration data)"
               type                        : marvel_common.ConfigManager
@@ -308,6 +325,8 @@
               services_ref        : parts.services
           configManager:
              isEnabled            : !EQ [ stat.operator, marvel_common.OperatorStatus.tech ]
+          sequencer:
+             isEnabled            : !BOOL TRUE
           emergencyClose:
               isEnabled           : !NOT [ !AND [ !EQ [ parts.u1.parts.dome.parts.shutter.stat.aperture, marvel_common.ApertureStatus.closed ],
                                                   !EQ [ parts.u1.parts.dome.parts.shutter.stat.aperture, marvel_common.ApertureStatus.closed ] ,
@@ -316,11 +335,11 @@
           health:
               superState          : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ] ]
               isGood              : !AND [ !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.initializingFailed ] ],
-                                           !MTCS_SUMMARIZE_GOOD [ parts.u1, parts.u2, parts.u3, parts.u4, parts.services ] ]
-              hasWarning          : !MTCS_SUMMARIZE_WARN [ parts.u1, parts.u2, parts.u3, parts.u4, parts.services ]
+                                           !MTCS_SUMMARIZE_GOOD [ parts.u1, parts.u2, parts.u3, parts.u4, parts.services, parts.configManager, parts.sequencer ] ]
+              hasWarning          : !MTCS_SUMMARIZE_WARN [ parts.u1, parts.u2, parts.u3, parts.u4, parts.services, parts.configManager, parts.sequencer ]
           busy:
               superState          : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ] ]
-              isBusy              : !MTCS_SUMMARIZE_BUSY [ parts.u1, parts.u2, parts.u3, parts.u4, parts.services ]
+              isBusy              : !MTCS_SUMMARIZE_BUSY [ parts.u1, parts.u2, parts.u3, parts.u4, parts.services, parts.configManager, parts.sequencer ]
           shuttersHealth:
               superState          : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ] ]
               isGood              : !MTCS_SUMMARIZE_GOOD [ parts.u1.parts.dome.parts.shutter, 
