@@ -2520,6 +2520,7 @@
             </variable>
             <variable name="block">
               <type><BOOL /></type>
+              <initialValue><simpleValue value="TRUE" /></initialValue>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -2572,6 +2573,7 @@
             </variable>
             <variable name="u1">
               <type><BOOL /></type>
+              <initialValue><simpleValue value="TRUE" /></initialValue>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -2585,6 +2587,7 @@
             </variable>
             <variable name="u2">
               <type><BOOL /></type>
+              <initialValue><simpleValue value="TRUE" /></initialValue>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -2598,6 +2601,7 @@
             </variable>
             <variable name="u3">
               <type><BOOL /></type>
+              <initialValue><simpleValue value="TRUE" /></initialValue>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -2611,6 +2615,7 @@
             </variable>
             <variable name="u4">
               <type><BOOL /></type>
+              <initialValue><simpleValue value="TRUE" /></initialValue>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -2625,7 +2630,7 @@
           </struct>
         </baseType>
       </dataType>
-      <dataType name="Sequence15Config">
+      <dataType name="SequenceConfig_M">
         <baseType>
           <struct>
             <variable name="id">
@@ -2644,7 +2649,7 @@
             <variable name="actions">
               <type>
                 <array>
-                  <dimension lower="0" upper="10" />
+                  <dimension lower="0" upper="14" />
                   <baseType>
                     <derived name="ActionConfig" />
                   </baseType>
@@ -3799,13 +3804,13 @@
           </struct>
         </baseType>
       </dataType>
-      <dataType name="Sequence15Status">
+      <dataType name="SequenceStatus_M">
         <baseType>
           <struct>
             <variable name="actions">
               <type>
                 <array>
-                  <dimension lower="0" upper="10" />
+                  <dimension lower="0" upper="14" />
                   <baseType>
                     <derived name="ActionStatus" />
                   </baseType>
@@ -24572,7 +24577,7 @@ SUPER^._copyToModel_BaseProcess( model := model );
             </Object>
             <Object Name="ActionConfig">
             </Object>
-            <Object Name="Sequence15Config">
+            <Object Name="SequenceConfig_M">
             </Object>
           </Folder>
           <Folder Name="Structs">
@@ -24612,7 +24617,7 @@ SUPER^._copyToModel_BaseProcess( model := model );
             </Object>
             <Object Name="MercatorMeteoExchange">
             </Object>
-            <Object Name="Sequence15Status">
+            <Object Name="SequenceStatus_M">
             </Object>
           </Folder>
           <Folder Name="Processes">
