@@ -76,9 +76,11 @@
       items:
           name:
               type: t_string
+              len: 16
               comment: "The name of the position (e.g. 'PARK')"
           position:
               type: t_double
+              len: 16
               comment: "Azimuth in degrees"
   
   
@@ -103,7 +105,7 @@
   !CONFIG DomeShutterConfig:
     typeOf: DomeConfig.shutter
     items:
-      remotePlcAmsId           : { type: t_string                       , comment: "AMS ID of the shutter PLC" }
+      remotePlcAmsId           : { type: t_string, len: 23              , comment: "AMS ID of the shutter PLC" }
       remotePlcTimeoutSeconds  : { type: t_double                       , comment: "The timeout of a single ADS command."}
       simulated                : { type: t_bool,  initial: !BOOL "TRUE" , comment: "TRUE if the shutter is simulated, FALSE if not"}
       openingTimeoutSeconds    : { type: t_double                       , comment: "The opening timeout."}
@@ -143,7 +145,7 @@
   !PROCESS DomeMoveKnownPositionProcess:
       extends: marvel_common.BaseProcess
       arguments:
-          name        : { type: t_string  , comment: "Name of the position to move to"}
+          name        : { type: t_string  , len: 16, comment: "Name of the position to move to"}
   
 
   ########################################################################################################################
@@ -170,7 +172,7 @@
     variables_output:
       isTrackingTelescope         : { type: t_bool                                , comment: "True if the dome is tracking the telescope" }
       isAtKnownPosition           : { type: t_bool                                , comment: "True if the dome is at a known position" }
-      actualKnownPositionName     : { type: t_string                              , comment: "Name of the known position if isAtKnownPosition is True" }
+      actualKnownPositionName     : { type: t_string, len: 16                     , comment: "Name of the known position if isAtKnownPosition is True" }
       telescopeDistance           : { type: marvel_common.AngularPosition         , comment: "Distance to the telescope azi"}
       contactor                   : { type: t_bool                                , comment: "Contactor relay signal", address: "%Q*" }
     parts:
@@ -362,11 +364,11 @@
       # temperature sensor
       temperature              : { type: marvel_common.Temperature           , comment: "The measured temperature" }
       temperatureHealthStatus  : { type: marvel_common.HealthStatus          , comment: "The temperature sensor health" }
-      temperatureActualStatus  : { type: t_string                          , comment: "The temperature sensor status as a string" }
+      temperatureActualStatus  : { type: t_string  , len: 16                 , comment: "The temperature sensor status as a string" }
       # humidity sensor
       humidity                 : { type: marvel_common.Fraction              , comment: "The measured humidity" }
       humidityHealthStatus     : { type: marvel_common.HealthStatus          , comment: "The humidity sensor health" }
-      humidityActualStatus     : { type: t_string                          , comment: "The humidity sensor status as a string" }
+      humidityActualStatus     : { type: t_string  , len: 16                 , comment: "The humidity sensor status as a string" }
       humidityLimit            : { type: marvel_common.Fraction              , comment: "The humidity limit" }
     references:
       init_ref                 : { type: marvel_common.InitializationStatus    , comment: "Dome initialization status (initialized/initializing/...)"}

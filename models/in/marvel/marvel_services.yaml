@@ -305,9 +305,9 @@
           # actual source
           source                        : { type: ServicesTimingTimeSource        , comment: "Actually used source"}
           utcFractionOfDay              : { type: t_double                        , comment: "UTC as a fraction of a day" }
-          utcDateString                 : { type: t_string                        , comment: "Actual UTC date as a string of format YYYY-MM-DD" }
-          utcTimeString                 : { type: t_string                        , comment: "Actual UTC time as a string of format HH-MM-SS.SSS" }
-          lastUpdatedString             : { type: t_string                        , comment: "Time of the last NTP update" }
+          utcDateString                 : { type: t_string, len: 12               , comment: "Actual UTC date as a string of format YYYY-MM-DD" }
+          utcTimeString                 : { type: t_string, len: 14               , comment: "Actual UTC time as a string of format HH-MM-SS.SSS" }
+          lastUpdatedString             : { type: t_string, len: 20               , comment: "Time of the last NTP update" }
           # System to NTP offset
           sysToNtpOffset                : { type: t_double                        , comment: "Offset in seconds: system time - NTP time" }
           # JD, GMST
@@ -379,14 +379,14 @@
           unknownDataOrangeTimeout    : { type: t_bool                            , comment: "True if the data is unknown longer than the orange alert timeout" }
           unknownDataRedTimeout       : { type: t_bool                            , comment: "True if the data is unknown longer than the red alert timeout" }
       local:
-          weatherStatus               : { type: t_string                          , comment: "Weather status as a string" }
+          weatherStatus               : { type: t_string, len: 30                 , comment: "Weather status as a string" }
           mercatorConnected           : { type: t_bool                            , comment: "True if MTCS is connected" }
           # other
           durationOK                  : { type: marvel_common.Duration              , comment: "Duration that the meteo is OK" }
           heating                     : { type: t_bool                            , comment: "Heating or not?"}
-          windDirectionMinimumString  : { type: t_string                          , comment: "Average direction of the wind as a string"}
-          windDirectionAverageString  : { type: t_string                          , comment: "Average direction of the wind as a string"}
-          windDirectionMaximumString  : { type: t_string                          , comment: "Average direction of the wind as a string"}
+          windDirectionMinimumString  : { type: t_string, len: 6                  , comment: "Average direction of the wind as a string"}
+          windDirectionAverageString  : { type: t_string, len: 6                  , comment: "Average direction of the wind as a string"}
+          windDirectionMaximumString  : { type: t_string, len: 6                  , comment: "Average direction of the wind as a string"}
           # simulation
           fromSimulation              : { type: marvel_common.MercatorMeteoExchange , comment: "The simulated data (if config.simulated is TRUE)", expand: false }
       parts:

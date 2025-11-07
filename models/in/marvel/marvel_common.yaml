@@ -821,7 +821,7 @@
   !PROCESS IdProcess:
     extends: BaseProcess
     arguments:
-        id: { type: t_string }
+        id: { type: t_string , len: 20 }
 
   ########################################################################################################################
   # McProcess
@@ -1237,8 +1237,8 @@
   ########################################################################################################################
   !STATEMACHINE EtherCatDevice:
     variables_input:
-        id       : { type: t_string , comment: "Label according to the electric schemes" }
-        typeId   : { type: t_string , comment: "Manufacturer type, e.g. EL1008" }
+        id       : { type: t_string , len: 15, comment: "Label according to the electric schemes" }
+        typeId   : { type: t_string , len: 15, comment: "Manufacturer type, e.g. EL1008" }
         wcState  : { type: t_bool   , comment: "0 = Data valid, 1 = Data invalid" , address: "%I*" }
         infoData : { type: t_uint16 , comment: "EtherCAT state"                   , address: "%I*" }
     stat:
@@ -1747,7 +1747,7 @@
     extends: BaseProcess
     arguments:
         state       : { type: OperatorStates    , comment: "New operator state (e.g. OBSERVER, TECH, ...)" }
-        password    : { type: t_string          , comment: "Password (only sometimes required, e.g. to go from OBSERVER to TECH)"  }
+        password    : { type: t_string          , len: 12, comment: "Password (only sometimes required, e.g. to go from OBSERVER to TECH)"  }
 
 
 
@@ -1766,7 +1766,7 @@
   !PROCESS ReadXmlProcess:
     extends: BaseXmlDataSrvProcess
     arguments:
-        filePath : { type: t_string, comment: "Full path of the filename to read" }
+        filePath : { type: t_string, len: 30, comment: "Full path of the filename to read" }
 
   ########################################################################################################################
   # WriteXmlProcess
@@ -1774,7 +1774,7 @@
   !PROCESS WriteXmlProcess:
     extends: BaseXmlDataSrvProcess
     arguments:
-        filePath : { type: t_string, comment: "Full path of the filename to write" }
+        filePath : { type: t_string, len: 30, comment: "Full path of the filename to write" }
 
 
   ########################################################################################################################
@@ -1790,7 +1790,7 @@
     variables_hidden:
         isEnabled       : { type: t_bool                        , comment: "Is control enabled?" }
     variables_input:
-        filePath        : { type: t_string                      , comment: "Full path of the config filename" }
+        filePath        : { type: t_string, len: 30             , comment: "Full path of the config filename" }
     proc:
         save            : { type: WriteXmlProcess       , comment: "Save the currently active config to disk" }
         load            : { type: ReadXmlProcess        , comment: "Load the config from disk" }
@@ -1814,52 +1814,6 @@
             isEnabled   : !AND [ isEnabled, !EQ [ stat.busy, BusyStatus.idle ] ]
         activate:
             isEnabled   : !AND [ isEnabled, !EQ [ stat.busy, BusyStatus.idle ] ]
-
-
-  ########################################################################################################################
-  # MTCSInstrumentConfig
-  ########################################################################################################################
-  !CONFIG InstrumentConfig:
-    items:
-        name:
-            type: t_string
-            comment: "Name of the instrument"
-        doInitialThermalFocus:
-            type: t_bool
-            comment: "Do a thermal focus when changing to this instrument"
-        changeM3:
-            type: t_bool
-            comment: "Change M3 to the focal station with the same name as the instrument"
-        moveKnownPosition:
-            type: t_bool
-            comment: "Move the axes to a known position (defined by the 'moveKnownPositionName' config entry) before turning off derotators"
-        moveKnownPositionName:
-            type: t_string
-            comment: "Name of the known position to move to before turning off derotators"
-        powerOnRoc:
-            type: t_bool
-            comment: "Turn on the Cassegrain derotator if needed"
-        powerOffRoc:
-            type: t_bool
-            comment: "Turn off the Cassegrain derotator if needed"
-        powerOnRon:
-            type: t_bool
-            comment: "Turn on the Nasmyth B derotator if needed"
-        powerOffRon:
-            type: t_bool
-            comment: "Turn off the Nasmyth B derotator if needed"
-        loadPointingModel:
-            type: t_bool
-            comment: "Load the pointing model with the same name as the instrument"
-        rocActive:
-            type: t_bool
-            comment: "True if the Cassegrain rotator is active (irrespective of its power status)."
-        ronActive:
-            type: t_bool
-            comment: "True if the Nasmyth rotator is active (irrespective of its power status)"
-
-
-
 
 
   ########################################################################################################################
@@ -2174,10 +2128,10 @@
   !PROCESS Ell114SendProcess:
     extends: BaseProcess
     arguments:
-        cmd : { type: ELL14Command, comment: "The command to be sent" }
-        arg : { type: t_string,     comment: "The payload of the command to be sent (excluding '0gs' or similar header, excluding $R$N suffix). Custom commands must include the header!" }
+        cmd : { type: ELL14Command       , comment: "The command to be sent" }
+        arg : { type: t_string,  len: 10 , comment: "The payload of the command to be sent (excluding '0gs' or similar header, excluding $R$N suffix). Custom commands must include the header!" }
     variables_input:
-        reply: { type: t_string,     comment: "Raw reply by the stage" }
+        reply: { type: t_string, len: 20 , comment: "Raw reply by the stage" }
 
 
   ########################################################################################################################
@@ -2309,7 +2263,7 @@
         kind        : { type: ActionKind    , comment: "Kind of the action" }
         block       : { type: t_bool        , initial: !BOOL TRUE, comment: "TRUE if the action is blocking (for the next one)" }
         # arg0
-        string_0    : { type: t_string      , comment: "Arg0 as a STRING" }
+        string_0    : { type: t_string      , len: 16, comment: "Arg0 as a STRING" }
         lreal_0     : { type: t_double      , comment: "Arg0 as an LREAL" }
         # arg1
         lreal_1     : { type: t_double      , comment: "Arg1 as an LREAL" }
@@ -2324,7 +2278,7 @@
   ########################################################################################################################
   !CONFIG SequenceConfig_M: # Medium (add XS, S, L, XL, ... as needed)
     items:
-        id            : { type: t_string                                    , comment: "ID of the sequence" }
+        id            : { type: t_string  , len: 16                         , comment: "ID of the sequence" }
         actions       : { type: !ARRAY [0, 14, marvel_common.ActionConfig]  , comment: "Actions" }
 
   ########################################################################################################################

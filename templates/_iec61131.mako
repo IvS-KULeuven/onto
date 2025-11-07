@@ -636,12 +636,16 @@ ${indent}</variable>\
 </%def>
 
 
-<%def name="xml_type_element(node, is_ref=False)">\
+<%def name="xml_type_element(node, is_ref=False, len=None)">\
 <% debug(f"xml_type_element({node})") %>\
   %if node.plc_symbol is not None:
 ##for some reason, STRING must be rendered lowercase, otherwise you cannot import the file in TwinCAT !!!
     % if node.plc_symbol == 'STRING':
+      % if len is not None:
+<string length="${len}" />\
+      % else:
 <string />\
+      % endif
     % elif node.plc_symbol == 'BIT':
 <derived name="BIT" />\
     % else:
@@ -665,13 +669,13 @@ ${indent}    <baseType>
         %if isinstance(node.type.type, Array):
 ${xml_type_contents(node.type, indent + '    ')}
         %else:
-${indent}      ${xml_type_element(node.type.type)}
+${indent}      ${xml_type_element(node.type.type, False, node.len)}
         %endif
 ${indent}    </baseType>
 ${indent}  </array>
 ${indent}\
       %else:
-${xml_type_element(node.type, node.is_ref)}\
+${xml_type_element(node.type, node.is_ref, node.len)}\
       %endif
     %elif node.points_to_type is not None:
 <pointer><baseType>${xml_type_element(node.points_to_type)}</baseType></pointer>\

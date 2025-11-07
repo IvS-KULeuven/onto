@@ -81,7 +81,7 @@
       variables_output:
           seqs                          : { type: !ARRAY [0, 5, marvel_common.SequenceStatus_M ] , comment: "Sequences" }
           noOfFailedOperatorChanges     : { type: t_uint16                    , comment: "How many times has a wrong password been entered?"}
-          shuttersStatus                : { type: t_string                    , comment: "Summary of the domes open/closed state" }
+          shuttersStatus                : { type: t_string, len: 16           , comment: "Summary of the domes open/closed state" }
           config                        : { type: MarvelConfig                , comment: "Active configuration", expand: false }
       parts:
           u1:

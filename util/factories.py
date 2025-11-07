@@ -428,7 +428,7 @@ class Variable(Object):
         check_args(f"Variable {name}", args, 
                    ["type", "expand", "initial", "comment",
                     "pointsToType", "attributes", "qualifiers", "arguments",
-                    "address", "isRef"])
+                    "address", "isRef", "len"])
         
         self.raw_args = args
         
@@ -447,6 +447,7 @@ class Variable(Object):
         self.copyFrom = None
         self.methods = {}
         self.is_ref = False
+        self.len = None
 
         if 'expand' in args:
             self.expand = args['expand']
@@ -507,6 +508,9 @@ class Variable(Object):
         
         if 'isRef' in args:
             self.is_ref = str(args['isRef']).upper() == "TRUE"
+
+        if 'len' in args:
+            self.len = args['len']
 
             
 
@@ -846,6 +850,8 @@ class Statemachine(FunctionBlock):
             v = Variable("actualStatus", self)
             v.type = PRIMITIVE_TYPES.t_string
             v.comment = "Current status description"
+            if is_marvel():
+                v.len = 50
             v.qualifiers = [QUALIFIERS.OPC_UA_ACTIVATE, QUALIFIERS.OPC_UA_ACCESS_R]
             self.var_out['actualStatus'] = v
             self.vars['actualStatus'] = v

@@ -24,6 +24,7 @@
       items:
           name:
               type: t_string
+              len: 16
               comment: "The name of the position (e.g. 'PARK')"
           allowObserver:
               type: t_bool
@@ -67,9 +68,9 @@
   !CONFIG TelescopeConfig:
       items:
           simulated                   : { type: t_bool                    , comment: "TRUE if the telescope is simulated, FALSE if not"}
-          alpacaTelHost               : { type: t_string                  , comment: "ASA TEL alpaca server IP address or hostname" }
+          alpacaTelHost               : { type: t_string, len: 16         , comment: "ASA TEL alpaca server IP address or hostname" }  # XXX.XXX.XXX.XXX
           alpacaTelPort               : { type: t_uint16                  , comment: "ASA TEL alpaca server port number" }
-          alpacaAccHost               : { type: t_string                  , comment: "ASA ACC alpaca server IP address or hostname" }
+          alpacaAccHost               : { type: t_string, len: 16         , comment: "ASA ACC alpaca server IP address or hostname" }
           alpacaAccPort               : { type: t_uint16                  , comment: "ASA ACC alpaca server port number" }
           alpacaLoopTime              : { type: t_uint16                  , comment: "Alpaca loop time in ms" }
           slewingTimeout              : { type: t_uint16                  , comment: "Slewing timeout in s during pointing (both alpha/delta and azi/ele)" }
@@ -82,8 +83,8 @@
           initPower                   : { type: t_bool                    , comment: "TRUE if the power should be on or off at the end of the initialization"}
           initWaitForAsa              : { type: t_uint16                  , comment: "Seconds to wait for the connection to the ASA PC during initialization"}
           nasmythSelectionTime        : { type: t_uint16                  , comment: "Time in seconds to wait for M3 to switch positions (because no status can be retrieved from ASA)" }
-          nasmythPort1Name            : { type: t_string                  , comment: "Name of Nasmyth port 1" }
-          nasmythPort2Name            : { type: t_string                  , comment: "Name of Nasmyth port 2" }
+          nasmythPort1Name            : { type: t_string, len: 20         , comment: "Name of Nasmyth port 1" }
+          nasmythPort2Name            : { type: t_string, len: 20         , comment: "Name of Nasmyth port 2" }
 
 
   ########################################################################################################################
@@ -138,7 +139,7 @@
   !PROCESS TelescopeMoveKnownPositionProcess:
       extends: marvel_common.BaseProcess
       arguments:
-          name        : { type: t_string                        , comment: "Name of the position to move to"}
+          name        : { type: t_string, len: 16                             , comment: "Name of the position to move to"}
   
 
   ########################################################################################################################
@@ -185,11 +186,11 @@
           actAzi                          : { type: marvel_common.AngularPosition             , comment: "The actual azimuth" , expand: false}
           actEle                          : { type: marvel_common.AngularPosition             , comment: "The actual elevation" , expand: false }
           actNasmythPort                  : { type: TelescopeNasmythPort                      , comment: "Actual Nasmyth port" }
-          actNasmythPortName              : { type: t_string                                  , comment: "Actual Nasmyth port name" }
+          actNasmythPortName              : { type: t_string, len: 20                         , comment: "Actual Nasmyth port name" }
           targetAlpha                     : { type: marvel_common.AngularPosition             , comment: "The target alpha coordinate (Right Ascention)" , expand: false}
           targetDelta                     : { type: marvel_common.AngularPosition             , comment: "The target delta coordinate (Declination)" , expand: false }
           isAtKnownPosition               : { type: t_bool                                  , comment: "True if the telescope is at a known position" }
-          actualKnownPositionName         : { type: t_string                                , comment: "Name of the known position if isAtKnownPosition is True" }
+          actualKnownPositionName         : { type: t_string, len: 16                       , comment: "Name of the known position if isAtKnownPosition is True" }
       stat:
           init                            : { type: marvel_common.InitializationStatus }
           health                          : { type: marvel_common.HealthStatus }
