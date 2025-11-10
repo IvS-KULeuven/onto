@@ -427,11 +427,12 @@ class Array(Object):
     """
     Representation of arrays.
     """
-    def __init__(self, lower, upper, type) -> None:
+    def __init__(self, lower, upper, type, len=None) -> None:
         super().__init__(None, None)
         self.lower = lower
         self.upper = upper
         self.type = type
+        self.len = None
         self.register_child("type", type)
     
     def resolve_children(self, context):
@@ -440,7 +441,10 @@ class Array(Object):
 
 def ARRAY_constructor(loader, node):
     values = loader.construct_sequence(node)
-    if len(values) != 3:
-        raise Exception(f"Array [{str(values)}] requires exactly 3 " \
-                        f"arguments (lower, upper, type), not {len(values)}!")
-    return Array(values[0], values[1], values[2])
+    if len(values) == 3:
+        return Array(values[0], values[1], values[2])
+    elif len(values) == 4:
+        return Array(values[0], values[1], values[2], values[3])
+    else:
+        raise Exception(f"Array [{str(values)}] requires exactly 3 or 4 " \
+                        f"arguments (lower, upper, type [,len]), not {len(values)}!")

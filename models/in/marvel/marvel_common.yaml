@@ -821,7 +821,7 @@
   !PROCESS IdProcess:
     extends: BaseProcess
     arguments:
-        id: { type: t_string , len: 20 }
+        id: { type: t_string , len: 30 }
 
   ########################################################################################################################
   # McProcess
@@ -2220,6 +2220,7 @@
         - U_FEM_LED_USF
         - U_FEM_GUIDECAM
         - U_FEM_FIBREVIEWCAM
+        - _END_
 
   ########################################################################################################################
   # ActionStatus
@@ -2255,39 +2256,84 @@
 
 
   ########################################################################################################################
-  # ActionConfig
+  # ActionStringConfig
   ########################################################################################################################
-  !CONFIG ActionConfig:
+  !CONFIG ActionStringConfig:
     items:
-        actor       : { type: ActionActor   , comment: "Actor of the action" }
-        kind        : { type: ActionKind    , comment: "Kind of the action" }
-        block       : { type: t_bool        , initial: !BOOL TRUE, comment: "TRUE if the action is blocking (for the next one)" }
+        actor       : { type: t_string      , len: 50               , comment: "Actor of the action" }
+        kind        : { type: t_string      , len: 50               , comment: "Kind of the action" }
+        block       : { type: t_bool        , initial: !BOOL TRUE   , comment: "TRUE if the action is blocking (for the next one)" }
         # arg0
-        string_0    : { type: t_string      , len: 16, comment: "Arg0 as a STRING" }
-        lreal_0     : { type: t_double      , comment: "Arg0 as an LREAL" }
+        string_0    : { type: t_string      , len: 30               , comment: "Arg0 as a STRING" }
+        lreal_0     : { type: t_double                              , comment: "Arg0 as an LREAL" }
         # arg1
-        lreal_1     : { type: t_double      , comment: "Arg1 as an LREAL" }
+        lreal_1     : { type: t_double                              , comment: "Arg1 as an LREAL" }
         # unit selector
-        u1          : { type: t_bool        , initial: !BOOL TRUE, comment: "Apply to U1 (if relevant)" }
-        u2          : { type: t_bool        , initial: !BOOL TRUE, comment: "Apply to U2 (if relevant)" }
-        u3          : { type: t_bool        , initial: !BOOL TRUE, comment: "Apply to U3 (if relevant)" }
-        u4          : { type: t_bool        , initial: !BOOL TRUE, comment: "Apply to U4 (if relevant)" }
+        u1          : { type: t_bool        , initial: !BOOL TRUE   , comment: "Apply to U1 (if relevant)" }
+        u2          : { type: t_bool        , initial: !BOOL TRUE   , comment: "Apply to U2 (if relevant)" }
+        u3          : { type: t_bool        , initial: !BOOL TRUE   , comment: "Apply to U3 (if relevant)" }
+        u4          : { type: t_bool        , initial: !BOOL TRUE   , comment: "Apply to U4 (if relevant)" }
+
 
   ########################################################################################################################
-  # Sequence15Config
+  # ActionStringConfig
   ########################################################################################################################
-  !CONFIG SequenceConfig_M: # Medium (add XS, S, L, XL, ... as needed)
+  !CONFIG ActionEnumConfig:
     items:
-        id            : { type: t_string  , len: 16                         , comment: "ID of the sequence" }
-        actions       : { type: !ARRAY [0, 14, marvel_common.ActionConfig]  , comment: "Actions" }
+        actor       : { type: ActionActor                           , comment: "Actor of the action" }
+        kind        : { type: ActionKind                            , comment: "Kind of the action" }
+        block       : { type: t_bool        , initial: !BOOL TRUE   , comment: "TRUE if the action is blocking (for the next one)" }
+        # arg0
+        string_0    : { type: t_string      , len: 30               , comment: "Arg0 as a STRING" }
+        lreal_0     : { type: t_double                              , comment: "Arg0 as an LREAL" }
+        # arg1
+        lreal_1     : { type: t_double                              , comment: "Arg1 as an LREAL" }
+        # unit selector
+        u1          : { type: t_bool        , initial: !BOOL TRUE   , comment: "Apply to U1 (if relevant)" }
+        u2          : { type: t_bool        , initial: !BOOL TRUE   , comment: "Apply to U2 (if relevant)" }
+        u3          : { type: t_bool        , initial: !BOOL TRUE   , comment: "Apply to U3 (if relevant)" }
+        u4          : { type: t_bool        , initial: !BOOL TRUE   , comment: "Apply to U4 (if relevant)" }
+
 
   ########################################################################################################################
-  # Sequence15Status
+  # SequenceStringConfig_M
+  ########################################################################################################################
+  !CONFIG SequenceStringConfig_M: # Medium (add XS, S, L, XL, ... as needed)
+    items:
+        id            : { type: t_string  , len: 16                               , comment: "ID of the sequence" }
+        actions       : { type: !ARRAY [0, 29, marvel_common.ActionStringConfig]  , comment: "Actions" , expand: false }
+
+
+  ########################################################################################################################
+  # SequenceEnumConfig_M
+  ########################################################################################################################
+  !CONFIG SequenceEnumConfig_M: # Medium (add XS, S, L, XL, ... as needed)
+    items:
+        id            : { type: t_string  , len: 16                             , comment: "ID of the sequence" }
+        actions       : { type: !ARRAY [0, 29, marvel_common.ActionEnumConfig]  , comment: "Actions" , expand: false }
+
+  ########################################################################################################################
+  # SequenceStatus_M
   ########################################################################################################################
   !STRUCT SequenceStatus_M:
     items:
-        actions       : { type: !ARRAY [0, 14, ActionStatus ] }
+        actions       : { type: !ARRAY [0, 29, ActionStatus ] , expand: false }
 
+
+  ########################################################################################################################
+  # SequencerStringConfig
+  ########################################################################################################################
+  !STRUCT SequencerStringConfig:
+    items:
+        seqs: { type: !ARRAY [0, 50, marvel_common.SequenceStringConfig_M ]  , comment: "Sequences to be serialized to disk (with strings instead of enums)", expand: false }
+
+
+  ########################################################################################################################
+  # SequencerEnumConfig
+  ########################################################################################################################
+  !STRUCT SequencerEnumConfig:
+    items:
+        seqs: { type: !ARRAY [0, 50, marvel_common.SequenceEnumConfig_M ]  , comment: "Sequences after deserialization (with enums instead of strings)", expand: false }
 
   ########################################################################################################################
   # Sequencer
@@ -2295,14 +2341,51 @@
   !STATEMACHINE Sequencer:
     variables_hidden:
         isEnabled           : { type: t_bool                        , comment: "Is control enabled?" }
+    local_hidden:
+        isError             : { type: t_bool                        , comment: "Error present" }
+        isBusy              : { type: t_bool                        , comment: "Error present" }
+        config              : { type: SequencerStringConfig         , comment: "Active config to be serialized to/from" , expand: false }
+        editableConfig      : { type: SequencerStringConfig         , comment: "Editable config to be serialized to/from" , expand: false }
+    variables_input_rw:
+        editableSeq         : { type: SequenceEnumConfig_M          , comment: "Editable sequence" , expand: false }
+    variables_output:
+        seq                 : { type: SequenceEnumConfig_M          , comment: "Currently selected sequence" , expand: false }
+        ids                 : { type: !ARRAY [0, 50, t_string, 30 ] , comment: "Available IDs", expand: false }
+    parts: 
+        configManager       : { type: ConfigManager                 , comment: "The config manager (to load/save/activate configuration data)" }   
     stat:
         health              : { type: HealthStatus                  , comment: "Is the sequencer in a healthy state?" }
         busy                : { type: BusyStatus                    , comment: "Is the sequencer in a busy state?" }
     proc:
-        start               : { type: IdProcess                     , comment: "Start running the actions" }
-        stop                : { type: IdProcess                     , comment: "Stop running the actions" }
+        select              : { type: IdProcess                     , comment: "Select the given sequence for editing" } 
+        start               : { type: IdProcess                     , comment: "Select the given sequence (leave empty for current) + start running it" }
+        stop                : { type: Process                       , comment: "Stop the running sequence" }
+        apply               : { type: Process                       , comment: "Apply changes (activate, save, reload)" }
+        # activate            : { type: Process                       , comment: "Activate the configuration (from editable to active)" }
+        # save                : { type: Process                       , comment: "Save the configuration to disk" }
     calls:
+        configManager:
+            isEnabled       : !AND [ isEnabled, !EQ [ stat.busy, BusyStatus.idle ] ]
+        select:
+            isEnabled       : !AND [ isEnabled, !EQ [ stat.busy, BusyStatus.idle ] ]
         start:
-            isEnabled       : isEnabled
+            isEnabled       : !AND [ isEnabled, !EQ [ stat.busy, BusyStatus.idle ] ]
         stop:
-            isEnabled       : isEnabled
+            isEnabled       : !AND [ isEnabled, !EQ [ stat.busy, BusyStatus.busy ] ]
+        apply:
+            isEnabled       : !AND [ isEnabled, !EQ [ stat.busy, BusyStatus.idle ] ]
+        health:
+            superState      : !BOOL TRUE
+            hasWarning      : !BOOL FALSE
+            isGood          : !NOT [ isError ]
+        busy:
+            superState      : !BOOL TRUE
+            isBusy          : !OR [ isBusy, 
+                                    !EQ [ parts.configManager.stat.busy, BusyStatus.busy ] ]
+
+
+
+        # activate:
+            # isEnabled       : !AND [ isEnabled, !EQ [ stat.busy, BusyStatus.idle ] ]
+        # save:
+            # isEnabled       : !AND [ isEnabled, !EQ [ stat.busy, BusyStatus.idle ] ]

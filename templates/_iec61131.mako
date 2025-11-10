@@ -669,7 +669,7 @@ ${indent}    <baseType>
         %if isinstance(node.type.type, Array):
 ${xml_type_contents(node.type, indent + '    ')}
         %else:
-${indent}      ${xml_type_element(node.type.type, False, node.len)}
+${indent}      ${xml_type_element(node.type.type, False, node.type.len)}
         %endif
 ${indent}    </baseType>
 ${indent}  </array>

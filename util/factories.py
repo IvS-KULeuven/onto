@@ -817,7 +817,7 @@ class Statemachine(FunctionBlock):
         
         check_args("Statemachine", args,
                    ["variables_input", "variables_input_rw", "variables_hidden", "variables_output",
-                    "statuses", "parts", "local", "local_rw", "methods", "calls", statuses(),
+                    "statuses", "parts", "local", "local_rw", "local_hidden", "methods", "calls", statuses(),
                     "disabled_calls", "updates", "references", "extends",
                     processes(), "constraints", "render", "typeOf"])
         
@@ -1040,6 +1040,15 @@ class Statemachine(FunctionBlock):
                 self.var_local[var_name] = v
                 self.vars[var_name] = v
 
+        # add the local_hidden variables
+        if "local_hidden" in args:
+            for var_name, var in args['local_hidden'].items():
+                v = Variable(var_name, self, var)
+                if QUALIFIERS.OPC_UA_DEACTIVATE not in v.qualifiers:
+                    v.qualifiers.append(QUALIFIERS.OPC_UA_DEACTIVATE)
+                self.var_local[var_name] = v
+                self.vars[var_name] = v
+        
         # add the local variables
         if "local" in args:
             for var_name, var in args['local'].items():

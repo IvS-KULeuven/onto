@@ -661,6 +661,25 @@
           </data>
         </addData>
       </dataType>
+      <dataType name="SequencerParts">
+        <baseType>
+          <struct>
+            <variable name="configManager">
+              <type><derived name="ConfigManager" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The config manager (to load/save/activate configuration data)</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
       <dataType name="BaseAxisProcesses">
         <baseType>
           <struct>
@@ -1193,6 +1212,19 @@
       <dataType name="SequencerProcesses">
         <baseType>
           <struct>
+            <variable name="select">
+              <type><derived name="IdProcess" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Select the given sequence for editing</xhtml>
+              </documentation>
+            </variable>
             <variable name="start">
               <type><derived name="IdProcess" /></type>
               <addData>
@@ -1203,11 +1235,11 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Start running the actions</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Select the given sequence (leave empty for current) + start running it</xhtml>
               </documentation>
             </variable>
             <variable name="stop">
-              <type><derived name="IdProcess" /></type>
+              <type><derived name="Process" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1216,7 +1248,20 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Stop running the actions</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Stop the running sequence</xhtml>
+              </documentation>
+            </variable>
+            <variable name="apply">
+              <type><derived name="Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Apply changes (activate, save, reload)</xhtml>
               </documentation>
             </variable>
           </struct>
@@ -2327,11 +2372,11 @@
           </struct>
         </baseType>
       </dataType>
-      <dataType name="ActionConfig">
+      <dataType name="ActionStringConfig">
         <baseType>
           <struct>
             <variable name="actor">
-              <type><derived name="ActionActor" /></type>
+              <type><string length="50" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -2344,7 +2389,7 @@
               </documentation>
             </variable>
             <variable name="kind">
-              <type><derived name="ActionKind" /></type>
+              <type><string length="50" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -2371,7 +2416,7 @@
               </documentation>
             </variable>
             <variable name="string_0">
-              <type><string length="16" /></type>
+              <type><string length="30" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -2468,7 +2513,148 @@
           </struct>
         </baseType>
       </dataType>
-      <dataType name="SequenceConfig_M">
+      <dataType name="ActionEnumConfig">
+        <baseType>
+          <struct>
+            <variable name="actor">
+              <type><derived name="ActionActor" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Actor of the action</xhtml>
+              </documentation>
+            </variable>
+            <variable name="kind">
+              <type><derived name="ActionKind" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Kind of the action</xhtml>
+              </documentation>
+            </variable>
+            <variable name="block">
+              <type><BOOL /></type>
+              <initialValue><simpleValue value="TRUE" /></initialValue>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if the action is blocking (for the next one)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="string_0">
+              <type><string length="30" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Arg0 as a STRING</xhtml>
+              </documentation>
+            </variable>
+            <variable name="lreal_0">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Arg0 as an LREAL</xhtml>
+              </documentation>
+            </variable>
+            <variable name="lreal_1">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Arg1 as an LREAL</xhtml>
+              </documentation>
+            </variable>
+            <variable name="u1">
+              <type><BOOL /></type>
+              <initialValue><simpleValue value="TRUE" /></initialValue>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Apply to U1 (if relevant)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="u2">
+              <type><BOOL /></type>
+              <initialValue><simpleValue value="TRUE" /></initialValue>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Apply to U2 (if relevant)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="u3">
+              <type><BOOL /></type>
+              <initialValue><simpleValue value="TRUE" /></initialValue>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Apply to U3 (if relevant)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="u4">
+              <type><BOOL /></type>
+              <initialValue><simpleValue value="TRUE" /></initialValue>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Apply to U4 (if relevant)</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="SequenceStringConfig_M">
         <baseType>
           <struct>
             <variable name="id">
@@ -2487,9 +2673,48 @@
             <variable name="actions">
               <type>
                 <array>
-                  <dimension lower="0" upper="14" />
+                  <dimension lower="0" upper="29" />
                   <baseType>
-                    <derived name="ActionConfig" />
+                    <derived name="ActionStringConfig" />
+                  </baseType>
+                </array>
+              </type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Actions</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="SequenceEnumConfig_M">
+        <baseType>
+          <struct>
+            <variable name="id">
+              <type><string length="16" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">ID of the sequence</xhtml>
+              </documentation>
+            </variable>
+            <variable name="actions">
+              <type>
+                <array>
+                  <dimension lower="0" upper="29" />
+                  <baseType>
+                    <derived name="ActionEnumConfig" />
                   </baseType>
                 </array>
               </type>
@@ -3648,7 +3873,7 @@
             <variable name="actions">
               <type>
                 <array>
-                  <dimension lower="0" upper="14" />
+                  <dimension lower="0" upper="29" />
                   <baseType>
                     <derived name="ActionStatus" />
                   </baseType>
@@ -3668,11 +3893,63 @@
           </struct>
         </baseType>
       </dataType>
+      <dataType name="SequencerStringConfig">
+        <baseType>
+          <struct>
+            <variable name="seqs">
+              <type>
+                <array>
+                  <dimension lower="0" upper="50" />
+                  <baseType>
+                    <derived name="SequenceStringConfig_M" />
+                  </baseType>
+                </array>
+              </type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Sequences to be serialized to disk (with strings instead of enums)</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="SequencerEnumConfig">
+        <baseType>
+          <struct>
+            <variable name="seqs">
+              <type>
+                <array>
+                  <dimension lower="0" upper="50" />
+                  <baseType>
+                    <derived name="SequenceEnumConfig_M" />
+                  </baseType>
+                </array>
+              </type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Sequences after deserialization (with enums instead of strings)</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
       <dataType name="IdProcessArgs">
         <baseType>
           <struct>
             <variable name="id">
-              <type><string length="20" /></type>
+              <type><string length="30" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -7065,6 +7342,21 @@
       <dataType name="M_SM_Sequencer">
         <baseType>
           <struct>
+            <variable name="editableSeq">
+              <type><derived name="SequenceEnumConfig_M" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="3" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
             <variable name="actualStatus">
               <type><string /></type>
               <addData>
@@ -7080,8 +7372,59 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
+            <variable name="seq">
+              <type><derived name="SequenceEnumConfig_M" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="ids">
+              <type>
+                <array>
+                  <dimension lower="0" upper="50" />
+                  <baseType>
+                    <string />
+                  </baseType>
+                </array>
+              </type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
             <variable name="stat">
               <type><derived name="SequencerStatuses" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="parts">
+              <type><derived name="M_SM_SequencerParts" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -8699,9 +9042,41 @@
           </struct>
         </baseType>
       </dataType>
+      <dataType name="M_SM_SequencerParts">
+        <baseType>
+          <struct>
+            <variable name="configManager">
+              <type><derived name="M_ConfigManager" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
       <dataType name="M_SM_SequencerProcesses">
         <baseType>
           <struct>
+            <variable name="select">
+              <type><derived name="M_IdProcess" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
             <variable name="start">
               <type><derived name="M_IdProcess" /></type>
               <addData>
@@ -8716,7 +9091,20 @@
               </documentation>
             </variable>
             <variable name="stop">
-              <type><derived name="M_IdProcess" /></type>
+              <type><derived name="M_Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="apply">
+              <type><derived name="M_Process" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -9665,7 +10053,7 @@ END_IF;
           </inputVars>
           <outputVars>
             <variable name="actualStatus">
-              <type><string length="30" /></type>
+              <type><string length="50" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -9955,7 +10343,7 @@ SUPER^._copyToModel_BaseProcess( model := model );
           </inputVars>
           <outputVars>
             <variable name="actualStatus">
-              <type><string length="30" /></type>
+              <type><string length="50" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -10364,7 +10752,7 @@ SUPER^._copyToModel_BaseProcess( model := model );
           </inputVars>
           <outputVars>
             <variable name="actualStatus">
-              <type><string length="30" /></type>
+              <type><string length="50" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -11112,7 +11500,7 @@ SUPER^._copyToModel_BaseAxis( model := model );
           </inputVars>
           <outputVars>
             <variable name="actualStatus">
-              <type><string length="30" /></type>
+              <type><string length="50" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -11378,7 +11766,7 @@ model.stat := THIS^.stat;
           </inputVars>
           <outputVars>
             <variable name="actualStatus">
-              <type><string length="30" /></type>
+              <type><string length="50" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -11794,7 +12182,7 @@ THIS^.proc.disableCounterResetC._copyToModel_Process( model := model.proc.disabl
           </inputVars>
           <outputVars>
             <variable name="actualStatus">
-              <type><string length="30" /></type>
+              <type><string length="50" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -11982,7 +12370,7 @@ model.stat := THIS^.stat;
           </inputVars>
           <outputVars>
             <variable name="actualStatus">
-              <type><string length="30" /></type>
+              <type><string length="50" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -12140,7 +12528,7 @@ model.stat := THIS^.stat;
           </inputVars>
           <outputVars>
             <variable name="actualStatus">
-              <type><string length="30" /></type>
+              <type><string length="50" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -12323,7 +12711,7 @@ model.stat := THIS^.stat;
           </inputVars>
           <outputVars>
             <variable name="actualStatus">
-              <type><string length="30" /></type>
+              <type><string length="50" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -12531,7 +12919,7 @@ model.stat := THIS^.stat;
           </inputVars>
           <outputVars>
             <variable name="actualStatus">
-              <type><string length="30" /></type>
+              <type><string length="50" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -12779,7 +13167,7 @@ model.stat := THIS^.stat;
           </inputVars>
           <outputVars>
             <variable name="actualStatus">
-              <type><string length="30" /></type>
+              <type><string length="50" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -13027,7 +13415,7 @@ model.stat := THIS^.stat;
           </inputVars>
           <outputVars>
             <variable name="actualStatus">
-              <type><string length="30" /></type>
+              <type><string length="50" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -13275,7 +13663,7 @@ model.stat := THIS^.stat;
           </inputVars>
           <outputVars>
             <variable name="actualStatus">
-              <type><string length="30" /></type>
+              <type><string length="50" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -13509,7 +13897,7 @@ model.stat := THIS^.stat;
           </inputVars>
           <outputVars>
             <variable name="actualStatus">
-              <type><string length="30" /></type>
+              <type><string length="50" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -13707,7 +14095,7 @@ model.stat := THIS^.stat;
           </inputVars>
           <outputVars>
             <variable name="actualStatus">
-              <type><string length="30" /></type>
+              <type><string length="50" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -13981,7 +14369,7 @@ model.stat := THIS^.stat;
           </inputVars>
           <outputVars>
             <variable name="actualStatus">
-              <type><string length="30" /></type>
+              <type><string length="50" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -14225,7 +14613,7 @@ model.stat := THIS^.stat;
           </inputVars>
           <outputVars>
             <variable name="actualStatus">
-              <type><string length="30" /></type>
+              <type><string length="50" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -14469,7 +14857,7 @@ model.stat := THIS^.stat;
           </inputVars>
           <outputVars>
             <variable name="actualStatus">
-              <type><string length="30" /></type>
+              <type><string length="50" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -14660,7 +15048,7 @@ model.stat := THIS^.stat;
           </inputVars>
           <outputVars>
             <variable name="actualStatus">
-              <type><string length="30" /></type>
+              <type><string length="50" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -14831,7 +15219,7 @@ THIS^.proc.setEnabled._copyToModel_SetEnabledProcess( model := model.proc.setEna
           </inputVars>
           <outputVars>
             <variable name="actualStatus">
-              <type><string length="30" /></type>
+              <type><string length="50" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -15031,7 +15419,7 @@ THIS^.proc.setMilliAmps._copyToModel_ChangeSetpointProcess( model := model.proc.
           </inputVars>
           <outputVars>
             <variable name="actualStatus">
-              <type><string length="30" /></type>
+              <type><string length="50" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -15213,7 +15601,7 @@ THIS^.proc.activate._copyToModel_ActivateProcess( model := model.proc.activate )
           </inputVars>
           <outputVars>
             <variable name="actualStatus">
-              <type><string length="30" /></type>
+              <type><string length="50" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -15397,7 +15785,7 @@ THIS^.proc.diagnostics._copyToModel_ModbusRTUBusDiagnosticsProcess( model := mod
           </inputVars>
           <outputVars>
             <variable name="actualStatus">
-              <type><string length="30" /></type>
+              <type><string length="50" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -15804,7 +16192,7 @@ THIS^.proc.pulseTrigger._copyToModel_GigECameraPulseTrigger( model := model.proc
           </inputVars>
           <outputVars>
             <variable name="actualStatus">
-              <type><string length="30" /></type>
+              <type><string length="50" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -16015,6 +16403,20 @@ THIS^.proc.send._copyToModel_Ell114SendProcess( model := model.proc.send );
       <pou name="SM_Sequencer" pouType="functionBlock">
         <interface>
           <inputVars>
+            <variable name="editableSeq">
+              <type><derived name="SequenceEnumConfig_M" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="3" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Editable sequence</xhtml>
+              </documentation>
+            </variable>
             <variable name="isEnabled">
               <type><BOOL /></type>
               <addData>
@@ -16031,7 +16433,7 @@ THIS^.proc.send._copyToModel_Ell114SendProcess( model := model.proc.send );
           </inputVars>
           <outputVars>
             <variable name="actualStatus">
-              <type><string length="30" /></type>
+              <type><string length="50" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -16042,6 +16444,41 @@ THIS^.proc.send._copyToModel_Ell114SendProcess( model := model.proc.send );
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Current status description</xhtml>
+              </documentation>
+            </variable>
+            <variable name="seq">
+              <type><derived name="SequenceEnumConfig_M" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Currently selected sequence</xhtml>
+              </documentation>
+            </variable>
+            <variable name="ids">
+              <type>
+                <array>
+                  <dimension lower="0" upper="50" />
+                  <baseType>
+                    <string />
+                  </baseType>
+                </array>
+              </type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Available IDs</xhtml>
               </documentation>
             </variable>
             <variable name="stat">
@@ -16055,6 +16492,19 @@ THIS^.proc.send._copyToModel_Ell114SendProcess( model := model.proc.send );
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Statuses of the state machine</xhtml>
+              </documentation>
+            </variable>
+            <variable name="parts">
+              <type><derived name="SequencerParts" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Parts of the state machine</xhtml>
               </documentation>
             </variable>
             <variable name="proc">
@@ -16074,12 +16524,74 @@ THIS^.proc.send._copyToModel_Ell114SendProcess( model := model.proc.send );
           <inOutVars>
           </inOutVars>
           <localVars>
+            <variable name="isError">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Error present</xhtml>
+              </documentation>
+            </variable>
+            <variable name="isBusy">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Error present</xhtml>
+              </documentation>
+            </variable>
+            <variable name="config">
+              <type><derived name="SequencerStringConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Active config to be serialized to/from</xhtml>
+              </documentation>
+            </variable>
+            <variable name="editableConfig">
+              <type><derived name="SequencerStringConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Editable config to be serialized to/from</xhtml>
+              </documentation>
+            </variable>
           </localVars>
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">proc.start( isEnabled := isEnabled );
-proc.stop( isEnabled := isEnabled );
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">parts.configManager( isEnabled := isEnabled AND (stat.busy = BusyStatus.idle) );
+stat.health := F_HealthStatus(
+    superState := TRUE,
+    hasWarning := FALSE,
+    isGood := NOT(isError));
+stat.busy := F_BusyStatus(
+    superState := TRUE,
+    isBusy := isBusy OR (parts.configManager.stat.busy = BusyStatus.busy));
+proc.select( isEnabled := isEnabled AND (stat.busy = BusyStatus.idle) );
+proc.start( isEnabled := isEnabled AND (stat.busy = BusyStatus.idle) );
+proc.stop( isEnabled := isEnabled AND (stat.busy = BusyStatus.busy) );
+proc.apply( isEnabled := isEnabled AND (stat.busy = BusyStatus.idle) );
 </xhtml>
           </ST>
         </body>
@@ -16117,8 +16629,12 @@ proc.stop( isEnabled := isEnabled );
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.proc.start._copyFromModel_IdProcess( model := model.proc.start );
-THIS^.proc.stop._copyFromModel_IdProcess( model := model.proc.stop );
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.editableSeq := model.editableSeq;
+THIS^.parts.configManager._copyFromModel_ConfigManager( model := model.parts.configManager );
+THIS^.proc.select._copyFromModel_IdProcess( model := model.proc.select );
+THIS^.proc.start._copyFromModel_IdProcess( model := model.proc.start );
+THIS^.proc.stop._copyFromModel_Process( model := model.proc.stop );
+THIS^.proc.apply._copyFromModel_Process( model := model.proc.apply );
 </xhtml>
                 </ST>
               </body>
@@ -16157,10 +16673,16 @@ THIS^.proc.stop._copyFromModel_IdProcess( model := model.proc.stop );
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">model.actualStatus := THIS^.actualStatus;
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">model.editableSeq := THIS^.editableSeq;
+model.actualStatus := THIS^.actualStatus;
+model.seq := THIS^.seq;
+model.ids := THIS^.ids;
 model.stat := THIS^.stat;
+THIS^.parts.configManager._copyToModel_ConfigManager( model := model.parts.configManager );
+THIS^.proc.select._copyToModel_IdProcess( model := model.proc.select );
 THIS^.proc.start._copyToModel_IdProcess( model := model.proc.start );
-THIS^.proc.stop._copyToModel_IdProcess( model := model.proc.stop );
+THIS^.proc.stop._copyToModel_Process( model := model.proc.stop );
+THIS^.proc.apply._copyToModel_Process( model := model.proc.apply );
 </xhtml>
                 </ST>
               </body>
@@ -16400,7 +16922,7 @@ SUPER^();
               <interface>
                 <inputVars>
                   <variable name="id">
-                    <type><string length="20" /></type>
+                    <type><string length="30" /></type>
                     <addData>
                       <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                         <Attributes>
@@ -16442,7 +16964,7 @@ THIS^.stat.health := HealthStatus.good;
                 <returnType><derived name="RequestResults" /></returnType>
                 <inputVars>
                   <variable name="id">
-                    <type><string length="20" /></type>
+                    <type><string length="30" /></type>
                     <addData>
                       <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                         <Attributes>
@@ -24210,6 +24732,8 @@ SUPER^._copyToModel_BaseProcess( model := model );
           </Folder>
           <Folder Name="StateMachines">
             <Folder Name="Parts">
+              <Object Name="SequencerParts">
+              </Object>
             </Folder>
             <Folder Name="Processes">
               <Object Name="BaseAxisProcesses">
@@ -24411,9 +24935,13 @@ SUPER^._copyToModel_BaseProcess( model := model );
             </Object>
             <Object Name="MeasurementConfig">
             </Object>
-            <Object Name="ActionConfig">
+            <Object Name="ActionStringConfig">
             </Object>
-            <Object Name="SequenceConfig_M">
+            <Object Name="ActionEnumConfig">
+            </Object>
+            <Object Name="SequenceStringConfig_M">
+            </Object>
+            <Object Name="SequenceEnumConfig_M">
             </Object>
           </Folder>
           <Folder Name="Structs">
@@ -24454,6 +24982,10 @@ SUPER^._copyToModel_BaseProcess( model := model );
             <Object Name="MercatorMeteoExchange">
             </Object>
             <Object Name="SequenceStatus_M">
+            </Object>
+            <Object Name="SequencerStringConfig">
+            </Object>
+            <Object Name="SequencerEnumConfig">
             </Object>
           </Folder>
           <Folder Name="Processes">
@@ -24952,6 +25484,8 @@ SUPER^._copyToModel_BaseProcess( model := model );
             <Object Name="M_SM_GigECameraProcesses">
             </Object>
             <Object Name="M_SM_ELL14StageProcesses">
+            </Object>
+            <Object Name="M_SM_SequencerParts">
             </Object>
             <Object Name="M_SM_SequencerProcesses">
             </Object>

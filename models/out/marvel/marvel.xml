@@ -424,15 +424,8 @@
       <dataType name="MarvelConfig">
         <baseType>
           <struct>
-            <variable name="seqs">
-              <type>
-                <array>
-                  <dimension lower="0" upper="5" />
-                  <baseType>
-                    <derived name="SequenceConfig_M" />
-                  </baseType>
-                </array>
-              </type>
+            <variable name="endOfNightId">
+              <type><string length="30" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -441,7 +434,7 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Sequences</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">ID of the EndOfNight procedure0 </xhtml>
               </documentation>
             </variable>
           </struct>
@@ -609,28 +602,6 @@
             </variable>
             <variable name="actualStatus">
               <type><string /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-            <variable name="seqs">
-              <type>
-                <array>
-                  <dimension lower="0" upper="5" />
-                  <baseType>
-                    <derived name="SequenceStatus_M" />
-                  </baseType>
-                </array>
-              </type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1071,7 +1042,7 @@
           </inputVars>
           <outputVars>
             <variable name="actualStatus">
-              <type><string length="30" /></type>
+              <type><string length="50" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1082,27 +1053,6 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Current status description</xhtml>
-              </documentation>
-            </variable>
-            <variable name="seqs">
-              <type>
-                <array>
-                  <dimension lower="0" upper="5" />
-                  <baseType>
-                    <derived name="SequenceStatus_M" />
-                  </baseType>
-                </array>
-              </type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Sequences</xhtml>
               </documentation>
             </variable>
             <variable name="noOfFailedOperatorChanges">
@@ -1344,7 +1294,6 @@ THIS^.proc.stopDomes._copyFromModel_MarvelMultiUnitProcess( model := model.proc.
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">model.editableConfig := THIS^.editableConfig;
 model.actualStatus := THIS^.actualStatus;
-model.seqs := THIS^.seqs;
 model.noOfFailedOperatorChanges := THIS^.noOfFailedOperatorChanges;
 model.shuttersStatus := THIS^.shuttersStatus;
 model.config := THIS^.config;
