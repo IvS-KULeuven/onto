@@ -579,28 +579,30 @@
           <enum>
             <values>
               <value name="NONE" value="0" />
-              <value name="MARVEL" value="1" />
-              <value name="U" value="2" />
-              <value name="U_DOME" value="3" />
-              <value name="U_DOME_SHUTTER" value="4" />
-              <value name="U_DOME_ROTATION" value="5" />
-              <value name="U_TELESCOPE" value="6" />
-              <value name="U_TELESCOPE_COVER" value="7" />
-              <value name="U_FEM" value="8" />
-              <value name="U_FEM_PWR_GUIDECAM" value="9" />
-              <value name="U_FEM_PWR_FIBREVIEWCAM" value="10" />
-              <value name="U_FEM_PWR_ADC" value="11" />
-              <value name="U_FEM_PWR_TIPTILT" value="12" />
-              <value name="U_FEM_CALMIRROR" value="13" />
-              <value name="U_FEM_ADC1" value="14" />
-              <value name="U_FEM_ADC2" value="15" />
-              <value name="U_FEM_FIBRESELECTOR" value="16" />
-              <value name="U_FEM_LED_HGF" value="17" />
-              <value name="U_FEM_LED_UGF" value="18" />
-              <value name="U_FEM_LED_HSF" value="19" />
-              <value name="U_FEM_LED_USF" value="20" />
-              <value name="U_FEM_GUIDECAM" value="21" />
-              <value name="U_FEM_FIBREVIEWCAM" value="22" />
+              <value name="SEQUENCER" value="1" />
+              <value name="MARVEL" value="2" />
+              <value name="U" value="3" />
+              <value name="U_DOME" value="4" />
+              <value name="U_DOME_SHUTTER" value="5" />
+              <value name="U_DOME_ROTATION" value="6" />
+              <value name="U_TELESCOPE" value="7" />
+              <value name="U_TELESCOPE_COVER" value="8" />
+              <value name="U_FEM" value="9" />
+              <value name="U_FEM_PWR_GUIDECAM" value="10" />
+              <value name="U_FEM_PWR_FIBREVIEWCAM" value="11" />
+              <value name="U_FEM_PWR_ADC" value="12" />
+              <value name="U_FEM_PWR_TIPTILT" value="13" />
+              <value name="U_FEM_CALMIRROR" value="14" />
+              <value name="U_FEM_ADC1" value="15" />
+              <value name="U_FEM_ADC2" value="16" />
+              <value name="U_FEM_FIBRESELECTOR" value="17" />
+              <value name="U_FEM_LED_HGF" value="18" />
+              <value name="U_FEM_LED_UGF" value="19" />
+              <value name="U_FEM_LED_HSF" value="20" />
+              <value name="U_FEM_LED_USF" value="21" />
+              <value name="U_FEM_GUIDECAM" value="22" />
+              <value name="U_FEM_FIBREVIEWCAM" value="23" />
+              <value name="_END_" value="24" />
             </values>
           </enum>
         </baseType>
@@ -648,8 +650,10 @@
               <value name="OPEN" value="4" />
               <value name="CLOSE" value="5" />
               <value name="STOP" value="6" />
-              <value name="MOVE_ABS" value="7" />
-              <value name="MOVE_ALT_AZ" value="8" />
+              <value name="MOVE_ABS_MM" value="7" />
+              <value name="MOVE_ABS_DEG" value="8" />
+              <value name="MOVE_AZI_ELE" value="9" />
+              <value name="_END_" value="10" />
             </values>
           </enum>
         </baseType>
@@ -1262,6 +1266,19 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Apply changes (activate, save, reload)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="cancel">
+              <type><derived name="Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Cancel changes (i.e. overwrite editableSeq)</xhtml>
               </documentation>
             </variable>
           </struct>
@@ -2709,7 +2726,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">ID of the sequence</xhtml>
               </documentation>
             </variable>
-            <variable name="actions">
+            <variable name="configs">
               <type>
                 <array>
                   <dimension lower="0" upper="29" />
@@ -2727,6 +2744,26 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Actions</xhtml>
+              </documentation>
+            </variable>
+            <variable name="statuses">
+              <type>
+                <array>
+                  <dimension lower="0" upper="29" />
+                  <baseType>
+                    <derived name="ActionStatus" />
+                  </baseType>
+                </array>
+              </type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Statuses</xhtml>
               </documentation>
             </variable>
           </struct>
@@ -7372,7 +7409,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="seq">
+            <variable name="activeSeq">
               <type><derived name="SequenceEnumConfig_M" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -9104,6 +9141,19 @@
               </documentation>
             </variable>
             <variable name="apply">
+              <type><derived name="M_Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="cancel">
               <type><derived name="M_Process" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -16446,7 +16496,7 @@ THIS^.proc.send._copyToModel_Ell114SendProcess( model := model.proc.send );
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Current status description</xhtml>
               </documentation>
             </variable>
-            <variable name="seq">
+            <variable name="activeSeq">
               <type><derived name="SequenceEnumConfig_M" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -16550,7 +16600,7 @@ THIS^.proc.send._copyToModel_Ell114SendProcess( model := model.proc.send );
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Error present</xhtml>
               </documentation>
             </variable>
-            <variable name="config">
+            <variable name="activeConfig">
               <type><derived name="SequencerStringConfig" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -16592,6 +16642,7 @@ proc.select( isEnabled := isEnabled AND (stat.busy = BusyStatus.idle) );
 proc.start( isEnabled := isEnabled AND (stat.busy = BusyStatus.idle) );
 proc.stop( isEnabled := isEnabled AND (stat.busy = BusyStatus.busy) );
 proc.apply( isEnabled := isEnabled AND (stat.busy = BusyStatus.idle) );
+proc.cancel();
 </xhtml>
           </ST>
         </body>
@@ -16635,6 +16686,7 @@ THIS^.proc.select._copyFromModel_IdProcess( model := model.proc.select );
 THIS^.proc.start._copyFromModel_IdProcess( model := model.proc.start );
 THIS^.proc.stop._copyFromModel_Process( model := model.proc.stop );
 THIS^.proc.apply._copyFromModel_Process( model := model.proc.apply );
+THIS^.proc.cancel._copyFromModel_Process( model := model.proc.cancel );
 </xhtml>
                 </ST>
               </body>
@@ -16675,7 +16727,7 @@ THIS^.proc.apply._copyFromModel_Process( model := model.proc.apply );
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">model.editableSeq := THIS^.editableSeq;
 model.actualStatus := THIS^.actualStatus;
-model.seq := THIS^.seq;
+model.activeSeq := THIS^.activeSeq;
 model.ids := THIS^.ids;
 model.stat := THIS^.stat;
 THIS^.parts.configManager._copyToModel_ConfigManager( model := model.parts.configManager );
@@ -16683,6 +16735,7 @@ THIS^.proc.select._copyToModel_IdProcess( model := model.proc.select );
 THIS^.proc.start._copyToModel_IdProcess( model := model.proc.start );
 THIS^.proc.stop._copyToModel_Process( model := model.proc.stop );
 THIS^.proc.apply._copyToModel_Process( model := model.proc.apply );
+THIS^.proc.cancel._copyToModel_Process( model := model.proc.cancel );
 </xhtml>
                 </ST>
               </body>

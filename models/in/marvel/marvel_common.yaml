@@ -2198,6 +2198,7 @@
   !ENUMERATION ActionActor:
     items:
         - NONE
+        - SEQUENCER
         - MARVEL
         - U
         - U_DOME
@@ -2221,6 +2222,32 @@
         - U_FEM_GUIDECAM
         - U_FEM_FIBREVIEWCAM
         - _END_
+
+#   ########################################################################################################################
+#   # ActionArgType
+#   ########################################################################################################################
+#   !ENUMERATION ActionArgType:
+#     items:
+#         - NONE
+#         - STRING_ARG
+#         - LREAL_ARG
+#         - BOOL_ARG
+#         - DINT_ARG
+
+
+#   ########################################################################################################################
+#   # ActionArgUnit
+#   ########################################################################################################################
+#   !ENUMERATION ActionArgUnit:
+#     items:
+#         - NONE
+#         - SEC
+#         - DEG
+#         - DEG_PER_SEC
+#         - MILLIAMP
+#         - MM
+#         - PIXEL
+
 
   ########################################################################################################################
   # ActionStatus
@@ -2251,8 +2278,10 @@
         - OPEN
         - CLOSE
         - STOP
-        - MOVE_ABS
-        - MOVE_ALT_AZ
+        - MOVE_ABS_MM
+        - MOVE_ABS_DEG
+        - MOVE_AZI_ELE
+        - _END_
 
 
   ########################################################################################################################
@@ -2310,7 +2339,8 @@
   !CONFIG SequenceEnumConfig_M: # Medium (add XS, S, L, XL, ... as needed)
     items:
         id            : { type: t_string  , len: 16                             , comment: "ID of the sequence" }
-        actions       : { type: !ARRAY [0, 29, marvel_common.ActionEnumConfig]  , comment: "Actions" , expand: false }
+        configs       : { type: !ARRAY [0, 29, marvel_common.ActionEnumConfig]  , comment: "Actions" , expand: false }
+        statuses      : { type: !ARRAY [0, 29, ActionStatus ]                   , comment: "Statuses", expand: false }
 
   ########################################################################################################################
   # SequenceStatus_M
@@ -2344,12 +2374,12 @@
     local_hidden:
         isError             : { type: t_bool                        , comment: "Error present" }
         isBusy              : { type: t_bool                        , comment: "Error present" }
-        config              : { type: SequencerStringConfig         , comment: "Active config to be serialized to/from" , expand: false }
+        activeConfig        : { type: SequencerStringConfig         , comment: "Active config to be serialized to/from" , expand: false }
         editableConfig      : { type: SequencerStringConfig         , comment: "Editable config to be serialized to/from" , expand: false }
     variables_input_rw:
         editableSeq         : { type: SequenceEnumConfig_M          , comment: "Editable sequence" , expand: false }
     variables_output:
-        seq                 : { type: SequenceEnumConfig_M          , comment: "Currently selected sequence" , expand: false }
+        activeSeq           : { type: SequenceEnumConfig_M          , comment: "Currently selected sequence" , expand: false }
         ids                 : { type: !ARRAY [0, 50, t_string, 30 ] , comment: "Available IDs", expand: false }
     parts: 
         configManager       : { type: ConfigManager                 , comment: "The config manager (to load/save/activate configuration data)" }   
@@ -2361,6 +2391,7 @@
         start               : { type: IdProcess                     , comment: "Select the given sequence (leave empty for current) + start running it" }
         stop                : { type: Process                       , comment: "Stop the running sequence" }
         apply               : { type: Process                       , comment: "Apply changes (activate, save, reload)" }
+        cancel              : { type: Process                       , comment: "Cancel changes (i.e. overwrite editableSeq)" }
         # activate            : { type: Process                       , comment: "Activate the configuration (from editable to active)" }
         # save                : { type: Process                       , comment: "Save the configuration to disk" }
     calls:
