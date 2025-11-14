@@ -2206,6 +2206,8 @@
         - U_DOME_ROTATION
         - U_TELESCOPE
         - U_TELESCOPE_COVER
+        - U_TELESCOPE_M2
+        - U_TELESCOPE_M3
         - U_FEM
         - U_FEM_PWR_GUIDECAM
         - U_FEM_PWR_FIBREVIEWCAM
@@ -2278,10 +2280,22 @@
         - OPEN
         - CLOSE
         - STOP
+        - MOVE_TO_NUMBER
         - MOVE_ABS_MM
         - MOVE_ABS_DEG
         - MOVE_AZI_ELE
         - _END_
+
+
+  ########################################################################################################################
+  # ActionArgConfig
+  ########################################################################################################################
+  !CONFIG ActionArgConfig:
+    items:
+        str    : { type: t_string      , len: 30               , comment: "Arg as a STRING" }
+        f      : { type: t_double                              , comment: "Arg as an LREAL" }
+        n      : { type: t_int32                               , comment: "Arg as an DINT" }
+        b      : { type: t_bool                                , comment: "Arg as an BOOL" }
 
 
   ########################################################################################################################
@@ -2292,17 +2306,12 @@
         actor       : { type: t_string      , len: 50               , comment: "Actor of the action" }
         kind        : { type: t_string      , len: 50               , comment: "Kind of the action" }
         block       : { type: t_bool        , initial: !BOOL TRUE   , comment: "TRUE if the action is blocking (for the next one)" }
-        # arg0
-        string_0    : { type: t_string      , len: 30               , comment: "Arg0 as a STRING" }
-        lreal_0     : { type: t_double                              , comment: "Arg0 as an LREAL" }
-        # arg1
-        lreal_1     : { type: t_double                              , comment: "Arg1 as an LREAL" }
+        args        : { type: !ARRAY [0, 1, ActionArgConfig]        , comment: "Arguments", expand: false }
         # unit selector
         u1          : { type: t_bool        , initial: !BOOL TRUE   , comment: "Apply to U1 (if relevant)" }
         u2          : { type: t_bool        , initial: !BOOL TRUE   , comment: "Apply to U2 (if relevant)" }
         u3          : { type: t_bool        , initial: !BOOL TRUE   , comment: "Apply to U3 (if relevant)" }
         u4          : { type: t_bool        , initial: !BOOL TRUE   , comment: "Apply to U4 (if relevant)" }
-
 
   ########################################################################################################################
   # ActionStringConfig
@@ -2312,11 +2321,7 @@
         actor       : { type: ActionActor                           , comment: "Actor of the action" }
         kind        : { type: ActionKind                            , comment: "Kind of the action" }
         block       : { type: t_bool        , initial: !BOOL TRUE   , comment: "TRUE if the action is blocking (for the next one)" }
-        # arg0
-        string_0    : { type: t_string      , len: 30               , comment: "Arg0 as a STRING" }
-        lreal_0     : { type: t_double                              , comment: "Arg0 as an LREAL" }
-        # arg1
-        lreal_1     : { type: t_double                              , comment: "Arg1 as an LREAL" }
+        args        : { type: !ARRAY [0, 1, ActionArgConfig]        , comment: "Arguments", expand: false }
         # unit selector
         u1          : { type: t_bool        , initial: !BOOL TRUE   , comment: "Apply to U1 (if relevant)" }
         u2          : { type: t_bool        , initial: !BOOL TRUE   , comment: "Apply to U2 (if relevant)" }

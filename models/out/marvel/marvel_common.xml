@@ -587,22 +587,24 @@
               <value name="U_DOME_ROTATION" value="6" />
               <value name="U_TELESCOPE" value="7" />
               <value name="U_TELESCOPE_COVER" value="8" />
-              <value name="U_FEM" value="9" />
-              <value name="U_FEM_PWR_GUIDECAM" value="10" />
-              <value name="U_FEM_PWR_FIBREVIEWCAM" value="11" />
-              <value name="U_FEM_PWR_ADC" value="12" />
-              <value name="U_FEM_PWR_TIPTILT" value="13" />
-              <value name="U_FEM_CALMIRROR" value="14" />
-              <value name="U_FEM_ADC1" value="15" />
-              <value name="U_FEM_ADC2" value="16" />
-              <value name="U_FEM_FIBRESELECTOR" value="17" />
-              <value name="U_FEM_LED_HGF" value="18" />
-              <value name="U_FEM_LED_UGF" value="19" />
-              <value name="U_FEM_LED_HSF" value="20" />
-              <value name="U_FEM_LED_USF" value="21" />
-              <value name="U_FEM_GUIDECAM" value="22" />
-              <value name="U_FEM_FIBREVIEWCAM" value="23" />
-              <value name="_END_" value="24" />
+              <value name="U_TELESCOPE_M2" value="9" />
+              <value name="U_TELESCOPE_M3" value="10" />
+              <value name="U_FEM" value="11" />
+              <value name="U_FEM_PWR_GUIDECAM" value="12" />
+              <value name="U_FEM_PWR_FIBREVIEWCAM" value="13" />
+              <value name="U_FEM_PWR_ADC" value="14" />
+              <value name="U_FEM_PWR_TIPTILT" value="15" />
+              <value name="U_FEM_CALMIRROR" value="16" />
+              <value name="U_FEM_ADC1" value="17" />
+              <value name="U_FEM_ADC2" value="18" />
+              <value name="U_FEM_FIBRESELECTOR" value="19" />
+              <value name="U_FEM_LED_HGF" value="20" />
+              <value name="U_FEM_LED_UGF" value="21" />
+              <value name="U_FEM_LED_HSF" value="22" />
+              <value name="U_FEM_LED_USF" value="23" />
+              <value name="U_FEM_GUIDECAM" value="24" />
+              <value name="U_FEM_FIBREVIEWCAM" value="25" />
+              <value name="_END_" value="26" />
             </values>
           </enum>
         </baseType>
@@ -650,10 +652,11 @@
               <value name="OPEN" value="4" />
               <value name="CLOSE" value="5" />
               <value name="STOP" value="6" />
-              <value name="MOVE_ABS_MM" value="7" />
-              <value name="MOVE_ABS_DEG" value="8" />
-              <value name="MOVE_AZI_ELE" value="9" />
-              <value name="_END_" value="10" />
+              <value name="MOVE_TO_NUMBER" value="7" />
+              <value name="MOVE_ABS_MM" value="8" />
+              <value name="MOVE_ABS_DEG" value="9" />
+              <value name="MOVE_AZI_ELE" value="10" />
+              <value name="_END_" value="11" />
             </values>
           </enum>
         </baseType>
@@ -2389,6 +2392,64 @@
           </struct>
         </baseType>
       </dataType>
+      <dataType name="ActionArgConfig">
+        <baseType>
+          <struct>
+            <variable name="str">
+              <type><string length="30" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Arg as a STRING</xhtml>
+              </documentation>
+            </variable>
+            <variable name="f">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Arg as an LREAL</xhtml>
+              </documentation>
+            </variable>
+            <variable name="n">
+              <type><DINT /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Arg as an DINT</xhtml>
+              </documentation>
+            </variable>
+            <variable name="b">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Arg as an BOOL</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
       <dataType name="ActionStringConfig">
         <baseType>
           <struct>
@@ -2432,8 +2493,15 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if the action is blocking (for the next one)</xhtml>
               </documentation>
             </variable>
-            <variable name="string_0">
-              <type><string length="30" /></type>
+            <variable name="args">
+              <type>
+                <array>
+                  <dimension lower="0" upper="1" />
+                  <baseType>
+                    <derived name="ActionArgConfig" />
+                  </baseType>
+                </array>
+              </type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -2442,33 +2510,7 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Arg0 as a STRING</xhtml>
-              </documentation>
-            </variable>
-            <variable name="lreal_0">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Arg0 as an LREAL</xhtml>
-              </documentation>
-            </variable>
-            <variable name="lreal_1">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Arg1 as an LREAL</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Arguments</xhtml>
               </documentation>
             </variable>
             <variable name="u1">
@@ -2573,8 +2615,15 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if the action is blocking (for the next one)</xhtml>
               </documentation>
             </variable>
-            <variable name="string_0">
-              <type><string length="30" /></type>
+            <variable name="args">
+              <type>
+                <array>
+                  <dimension lower="0" upper="1" />
+                  <baseType>
+                    <derived name="ActionArgConfig" />
+                  </baseType>
+                </array>
+              </type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -2583,33 +2632,7 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Arg0 as a STRING</xhtml>
-              </documentation>
-            </variable>
-            <variable name="lreal_0">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Arg0 as an LREAL</xhtml>
-              </documentation>
-            </variable>
-            <variable name="lreal_1">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Arg1 as an LREAL</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Arguments</xhtml>
               </documentation>
             </variable>
             <variable name="u1">
@@ -24987,6 +25010,8 @@ SUPER^._copyToModel_BaseProcess( model := model );
             <Object Name="HiHiLoLoAlarmConfig">
             </Object>
             <Object Name="MeasurementConfig">
+            </Object>
+            <Object Name="ActionArgConfig">
             </Object>
             <Object Name="ActionStringConfig">
             </Object>
