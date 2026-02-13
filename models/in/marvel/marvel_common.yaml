@@ -824,6 +824,14 @@
         id: { type: t_string , len: 30 }
 
   ########################################################################################################################
+  # IndexProcess
+  ########################################################################################################################
+  !PROCESS IndexProcess:
+    extends: BaseProcess
+    arguments:
+        id: { type: t_uint16 }
+
+  ########################################################################################################################
   # McProcess
   ########################################################################################################################
   !PROCESS McProcess:
@@ -2335,6 +2343,7 @@
   !CONFIG SequenceStringConfig_M: # Medium (add XS, S, L, XL, ... as needed)
     items:
         id            : { type: t_string  , len: 16                               , comment: "ID of the sequence" }
+        length        : { type: t_int16                                         , comment: "Number of actions" }
         actions       : { type: !ARRAY [0, 29, marvel_common.ActionStringConfig]  , comment: "Actions" , expand: false }
 
 
@@ -2344,6 +2353,7 @@
   !CONFIG SequenceEnumConfig_M: # Medium (add XS, S, L, XL, ... as needed)
     items:
         id            : { type: t_string  , len: 16                             , comment: "ID of the sequence" }
+        length        : { type: t_int16                                         , comment: "Number of actions" }
         configs       : { type: !ARRAY [0, 29, marvel_common.ActionEnumConfig]  , comment: "Actions" , expand: false }
         statuses      : { type: !ARRAY [0, 29, ActionStatus ]                   , comment: "Statuses", expand: false }
 
@@ -2384,17 +2394,20 @@
     variables_input_rw:
         editableSeq         : { type: SequenceEnumConfig_M          , comment: "Editable sequence" , expand: false }
     variables_output:
-        activeSeq           : { type: SequenceEnumConfig_M          , comment: "Currently selected sequence" , expand: false }
+        runnableSeq         : { type: SequenceEnumConfig_M          , comment: "Currently selected sequence for running" , expand: false }
+        runnableIndex       : { type: t_uint16                      , comment: "Index of the currently selected sequence for running" }
+        editableIndex       : { type: t_uint16                      , comment: "Index of the currently selected sequence for editing" }
         ids                 : { type: !ARRAY [0, 50, t_string, 30 ] , comment: "Available IDs", expand: false }
-    parts: 
+    parts:
         configManager       : { type: ConfigManager                 , comment: "The config manager (to load/save/activate configuration data)" }   
     stat:
         health              : { type: HealthStatus                  , comment: "Is the sequencer in a healthy state?" }
         busy                : { type: BusyStatus                    , comment: "Is the sequencer in a busy state?" }
     proc:
-        select              : { type: IdProcess                     , comment: "Select the given sequence for editing" } 
-        start               : { type: IdProcess                     , comment: "Select the given sequence (leave empty for current) + start running it" }
-        stop                : { type: Process                       , comment: "Stop the running sequence" }
+        selectEditable      : { type: IndexProcess                  , comment: "Select the given sequence for editing" }
+        selectRunnable      : { type: IndexProcess                  , comment: "Select the given sequence for running" }
+        start               : { type: IdProcess                     , comment: "Select the given sequence for running (leave empty for current) + start running it" }
+        stop                : { type: Process                       , comment: "Stop the runnable sequence" }
         apply               : { type: Process                       , comment: "Apply changes (activate, save, reload)" }
         cancel              : { type: Process                       , comment: "Cancel changes (i.e. overwrite editableSeq)" }
         # activate            : { type: Process                       , comment: "Activate the configuration (from editable to active)" }
@@ -2402,7 +2415,9 @@
     calls:
         configManager:
             isEnabled       : !AND [ isEnabled, !EQ [ stat.busy, BusyStatus.idle ] ]
-        select:
+        selectEditable:
+            isEnabled       : !AND [ isEnabled, !EQ [ stat.busy, BusyStatus.idle ] ]
+        selectRunnable:
             isEnabled       : !AND [ isEnabled, !EQ [ stat.busy, BusyStatus.idle ] ]
         start:
             isEnabled       : !AND [ isEnabled, !EQ [ stat.busy, BusyStatus.idle ] ]

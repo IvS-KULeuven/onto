@@ -1219,8 +1219,8 @@
       <dataType name="SequencerProcesses">
         <baseType>
           <struct>
-            <variable name="select">
-              <type><derived name="IdProcess" /></type>
+            <variable name="selectEditable">
+              <type><derived name="IndexProcess" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1230,6 +1230,19 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Select the given sequence for editing</xhtml>
+              </documentation>
+            </variable>
+            <variable name="selectRunnable">
+              <type><derived name="IndexProcess" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Select the given sequence for running</xhtml>
               </documentation>
             </variable>
             <variable name="start">
@@ -1242,7 +1255,7 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Select the given sequence (leave empty for current) + start running it</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Select the given sequence for running (leave empty for current) + start running it</xhtml>
               </documentation>
             </variable>
             <variable name="stop">
@@ -1255,7 +1268,7 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Stop the running sequence</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Stop the runnable sequence</xhtml>
               </documentation>
             </variable>
             <variable name="apply">
@@ -2710,6 +2723,19 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">ID of the sequence</xhtml>
               </documentation>
             </variable>
+            <variable name="length">
+              <type><INT /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Number of actions</xhtml>
+              </documentation>
+            </variable>
             <variable name="actions">
               <type>
                 <array>
@@ -2747,6 +2773,19 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">ID of the sequence</xhtml>
+              </documentation>
+            </variable>
+            <variable name="length">
+              <type><INT /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Number of actions</xhtml>
               </documentation>
             </variable>
             <variable name="configs">
@@ -4010,6 +4049,25 @@
           <struct>
             <variable name="id">
               <type><string length="30" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="IndexProcessArgs">
+        <baseType>
+          <struct>
+            <variable name="id">
+              <type><UINT /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -7432,8 +7490,38 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="activeSeq">
+            <variable name="runnableSeq">
               <type><derived name="SequenceEnumConfig_M" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="runnableIndex">
+              <type><UINT /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="editableIndex">
+              <type><UINT /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -7532,6 +7620,34 @@
           <struct>
             <variable name="set">
               <type><derived name="IdProcessArgs" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="3" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+        <addData>
+        <data name="http://www.3s-software.com/plcopenxml/datatypeinheritance" handleUnknown="implementation">
+          <Inheritance>
+            <Extends>M_BaseProcess</Extends>
+          </Inheritance>
+        </data>
+        </addData>
+      </dataType>
+      <dataType name="M_IndexProcess">
+        <baseType>
+          <struct>
+            <variable name="set">
+              <type><derived name="IndexProcessArgs" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -9124,8 +9240,21 @@
       <dataType name="M_SM_SequencerProcesses">
         <baseType>
           <struct>
-            <variable name="select">
-              <type><derived name="M_IdProcess" /></type>
+            <variable name="selectEditable">
+              <type><derived name="M_IndexProcess" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="selectRunnable">
+              <type><derived name="M_IndexProcess" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -16519,7 +16648,7 @@ THIS^.proc.send._copyToModel_Ell114SendProcess( model := model.proc.send );
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Current status description</xhtml>
               </documentation>
             </variable>
-            <variable name="activeSeq">
+            <variable name="runnableSeq">
               <type><derived name="SequenceEnumConfig_M" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -16530,7 +16659,35 @@ THIS^.proc.send._copyToModel_Ell114SendProcess( model := model.proc.send );
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Currently selected sequence</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Currently selected sequence for running</xhtml>
+              </documentation>
+            </variable>
+            <variable name="runnableIndex">
+              <type><UINT /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Index of the currently selected sequence for running</xhtml>
+              </documentation>
+            </variable>
+            <variable name="editableIndex">
+              <type><UINT /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Index of the currently selected sequence for editing</xhtml>
               </documentation>
             </variable>
             <variable name="ids">
@@ -16661,7 +16818,8 @@ stat.health := F_HealthStatus(
 stat.busy := F_BusyStatus(
     superState := TRUE,
     isBusy := isBusy OR (parts.configManager.stat.busy = BusyStatus.busy));
-proc.select( isEnabled := isEnabled AND (stat.busy = BusyStatus.idle) );
+proc.selectEditable( isEnabled := isEnabled AND (stat.busy = BusyStatus.idle) );
+proc.selectRunnable( isEnabled := isEnabled AND (stat.busy = BusyStatus.idle) );
 proc.start( isEnabled := isEnabled AND (stat.busy = BusyStatus.idle) );
 proc.stop( isEnabled := isEnabled AND (stat.busy = BusyStatus.busy) );
 proc.apply( isEnabled := isEnabled AND (stat.busy = BusyStatus.idle) );
@@ -16705,7 +16863,8 @@ proc.cancel();
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.editableSeq := model.editableSeq;
 THIS^.parts.configManager._copyFromModel_ConfigManager( model := model.parts.configManager );
-THIS^.proc.select._copyFromModel_IdProcess( model := model.proc.select );
+THIS^.proc.selectEditable._copyFromModel_IndexProcess( model := model.proc.selectEditable );
+THIS^.proc.selectRunnable._copyFromModel_IndexProcess( model := model.proc.selectRunnable );
 THIS^.proc.start._copyFromModel_IdProcess( model := model.proc.start );
 THIS^.proc.stop._copyFromModel_Process( model := model.proc.stop );
 THIS^.proc.apply._copyFromModel_Process( model := model.proc.apply );
@@ -16750,11 +16909,14 @@ THIS^.proc.cancel._copyFromModel_Process( model := model.proc.cancel );
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">model.editableSeq := THIS^.editableSeq;
 model.actualStatus := THIS^.actualStatus;
-model.activeSeq := THIS^.activeSeq;
+model.runnableSeq := THIS^.runnableSeq;
+model.runnableIndex := THIS^.runnableIndex;
+model.editableIndex := THIS^.editableIndex;
 model.ids := THIS^.ids;
 model.stat := THIS^.stat;
 THIS^.parts.configManager._copyToModel_ConfigManager( model := model.parts.configManager );
-THIS^.proc.select._copyToModel_IdProcess( model := model.proc.select );
+THIS^.proc.selectEditable._copyToModel_IndexProcess( model := model.proc.selectEditable );
+THIS^.proc.selectRunnable._copyToModel_IndexProcess( model := model.proc.selectRunnable );
 THIS^.proc.start._copyToModel_IdProcess( model := model.proc.start );
 THIS^.proc.stop._copyToModel_Process( model := model.proc.stop );
 THIS^.proc.apply._copyToModel_Process( model := model.proc.apply );
@@ -17129,6 +17291,231 @@ SUPER^._copyFromModel_BaseProcess( model := model );
                 <inOutVars>
                   <variable name="model">
                     <type><derived name="M_IdProcess" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">model.set := THIS^.set;
+SUPER^._copyToModel_BaseProcess( model := model );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+        </addData>
+      </pou>
+      <pou name="IndexProcess" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="set">
+              <type><derived name="IndexProcessArgs" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="3" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Arguments to be set, before writing do_request TRUE</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="get">
+              <type><derived name="IndexProcessArgs" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Arguments in use by the process, if do_request was accepted</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <inOutVars>
+          </inOutVars>
+          <localVars>
+          </localVars>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/pouinheritance" handleUnknown="implementation">
+              <Inheritance>
+                <Extends>BaseProcess</Extends>
+              </Inheritance>
+            </data>
+          </addData>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+    do_request_result := request( id := set.id );
+    do_request := FALSE;
+END_IF;
+SUPER^();
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="start">
+              <interface>
+                <inputVars>
+                  <variable name="id">
+                    <type><UINT /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.id := id;
+THIS^.stat.busy := BusyStatus.busy;
+THIS^.stat.health := HealthStatus.good;
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="request">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                  <variable name="id">
+                    <type><UINT /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF THIS^.stat.enabled = EnabledStatus.enabled THEN
+    request := RequestResults.ACCEPTED;
+    THIS^.start( id := id );
+ELSE
+    request := RequestResults.REJECTED;
+END_IF;
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyFromModel_IndexProcess">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_IndexProcess" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.set := model.set;
+SUPER^._copyFromModel_BaseProcess( model := model );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyToModel_IndexProcess">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_IndexProcess" /></type>
                     <addData>
                       <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                         <Attributes>
@@ -25070,6 +25457,8 @@ SUPER^._copyToModel_BaseProcess( model := model );
             <Folder Name="Args">
               <Object Name="IdProcessArgs">
               </Object>
+              <Object Name="IndexProcessArgs">
+              </Object>
               <Object Name="ChangeSetpointProcessArgs">
               </Object>
               <Object Name="ChangeParameterProcessArgs">
@@ -25140,6 +25529,12 @@ SUPER^._copyToModel_BaseProcess( model := model );
               <Object Name="request" />
               <Object Name="_copyFromModel_IdProcess" />
               <Object Name="_copyToModel_IdProcess" />
+            </Object>
+            <Object Name="IndexProcess">
+              <Object Name="start" />
+              <Object Name="request" />
+              <Object Name="_copyFromModel_IndexProcess" />
+              <Object Name="_copyToModel_IndexProcess" />
             </Object>
             <Object Name="McProcess">
               <Object Name="start" />
@@ -25424,6 +25819,8 @@ SUPER^._copyToModel_BaseProcess( model := model );
             <Object Name="M_Process">
             </Object>
             <Object Name="M_IdProcess">
+            </Object>
+            <Object Name="M_IndexProcess">
             </Object>
             <Object Name="M_McProcess">
             </Object>
