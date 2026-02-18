@@ -1,0 +1,238 @@
+########################################################################################################################
+#                                                                                                                      #
+# Model containing the vessel temperature control software design                                              #
+#                                                                                                                      #
+########################################################################################################################
+
+!VERSION marvel:
+
+!IMPORT models/in/marvel/marvel_common.yaml:
+!IMPORT models/in/marvel/marvel_services.yaml:
+
+########################################################################################################################
+# Define the containing PLC library
+########################################################################################################################
+
+!LIBRARY marvel_vessel:
+
+  ########################################################################################################################
+  # vessel config
+  ########################################################################################################################
+
+  # single heater config
+  !CONFIG vesselHeaterConfig:
+    items:
+      name : { type: t_string, comment: "Name of the heater" }
+      enabled : { type: t_bool, comment: "True if the heater is enabled" }
+      setPoint : { type: t_float, comment: "set point temperature in kelvin" }
+      fastHeatingSetPoint : { type: t_float, comment: "set point temperature in kelvin used for fast heating (e.g. during ramping)" }
+      maxPower : { type: t_float, comment: "Maximum power of the heater" }
+      p : { type: t_float, comment: proportional gain }
+      i : { type: t_float, comment: integral gain }
+      d : { type: t_float, comment: derivative gain }
+      weightTemperatureSensors : { type: !ARRAY [0, 25, t_float], comment: "value between 0-1 representing the weight of each temperature sensor (0 for sensors not effecting this heater)" }
+
+  # single temperature sensor config (small variation of version found in marvel_common)
+  !CONFIG vesselTemperatureSensorConfig:
+    items:
+      name : { type: t_string, comment: "Name of the temperature sensor" }
+      enabled:
+          type: t_bool
+          comment: "Is the quantity being measured? (Can be false e.g. if the sensor is deliberately not connected (yet).)"
+      gain:
+          type: t_double
+          comment: "Gain to be applied to the measured value (default: 1 = no gain)"
+          initial: !DOUBLE 1.0
+      offset:
+          type: t_double
+          comment: "Offset to be added to the measured value (default: 0 = no offset)"
+      alarms:
+          type: marvel_common.HiHiLoLoAlarmConfig
+          comment: "Config"
+
+
+  # vessel config  
+  !CONFIG vesselConfig:
+    items:
+      setPointTarger             : { type: t_float  , comment: "set point temperature in kelvin" }
+      rampVeloPos                : { type: t_float  , comment: "velocity of temperature change in K/s while ramping up" }
+      rampVeloNeg                : { type: t_float  , comment: "velocity of temperature change in K/s while ramping down" }
+      
+      #temperatureSensorConfig   : { type: !ARRAY [0, 25, vesselTemperatureSensorConfig]  , comment: "Configuration for all vessel temperature sensors" }
+     # heaterConfig              : { type: !ARRAY [0, 25, vesselHeaterConfig]             , comment: "Configuration for all vessel heaters" }
+
+      # legFloorHeaterNE : { type: vesselHeaterConfig, comment: controller configuration for the north-east leg floor heater }
+      # legFloorHeaterNW : { type: vesselHeaterConfig, comment: controller configuration for the north-west leg floor heater }
+      # legFloorHeaterSE : { type: vesselHeaterConfig, comment: controller configuration for the south-east leg floor heater}
+      # legFloorHeaterSW : { type: vesselHeaterConfig, comment: controller configuration for the south-west leg floor heater }
+
+      # legTopHeaterNE : { type: vesselHeaterConfig, comment: controller configuration for the north-east leg top heater }
+      # legTopHeaterNW : { type: vesselHeaterConfig, comment: controller configuration for the north-west leg top heater }
+      # legTopHeaterSE : { type: vesselHeaterConfig, comment: controller configuration for the south-east leg top heater }
+      # legTopHeaterSW : { type: vesselHeaterConfig, comment: controller configuration for the south-west leg top heater }
+
+      # vesselBottomHeaterNE : { type: vesselHeaterConfig, comment: controller configuration for the north-east vessel bottom heater }
+      # vesselBottomHeaterNW : { type: vesselHeaterConfig, comment: controller configuration for the north-west vessel bottom heater }
+      # vesselBottomHeaterSE : { type: vesselHeaterConfig, comment: controller configuration for the south-east vessel bottom heater }
+      # vesselBottomHeaterSW : { type: vesselHeaterConfig, comment: controller configuration for the south-west vessel bottom heater }
+
+      # vesselSideHeaterNE : { type: vesselHeaterConfig, comment: controller configuration for the north-east vessel side heater }
+      # vesselSideHeaterNW : { type: vesselHeaterConfig, comment: controller configuration for the north-west vessel side heater }
+      # vesselSideHeaterSE : { type: vesselHeaterConfig, comment: controller configuration for the south-east vessel side heater }
+      # vesselSideHeaterSW : { type: vesselHeaterConfig, comment: controller configuration for the south-west vessel side heater }
+
+      # vesselLidHeaterN : { type: vesselHeaterConfig, comment: controller configuration for the north vessel lid heater }
+      # vesselLidHeaterS : { type: vesselHeaterConfig, comment: controller configuration for the south vessel lid heater }
+
+
+  
+
+  ########################################################################################################################
+  # state machine temperature measurements (small variation of version found in marvel_common)
+  ########################################################################################################################
+
+  !STATEMACHINE temperatureMeasurement:
+    variables_hidden:
+        rawValue        : { type: t_int16              , comment: "Measured raw value"                                        , address: "%I*" }
+        error           : { type: t_bool               , comment: "Error"                                                     , address: "%I*" }
+        conversionFactor: { type: t_double             , comment: "rawValue * conversionFactor = temperature.degrees.value"   , initial: !DOUBLE 0.01 }
+
+    variables_output:
+        actual          : { type: marvel_common.Temperature          , comment: "Actual value" }
+        average         : { type: marvel_common.Temperature          , comment: "Moving average value" }
+        underrange      : { type: t_bool               , comment: "Underrange"                      , address: "%I*" }
+        overrange       : { type: t_bool               , comment: "Overrange"                       , address: "%I*" }
+
+    references:
+        config          : { type: vesselTemperatureSensorConfig, comment: "Reference to the config (alarms in degrees celsius)" }
+        activity_ref            : { type: marvel_common.ActivityStatus              , comment: "Shared activity status"}
+        services_ref            : { type: marvel_services.Services                  , comment: "Shared services", expand: false}
+
+    stat:
+        enabled         : { type: marvel_common.EnabledStatus        , comment: "Is the temperature being measured?" }
+        health          : { type: marvel_common.HealthStatus         , comment: "Is the measurement OK?" }
+        alarm           : { type: marvel_common.HiHiLoLoAlarmStatus  , comment: "Alarm status"}
+
+    calls:
+        enabled:
+            superState   : !BOOL TRUE
+            isEnabled    : config.enabled
+
+        alarm:
+            superState   : !EQ [ stat.enabled, marvel_common.EnabledStatus.enabled ]
+            config       : config.alarms
+            value        : average.celsius.value
+
+        health:
+            superState   : !EQ [ stat.enabled, marvel_common.EnabledStatus.enabled ]
+            isGood       : !NOT [ !OR [
+                                       error,
+                                       underrange,
+                                       overrange,
+                                       !EQ [ stat.alarm, marvel_common.HiHiLoLoAlarmStatus.hiHi ],
+                                       !EQ [ stat.alarm, marvel_common.HiHiLoLoAlarmStatus.loLo ]
+                                     ] ]
+            hasWarning   : !OR [
+                                !EQ [ stat.alarm, marvel_common.HiHiLoLoAlarmStatus.hi ],
+                                !EQ [ stat.alarm, marvel_common.HiHiLoLoAlarmStatus.lo ]
+                               ]
+
+
+  ########################################################################################################################
+  # state machine for the heater control
+  ########################################################################################################################
+
+  !STATEMACHINE heaterControl:
+    variables_output:
+        setPointRamped                : { type: t_float, comment: "Set point temperature in kelvin" }
+        power                   : { type: t_float, comment: "Current power of the heater in percentage" } 
+        associatedTemperature   : { type: t_float, comment: "Temperature associated with the heater" }
+        setPointDeviation       : { type: t_float, comment: "Current error between set point and associated temperature" }
+        isControlled            : { type: t_bool, comment: "True if the heater is in controlled state" }
+
+    references:
+      config                  : { type: vesselHeaterConfig    , comment: "Reference to the heater config" }
+      activity_ref            : { type: marvel_common.ActivityStatus              , comment: "Shared activity status"}
+      services_ref            : { type: marvel_services.Services                  , comment: "Shared services", expand: false}
+
+    stat:
+      enabled         : { type: marvel_common.EnabledStatus        , comment: "Is the heater enabled?" }
+      health          : { type: marvel_common.HealthStatus         , comment: "Is the heater healthy?" }
+      busy            : { type: marvel_common.BusyStatus           , comment: "Is the heater busy (e.g. ramping)?" }
+
+    proc:
+      start                       : { type: marvel_common.Process                     , comment: "Start warming up" }
+      stop                        : { type: marvel_common.Process                     , comment: "Stop heating" }
+      reset                       : { type: marvel_common.Process                     , comment: "Reset any errors" }   
+
+    calls:
+
+        start:
+            isEnabled                 : config.enabled
+        enabled:
+            superState   : !BOOL TRUE
+            isEnabled    : config.enabled
+        health:
+            superState   : !BOOL TRUE
+        busy:
+            superState   : !BOOL TRUE
+            isBusy                : proc.start.stat.busy
+
+  ########################################################################################################################
+  # vessel state machine
+  ########################################################################################################################
+  
+  !STATEMACHINE vessel:
+    references:
+      activity_ref            : { type: marvel_common.ActivityStatus              , comment: "Shared activity status"}
+      services_ref            : { type: marvel_services.Services                  , comment: "Shared services", expand: false}
+      config_ref              : { type: vesselConfig                              , comment: "Active configuration of the vessel" }
+
+
+    variables_output:
+      config                  : { type: vesselConfig                                          , comment: "Active configuration of the vessel" }
+      isControlled            : { type: t_bool                                                , comment: "True if the vessel is in controlled state" }
+      setPointRamped          : { type: t_float                                               , comment: "Set point temperature in kelvin after ramping" }
+      temperatureSensor      : { type: !ARRAY [0, 25, temperatureMeasurement]                , comment: "All vessel temperature sensors" }
+      vesselHeater                 : { type: !ARRAY [0, 25, heaterControl]                         , comment: "All vessel heaters" }
+
+
+    stat:
+      init                        : { type: marvel_common.InitializationStatus }
+      health                      : { type: marvel_common.HealthStatus }
+      busy                        : { type: marvel_common.BusyStatus }
+
+    proc:
+      initialize                  : { type: marvel_common.Process                     , comment: "Start initializing" }
+      start                       : { type: marvel_common.Process                     , comment: "Start warming up" }
+      stop                        : { type: marvel_common.Process                     , comment: "Stop all temperature control and heating" }
+      reset                       : { type: marvel_common.Process                     , comment: "Reset any errors" }              
+
+
+    calls:
+      initialize:
+        isEnabled                 : !AND [ !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ],
+                                           !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ],
+                                                 !EQ [ stat.init, marvel_common.InitializationStatus.initializingFailed ],
+                                                 !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ] ]
+
+      start:
+        isEnabled                 : !AND [ !EQ [ stat.init, marvel_common.InitializationStatus.initializingFailed ],
+                                           !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ]
+
+      stop:
+        isEnabled                 : !OR [ !EQ [ stat.busy, marvel_common.BusyStatus.busy ], isControlled ]
+
+      reset:
+        isEnabled                 : !AND [ !EQ [ stat.busy, marvel_common.BusyStatus.idle ],
+                                           !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ]
+    
+      health:
+        superState                : !BOOL True
+        isGood                    : !MTCS_SUMMARIZE_GOOD [ temperatureSensor, vesselHeater ] 
+  
+        #hasWarning                : !MTCS_SUMMARIZE_WARN [  ]
+      control:
+        superState                : !BOOL True
+  
+

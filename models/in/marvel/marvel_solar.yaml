@@ -1,0 +1,110 @@
+########################################################################################################################
+#                                                                                                                      #
+# Model containing the solar telescope plc software design                                           #
+#                                                                                                                      #
+########################################################################################################################
+
+!VERSION marvel:
+
+!IMPORT models/in/marvel/marvel_common.yaml:
+!IMPORT models/in/marvel/marvel_services.yaml:
+
+########################################################################################################################
+# Define the containing PLC library
+########################################################################################################################
+
+!LIBRARY marvel_solar:
+
+  !CONFIG solarConfig:
+    items:
+      enabledMount:
+        type: t_bool
+        comment: "True if the mount is enabled"
+      enabledPC:
+        type: t_bool
+        comment: "True if the power control is enabled"
+      fanPower:
+        type: t_double 
+        comment: "Power of the cooling fan in percent"
+      
+  
+
+  !STATEMACHINE solarFan:
+    references:
+      config            : { type: solarConfig              , comment: "Shared configuration"}
+    variables_output:
+      powerFan         : { type: t_double                 , comment: "Power of the cooling fan in percent" }
+      feedBackFan        : { type: t_bool                 , comment: "Feedback power of the cooling fan in percent" }
+    stat:
+      enabled         : { type: marvel_common.EnabledStatus        , comment: "Is the fan enabled?" }
+      health          : { type: marvel_common.HealthStatus         , comment: "Health status of the fan" }
+    proc:
+      enable          : { type: marvel_common.Process                     , comment: "Enable the fan" }
+      disable         : { type: marvel_common.Process                     , comment: "Disable the fan" }
+
+
+  !STATEMACHINE solarMount:
+    references:
+      config            : { type: solarConfig              , comment: "Shared configuration"}
+    variables_output:
+      powerMount   : { type: t_bool                   , comment: "True if the mount is enabled" }
+      limitSwitch1           : { type: t_bool                                                , comment: "State of limit switch 1" }
+      limitSwitch2           : { type: t_bool                                                , comment: "State of limit switch 2" }
+      limitSwitch3           : { type: t_bool                                                , comment: "State of limit switch 3" }
+      limitSwitch4           : { type: t_bool                                                , comment: "State of limit switch 4" }
+      homeSensor1            : { type: t_bool                                                , comment: "State of home sensor 1" }
+      homeSensor2            : { type: t_bool                                                , comment: "State of home sensor 2" }
+
+    stat:
+      onoff         : { type: marvel_common.EnabledStatus        , comment: "Is the mount enabled?" }
+      health          : { type: marvel_common.HealthStatus         , comment: "Health status of the mount" }
+    proc:
+      power_on          : { type: marvel_common.Process                     , comment: "Enable the mount" }
+      power_off         : { type: marvel_common.Process                     , comment: "Disable the mount" }
+
+  !STATEMACHINE solarPC:
+    references:
+      config            : { type: solarConfig              , comment: "Shared configuration"}
+    variables_output:
+      powerPC   : { type: t_bool                   , comment: "True if the pc is enabled" }
+    stat:
+      onoff         : { type: marvel_common.EnabledStatus        , comment: "Is the pc enabled?" }
+      health          : { type: marvel_common.HealthStatus         , comment: "Health status of the pc" }
+    proc:
+      power_on          : { type: marvel_common.Process                     , comment: "Enable the pc" }
+      power_off         : { type: marvel_common.Process                     , comment: "Disable the pc" }
+
+
+  !STATEMACHINE solar:
+    references:
+      activity_ref            : { type: marvel_common.ActivityStatus              , comment: "Shared activity status"}
+      services_ref            : { type: marvel_services.Services                  , comment: "Shared services", expand: false}
+      config_ref              : { type: solarConfig                              , comment: "Reference to the active solar configuration" }
+
+    variables_output:
+      config                 : { type: solarConfig                                          , comment: "Active configuration of the solar telescope" }
+
+      
+
+    parts:
+      temperatureSensor      : { type: marvel_common.TemperatureMeasurement                 , comment: "Temperature sensor for the solar telescope" }
+      fan                    : { type: solarFan                                             , comment: "The solar fan state machine" }
+      mount                  : { type: solarMount                                           , comment: "The solar mount state machine" }
+      pc                     : { type: solarPC                                              , comment: "Process to control power to the solar pc and mount" }
+    stat:
+      health                      : { type: marvel_common.HealthStatus }
+
+    proc:
+      power_on                     : { type: marvel_common.Process                         , comment: "enable power to to solar pc and mount" }
+      power_off                    : { type: marvel_common.Process                         , comment: "Stop power to solar pc and mount" }
+      reset                        : { type: marvel_common.Process                         , comment: "Reset the solar telescope" }
+
+
+
+    calls:   
+      health:
+        superState                : !BOOL True
+        isGood                    : !MTCS_SUMMARIZE_GOOD [ parts.fan, parts.mount, parts.pc, parts.temperatureSensor ] 
+  
+        hasWarning                : !MTCS_SUMMARIZE_WARN [ parts.fan, parts.mount, parts.pc, parts.temperatureSensor ]
+
