@@ -1,0 +1,237 @@
+########################################################################################################################
+#                                                                                                                      #
+# Model containing the spectro temperature control unit software design                                              #
+#                                                                                                                      #
+########################################################################################################################
+
+!VERSION marvel:
+
+!IMPORT models/in/marvel/marvel_common.yaml:
+!IMPORT models/in/marvel/marvel_services.yaml:
+
+!LIBRARY marvel_STCU:
+
+########################################################################################################################
+# stuses
+########################################################################################################################
+  !ENUMERATION TempControlStatus:
+    items: [idle, warming_up, controlling ]
+
+
+########################################################################################################################
+# configs
+########################################################################################################################
+
+
+
+  ### single heater config ####
+  !CONFIG HeaterConfig:
+    items:
+      name : { type: t_string, comment: "Name of the heater" }
+      enabled : { type: t_bool, comment: "True if the heater is enabled" }
+      maxPower : { type: t_float, comment: "Maximum power of the heater" }
+      Kp : { type: t_float, comment: proportional gain }
+      Tn : { type: t_float, comment: integral gain (in seconds) }
+      Tv : { type: t_float, comment: derivative gain D-T1 (in seconds) }
+      Td : { type: t_float, comment: derivative damping time D-T1 (in seconds) }
+      weights : { type: !ARRAY [0, 25, t_float], comment: "value between 0-1 representing the weight of each temperature sensor (0 for sensors not effecting this heater)" }
+      maxDeviation : { type: t_float, comment: "Maximum allowed deviation from the set point for the associated temperature sensors in kelvin" }
+
+
+  ### single temperature sensor config (small variation of version found in marvel_common) ###
+  !CONFIG MeasurementConfig:
+    items:
+      name : { type: t_string, comment: "Name of the temperature sensor" }
+      enabled:
+          type: t_bool
+          comment: "Is the quantity being measured? (Can be false e.g. if the sensor is deliberately not connected (yet).)"
+      gain:
+          type: t_double
+          comment: "Gain to be applied to the measured value (default: 1 = no gain)"
+          initial: !DOUBLE 1.0
+      offset:
+          type: t_double
+          comment: "Offset to be added to the measured value (default: 0 = no offset)"
+      alarms:
+          type: marvel_common.HiHiLoLoAlarmConfig
+          comment: "Config"
+
+  #########################################
+  ### vessel temperature control config ###
+  #########################################
+  !CONFIG TempControlConfig:
+    items:
+      setPointTarget             : { type: marvel_common.Temperature  , comment: "set point temperature in kelvin" }
+      rampVPos                   : { type: t_float  , comment: "velocity of temperature change in K/s while ramping up" }
+      rampVNeg                   : { type: t_float  , comment: "velocity of temperature change in K/s while ramping down" }
+      rampStart                  : { type: t_float  , comment: "temperature in kelvin at which the ramp starts (e.g. to avoid overshoot)" }
+      maxDeviation               : { type: marvel_common.Temperature  , comment: "Maximum allowed deviation from other temp sensors in the vessel in kelvin" }
+      warnDeviation              : { type: marvel_common.Temperature  , comment: "Deviation from the set point at which a warning is issued in kelvin" }
+
+  !CONFIG STCUConfig:
+    items:
+      vesselTempControl: { type: TempControlConfig, comment: "Config for the vessel temperature control" }
+      
+
+########################################################################################################################
+# state machine's vessel
+########################################################################################################################
+
+### state machine single temp measurement ###
+  !STATEMACHINE TempMeasurement:
+    variables_hidden:
+        rawValue        : { type: t_int16              , comment: "Measured raw value"                                        , address: "%I*" }
+        conversionFactor: { type: t_double             , comment: "rawValue * conversionFactor = temperature.degrees.value"   , initial: !DOUBLE 0.01 }
+
+    variables_output:
+        actual          : { type: marvel_common.Temperature          , comment: "Actual value" }
+        average         : { type: marvel_common.Temperature          , comment: "Moving average value" }
+
+    references:
+        config_ref          : { type: MeasurementConfig, comment: "Reference to the config (alarms in degrees celsius)" }
+        activity_ref            : { type: marvel_common.ActivityStatus              , comment: "Shared activity status"}
+        services_ref            : { type: marvel_services.Services                  , comment: "Shared services", expand: false}
+
+    stat:
+        enabled         : { type: marvel_common.EnabledStatus        , comment: "Is the measurement enabled?" }
+        health          : { type: marvel_common.HealthStatus         , comment: "Is the measurement OK?" }
+        alarm           : { type: marvel_common.HiHiLoLoAlarmStatus  , comment: "Alarm status"}
+
+    calls:
+        enabled:
+            superState   : !BOOL TRUE
+            isEnabled    : config_ref.enabled
+
+        alarm:
+            superState   : !EQ [ stat.enabled, marvel_common.EnabledStatus.enabled ]
+            config       : config_ref.alarms
+            value        : average.celsius.value
+
+        health:
+            superState   : !EQ [ stat.enabled, marvel_common.EnabledStatus.enabled ]
+            isGood       : !NOT [ !OR [
+                                       !EQ [ stat.alarm, marvel_common.HiHiLoLoAlarmStatus.hiHi ],
+                                       !EQ [ stat.alarm, marvel_common.HiHiLoLoAlarmStatus.loLo ]
+                                     ] ]
+            hasWarning   : !OR [
+                                !EQ [ stat.alarm, marvel_common.HiHiLoLoAlarmStatus.hi ],
+                                !EQ [ stat.alarm, marvel_common.HiHiLoLoAlarmStatus.lo ]
+                               ]
+
+
+### state machine single heater ###
+  !STATEMACHINE HeaterControl:
+    variables_output:
+        power                   : { type: t_float, comment: "Current power of the heater in percentage" } 
+        active                  : { type: t_bool, comment: "True if the heater is active" }
+        deviation               : { type: t_float, comment: "Current error between set point and associated temperature" }
+        isControlled            : { type: t_bool, comment: "True if the heater is in controlled state" }
+        zoneTemp                : { type: marvel_common.Temperature, comment: "Associated temperature of the heater in kelvin" }
+
+    variables_input:     
+        setPoint                : { type: t_float, comment: "Current set point of the heater in kelvin" }
+
+    references:
+      config_ref                  : { type: HeaterConfig    , comment: "Reference to the heater config" }
+      activity_ref            : { type: marvel_common.ActivityStatus              , comment: "Shared activity status"}
+      services_ref            : { type: marvel_services.Services                  , comment: "Shared services", expand: false}
+
+    stat:
+      enabled         : { type: marvel_common.EnabledStatus        , comment: "Is the heater enabled?" }
+      health          : { type: marvel_common.HealthStatus         , comment: "Is the heater healthy?" }
+    proc:
+      reset           : { type: marvel_common.Process                     , comment: "Reset the heater" }
+
+    calls:
+        enabled:
+            superState   : !BOOL TRUE
+            isEnabled    : config_ref.enabled
+
+
+################################################
+### state machine vessel temperature control ###
+################################################
+  !STATEMACHINE TempControl:
+    variables_output:
+      avgTemperature          : { type: marvel_common.Temperature                                              , comment: "Average temperature of the vessel in kelvin" }
+      maxTemperatureDeviation : { type: marvel_common.Temperature                                               , comment: "Maximum deviation of the temperature sensors in kelvin" }
+      isControlled            : { type: t_bool                                                , comment: "True if the vessel is in controlled state" }
+      setPointRamped          : { type: t_float                                               , comment: "Set point temperature in kelvin after ramping" }
+      heaters            : { type: !ARRAY [0, 25, HeaterControl] }
+      badHealthSensors   : { type: t_bool               , comment: "True if there are temperature sensors in bad health" }
+      badHealthHeaters   : { type: t_bool               , comment: "True if there are heaters in bad health" }
+
+    variables_input:
+      tempMeasurements             : { type: !ARRAY [0, 25, TempMeasurement]                , comment: "All vessel temperature sensors" }
+
+    references:
+      config_ref              : { type: TempControlConfig                              , comment: "Active configuration of the vessel" }
+      activity_ref            : { type: marvel_common.ActivityStatus              , comment: "Shared activity status"}
+      services_ref            : { type: marvel_services.Services                  , comment: "Shared services", expand: false}
+
+    stat:
+      health          : { type: marvel_common.HealthStatus         , comment: "Is the tempcontrol healthy?" }
+      state           : { type: TempControlStatus                   , comment: "Actual state of the tempcontrol" }
+    proc:
+      warm_up                     : { type: marvel_common.Process                     , comment: "Start warming up" }
+      stop                        : { type: marvel_common.Process                     , comment: "Stop heating" }
+      reset                       : { type: marvel_common.Process                     , comment: "Reset complete" }   
+
+    calls:
+        warm_up:
+          isEnabled    : !EQ [ stat.state, TempControlStatus.idle ] 
+        stop:
+          isEnabled    : !OR [ !EQ [ stat.state, TempControlStatus.warming_up ], !EQ [ stat.state, TempControlStatus.controlling ] ]
+
+
+########################################################################################################################
+# state machine's STCU
+########################################################################################################################
+  !STATEMACHINE STCU:
+    references:
+      activity_ref            : { type: marvel_common.ActivityStatus              , comment: "Shared activity status"}
+      services_ref            : { type: marvel_services.Services                  , comment: "Shared services", expand: false}
+    
+    variables_output:
+      config                  : { type: STCUConfig, comment: "Active configuration of the STCU" }
+      
+    parts:
+      VesselTempControl:
+        type: TempControl
+        expand: false
+        comment: "State machine for the vessel temperature control" 
+        arguments:
+                activity_ref              : { type: marvel_common.ActivityStatus          , expand: false }
+                services_ref              : { type: marvel_services.Services              , expand: false }
+                config_ref                : { type: TempControlConfig                     , expand: false }
+      configManager:
+        comment                     : "The config manager (to load/save/activate configuration data)"
+        type                        : marvel_common.ConfigManager
+    stat:
+      health                      : { type: marvel_common.HealthStatus }
+      busy                        : { type: marvel_common.BusyStatus }
+
+    proc:
+      initialize                  : { type: marvel_common.Process                     , comment: "Start initializing" }
+
+
+
+    calls:
+      health:
+        superState   : !BOOL TRUE
+        isGood      :  !EQ [ parts.VesselTempControl.stat.health, marvel_common.HealthStatus.good ]
+                                
+                              
+        hasWarning  : !EQ [ parts.VesselTempControl.stat.health, marvel_common.HealthStatus.warning ]
+
+      VesselTempControl:
+              activity_ref        : activity_ref
+              services_ref        : services_ref
+              config_ref          : config.vesselTempControl
+                              
+       # isGood                    : !MTCS_SUMMARIZE_GOOD [ parts.VesselTempControl ] 
+  
+        #hasWarning                : !MTCS_SUMMARIZE_WARN [ parts.VesselTempControl ]
+
+  
+

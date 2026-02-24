@@ -24,8 +24,8 @@
       <dataType name="solarParts">
         <baseType>
           <struct>
-            <variable name="temperatureSensor">
-              <type><derived name="TemperatureMeasurement" /></type>
+            <variable name="Fan">
+              <type><derived name="Ventilation" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -34,24 +34,11 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Temperature sensor for the solar telescope</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The solar ventilation state machine</xhtml>
               </documentation>
             </variable>
-            <variable name="fan">
-              <type><derived name="solarFan" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">The solar fan state machine</xhtml>
-              </documentation>
-            </variable>
-            <variable name="mount">
-              <type><derived name="solarMount" /></type>
+            <variable name="Mount">
+              <type><derived name="SolarMount" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -63,8 +50,8 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">The solar mount state machine</xhtml>
               </documentation>
             </variable>
-            <variable name="pc">
-              <type><derived name="solarPC" /></type>
+            <variable name="PC">
+              <type><derived name="SolarPC" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -79,39 +66,7 @@
           </struct>
         </baseType>
       </dataType>
-      <dataType name="solarFanProcesses">
-        <baseType>
-          <struct>
-            <variable name="enable">
-              <type><derived name="Process" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Enable the fan</xhtml>
-              </documentation>
-            </variable>
-            <variable name="disable">
-              <type><derived name="Process" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Disable the fan</xhtml>
-              </documentation>
-            </variable>
-          </struct>
-        </baseType>
-      </dataType>
-      <dataType name="solarMountProcesses">
+      <dataType name="SolarMountProcesses">
         <baseType>
           <struct>
             <variable name="power_on">
@@ -143,9 +98,22 @@
           </struct>
         </baseType>
       </dataType>
-      <dataType name="solarPCProcesses">
+      <dataType name="SolarPCProcesses">
         <baseType>
           <struct>
+            <variable name="reset">
+              <type><derived name="Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Reset the pc</xhtml>
+              </documentation>
+            </variable>
             <variable name="power_on">
               <type><derived name="Process" /></type>
               <addData>
@@ -220,24 +188,9 @@
           </struct>
         </baseType>
       </dataType>
-      <dataType name="solarFanStatuses">
+      <dataType name="VentilationStatuses">
         <baseType>
           <struct>
-            <variable name="enabled">
-              <type><derived name="EnabledStatus" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Is the fan enabled?</xhtml>
-              </documentation>
-            </variable>
             <variable name="health">
               <type><derived name="HealthStatus" /></type>
               <addData>
@@ -256,10 +209,10 @@
           </struct>
         </baseType>
       </dataType>
-      <dataType name="solarMountStatuses">
+      <dataType name="SolarMountStatuses">
         <baseType>
           <struct>
-            <variable name="onoff">
+            <variable name="enabled">
               <type><derived name="EnabledStatus" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -292,10 +245,10 @@
           </struct>
         </baseType>
       </dataType>
-      <dataType name="solarPCStatuses">
+      <dataType name="SolarPCStatuses">
         <baseType>
           <struct>
-            <variable name="onoff">
+            <variable name="enabled">
               <type><derived name="EnabledStatus" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -308,21 +261,6 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Is the pc enabled?</xhtml>
-              </documentation>
-            </variable>
-            <variable name="health">
-              <type><derived name="HealthStatus" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Health status of the pc</xhtml>
               </documentation>
             </variable>
           </struct>
@@ -346,39 +284,28 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
+            <variable name="enabled">
+              <type><derived name="EnabledStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
           </struct>
         </baseType>
       </dataType>
       <dataType name="solarConfig">
         <baseType>
           <struct>
-            <variable name="enabledMount">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the mount is enabled</xhtml>
-              </documentation>
-            </variable>
-            <variable name="enabledPC">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the power control is enabled</xhtml>
-              </documentation>
-            </variable>
-            <variable name="fanPower">
+            <variable name="fanDefaultPower">
               <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -394,7 +321,7 @@
           </struct>
         </baseType>
       </dataType>
-      <dataType name="M_SM_solarFan">
+      <dataType name="M_SM_Ventilation">
         <baseType>
           <struct>
             <variable name="actualStatus">
@@ -427,37 +354,8 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="feedBackFan">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
             <variable name="stat">
-              <type><derived name="solarFanStatuses" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-            <variable name="proc">
-              <type><derived name="M_SM_solarFanProcesses" /></type>
+              <type><derived name="VentilationStatuses" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -473,39 +371,9 @@
           </struct>
         </baseType>
       </dataType>
-      <dataType name="M_SM_solarMount">
+      <dataType name="M_SM_SolarMount">
         <baseType>
           <struct>
-            <variable name="actualStatus">
-              <type><string /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-            <variable name="powerMount">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
             <variable name="limitSwitch1">
               <type><BOOL /></type>
               <addData>
@@ -551,21 +419,6 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="limitSwitch4">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
             <variable name="homeSensor1">
               <type><BOOL /></type>
               <addData>
@@ -596,8 +449,38 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
+            <variable name="actualStatus">
+              <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="powerMount">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
             <variable name="stat">
-              <type><derived name="solarMountStatuses" /></type>
+              <type><derived name="SolarMountStatuses" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -611,7 +494,7 @@
               </documentation>
             </variable>
             <variable name="proc">
-              <type><derived name="M_SM_solarMountProcesses" /></type>
+              <type><derived name="M_SM_SolarMountProcesses" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -627,7 +510,7 @@
           </struct>
         </baseType>
       </dataType>
-      <dataType name="M_SM_solarPC">
+      <dataType name="M_SM_SolarPC">
         <baseType>
           <struct>
             <variable name="actualStatus">
@@ -661,7 +544,7 @@
               </documentation>
             </variable>
             <variable name="stat">
-              <type><derived name="solarPCStatuses" /></type>
+              <type><derived name="SolarPCStatuses" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -675,7 +558,7 @@
               </documentation>
             </variable>
             <variable name="proc">
-              <type><derived name="M_SM_solarPCProcesses" /></type>
+              <type><derived name="M_SM_SolarPCProcesses" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -694,8 +577,8 @@
       <dataType name="M_SM_solar">
         <baseType>
           <struct>
-            <variable name="actualStatus">
-              <type><string /></type>
+            <variable name="temp">
+              <type><derived name="Temperature" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -709,8 +592,23 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="config">
-              <type><derived name="solarConfig" /></type>
+            <variable name="tempHealth">
+              <type><derived name="HealthStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="actualStatus">
+              <type><string /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -769,39 +667,7 @@
           </struct>
         </baseType>
       </dataType>
-      <dataType name="M_SM_solarFanProcesses">
-        <baseType>
-          <struct>
-            <variable name="enable">
-              <type><derived name="M_Process" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-            <variable name="disable">
-              <type><derived name="M_Process" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-          </struct>
-        </baseType>
-      </dataType>
-      <dataType name="M_SM_solarMountProcesses">
+      <dataType name="M_SM_SolarMountProcesses">
         <baseType>
           <struct>
             <variable name="power_on">
@@ -833,9 +699,22 @@
           </struct>
         </baseType>
       </dataType>
-      <dataType name="M_SM_solarPCProcesses">
+      <dataType name="M_SM_SolarPCProcesses">
         <baseType>
           <struct>
+            <variable name="reset">
+              <type><derived name="M_Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
             <variable name="power_on">
               <type><derived name="M_Process" /></type>
               <addData>
@@ -868,8 +747,8 @@
       <dataType name="M_SM_solarParts">
         <baseType>
           <struct>
-            <variable name="temperatureSensor">
-              <type><derived name="M_TemperatureMeasurement" /></type>
+            <variable name="Fan">
+              <type><derived name="M_Ventilation" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -881,8 +760,8 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="fan">
-              <type><derived name="M_solarFan" /></type>
+            <variable name="Mount">
+              <type><derived name="M_SolarMount" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -894,21 +773,8 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="mount">
-              <type><derived name="M_solarMount" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-            <variable name="pc">
-              <type><derived name="M_solarPC" /></type>
+            <variable name="PC">
+              <type><derived name="M_SolarPC" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -970,7 +836,7 @@
       </dataType>
     </dataTypes>
     <pous>
-      <pou name="SM_solarFan" pouType="functionBlock">
+      <pou name="SM_Ventilation" pouType="functionBlock">
         <interface>
           <inputVars>
           </inputVars>
@@ -1003,22 +869,8 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Power of the cooling fan in percent</xhtml>
               </documentation>
             </variable>
-            <variable name="feedBackFan">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Feedback power of the cooling fan in percent</xhtml>
-              </documentation>
-            </variable>
             <variable name="stat">
-              <type><derived name="solarFanStatuses" /></type>
+              <type><derived name="VentilationStatuses" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1028,19 +880,6 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Statuses of the state machine</xhtml>
-              </documentation>
-            </variable>
-            <variable name="proc">
-              <type><derived name="solarFanProcesses" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Processes of the state machine</xhtml>
               </documentation>
             </variable>
           </outputVars>
@@ -1064,14 +903,12 @@
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">proc.enable();
-proc.disable();
-</xhtml>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
           </ST>
         </body>
         <addData>
           <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_copyFromModel_SM_solarFan">
+            <Method name="_copyFromModel_SM_Ventilation">
               <interface>
                 <inputVars>
                 </inputVars>
@@ -1079,7 +916,7 @@ proc.disable();
                 </outputVars>
                 <inOutVars>
                   <variable name="model">
-                    <type><derived name="M_SM_solarFan" /></type>
+                    <type><derived name="M_SM_Ventilation" /></type>
                     <addData>
                       <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                         <Attributes>
@@ -1103,15 +940,13 @@ proc.disable();
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.proc.enable._copyFromModel_Process( model := model.proc.enable );
-THIS^.proc.disable._copyFromModel_Process( model := model.proc.disable );
-</xhtml>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
                 </ST>
               </body>
             </Method>
           </data>
           <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_copyToModel_SM_solarFan">
+            <Method name="_copyToModel_SM_Ventilation">
               <interface>
                 <inputVars>
                 </inputVars>
@@ -1119,7 +954,7 @@ THIS^.proc.disable._copyFromModel_Process( model := model.proc.disable );
                 </outputVars>
                 <inOutVars>
                   <variable name="model">
-                    <type><derived name="M_SM_solarFan" /></type>
+                    <type><derived name="M_SM_Ventilation" /></type>
                     <addData>
                       <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                         <Attributes>
@@ -1145,10 +980,7 @@ THIS^.proc.disable._copyFromModel_Process( model := model.proc.disable );
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">model.actualStatus := THIS^.actualStatus;
 model.powerFan := THIS^.powerFan;
-model.feedBackFan := THIS^.feedBackFan;
 model.stat := THIS^.stat;
-THIS^.proc.enable._copyToModel_Process( model := model.proc.enable );
-THIS^.proc.disable._copyToModel_Process( model := model.proc.disable );
 </xhtml>
                 </ST>
               </body>
@@ -1156,39 +988,9 @@ THIS^.proc.disable._copyToModel_Process( model := model.proc.disable );
           </data>
         </addData>
       </pou>
-      <pou name="SM_solarMount" pouType="functionBlock">
+      <pou name="SM_SolarMount" pouType="functionBlock">
         <interface>
           <inputVars>
-          </inputVars>
-          <outputVars>
-            <variable name="actualStatus">
-              <type><string length="50" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Current status description</xhtml>
-              </documentation>
-            </variable>
-            <variable name="powerMount">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the mount is enabled</xhtml>
-              </documentation>
-            </variable>
             <variable name="limitSwitch1">
               <type><BOOL /></type>
               <addData>
@@ -1231,20 +1033,6 @@ THIS^.proc.disable._copyToModel_Process( model := model.proc.disable );
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">State of limit switch 3</xhtml>
               </documentation>
             </variable>
-            <variable name="limitSwitch4">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">State of limit switch 4</xhtml>
-              </documentation>
-            </variable>
             <variable name="homeSensor1">
               <type><BOOL /></type>
               <addData>
@@ -1273,8 +1061,38 @@ THIS^.proc.disable._copyToModel_Process( model := model.proc.disable );
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">State of home sensor 2</xhtml>
               </documentation>
             </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="actualStatus">
+              <type><string length="50" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Current status description</xhtml>
+              </documentation>
+            </variable>
+            <variable name="powerMount">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the mount is enabled</xhtml>
+              </documentation>
+            </variable>
             <variable name="stat">
-              <type><derived name="solarMountStatuses" /></type>
+              <type><derived name="SolarMountStatuses" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1287,7 +1105,7 @@ THIS^.proc.disable._copyToModel_Process( model := model.proc.disable );
               </documentation>
             </variable>
             <variable name="proc">
-              <type><derived name="solarMountProcesses" /></type>
+              <type><derived name="SolarMountProcesses" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1327,7 +1145,7 @@ proc.power_off();
         </body>
         <addData>
           <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_copyFromModel_SM_solarMount">
+            <Method name="_copyFromModel_SM_SolarMount">
               <interface>
                 <inputVars>
                 </inputVars>
@@ -1335,7 +1153,7 @@ proc.power_off();
                 </outputVars>
                 <inOutVars>
                   <variable name="model">
-                    <type><derived name="M_SM_solarMount" /></type>
+                    <type><derived name="M_SM_SolarMount" /></type>
                     <addData>
                       <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                         <Attributes>
@@ -1367,7 +1185,7 @@ THIS^.proc.power_off._copyFromModel_Process( model := model.proc.power_off );
             </Method>
           </data>
           <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_copyToModel_SM_solarMount">
+            <Method name="_copyToModel_SM_SolarMount">
               <interface>
                 <inputVars>
                 </inputVars>
@@ -1375,7 +1193,7 @@ THIS^.proc.power_off._copyFromModel_Process( model := model.proc.power_off );
                 </outputVars>
                 <inOutVars>
                   <variable name="model">
-                    <type><derived name="M_SM_solarMount" /></type>
+                    <type><derived name="M_SM_SolarMount" /></type>
                     <addData>
                       <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                         <Attributes>
@@ -1399,14 +1217,13 @@ THIS^.proc.power_off._copyFromModel_Process( model := model.proc.power_off );
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">model.actualStatus := THIS^.actualStatus;
-model.powerMount := THIS^.powerMount;
-model.limitSwitch1 := THIS^.limitSwitch1;
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">model.limitSwitch1 := THIS^.limitSwitch1;
 model.limitSwitch2 := THIS^.limitSwitch2;
 model.limitSwitch3 := THIS^.limitSwitch3;
-model.limitSwitch4 := THIS^.limitSwitch4;
 model.homeSensor1 := THIS^.homeSensor1;
 model.homeSensor2 := THIS^.homeSensor2;
+model.actualStatus := THIS^.actualStatus;
+model.powerMount := THIS^.powerMount;
 model.stat := THIS^.stat;
 THIS^.proc.power_on._copyToModel_Process( model := model.proc.power_on );
 THIS^.proc.power_off._copyToModel_Process( model := model.proc.power_off );
@@ -1417,7 +1234,7 @@ THIS^.proc.power_off._copyToModel_Process( model := model.proc.power_off );
           </data>
         </addData>
       </pou>
-      <pou name="SM_solarPC" pouType="functionBlock">
+      <pou name="SM_SolarPC" pouType="functionBlock">
         <interface>
           <inputVars>
           </inputVars>
@@ -1451,7 +1268,7 @@ THIS^.proc.power_off._copyToModel_Process( model := model.proc.power_off );
               </documentation>
             </variable>
             <variable name="stat">
-              <type><derived name="solarPCStatuses" /></type>
+              <type><derived name="SolarPCStatuses" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1464,7 +1281,7 @@ THIS^.proc.power_off._copyToModel_Process( model := model.proc.power_off );
               </documentation>
             </variable>
             <variable name="proc">
-              <type><derived name="solarPCProcesses" /></type>
+              <type><derived name="SolarPCProcesses" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1497,14 +1314,15 @@ THIS^.proc.power_off._copyToModel_Process( model := model.proc.power_off );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">proc.power_on();
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">proc.reset();
+proc.power_on();
 proc.power_off();
 </xhtml>
           </ST>
         </body>
         <addData>
           <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_copyFromModel_SM_solarPC">
+            <Method name="_copyFromModel_SM_SolarPC">
               <interface>
                 <inputVars>
                 </inputVars>
@@ -1512,7 +1330,7 @@ proc.power_off();
                 </outputVars>
                 <inOutVars>
                   <variable name="model">
-                    <type><derived name="M_SM_solarPC" /></type>
+                    <type><derived name="M_SM_SolarPC" /></type>
                     <addData>
                       <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                         <Attributes>
@@ -1536,7 +1354,8 @@ proc.power_off();
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.proc.power_on._copyFromModel_Process( model := model.proc.power_on );
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.proc.reset._copyFromModel_Process( model := model.proc.reset );
+THIS^.proc.power_on._copyFromModel_Process( model := model.proc.power_on );
 THIS^.proc.power_off._copyFromModel_Process( model := model.proc.power_off );
 </xhtml>
                 </ST>
@@ -1544,7 +1363,7 @@ THIS^.proc.power_off._copyFromModel_Process( model := model.proc.power_off );
             </Method>
           </data>
           <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_copyToModel_SM_solarPC">
+            <Method name="_copyToModel_SM_SolarPC">
               <interface>
                 <inputVars>
                 </inputVars>
@@ -1552,7 +1371,7 @@ THIS^.proc.power_off._copyFromModel_Process( model := model.proc.power_off );
                 </outputVars>
                 <inOutVars>
                   <variable name="model">
-                    <type><derived name="M_SM_solarPC" /></type>
+                    <type><derived name="M_SM_SolarPC" /></type>
                     <addData>
                       <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                         <Attributes>
@@ -1579,6 +1398,7 @@ THIS^.proc.power_off._copyFromModel_Process( model := model.proc.power_off );
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">model.actualStatus := THIS^.actualStatus;
 model.powerPC := THIS^.powerPC;
 model.stat := THIS^.stat;
+THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
 THIS^.proc.power_on._copyToModel_Process( model := model.proc.power_on );
 THIS^.proc.power_off._copyToModel_Process( model := model.proc.power_off );
 </xhtml>
@@ -1591,6 +1411,34 @@ THIS^.proc.power_off._copyToModel_Process( model := model.proc.power_off );
       <pou name="SM_solar" pouType="functionBlock">
         <interface>
           <inputVars>
+            <variable name="temp">
+              <type><derived name="Temperature" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The measured temperature</xhtml>
+              </documentation>
+            </variable>
+            <variable name="tempHealth">
+              <type><derived name="HealthStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The temperature sensor health</xhtml>
+              </documentation>
+            </variable>
           </inputVars>
           <outputVars>
             <variable name="actualStatus">
@@ -1605,20 +1453,6 @@ THIS^.proc.power_off._copyToModel_Process( model := model.proc.power_off );
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Current status description</xhtml>
-              </documentation>
-            </variable>
-            <variable name="config">
-              <type><derived name="solarConfig" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Active configuration of the solar telescope</xhtml>
               </documentation>
             </variable>
             <variable name="stat">
@@ -1707,15 +1541,17 @@ THIS^.proc.power_off._copyToModel_Process( model := model.proc.power_off );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">parts.temperatureSensor();
-parts.fan();
-parts.mount();
-parts.pc();
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">parts.Fan();
+parts.Mount();
+parts.PC();
 stat.health := F_HealthStatus(
     superState := TRUE,
-    isGood := ((parts.fan.stat.health = HealthStatus.good) OR (parts.fan.stat.health = HealthStatus.warning)) AND (((parts.mount.stat.health = HealthStatus.good) OR (parts.mount.stat.health = HealthStatus.warning)) AND (((parts.pc.stat.health = HealthStatus.good) OR (parts.pc.stat.health = HealthStatus.warning)) AND ((parts.temperatureSensor.stat.health = HealthStatus.good) OR (parts.temperatureSensor.stat.health = HealthStatus.warning)))),
-    hasWarning := (parts.fan.stat.health = HealthStatus.warning) OR ((parts.mount.stat.health = HealthStatus.warning) OR ((parts.pc.stat.health = HealthStatus.warning) OR (parts.temperatureSensor.stat.health = HealthStatus.warning))));
-proc.power_on();
+    isGood := ((parts.Mount.stat.health = HealthStatus.good) OR (parts.Mount.stat.health = HealthStatus.warning)) AND ((parts.Fan.stat.health = HealthStatus.good) OR (parts.Fan.stat.health = HealthStatus.warning)),
+    hasWarning := (parts.Mount.stat.health = HealthStatus.warning) OR (parts.Fan.stat.health = HealthStatus.warning));
+stat.enabled := F_EnabledStatus(
+    superState := TRUE,
+    isEnabled := parts.Mount.stat.enabled AND parts.PC.stat.enabled);
+proc.power_on( isEnabled := (parts.Mount.stat.enabled = EnabledStatus.enabled) AND (parts.PC.stat.enabled = EnabledStatus.enabled) );
 proc.power_off();
 proc.reset();
 </xhtml>
@@ -1755,10 +1591,9 @@ proc.reset();
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.parts.temperatureSensor._copyFromModel_TemperatureMeasurement( model := model.parts.temperatureSensor );
-THIS^.parts.fan._copyFromModel_solarFan( model := model.parts.fan );
-THIS^.parts.mount._copyFromModel_solarMount( model := model.parts.mount );
-THIS^.parts.pc._copyFromModel_solarPC( model := model.parts.pc );
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.parts.Fan._copyFromModel_Ventilation( model := model.parts.Fan );
+THIS^.parts.Mount._copyFromModel_SolarMount( model := model.parts.Mount );
+THIS^.parts.PC._copyFromModel_SolarPC( model := model.parts.PC );
 THIS^.proc.power_on._copyFromModel_Process( model := model.proc.power_on );
 THIS^.proc.power_off._copyFromModel_Process( model := model.proc.power_off );
 THIS^.proc.reset._copyFromModel_Process( model := model.proc.reset );
@@ -1800,13 +1635,13 @@ THIS^.proc.reset._copyFromModel_Process( model := model.proc.reset );
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">model.actualStatus := THIS^.actualStatus;
-model.config := THIS^.config;
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">model.temp := THIS^.temp;
+model.tempHealth := THIS^.tempHealth;
+model.actualStatus := THIS^.actualStatus;
 model.stat := THIS^.stat;
-THIS^.parts.temperatureSensor._copyToModel_TemperatureMeasurement( model := model.parts.temperatureSensor );
-THIS^.parts.fan._copyToModel_solarFan( model := model.parts.fan );
-THIS^.parts.mount._copyToModel_solarMount( model := model.parts.mount );
-THIS^.parts.pc._copyToModel_solarPC( model := model.parts.pc );
+THIS^.parts.Fan._copyToModel_Ventilation( model := model.parts.Fan );
+THIS^.parts.Mount._copyToModel_SolarMount( model := model.parts.Mount );
+THIS^.parts.PC._copyToModel_SolarPC( model := model.parts.PC );
 THIS^.proc.power_on._copyToModel_Process( model := model.proc.power_on );
 THIS^.proc.power_off._copyToModel_Process( model := model.proc.power_off );
 THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
@@ -1836,38 +1671,36 @@ THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
               </Object>
             </Folder>
             <Folder Name="Processes">
-              <Object Name="solarFanProcesses">
+              <Object Name="SolarMountProcesses">
               </Object>
-              <Object Name="solarMountProcesses">
-              </Object>
-              <Object Name="solarPCProcesses">
+              <Object Name="SolarPCProcesses">
               </Object>
               <Object Name="solarProcesses">
               </Object>
             </Folder>
             <Folder Name="Statuses">
-              <Object Name="solarFanStatuses">
+              <Object Name="VentilationStatuses">
               </Object>
-              <Object Name="solarMountStatuses">
+              <Object Name="SolarMountStatuses">
               </Object>
-              <Object Name="solarPCStatuses">
+              <Object Name="SolarPCStatuses">
               </Object>
               <Object Name="solarStatuses">
               </Object>
             </Folder>
             <Folder Name="Models">
             </Folder>
-            <Object Name="SM_solarFan">
-              <Object Name="_copyFromModel_SM_solarFan" />
-              <Object Name="_copyToModel_SM_solarFan" />
+            <Object Name="SM_Ventilation">
+              <Object Name="_copyFromModel_SM_Ventilation" />
+              <Object Name="_copyToModel_SM_Ventilation" />
             </Object>
-            <Object Name="SM_solarMount">
-              <Object Name="_copyFromModel_SM_solarMount" />
-              <Object Name="_copyToModel_SM_solarMount" />
+            <Object Name="SM_SolarMount">
+              <Object Name="_copyFromModel_SM_SolarMount" />
+              <Object Name="_copyToModel_SM_SolarMount" />
             </Object>
-            <Object Name="SM_solarPC">
-              <Object Name="_copyFromModel_SM_solarPC" />
-              <Object Name="_copyToModel_SM_solarPC" />
+            <Object Name="SM_SolarPC">
+              <Object Name="_copyFromModel_SM_SolarPC" />
+              <Object Name="_copyToModel_SM_SolarPC" />
             </Object>
             <Object Name="SM_solar">
               <Object Name="_copyFromModel_SM_solar" />
@@ -1889,27 +1722,25 @@ THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
           <Folder Name="Functions">
           </Folder>
           <Folder Name="Models">
-            <Object Name="M_SM_solarFan">
+            <Object Name="M_SM_Ventilation">
             </Object>
-            <Object Name="M_SM_solarMount">
+            <Object Name="M_SM_SolarMount">
             </Object>
-            <Object Name="M_SM_solarPC">
+            <Object Name="M_SM_SolarPC">
             </Object>
             <Object Name="M_SM_solar">
             </Object>
-            <Object Name="M_solarFan">
+            <Object Name="M_Ventilation">
             </Object>
-            <Object Name="M_solarMount">
+            <Object Name="M_SolarMount">
             </Object>
-            <Object Name="M_solarPC">
+            <Object Name="M_SolarPC">
             </Object>
             <Object Name="M_solar">
             </Object>
-            <Object Name="M_SM_solarFanProcesses">
+            <Object Name="M_SM_SolarMountProcesses">
             </Object>
-            <Object Name="M_SM_solarMountProcesses">
-            </Object>
-            <Object Name="M_SM_solarPCProcesses">
+            <Object Name="M_SM_SolarPCProcesses">
             </Object>
             <Object Name="M_SM_solarParts">
             </Object>

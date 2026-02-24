@@ -76,6 +76,19 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Unit 4</xhtml>
               </documentation>
             </variable>
+            <variable name="STCU">
+              <type><derived name="STCU" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The STCU</xhtml>
+              </documentation>
+            </variable>
             <variable name="services">
               <type><derived name="Services" /></type>
               <addData>
@@ -816,6 +829,19 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
+            <variable name="STCU">
+              <type><derived name="M_STCU" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
             <variable name="services">
               <type><derived name="M_Services" /></type>
               <addData>
@@ -1164,6 +1190,9 @@ parts.u4(
     operator_ref := stat.operator,
     activity_ref := stat.activity,
     services_ref := parts.services);
+parts.STCU(
+    activity_ref := stat.activity,
+    services_ref := parts.services);
 parts.services( operator_ref := stat.operator );
 parts.sequencer( isEnabled := TRUE );
 parts.configManager( isEnabled := stat.operator = OperatorStatus.tech );
@@ -1239,6 +1268,7 @@ THIS^.parts.u1._copyFromModel_Unit( model := model.parts.u1 );
 THIS^.parts.u2._copyFromModel_Unit( model := model.parts.u2 );
 THIS^.parts.u3._copyFromModel_Unit( model := model.parts.u3 );
 THIS^.parts.u4._copyFromModel_Unit( model := model.parts.u4 );
+THIS^.parts.STCU._copyFromModel_STCU( model := model.parts.STCU );
 THIS^.parts.services._copyFromModel_Services( model := model.parts.services );
 THIS^.parts.sequencer._copyFromModel_Sequencer( model := model.parts.sequencer );
 THIS^.parts.configManager._copyFromModel_ConfigManager( model := model.parts.configManager );
@@ -1302,6 +1332,7 @@ THIS^.parts.u1._copyToModel_Unit( model := model.parts.u1 );
 THIS^.parts.u2._copyToModel_Unit( model := model.parts.u2 );
 THIS^.parts.u3._copyToModel_Unit( model := model.parts.u3 );
 THIS^.parts.u4._copyToModel_Unit( model := model.parts.u4 );
+THIS^.parts.STCU._copyToModel_STCU( model := model.parts.STCU );
 THIS^.parts.services._copyToModel_Services( model := model.parts.services );
 THIS^.parts.sequencer._copyToModel_Sequencer( model := model.parts.sequencer );
 THIS^.parts.configManager._copyToModel_ConfigManager( model := model.parts.configManager );

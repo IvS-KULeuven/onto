@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
   <fileHeader companyName="Institute of Astronomy" productName="Onto" productVersion="0.0.1" creationDateTime="2025-01-01T00:00:00.0" />
-  <contentHeader name="marvel_vessel" modificationDateTime="2025-01-01T00:00:00.0">
+  <contentHeader name="marvel_STCU" modificationDateTime="2025-01-01T00:00:00.0">
     <coordinateInfo>
       <fbd>
         <scaling x="1" y="1" />
@@ -21,10 +21,79 @@
   </contentHeader>
   <types>
     <dataTypes>
-      <dataType name="heaterControlProcesses">
+      <dataType name="TempControlStatus">
+        <baseType>
+          <enum>
+            <values>
+              <value name="idle" value="0" />
+              <value name="warming_up" value="1" />
+              <value name="controlling" value="2" />
+            </values>
+          </enum>
+        </baseType>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+            <Attributes>
+              <Attribute Name="qualified_only" Value="" />
+            </Attributes>
+          </data>
+        </addData>
+      </dataType>
+      <dataType name="STCUParts">
         <baseType>
           <struct>
-            <variable name="start">
+            <variable name="VesselTempControl">
+              <type><derived name="TempControl" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">State machine for the vessel temperature control</xhtml>
+              </documentation>
+            </variable>
+            <variable name="configManager">
+              <type><derived name="ConfigManager" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The config manager (to load/save/activate configuration data)</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="HeaterControlProcesses">
+        <baseType>
+          <struct>
+            <variable name="reset">
+              <type><derived name="Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Reset the heater</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="TempControlProcesses">
+        <baseType>
+          <struct>
+            <variable name="warm_up">
               <type><derived name="Process" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -60,13 +129,13 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Reset any errors</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Reset complete</xhtml>
               </documentation>
             </variable>
           </struct>
         </baseType>
       </dataType>
-      <dataType name="vesselProcesses">
+      <dataType name="STCUProcesses">
         <baseType>
           <struct>
             <variable name="initialize">
@@ -82,49 +151,10 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Start initializing</xhtml>
               </documentation>
             </variable>
-            <variable name="start">
-              <type><derived name="Process" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Start warming up</xhtml>
-              </documentation>
-            </variable>
-            <variable name="stop">
-              <type><derived name="Process" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Stop all temperature control and heating</xhtml>
-              </documentation>
-            </variable>
-            <variable name="reset">
-              <type><derived name="Process" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Reset any errors</xhtml>
-              </documentation>
-            </variable>
           </struct>
         </baseType>
       </dataType>
-      <dataType name="temperatureMeasurementStatuses">
+      <dataType name="TempMeasurementStatuses">
         <baseType>
           <struct>
             <variable name="enabled">
@@ -139,7 +169,7 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Is the temperature being measured?</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Is the measurement enabled?</xhtml>
               </documentation>
             </variable>
             <variable name="health">
@@ -175,7 +205,7 @@
           </struct>
         </baseType>
       </dataType>
-      <dataType name="heaterControlStatuses">
+      <dataType name="HeaterControlStatuses">
         <baseType>
           <struct>
             <variable name="enabled">
@@ -208,8 +238,14 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Is the heater healthy?</xhtml>
               </documentation>
             </variable>
-            <variable name="busy">
-              <type><derived name="BusyStatus" /></type>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="TempControlStatuses">
+        <baseType>
+          <struct>
+            <variable name="health">
+              <type><derived name="HealthStatus" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -220,30 +256,30 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Is the heater busy (e.g. ramping)?</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Is the tempcontrol healthy?</xhtml>
+              </documentation>
+            </variable>
+            <variable name="state">
+              <type><derived name="TempControlStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Actual state of the tempcontrol</xhtml>
               </documentation>
             </variable>
           </struct>
         </baseType>
       </dataType>
-      <dataType name="vesselStatuses">
+      <dataType name="STCUStatuses">
         <baseType>
           <struct>
-            <variable name="init">
-              <type><derived name="InitializationStatus" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
             <variable name="health">
               <type><derived name="HealthStatus" /></type>
               <addData>
@@ -277,7 +313,7 @@
           </struct>
         </baseType>
       </dataType>
-      <dataType name="vesselHeaterConfig">
+      <dataType name="HeaterConfig">
         <baseType>
           <struct>
             <variable name="name">
@@ -306,32 +342,6 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the heater is enabled</xhtml>
               </documentation>
             </variable>
-            <variable name="setPoint">
-              <type><REAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">set point temperature in kelvin</xhtml>
-              </documentation>
-            </variable>
-            <variable name="fastHeatingSetPoint">
-              <type><REAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">set point temperature in kelvin used for fast heating (e.g. during ramping)</xhtml>
-              </documentation>
-            </variable>
             <variable name="maxPower">
               <type><REAL /></type>
               <addData>
@@ -345,7 +355,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Maximum power of the heater</xhtml>
               </documentation>
             </variable>
-            <variable name="p">
+            <variable name="Kp">
               <type><REAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -358,7 +368,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">proportional gain</xhtml>
               </documentation>
             </variable>
-            <variable name="i">
+            <variable name="Tn">
               <type><REAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -368,10 +378,10 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">integral gain</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">integral gain (in seconds)</xhtml>
               </documentation>
             </variable>
-            <variable name="d">
+            <variable name="Tv">
               <type><REAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -381,10 +391,23 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">derivative gain</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">derivative gain D-T1 (in seconds)</xhtml>
               </documentation>
             </variable>
-            <variable name="weightTemperatureSensors">
+            <variable name="Td">
+              <type><REAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">derivative damping time D-T1 (in seconds)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="weights">
               <type>
                 <array>
                   <dimension lower="0" upper="25" />
@@ -404,10 +427,23 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">value between 0-1 representing the weight of each temperature sensor (0 for sensors not effecting this heater)</xhtml>
               </documentation>
             </variable>
+            <variable name="maxDeviation">
+              <type><REAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Maximum allowed deviation from the set point for the associated temperature sensors in kelvin</xhtml>
+              </documentation>
+            </variable>
           </struct>
         </baseType>
       </dataType>
-      <dataType name="vesselTemperatureSensorConfig">
+      <dataType name="MeasurementConfig">
         <baseType>
           <struct>
             <variable name="name">
@@ -479,11 +515,11 @@
           </struct>
         </baseType>
       </dataType>
-      <dataType name="vesselConfig">
+      <dataType name="TempControlConfig">
         <baseType>
           <struct>
-            <variable name="setPointTarger">
-              <type><REAL /></type>
+            <variable name="setPointTarget">
+              <type><derived name="Temperature" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -495,7 +531,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">set point temperature in kelvin</xhtml>
               </documentation>
             </variable>
-            <variable name="rampVeloPos">
+            <variable name="rampVPos">
               <type><REAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -508,7 +544,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">velocity of temperature change in K/s while ramping up</xhtml>
               </documentation>
             </variable>
-            <variable name="rampVeloNeg">
+            <variable name="rampVNeg">
               <type><REAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -521,10 +557,68 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">velocity of temperature change in K/s while ramping down</xhtml>
               </documentation>
             </variable>
+            <variable name="rampStart">
+              <type><REAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">temperature in kelvin at which the ramp starts (e.g. to avoid overshoot)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="maxDeviation">
+              <type><derived name="Temperature" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Maximum allowed deviation from other temp sensors in the vessel in kelvin</xhtml>
+              </documentation>
+            </variable>
+            <variable name="warnDeviation">
+              <type><derived name="Temperature" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Deviation from the set point at which a warning is issued in kelvin</xhtml>
+              </documentation>
+            </variable>
           </struct>
         </baseType>
       </dataType>
-      <dataType name="M_SM_temperatureMeasurement">
+      <dataType name="STCUConfig">
+        <baseType>
+          <struct>
+            <variable name="vesselTempControl">
+              <type><derived name="TempControlConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for the vessel temperature control</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="M_SM_TempMeasurement">
         <baseType>
           <struct>
             <variable name="actualStatus">
@@ -572,38 +666,8 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="underrange">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-            <variable name="overrange">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
             <variable name="stat">
-              <type><derived name="temperatureMeasurementStatuses" /></type>
+              <type><derived name="TempMeasurementStatuses" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -619,11 +683,11 @@
           </struct>
         </baseType>
       </dataType>
-      <dataType name="M_SM_heaterControl">
+      <dataType name="M_SM_HeaterControl">
         <baseType>
           <struct>
-            <variable name="actualStatus">
-              <type><string /></type>
+            <variable name="setPoint">
+              <type><REAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -637,8 +701,8 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="setPointRamped">
-              <type><REAL /></type>
+            <variable name="actualStatus">
+              <type><string /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -667,8 +731,8 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="associatedTemperature">
-              <type><REAL /></type>
+            <variable name="active">
+              <type><BOOL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -682,7 +746,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="setPointDeviation">
+            <variable name="deviation">
               <type><REAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -712,8 +776,23 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
+            <variable name="zoneTemp">
+              <type><derived name="Temperature" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
             <variable name="stat">
-              <type><derived name="heaterControlStatuses" /></type>
+              <type><derived name="HeaterControlStatuses" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -727,7 +806,7 @@
               </documentation>
             </variable>
             <variable name="proc">
-              <type><derived name="M_SM_heaterControlProcesses" /></type>
+              <type><derived name="M_SM_HeaterControlProcesses" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -743,9 +822,31 @@
           </struct>
         </baseType>
       </dataType>
-      <dataType name="M_SM_vessel">
+      <dataType name="M_SM_TempControl">
         <baseType>
           <struct>
+            <variable name="tempMeasurements">
+              <type>
+                <array>
+                  <dimension lower="0" upper="25" />
+                  <baseType>
+                    <derived name="TempMeasurement" />
+                  </baseType>
+                </array>
+              </type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
             <variable name="actualStatus">
               <type><string /></type>
               <addData>
@@ -761,8 +862,23 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="config">
-              <type><derived name="vesselConfig" /></type>
+            <variable name="avgTemperature">
+              <type><derived name="Temperature" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="maxTemperatureDeviation">
+              <type><derived name="Temperature" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -806,12 +922,12 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="temperatureSensor">
+            <variable name="heaters">
               <type>
                 <array>
                   <dimension lower="0" upper="25" />
                   <baseType>
-                    <derived name="temperatureMeasurement" />
+                    <derived name="HeaterControl" />
                   </baseType>
                 </array>
               </type>
@@ -828,15 +944,23 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="vesselHeater">
-              <type>
-                <array>
-                  <dimension lower="0" upper="25" />
-                  <baseType>
-                    <derived name="heaterControl" />
-                  </baseType>
-                </array>
-              </type>
+            <variable name="badHealthSensors">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="badHealthHeaters">
+              <type><BOOL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -851,7 +975,7 @@
               </documentation>
             </variable>
             <variable name="stat">
-              <type><derived name="vesselStatuses" /></type>
+              <type><derived name="TempControlStatuses" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -865,7 +989,7 @@
               </documentation>
             </variable>
             <variable name="proc">
-              <type><derived name="M_SM_vesselProcesses" /></type>
+              <type><derived name="M_SM_TempControlProcesses" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -881,10 +1005,107 @@
           </struct>
         </baseType>
       </dataType>
-      <dataType name="M_SM_heaterControlProcesses">
+      <dataType name="M_SM_STCU">
         <baseType>
           <struct>
-            <variable name="start">
+            <variable name="actualStatus">
+              <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="config">
+              <type><derived name="STCUConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="stat">
+              <type><derived name="STCUStatuses" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="parts">
+              <type><derived name="M_SM_STCUParts" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="proc">
+              <type><derived name="M_SM_STCUProcesses" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="M_SM_HeaterControlProcesses">
+        <baseType>
+          <struct>
+            <variable name="reset">
+              <type><derived name="M_Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="M_SM_TempControlProcesses">
+        <baseType>
+          <struct>
+            <variable name="warm_up">
               <type><derived name="M_Process" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -926,49 +1147,42 @@
           </struct>
         </baseType>
       </dataType>
-      <dataType name="M_SM_vesselProcesses">
+      <dataType name="M_SM_STCUParts">
+        <baseType>
+          <struct>
+            <variable name="VesselTempControl">
+              <type><derived name="M_TempControl" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="configManager">
+              <type><derived name="M_ConfigManager" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="M_SM_STCUProcesses">
         <baseType>
           <struct>
             <variable name="initialize">
-              <type><derived name="M_Process" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-            <variable name="start">
-              <type><derived name="M_Process" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-            <variable name="stop">
-              <type><derived name="M_Process" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-            <variable name="reset">
               <type><derived name="M_Process" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -986,7 +1200,7 @@
       </dataType>
     </dataTypes>
     <pous>
-      <pou name="SM_temperatureMeasurement" pouType="functionBlock">
+      <pou name="SM_TempMeasurement" pouType="functionBlock">
         <interface>
           <inputVars>
             <variable name="rawValue" address="%I*">
@@ -1000,19 +1214,6 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Measured raw value</xhtml>
-              </documentation>
-            </variable>
-            <variable name="error" address="%I*">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="0" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Error</xhtml>
               </documentation>
             </variable>
             <variable name="conversionFactor">
@@ -1073,36 +1274,8 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Moving average value</xhtml>
               </documentation>
             </variable>
-            <variable name="underrange" address="%I*">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Underrange</xhtml>
-              </documentation>
-            </variable>
-            <variable name="overrange" address="%I*">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Overrange</xhtml>
-              </documentation>
-            </variable>
             <variable name="stat">
-              <type><derived name="temperatureMeasurementStatuses" /></type>
+              <type><derived name="TempMeasurementStatuses" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1116,8 +1289,8 @@
             </variable>
           </outputVars>
           <inOutVars>
-            <variable name="config">
-              <type><derived name="vesselTemperatureSensorConfig" /></type>
+            <variable name="config_ref">
+              <type><derived name="MeasurementConfig" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1163,21 +1336,21 @@
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">stat.enabled := F_EnabledStatus(
     superState := TRUE,
-    isEnabled := config.enabled);
+    isEnabled := config_ref.enabled);
 stat.health := F_HealthStatus(
     superState := stat.enabled = EnabledStatus.enabled,
-    isGood := NOT(error OR (underrange OR (overrange OR ((stat.alarm = HiHiLoLoAlarmStatus.hiHi) OR (stat.alarm = HiHiLoLoAlarmStatus.loLo))))),
+    isGood := NOT((stat.alarm = HiHiLoLoAlarmStatus.hiHi) OR (stat.alarm = HiHiLoLoAlarmStatus.loLo)),
     hasWarning := (stat.alarm = HiHiLoLoAlarmStatus.hi) OR (stat.alarm = HiHiLoLoAlarmStatus.lo));
 stat.alarm := F_HiHiLoLoAlarmStatus(
     superState := stat.enabled = EnabledStatus.enabled,
-    config := config.alarms,
+    config := config_ref.alarms,
     value := average.celsius.value);
 </xhtml>
           </ST>
         </body>
         <addData>
           <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_copyFromModel_SM_temperatureMeasurement">
+            <Method name="_copyFromModel_SM_TempMeasurement">
               <interface>
                 <inputVars>
                 </inputVars>
@@ -1185,7 +1358,7 @@ stat.alarm := F_HiHiLoLoAlarmStatus(
                 </outputVars>
                 <inOutVars>
                   <variable name="model">
-                    <type><derived name="M_SM_temperatureMeasurement" /></type>
+                    <type><derived name="M_SM_TempMeasurement" /></type>
                     <addData>
                       <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                         <Attributes>
@@ -1215,7 +1388,7 @@ stat.alarm := F_HiHiLoLoAlarmStatus(
             </Method>
           </data>
           <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_copyToModel_SM_temperatureMeasurement">
+            <Method name="_copyToModel_SM_TempMeasurement">
               <interface>
                 <inputVars>
                 </inputVars>
@@ -1223,7 +1396,7 @@ stat.alarm := F_HiHiLoLoAlarmStatus(
                 </outputVars>
                 <inOutVars>
                   <variable name="model">
-                    <type><derived name="M_SM_temperatureMeasurement" /></type>
+                    <type><derived name="M_SM_TempMeasurement" /></type>
                     <addData>
                       <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                         <Attributes>
@@ -1250,8 +1423,6 @@ stat.alarm := F_HiHiLoLoAlarmStatus(
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">model.actualStatus := THIS^.actualStatus;
 model.actual := THIS^.actual;
 model.average := THIS^.average;
-model.underrange := THIS^.underrange;
-model.overrange := THIS^.overrange;
 model.stat := THIS^.stat;
 </xhtml>
                 </ST>
@@ -1260,9 +1431,23 @@ model.stat := THIS^.stat;
           </data>
         </addData>
       </pou>
-      <pou name="SM_heaterControl" pouType="functionBlock">
+      <pou name="SM_HeaterControl" pouType="functionBlock">
         <interface>
           <inputVars>
+            <variable name="setPoint">
+              <type><REAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Current set point of the heater in kelvin</xhtml>
+              </documentation>
+            </variable>
           </inputVars>
           <outputVars>
             <variable name="actualStatus">
@@ -1279,20 +1464,6 @@ model.stat := THIS^.stat;
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Current status description</xhtml>
               </documentation>
             </variable>
-            <variable name="setPointRamped">
-              <type><REAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Set point temperature in kelvin</xhtml>
-              </documentation>
-            </variable>
             <variable name="power">
               <type><REAL /></type>
               <addData>
@@ -1307,8 +1478,8 @@ model.stat := THIS^.stat;
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Current power of the heater in percentage</xhtml>
               </documentation>
             </variable>
-            <variable name="associatedTemperature">
-              <type><REAL /></type>
+            <variable name="active">
+              <type><BOOL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1318,10 +1489,10 @@ model.stat := THIS^.stat;
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Temperature associated with the heater</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the heater is active</xhtml>
               </documentation>
             </variable>
-            <variable name="setPointDeviation">
+            <variable name="deviation">
               <type><REAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -1349,8 +1520,22 @@ model.stat := THIS^.stat;
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the heater is in controlled state</xhtml>
               </documentation>
             </variable>
+            <variable name="zoneTemp">
+              <type><derived name="Temperature" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Associated temperature of the heater in kelvin</xhtml>
+              </documentation>
+            </variable>
             <variable name="stat">
-              <type><derived name="heaterControlStatuses" /></type>
+              <type><derived name="HeaterControlStatuses" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1363,7 +1548,7 @@ model.stat := THIS^.stat;
               </documentation>
             </variable>
             <variable name="proc">
-              <type><derived name="heaterControlProcesses" /></type>
+              <type><derived name="HeaterControlProcesses" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1377,8 +1562,8 @@ model.stat := THIS^.stat;
             </variable>
           </outputVars>
           <inOutVars>
-            <variable name="config">
-              <type><derived name="vesselHeaterConfig" /></type>
+            <variable name="config_ref">
+              <type><derived name="HeaterConfig" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1424,20 +1609,14 @@ model.stat := THIS^.stat;
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">stat.enabled := F_EnabledStatus(
     superState := TRUE,
-    isEnabled := config.enabled);
-stat.health := F_HealthStatus( superState := TRUE );
-stat.busy := F_BusyStatus(
-    superState := TRUE,
-    isBusy := proc.start.stat.busy);
-proc.start( isEnabled := config.enabled );
-proc.stop();
+    isEnabled := config_ref.enabled);
 proc.reset();
 </xhtml>
           </ST>
         </body>
         <addData>
           <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_copyFromModel_SM_heaterControl">
+            <Method name="_copyFromModel_SM_HeaterControl">
               <interface>
                 <inputVars>
                 </inputVars>
@@ -1445,7 +1624,7 @@ proc.reset();
                 </outputVars>
                 <inOutVars>
                   <variable name="model">
-                    <type><derived name="M_SM_heaterControl" /></type>
+                    <type><derived name="M_SM_HeaterControl" /></type>
                     <addData>
                       <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                         <Attributes>
@@ -1469,16 +1648,14 @@ proc.reset();
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.proc.start._copyFromModel_Process( model := model.proc.start );
-THIS^.proc.stop._copyFromModel_Process( model := model.proc.stop );
-THIS^.proc.reset._copyFromModel_Process( model := model.proc.reset );
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.proc.reset._copyFromModel_Process( model := model.proc.reset );
 </xhtml>
                 </ST>
               </body>
             </Method>
           </data>
           <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_copyToModel_SM_heaterControl">
+            <Method name="_copyToModel_SM_HeaterControl">
               <interface>
                 <inputVars>
                 </inputVars>
@@ -1486,7 +1663,7 @@ THIS^.proc.reset._copyFromModel_Process( model := model.proc.reset );
                 </outputVars>
                 <inOutVars>
                   <variable name="model">
-                    <type><derived name="M_SM_heaterControl" /></type>
+                    <type><derived name="M_SM_HeaterControl" /></type>
                     <addData>
                       <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                         <Attributes>
@@ -1510,15 +1687,14 @@ THIS^.proc.reset._copyFromModel_Process( model := model.proc.reset );
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">model.actualStatus := THIS^.actualStatus;
-model.setPointRamped := THIS^.setPointRamped;
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">model.setPoint := THIS^.setPoint;
+model.actualStatus := THIS^.actualStatus;
 model.power := THIS^.power;
-model.associatedTemperature := THIS^.associatedTemperature;
-model.setPointDeviation := THIS^.setPointDeviation;
+model.active := THIS^.active;
+model.deviation := THIS^.deviation;
 model.isControlled := THIS^.isControlled;
+model.zoneTemp := THIS^.zoneTemp;
 model.stat := THIS^.stat;
-THIS^.proc.start._copyToModel_Process( model := model.proc.start );
-THIS^.proc.stop._copyToModel_Process( model := model.proc.stop );
 THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
 </xhtml>
                 </ST>
@@ -1527,9 +1703,30 @@ THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
           </data>
         </addData>
       </pou>
-      <pou name="SM_vessel" pouType="functionBlock">
+      <pou name="SM_TempControl" pouType="functionBlock">
         <interface>
           <inputVars>
+            <variable name="tempMeasurements">
+              <type>
+                <array>
+                  <dimension lower="0" upper="25" />
+                  <baseType>
+                    <derived name="TempMeasurement" />
+                  </baseType>
+                </array>
+              </type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">All vessel temperature sensors</xhtml>
+              </documentation>
+            </variable>
           </inputVars>
           <outputVars>
             <variable name="actualStatus">
@@ -1546,8 +1743,8 @@ THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Current status description</xhtml>
               </documentation>
             </variable>
-            <variable name="config">
-              <type><derived name="vesselConfig" /></type>
+            <variable name="avgTemperature">
+              <type><derived name="Temperature" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1557,7 +1754,21 @@ THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Active configuration of the vessel</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Average temperature of the vessel in kelvin</xhtml>
+              </documentation>
+            </variable>
+            <variable name="maxTemperatureDeviation">
+              <type><derived name="Temperature" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Maximum deviation of the temperature sensors in kelvin</xhtml>
               </documentation>
             </variable>
             <variable name="isControlled">
@@ -1588,12 +1799,12 @@ THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Set point temperature in kelvin after ramping</xhtml>
               </documentation>
             </variable>
-            <variable name="temperatureSensor">
+            <variable name="heaters">
               <type>
                 <array>
                   <dimension lower="0" upper="25" />
                   <baseType>
-                    <derived name="temperatureMeasurement" />
+                    <derived name="HeaterControl" />
                   </baseType>
                 </array>
               </type>
@@ -1606,18 +1817,11 @@ THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">All vessel temperature sensors</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="vesselHeater">
-              <type>
-                <array>
-                  <dimension lower="0" upper="25" />
-                  <baseType>
-                    <derived name="heaterControl" />
-                  </baseType>
-                </array>
-              </type>
+            <variable name="badHealthSensors">
+              <type><BOOL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1627,11 +1831,25 @@ THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">All vessel heaters</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">True if there are temperature sensors in bad health</xhtml>
+              </documentation>
+            </variable>
+            <variable name="badHealthHeaters">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">True if there are heaters in bad health</xhtml>
               </documentation>
             </variable>
             <variable name="stat">
-              <type><derived name="vesselStatuses" /></type>
+              <type><derived name="TempControlStatuses" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1644,7 +1862,227 @@ THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
               </documentation>
             </variable>
             <variable name="proc">
-              <type><derived name="vesselProcesses" /></type>
+              <type><derived name="TempControlProcesses" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Processes of the state machine</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <inOutVars>
+            <variable name="config_ref">
+              <type><derived name="TempControlConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Active configuration of the vessel</xhtml>
+              </documentation>
+            </variable>
+            <variable name="activity_ref">
+              <type><derived name="ActivityStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Shared activity status</xhtml>
+              </documentation>
+            </variable>
+            <variable name="services_ref">
+              <type><derived name="Services" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Shared services</xhtml>
+              </documentation>
+            </variable>
+          </inOutVars>
+          <localVars>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">proc.warm_up( isEnabled := stat.state = TempControlStatus.idle );
+proc.stop( isEnabled := (stat.state = TempControlStatus.warming_up) OR (stat.state = TempControlStatus.controlling) );
+proc.reset();
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyFromModel_SM_TempControl">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_SM_TempControl" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.proc.warm_up._copyFromModel_Process( model := model.proc.warm_up );
+THIS^.proc.stop._copyFromModel_Process( model := model.proc.stop );
+THIS^.proc.reset._copyFromModel_Process( model := model.proc.reset );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyToModel_SM_TempControl">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_SM_TempControl" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">model.tempMeasurements := THIS^.tempMeasurements;
+model.actualStatus := THIS^.actualStatus;
+model.avgTemperature := THIS^.avgTemperature;
+model.maxTemperatureDeviation := THIS^.maxTemperatureDeviation;
+model.isControlled := THIS^.isControlled;
+model.setPointRamped := THIS^.setPointRamped;
+model.heaters := THIS^.heaters;
+model.badHealthSensors := THIS^.badHealthSensors;
+model.badHealthHeaters := THIS^.badHealthHeaters;
+model.stat := THIS^.stat;
+THIS^.proc.warm_up._copyToModel_Process( model := model.proc.warm_up );
+THIS^.proc.stop._copyToModel_Process( model := model.proc.stop );
+THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+        </addData>
+      </pou>
+      <pou name="SM_STCU" pouType="functionBlock">
+        <interface>
+          <inputVars>
+          </inputVars>
+          <outputVars>
+            <variable name="actualStatus">
+              <type><string length="50" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Current status description</xhtml>
+              </documentation>
+            </variable>
+            <variable name="config">
+              <type><derived name="STCUConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Active configuration of the STCU</xhtml>
+              </documentation>
+            </variable>
+            <variable name="stat">
+              <type><derived name="STCUStatuses" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Statuses of the state machine</xhtml>
+              </documentation>
+            </variable>
+            <variable name="parts">
+              <type><derived name="STCUParts" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Parts of the state machine</xhtml>
+              </documentation>
+            </variable>
+            <variable name="proc">
+              <type><derived name="STCUProcesses" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1684,38 +2122,28 @@ THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Shared services</xhtml>
               </documentation>
             </variable>
-            <variable name="config_ref">
-              <type><derived name="vesselConfig" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="0" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Active configuration of the vessel</xhtml>
-              </documentation>
-            </variable>
           </inOutVars>
           <localVars>
           </localVars>
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">stat.health := F_HealthStatus(
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">parts.VesselTempControl(
+    activity_ref := activity_ref,
+    services_ref := services_ref,
+    config_ref := config.vesselTempControl);
+parts.configManager();
+stat.health := F_HealthStatus(
     superState := TRUE,
-    isGood := ((stat.health = HealthStatus.good) OR (stat.health = HealthStatus.warning)) AND ((stat.health = HealthStatus.good) OR (stat.health = HealthStatus.warning)));
-proc.initialize( isEnabled := (NOT(stat.init = InitializationStatus.locked)) AND ((stat.init = InitializationStatus.shutdown) OR ((stat.init = InitializationStatus.initializingFailed) OR (stat.init = InitializationStatus.initialized))) );
-proc.start( isEnabled := (stat.init = InitializationStatus.initializingFailed) AND (stat.init = InitializationStatus.initialized) );
-proc.stop( isEnabled := (stat.busy = BusyStatus.busy) OR isControlled );
-proc.reset( isEnabled := (stat.busy = BusyStatus.idle) AND (stat.init = InitializationStatus.initialized) );
+    isGood := parts.VesselTempControl.stat.health = HealthStatus.good,
+    hasWarning := parts.VesselTempControl.stat.health = HealthStatus.warning);
+proc.initialize();
 </xhtml>
           </ST>
         </body>
         <addData>
           <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_copyFromModel_SM_vessel">
+            <Method name="_copyFromModel_SM_STCU">
               <interface>
                 <inputVars>
                 </inputVars>
@@ -1723,7 +2151,7 @@ proc.reset( isEnabled := (stat.busy = BusyStatus.idle) AND (stat.init = Initiali
                 </outputVars>
                 <inOutVars>
                   <variable name="model">
-                    <type><derived name="M_SM_vessel" /></type>
+                    <type><derived name="M_SM_STCU" /></type>
                     <addData>
                       <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                         <Attributes>
@@ -1747,17 +2175,16 @@ proc.reset( isEnabled := (stat.busy = BusyStatus.idle) AND (stat.init = Initiali
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.proc.initialize._copyFromModel_Process( model := model.proc.initialize );
-THIS^.proc.start._copyFromModel_Process( model := model.proc.start );
-THIS^.proc.stop._copyFromModel_Process( model := model.proc.stop );
-THIS^.proc.reset._copyFromModel_Process( model := model.proc.reset );
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.parts.VesselTempControl._copyFromModel_TempControl( model := model.parts.VesselTempControl );
+THIS^.parts.configManager._copyFromModel_ConfigManager( model := model.parts.configManager );
+THIS^.proc.initialize._copyFromModel_Process( model := model.proc.initialize );
 </xhtml>
                 </ST>
               </body>
             </Method>
           </data>
           <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_copyToModel_SM_vessel">
+            <Method name="_copyToModel_SM_STCU">
               <interface>
                 <inputVars>
                 </inputVars>
@@ -1765,7 +2192,7 @@ THIS^.proc.reset._copyFromModel_Process( model := model.proc.reset );
                 </outputVars>
                 <inOutVars>
                   <variable name="model">
-                    <type><derived name="M_SM_vessel" /></type>
+                    <type><derived name="M_SM_STCU" /></type>
                     <addData>
                       <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                         <Attributes>
@@ -1791,15 +2218,10 @@ THIS^.proc.reset._copyFromModel_Process( model := model.proc.reset );
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">model.actualStatus := THIS^.actualStatus;
 model.config := THIS^.config;
-model.isControlled := THIS^.isControlled;
-model.setPointRamped := THIS^.setPointRamped;
-model.temperatureSensor := THIS^.temperatureSensor;
-model.vesselHeater := THIS^.vesselHeater;
 model.stat := THIS^.stat;
+THIS^.parts.VesselTempControl._copyToModel_TempControl( model := model.parts.VesselTempControl );
+THIS^.parts.configManager._copyToModel_ConfigManager( model := model.parts.configManager );
 THIS^.proc.initialize._copyToModel_Process( model := model.proc.initialize );
-THIS^.proc.start._copyToModel_Process( model := model.proc.start );
-THIS^.proc.stop._copyToModel_Process( model := model.proc.stop );
-THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
 </xhtml>
                 </ST>
               </body>
@@ -1815,49 +2237,63 @@ THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
   <addData>
     <data name="http://www.3s-software.com/plcopenxml/projectstructure" handleUnknown="discard">
       <ProjectStructure>
-        <Folder Name="marvel_vessel">
+        <Folder Name="marvel_STCU">
           <Folder Name="Enums">
+            <Object Name="TempControlStatus">
+            </Object>
           </Folder>
           <Folder Name="Statuses">
           </Folder>
           <Folder Name="StateMachines">
             <Folder Name="Parts">
+              <Object Name="STCUParts">
+              </Object>
             </Folder>
             <Folder Name="Processes">
-              <Object Name="heaterControlProcesses">
+              <Object Name="HeaterControlProcesses">
               </Object>
-              <Object Name="vesselProcesses">
+              <Object Name="TempControlProcesses">
+              </Object>
+              <Object Name="STCUProcesses">
               </Object>
             </Folder>
             <Folder Name="Statuses">
-              <Object Name="temperatureMeasurementStatuses">
+              <Object Name="TempMeasurementStatuses">
               </Object>
-              <Object Name="heaterControlStatuses">
+              <Object Name="HeaterControlStatuses">
               </Object>
-              <Object Name="vesselStatuses">
+              <Object Name="TempControlStatuses">
+              </Object>
+              <Object Name="STCUStatuses">
               </Object>
             </Folder>
             <Folder Name="Models">
             </Folder>
-            <Object Name="SM_temperatureMeasurement">
-              <Object Name="_copyFromModel_SM_temperatureMeasurement" />
-              <Object Name="_copyToModel_SM_temperatureMeasurement" />
+            <Object Name="SM_TempMeasurement">
+              <Object Name="_copyFromModel_SM_TempMeasurement" />
+              <Object Name="_copyToModel_SM_TempMeasurement" />
             </Object>
-            <Object Name="SM_heaterControl">
-              <Object Name="_copyFromModel_SM_heaterControl" />
-              <Object Name="_copyToModel_SM_heaterControl" />
+            <Object Name="SM_HeaterControl">
+              <Object Name="_copyFromModel_SM_HeaterControl" />
+              <Object Name="_copyToModel_SM_HeaterControl" />
             </Object>
-            <Object Name="SM_vessel">
-              <Object Name="_copyFromModel_SM_vessel" />
-              <Object Name="_copyToModel_SM_vessel" />
+            <Object Name="SM_TempControl">
+              <Object Name="_copyFromModel_SM_TempControl" />
+              <Object Name="_copyToModel_SM_TempControl" />
+            </Object>
+            <Object Name="SM_STCU">
+              <Object Name="_copyFromModel_SM_STCU" />
+              <Object Name="_copyToModel_SM_STCU" />
             </Object>
           </Folder>
           <Folder Name="Configs">
-            <Object Name="vesselHeaterConfig">
+            <Object Name="HeaterConfig">
             </Object>
-            <Object Name="vesselTemperatureSensorConfig">
+            <Object Name="MeasurementConfig">
             </Object>
-            <Object Name="vesselConfig">
+            <Object Name="TempControlConfig">
+            </Object>
+            <Object Name="STCUConfig">
             </Object>
           </Folder>
           <Folder Name="Structs">
@@ -1871,21 +2307,29 @@ THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
           <Folder Name="Functions">
           </Folder>
           <Folder Name="Models">
-            <Object Name="M_SM_temperatureMeasurement">
+            <Object Name="M_SM_TempMeasurement">
             </Object>
-            <Object Name="M_SM_heaterControl">
+            <Object Name="M_SM_HeaterControl">
             </Object>
-            <Object Name="M_SM_vessel">
+            <Object Name="M_SM_TempControl">
             </Object>
-            <Object Name="M_temperatureMeasurement">
+            <Object Name="M_SM_STCU">
             </Object>
-            <Object Name="M_heaterControl">
+            <Object Name="M_TempMeasurement">
             </Object>
-            <Object Name="M_vessel">
+            <Object Name="M_HeaterControl">
             </Object>
-            <Object Name="M_SM_heaterControlProcesses">
+            <Object Name="M_TempControl">
             </Object>
-            <Object Name="M_SM_vesselProcesses">
+            <Object Name="M_STCU">
+            </Object>
+            <Object Name="M_SM_HeaterControlProcesses">
+            </Object>
+            <Object Name="M_SM_TempControlProcesses">
+            </Object>
+            <Object Name="M_SM_STCUParts">
+            </Object>
+            <Object Name="M_SM_STCUProcesses">
             </Object>
           </Folder>
         </Folder>

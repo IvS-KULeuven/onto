@@ -9,6 +9,7 @@
 
 !IMPORT models/in/marvel/marvel_unit.yaml:
 !IMPORT models/in/marvel/marvel_services.yaml:
+!IMPORT models/in/marvel/marvel_stcu.yaml:
 
 
 ########################################################################################################################
@@ -226,6 +227,16 @@
                         point:
                             attributes:
                                 isEnabled : { type: t_bool }
+
+          STCU:
+                type : marvel_STCU.STCU
+                comment: "The STCU"
+                expand: false
+                arguments:
+                    activity_ref            : { type: marvel_common.ActivityStatus          , expand: false }
+                    services_ref            : { type: marvel_services.Services              , expand: false }
+
+
           services:
               type : marvel_services.Services
               comment: "Services"
@@ -323,6 +334,9 @@
           u4:
               number              : !UINT8 4
               operator_ref        : stat.operator
+              activity_ref        : stat.activity
+              services_ref        : parts.services
+          STCU:
               activity_ref        : stat.activity
               services_ref        : parts.services
           configManager:
