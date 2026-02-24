@@ -34,7 +34,6 @@
       Tn : { type: t_float, comment: integral gain (in seconds) }
       Tv : { type: t_float, comment: derivative gain D-T1 (in seconds) }
       Td : { type: t_float, comment: derivative damping time D-T1 (in seconds) }
-      weights : { type: !ARRAY [0, 25, t_float], comment: "value between 0-1 representing the weight of each temperature sensor (0 for sensors not effecting this heater)" }
       maxDeviation : { type: t_float, comment: "Maximum allowed deviation from the set point for the associated temperature sensors in kelvin" }
 
 
@@ -67,6 +66,7 @@
       rampStart                  : { type: t_float  , comment: "temperature in kelvin at which the ramp starts (e.g. to avoid overshoot)" }
       maxDeviation               : { type: marvel_common.Temperature  , comment: "Maximum allowed deviation from other temp sensors in the vessel in kelvin" }
       warnDeviation              : { type: marvel_common.Temperature  , comment: "Deviation from the set point at which a warning is issued in kelvin" }
+      weights : { type: !ARRAY [0, 25, !ARRAY [0, 25, t_float]], comment: "value between 0-1 representing the weight of each temperature sensor for each heater" }
 
   !CONFIG STCUConfig:
     items:
@@ -126,10 +126,11 @@
         active                  : { type: t_bool, comment: "True if the heater is active" }
         deviation               : { type: t_float, comment: "Current error between set point and associated temperature" }
         isControlled            : { type: t_bool, comment: "True if the heater is in controlled state" }
-        zoneTemp                : { type: marvel_common.Temperature, comment: "Associated temperature of the heater in kelvin" }
 
     variables_input:     
         setPoint                : { type: t_float, comment: "Current set point of the heater in kelvin" }
+        zoneTemp                : { type: marvel_common.Temperature, comment: "Associated temperature of the heater in kelvin" }
+
 
     references:
       config_ref                  : { type: HeaterConfig    , comment: "Reference to the heater config" }

@@ -407,26 +407,6 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">derivative damping time D-T1 (in seconds)</xhtml>
               </documentation>
             </variable>
-            <variable name="weights">
-              <type>
-                <array>
-                  <dimension lower="0" upper="25" />
-                  <baseType>
-                    <REAL />
-                  </baseType>
-                </array>
-              </type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">value between 0-1 representing the weight of each temperature sensor (0 for sensors not effecting this heater)</xhtml>
-              </documentation>
-            </variable>
             <variable name="maxDeviation">
               <type><REAL /></type>
               <addData>
@@ -596,6 +576,33 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Deviation from the set point at which a warning is issued in kelvin</xhtml>
               </documentation>
             </variable>
+            <variable name="weights">
+              <type>
+                <array>
+                  <dimension lower="0" upper="25" />
+                  <baseType>
+
+                    <array>
+                      <dimension lower="0" upper="25" />
+                      <baseType>
+                        <REAL />
+                      </baseType>
+                    </array>
+                  
+                  </baseType>
+                </array>
+              </type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">value between 0-1 representing the weight of each temperature sensor for each heater</xhtml>
+              </documentation>
+            </variable>
           </struct>
         </baseType>
       </dataType>
@@ -701,6 +708,21 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
+            <variable name="zoneTemp">
+              <type><derived name="Temperature" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
             <variable name="actualStatus">
               <type><string /></type>
               <addData>
@@ -763,21 +785,6 @@
             </variable>
             <variable name="isControlled">
               <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-            <variable name="zoneTemp">
-              <type><derived name="Temperature" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1448,6 +1455,20 @@ model.stat := THIS^.stat;
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Current set point of the heater in kelvin</xhtml>
               </documentation>
             </variable>
+            <variable name="zoneTemp">
+              <type><derived name="Temperature" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Associated temperature of the heater in kelvin</xhtml>
+              </documentation>
+            </variable>
           </inputVars>
           <outputVars>
             <variable name="actualStatus">
@@ -1518,20 +1539,6 @@ model.stat := THIS^.stat;
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the heater is in controlled state</xhtml>
-              </documentation>
-            </variable>
-            <variable name="zoneTemp">
-              <type><derived name="Temperature" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Associated temperature of the heater in kelvin</xhtml>
               </documentation>
             </variable>
             <variable name="stat">
@@ -1688,12 +1695,12 @@ proc.reset();
               <body>
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">model.setPoint := THIS^.setPoint;
+model.zoneTemp := THIS^.zoneTemp;
 model.actualStatus := THIS^.actualStatus;
 model.power := THIS^.power;
 model.active := THIS^.active;
 model.deviation := THIS^.deviation;
 model.isControlled := THIS^.isControlled;
-model.zoneTemp := THIS^.zoneTemp;
 model.stat := THIS^.stat;
 THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
 </xhtml>
