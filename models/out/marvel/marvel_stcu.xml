@@ -603,6 +603,46 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">value between 0-1 representing the weight of each temperature sensor for each heater</xhtml>
               </documentation>
             </variable>
+            <variable name="tempMeasurements">
+              <type>
+                <array>
+                  <dimension lower="0" upper="25" />
+                  <baseType>
+                    <derived name="MeasurementConfig" />
+                  </baseType>
+                </array>
+              </type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for each temperature sensor in the vessel</xhtml>
+              </documentation>
+            </variable>
+            <variable name="heaters">
+              <type>
+                <array>
+                  <dimension lower="0" upper="25" />
+                  <baseType>
+                    <derived name="HeaterConfig" />
+                  </baseType>
+                </array>
+              </type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for each heater in the vessel</xhtml>
+              </documentation>
+            </variable>
           </struct>
         </baseType>
       </dataType>

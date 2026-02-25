@@ -67,7 +67,13 @@
       maxDeviation               : { type: marvel_common.Temperature  , comment: "Maximum allowed deviation from other temp sensors in the vessel in kelvin" }
       warnDeviation              : { type: marvel_common.Temperature  , comment: "Deviation from the set point at which a warning is issued in kelvin" }
       weights : { type: !ARRAY [0, 25, !ARRAY [0, 25, t_float]], comment: "value between 0-1 representing the weight of each temperature sensor for each heater" }
+      tempMeasurements : { type: !ARRAY [0, 25, MeasurementConfig], comment: "Config for each temperature sensor in the vessel" }
+      heaters : { type: !ARRAY [0, 25, HeaterConfig], comment: "Config for each heater in the vessel" }
 
+
+  ###################
+  ### STCU config ###
+  ###################
   !CONFIG STCUConfig:
     items:
       vesselTempControl: { type: TempControlConfig, comment: "Config for the vessel temperature control" }
