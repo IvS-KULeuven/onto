@@ -55,18 +55,32 @@
           type: marvel_common.HiHiLoLoAlarmConfig
           comment: "Config"
 
+  ### simulation config ###
+  !CONFIG SimulationConfig:
+    items:
+      isSimulated                : {type: t_bool}
+      ambient: { type: marvel_common.Temperature, comment: starting temp of sensors}
+      heating: {type: t_float, comment: heating gain/factor (0-1)}
+      cooling: {type: t_float, comment: cooling factor (0-1)}
+      weights : { type: !ARRAY [0, 25, !ARRAY [0, 19, t_float]], comment: "value between 0-1 representing the effect each heater has on each temperature sensor" }
+
+
+
   #########################################
   ### vessel temperature control config ###
   #########################################
   !CONFIG TempControlConfig:
     items:
+      simulation                 : {type: SimulationConfig}
       setPointTarget             : { type: marvel_common.Temperature  , comment: "set point temperature in kelvin" }
       rampVPos                   : { type: t_float  , comment: "velocity of temperature change in K/s while ramping up" }
       rampVNeg                   : { type: t_float  , comment: "velocity of temperature change in K/s while ramping down" }
       rampStart                  : { type: t_float  , comment: "temperature in kelvin at which the ramp starts (e.g. to avoid overshoot)" }
       maxDeviation               : { type: marvel_common.Temperature  , comment: "Maximum allowed deviation from other temp sensors in the vessel in kelvin" }
       warnDeviation              : { type: marvel_common.Temperature  , comment: "Deviation from the set point at which a warning is issued in kelvin" }
-      weights : { type: !ARRAY [0, 25, !ARRAY [0, 25, t_float]], comment: "value between 0-1 representing the weight of each temperature sensor for each heater" }
+      weights : { type: !ARRAY [0, 19, !ARRAY [0, 25, t_float]], comment: "value between 0-1 representing the weight of each temperature sensor for each heater" }
+
+      #sensors
       tpT1:          { type: MeasurementConfig, comment: "Config for temp sensor T1" }
       tpT2:          { type: MeasurementConfig, comment: "Config for temp sensor T2" }
       tpT3:          { type: MeasurementConfig, comment: "Config for temp sensor T3" }
@@ -98,6 +112,9 @@
       tpVesLidN:     { type: MeasurementConfig, comment: "Config for Vessel Lid N" }
       tpVesLidS:     { type: MeasurementConfig, comment: "Config for Vessel Lid S" }
 
+      tpCryoRear:    { type: MeasurementConfig, comment: "config for sensor cryo rear outside"}
+
+      #heaters
       htLegNE:       { type: HeaterConfig, comment: "Config for heater Leg NE" }
       htLegNW:       { type: HeaterConfig, comment: "Config for heater Leg NW" }
       htLegSE:       { type: HeaterConfig, comment: "Config for heater Leg SE" }
@@ -121,6 +138,8 @@
       htVesLidN:     { type: HeaterConfig, comment: "Config for heater Vessel Lid N" }
       htVesLidS:     { type: HeaterConfig, comment: "Config for heater Vessel Lid S" }
 
+      htCryoRear:    { type: HeaterConfig, comment: "config for heater cryo rear outside"}
+
 
   ###################
   ### STCU config ###
@@ -128,6 +147,7 @@
   !CONFIG STCUConfig:
     items:
       vesselTempControl: { type: TempControlConfig, comment: "Config for the vessel temperature control" }
+      tempCabinet: { type: MeasurementConfig, comment: "Config for the temperature measurement in the electrical cabinet" }
       
 
 ########################################################################################################################
@@ -138,11 +158,15 @@
   !STATEMACHINE TempMeasurement:
     variables_hidden:
         rawValue        : { type: t_float              , comment: "Measured raw value"                                        , address: "%I*" }
-        conversionFactor: { type: t_double             , comment: "rawValue * conversionFactor = temperature.degrees.value"   , initial: !DOUBLE 0.01 }
+        conversionFactor: { type: t_double             , comment: "rawValue * conversionFactor = temperature.degrees.value"  }
 
     variables_output:
         actual          : { type: marvel_common.Temperature          , comment: "Actual value" }
         average         : { type: marvel_common.Temperature          , comment: "Moving average value" }
+
+    variables_input:
+      isSimulated : {type: t_bool}
+      simulatedVal: {type: marvel_common.Temperature}
 
     references:
         config_ref          : { type: MeasurementConfig, comment: "Reference to the config (alarms in degrees celsius)" }
@@ -160,7 +184,7 @@
 
         alarm:
             superState   : !EQ [ stat.enabled, marvel_common.EnabledStatus.enabled ]
-            config       : config_ref.alarms
+            config       : config_ref.alarms 
             value        : average.celsius.value
 
         health:
@@ -186,22 +210,32 @@
     variables_input:     
         setPoint                : { type: t_float, comment: "Current set point of the heater in kelvin" }
         zoneTemp                : { type: marvel_common.Temperature, comment: "Associated temperature of the heater in kelvin" }
+        isSimulated : {type: t_bool}
 
 
     references:
       config_ref                  : { type: HeaterConfig    , comment: "Reference to the heater config" }
 
     stat:
+      init                        : { type: marvel_common.InitializationStatus }
       enabled         : { type: marvel_common.EnabledStatus        , comment: "Is the heater enabled?" }
       health          : { type: marvel_common.HealthStatus         , comment: "Is the heater healthy?" }
     proc:
+      initialize      : { type: marvel_common.Process                     , comment: "Initialize the heater" }
       reset           : { type: marvel_common.Process                     , comment: "Reset the heater" }
 
     calls:
         enabled:
             superState   : !BOOL TRUE
             isEnabled    : config_ref.enabled
+      #proc
+        initialize:
+          isEnabled    : !NOT [ !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ],
+                                      !EQ [ stat.init, marvel_common.InitializationStatus.initializingFailed ],
+                                      !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ] ] 
 
+        reset:
+          isEnabled    : !BOOL TRUE
 
 ################################################
 ### state machine vessel temperature control ###
@@ -212,14 +246,30 @@
       maxTemperatureDeviation : { type: marvel_common.Temperature                                               , comment: "Maximum deviation of the temperature sensors in kelvin" }
       isControlled            : { type: t_bool                                                , comment: "True if the vessel is in controlled state" }
       setPointRamped          : { type: t_float                                               , comment: "Set point temperature in kelvin after ramping" }
-      #heaters            : { type: !ARRAY [0, 25, HeaterControl] }
       badHealthSensors   : { type: t_bool               , comment: "True if there are temperature sensors in bad health" }
       badHealthHeaters   : { type: t_bool               , comment: "True if there are heaters in bad health" }
 
-    #variables_input:
-      #tempMeasurements             : { type: !ARRAY [0, 25, TempMeasurement]                , comment: "All vessel temperature sensors" }
+      #thermostat switch enabled
+      enableTstatBottom        :    { type: t_bool, comment: "Thermostat switch vessel bottom enabled ", address: "%Q*" } 
+      enableTstatCryoRear     :    { type: t_bool, comment: "Thermostat switch cryo rear enabled ", address: "%Q*" }
+      enableTstatLid       :    { type: t_bool, comment: "Thermostat switch lid top enabled ", address: "%Q*" }
+      enableK6                 :    { type: t_bool, comment: "relay k6 enabled (place holder for future tstat's)", address: "%Q*" }
+      enableK7                 :    { type: t_bool, comment: "relay k7 enabled (place holder for future tstat's)", address: "%Q*" }
+      enableK8                 :    { type: t_bool, comment: "relay k8 enabled (place holder for future tstat's)", address: "%Q*" }
+      enableK9                 :    { type: t_bool, comment: "relay k9 enabled (place holder for future tstat's)", address: "%Q*" }
+
+    variables_input:
+      #thermostat switch states
+      stateTstatBottom              :    { type: t_bool, comment: "State of the thermostat switch at the vessel bottom", address: "%I*" }
+      stateTstatCryoRear             :    { type: t_bool, comment: "State of the thermostat switch at the cryo rear", address: "%I*" }
+      stateTstatLid                 :    { type: t_bool, comment: "State of the thermostat switch at the lid top", address: "%I*" }
+      stateK6                       :    { type: t_bool, comment: "State of relay k6 (place holder for future tstat's)", address: "%I*" }
+      stateK7                       :    { type: t_bool, comment: "State of relay k7 (place holder for future tstat's)", address: "%I*" }
+      stateK8                       :    { type: t_bool, comment: "State of relay k8 (place holder for future tstat's)", address: "%I*" }
+      stateK9                       :    { type: t_bool, comment: "State of relay k9 (place holder for future tstat's)", address: "%I*" }
+
     parts:
-    #sensors
+      #sensors
       tpT1:          { type: TempMeasurement, comment: "1st temp sensor",           arguments: { config_ref: { type: MeasurementConfig } } }
       tpT2:          { type: TempMeasurement, comment: "2nd temp sensor",           arguments: { config_ref: { type: MeasurementConfig } } }
       tpT3:          { type: TempMeasurement, comment: "3rd temp sensor",           arguments: { config_ref: { type: MeasurementConfig } } }
@@ -251,7 +301,9 @@
       tpVesLidN:     { type: TempMeasurement, comment: "Vessel Lid N",              arguments: { config_ref: { type: MeasurementConfig } } }
       tpVesLidS:     { type: TempMeasurement, comment: "Vessel Lid S",              arguments: { config_ref: { type: MeasurementConfig } } }
 
-    #heaters
+      tpCryoRear:     { type: TempMeasurement, comment: "Cryo Rear",                arguments: { config_ref: { type: MeasurementConfig } } }
+
+      #heaters
       htLegNE:       { type: HeaterControl, comment: "Heater control for Leg NE",              arguments: { config_ref: { type: HeaterConfig } } }
       htLegNW:       { type: HeaterControl, comment: "Heater control for Leg NW",              arguments: { config_ref: { type: HeaterConfig } } }
       htLegSE:       { type: HeaterControl, comment: "Heater control for Leg SE",              arguments: { config_ref: { type: HeaterConfig } } }
@@ -274,6 +326,8 @@
 
       htVesLidN:     { type: HeaterControl, comment: "Heater control for Vessel Lid N",        arguments: { config_ref: { type: HeaterConfig } } }
       htVesLidS:     { type: HeaterControl, comment: "Heater control for Vessel Lid S",        arguments: { config_ref: { type: HeaterConfig } } }
+
+      htCryoRear:     { type: HeaterControl, comment: "Heater control for Cryo Rear",           arguments: { config_ref: { type: HeaterConfig } } }
           
           
     references:
@@ -282,20 +336,31 @@
       services_ref            : { type: marvel_services.Services                  , comment: "Shared services", expand: false}
 
     stat:
+      init                        : { type: marvel_common.InitializationStatus }
       health          : { type: marvel_common.HealthStatus         , comment: "Is the tempcontrol healthy?" }
       state           : { type: TempControlStatus                   , comment: "Actual state of the tempcontrol" }
+
     proc:
+      initialize                  : { type: marvel_common.Process                     , comment: "Start initializing" }
       warm_up                     : { type: marvel_common.Process                     , comment: "Start warming up" }
       stop                        : { type: marvel_common.Process                     , comment: "Stop heating" }
       reset                       : { type: marvel_common.Process                     , comment: "Reset complete" }   
 
     calls:
-        warm_up:
-          isEnabled    : !EQ [ stat.state, TempControlStatus.idle ] 
+      #proc's
+        initialize:
+          isEnabled    : !NOT [ !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ],
+                                      !EQ [ stat.init, marvel_common.InitializationStatus.initializingFailed ],
+                                      !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ] ] 
+        warm_up:                                  
+          isEnabled    : !AND [ !EQ [ stat.state, TempControlStatus.idle ], !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ]
         stop:
           isEnabled    : !OR [ !EQ [ stat.state, TempControlStatus.warming_up ], !EQ [ stat.state, TempControlStatus.controlling ] ]
+        reset:
+          isEnabled    : !BOOL TRUE
 
-      #sensors
+      #parts
+        #sensors
         tpT1:          { config_ref: config_ref.tpT1 }
         tpT2:          { config_ref: config_ref.tpT2 }
         tpT3:          { config_ref: config_ref.tpT3 }
@@ -327,7 +392,9 @@
         tpVesLidN:     { config_ref: config_ref.tpVesLidN }
         tpVesLidS:     { config_ref: config_ref.tpVesLidS }
 
-      #heaeters
+        tpCryoRear:    { config_ref: config_ref.tpCryoRear}
+
+        #heaeters
         htLegNE:       { config_ref: config_ref.htLegNE }
         htLegNW:       { config_ref: config_ref.htLegNW }
         htLegSE:       { config_ref: config_ref.htLegSE }
@@ -351,6 +418,8 @@
         htVesLidN:     { config_ref: config_ref.htVesLidN }
         htVesLidS:     { config_ref: config_ref.htVesLidS }
 
+        htCryoRear:    { config_ref: config_ref.htCryoRear}
+
 
 ########################################################################################################################
 # state machine's STCU
@@ -364,6 +433,8 @@
       config                  : { type: STCUConfig, comment: "Active configuration of the STCU" }
       
     parts:
+      tempCabinet:     { type: TempMeasurement, comment: "temp measurement in electrical cabinet",              arguments: { config_ref: { type: MeasurementConfig } } }
+
       VesselTempControl:
         type: TempControl
         expand: false
@@ -392,6 +463,8 @@
                               
         hasWarning  : !EQ [ parts.VesselTempControl.stat.health, marvel_common.HealthStatus.warning ]
 
+    #parts
+      tempCabinet:     { config_ref: config.tempCabinet }
       VesselTempControl:
               activity_ref        : activity_ref
               services_ref        : services_ref
