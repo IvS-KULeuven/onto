@@ -14,8 +14,24 @@
 ########################################################################################################################
 # stuses
 ########################################################################################################################
-  !ENUMERATION TempControlStatus:
+  !ENUMERATION TempControlStates:
     items: [idle, warming_up, controlling ]
+
+  !STATUS TempControlStatus:
+      variables_input:
+          state:
+              type: TempControlStates
+              comment: "Enum!"
+      states:
+          idle:
+              expr: !EQ [state, TempControlStates.idle]
+              comment: "idle"
+          warming_up:
+              expr: !EQ [state, TempControlStates.warming_up]
+              comment: "warming_up"
+          controlling:
+              expr: !EQ [state, TempControlStates.controlling]
+              comment: "controlling"
 
 
 ########################################################################################################################
@@ -62,7 +78,7 @@
       ambient: { type: marvel_common.Temperature, comment: starting temp of sensors}
       heating: {type: t_float, comment: heating gain/factor (0-1)}
       cooling: {type: t_float, comment: cooling factor (0-1)}
-      weights : { type: !ARRAY [0, 25, !ARRAY [0, 19, t_float]], comment: "value between 0-1 representing the effect each heater has on each temperature sensor" }
+      weights : { type: !ARRAY [0, 30, !ARRAY [0, 30, t_float]], comment: "value between 0-1 representing the effect each heater has on each temperature sensor" }
 
 
 
@@ -78,7 +94,7 @@
       rampStart                  : { type: t_float  , comment: "temperature in kelvin at which the ramp starts (e.g. to avoid overshoot)" }
       maxDeviation               : { type: marvel_common.Temperature  , comment: "Maximum allowed deviation from other temp sensors in the vessel in kelvin" }
       warnDeviation              : { type: marvel_common.Temperature  , comment: "Deviation from the set point at which a warning is issued in kelvin" }
-      weights : { type: !ARRAY [0, 19, !ARRAY [0, 25, t_float]], comment: "value between 0-1 representing the weight of each temperature sensor for each heater" }
+      weights : { type: !ARRAY [0, 30, !ARRAY [0, 30, t_float]], comment: "value between 0-1 representing the weight of each temperature sensor for each heater" }
 
       #sensors
       tpT1:          { type: MeasurementConfig, comment: "Config for temp sensor T1" }
@@ -334,6 +350,7 @@
       config_ref              : { type: TempControlConfig                              , comment: "Active configuration of the vessel" }
       activity_ref            : { type: marvel_common.ActivityStatus              , comment: "Shared activity status"}
       services_ref            : { type: marvel_services.Services                  , comment: "Shared services", expand: false}
+      operator_ref            : { type: marvel_common.OperatorStatus              , comment: "Shared operator status" }
 
     stat:
       init                        : { type: marvel_common.InitializationStatus }
@@ -345,19 +362,28 @@
       warm_up                     : { type: marvel_common.Process                     , comment: "Start warming up" }
       stop                        : { type: marvel_common.Process                     , comment: "Stop heating" }
       reset                       : { type: marvel_common.Process                     , comment: "Reset complete" }   
+      lock                        : { type: marvel_common.Process                     , comment: "Lock the temp control (e.g. when the vessel is opened)" }
+      unlock                      : { type: marvel_common.Process                     , comment: "Unlock the temp control (e.g. when the vessel is closed)" }
 
     calls:
       #proc's
         initialize:
           isEnabled    : !NOT [ !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ],
                                       !EQ [ stat.init, marvel_common.InitializationStatus.initializingFailed ],
-                                      !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ] ] 
+                                      !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ,
+                                      !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ] 
         warm_up:                                  
-          isEnabled    : !AND [ !EQ [ stat.state, TempControlStatus.idle ], !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ]
+          isEnabled    : !AND [ !EQ [ stat.state, TempControlStatus.idle ], !EQ [ stat.init, marvel_common.InitializationStatus.initialized ],!NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
         stop:
           isEnabled    : !OR [ !EQ [ stat.state, TempControlStatus.warming_up ], !EQ [ stat.state, TempControlStatus.controlling ] ]
         reset:
-          isEnabled    : !BOOL TRUE
+          isEnabled    : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
+
+        lock:
+          isEnabled                 : !AND [ !EQ [ operator_ref, marvel_common.OperatorStatus.tech ], !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
+        unlock:
+          isEnabled                 : !AND [ !EQ [ operator_ref, marvel_common.OperatorStatus.tech ],
+                                            !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
 
       #parts
         #sensors
@@ -428,7 +454,8 @@
     references:
       activity_ref            : { type: marvel_common.ActivityStatus              , comment: "Shared activity status"}
       services_ref            : { type: marvel_services.Services                  , comment: "Shared services", expand: false}
-    
+      operator_ref            : { type: marvel_common.OperatorStatus              , comment: "Shared operator status" }
+
     variables_output:
       config                  : { type: STCUConfig, comment: "Active configuration of the STCU" }
       
@@ -469,6 +496,7 @@
               activity_ref        : activity_ref
               services_ref        : services_ref
               config_ref          : config.vesselTempControl
+              operator_ref        : operator_ref
                               
        # isGood                    : !MTCS_SUMMARIZE_GOOD [ parts.VesselTempControl ] 
   

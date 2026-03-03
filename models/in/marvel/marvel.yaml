@@ -235,6 +235,7 @@
                 arguments:
                     activity_ref            : { type: marvel_common.ActivityStatus          , expand: false }
                     services_ref            : { type: marvel_services.Services              , expand: false }
+                    operator_ref            : { type: marvel_common.OperatorStatus          , expand: false }
 
 
           services:
@@ -337,6 +338,7 @@
               activity_ref        : stat.activity
               services_ref        : parts.services
           STCU:
+              operator_ref        : stat.operator
               activity_ref        : stat.activity
               services_ref        : parts.services
           configManager:

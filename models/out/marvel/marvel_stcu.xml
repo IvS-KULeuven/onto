@@ -21,7 +21,7 @@
   </contentHeader>
   <types>
     <dataTypes>
-      <dataType name="TempControlStatus">
+      <dataType name="TempControlStates">
         <baseType>
           <enum>
             <values>
@@ -29,6 +29,27 @@
               <value name="warming_up" value="1" />
               <value name="controlling" value="2" />
             </values>
+          </enum>
+        </baseType>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+            <Attributes>
+              <Attribute Name="qualified_only" Value="" />
+            </Attributes>
+          </data>
+        </addData>
+      </dataType>
+      <dataType name="TempControlStatus">
+        <baseType>
+          <enum>
+            <values>
+              <value name="unknown" value="0" />
+              <value name="invalid_model" value="1" />
+              <value name="idle" value="2" />
+              <value name="warming_up" value="3" />
+              <value name="controlling" value="4" />
+            </values>
+            <baseType><BYTE /></baseType>
           </enum>
         </baseType>
         <addData>
@@ -749,6 +770,32 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Reset complete</xhtml>
               </documentation>
             </variable>
+            <variable name="lock">
+              <type><derived name="Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Lock the temp control (e.g. when the vessel is opened)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="unlock">
+              <type><derived name="Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Unlock the temp control (e.g. when the vessel is closed)</xhtml>
+              </documentation>
+            </variable>
           </struct>
         </baseType>
       </dataType>
@@ -1200,11 +1247,11 @@
             <variable name="weights">
               <type>
                 <array>
-                  <dimension lower="0" upper="25" />
+                  <dimension lower="0" upper="30" />
                   <baseType>
 
                     <array>
-                      <dimension lower="0" upper="19" />
+                      <dimension lower="0" upper="30" />
                       <baseType>
                         <REAL />
                       </baseType>
@@ -1324,11 +1371,11 @@
             <variable name="weights">
               <type>
                 <array>
-                  <dimension lower="0" upper="19" />
+                  <dimension lower="0" upper="30" />
                   <baseType>
 
                     <array>
-                      <dimension lower="0" upper="25" />
+                      <dimension lower="0" upper="30" />
                       <baseType>
                         <REAL />
                       </baseType>
@@ -3310,6 +3357,32 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
+            <variable name="lock">
+              <type><derived name="M_Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="unlock">
+              <type><derived name="M_Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
           </struct>
         </baseType>
       </dataType>
@@ -3379,6 +3452,67 @@
       </dataType>
     </dataTypes>
     <pous>
+      <pou name="F_TempControlStatus" pouType="function">
+          <interface>
+            <returnType><derived name="TempControlStatus" /></returnType>
+            <inputVars>
+              <variable name="superState">
+                <type><BOOL /></type>
+                <initialValue><simpleValue value="TRUE" /></initialValue>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+                <documentation>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">Super state (TRUE if the super state is active, or if there is no super state)</xhtml>
+                </documentation>
+              </variable>
+              <variable name="state">
+                <type><derived name="TempControlStates" /></type>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+                <documentation>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">Enum!</xhtml>
+                </documentation>
+              </variable>
+            </inputVars>
+            <outputVars>
+            </outputVars>
+            <inOutVars>
+            </inOutVars>
+            <localVars>
+            </localVars>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                <Attributes>
+                  <Attribute Name="TcRpcEnable" Value="1" />
+                </Attributes>
+              </data>
+            </addData>
+          </interface>
+          <body>
+            <ST>
+              <xhtml xmlns="http://www.w3.org/1999/xhtml">IF NOT(superState) THEN
+    F_TempControlStatus := TempControlStatus.unknown;
+ELSIF state = TempControlStates.idle THEN
+    F_TempControlStatus := TempControlStatus.idle;
+ELSIF state = TempControlStates.warming_up THEN
+    F_TempControlStatus := TempControlStatus.warming_up;
+ELSIF state = TempControlStates.controlling THEN
+    F_TempControlStatus := TempControlStatus.controlling;
+ELSE
+    F_TempControlStatus := TempControlStatus.invalid_model;
+END_IF;
+</xhtml>
+            </ST>
+          </body>
+      </pou>
       <pou name="SM_TempMeasurement" pouType="functionBlock">
         <interface>
           <inputVars>
@@ -4256,6 +4390,19 @@ THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Shared services</xhtml>
               </documentation>
             </variable>
+            <variable name="operator_ref">
+              <type><derived name="OperatorStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Shared operator status</xhtml>
+              </documentation>
+            </variable>
           </inOutVars>
           <localVars>
           </localVars>
@@ -4306,10 +4453,12 @@ parts.htVesSideSW( config_ref := config_ref.htVesSideSW );
 parts.htVesLidN( config_ref := config_ref.htVesLidN );
 parts.htVesLidS( config_ref := config_ref.htVesLidS );
 parts.htCryoRear( config_ref := config_ref.htCryoRear );
-proc.initialize( isEnabled := NOT((stat.init = InitializationStatus.shutdown) OR ((stat.init = InitializationStatus.initializingFailed) OR (stat.init = InitializationStatus.initialized))) );
-proc.warm_up( isEnabled := (stat.state = TempControlStatus.idle) AND (stat.init = InitializationStatus.initialized) );
+proc.initialize( isEnabled := NOT((stat.init = InitializationStatus.shutdown) OR ((stat.init = InitializationStatus.initializingFailed) OR ((stat.init = InitializationStatus.initialized) OR (stat.init = InitializationStatus.locked)))) );
+proc.warm_up( isEnabled := (stat.state = TempControlStatus.idle) AND ((stat.init = InitializationStatus.initialized) AND (NOT(stat.init = InitializationStatus.locked))) );
 proc.stop( isEnabled := (stat.state = TempControlStatus.warming_up) OR (stat.state = TempControlStatus.controlling) );
-proc.reset( isEnabled := TRUE );
+proc.reset( isEnabled := NOT(stat.init = InitializationStatus.locked) );
+proc.lock( isEnabled := (operator_ref = OperatorStatus.tech) AND (stat.init = InitializationStatus.locked) );
+proc.unlock( isEnabled := (operator_ref = OperatorStatus.tech) AND (stat.init = InitializationStatus.locked) );
 </xhtml>
           </ST>
         </body>
@@ -4395,6 +4544,8 @@ THIS^.proc.initialize._copyFromModel_Process( model := model.proc.initialize );
 THIS^.proc.warm_up._copyFromModel_Process( model := model.proc.warm_up );
 THIS^.proc.stop._copyFromModel_Process( model := model.proc.stop );
 THIS^.proc.reset._copyFromModel_Process( model := model.proc.reset );
+THIS^.proc.lock._copyFromModel_Process( model := model.proc.lock );
+THIS^.proc.unlock._copyFromModel_Process( model := model.proc.unlock );
 </xhtml>
                 </ST>
               </body>
@@ -4503,6 +4654,8 @@ THIS^.proc.initialize._copyToModel_Process( model := model.proc.initialize );
 THIS^.proc.warm_up._copyToModel_Process( model := model.proc.warm_up );
 THIS^.proc.stop._copyToModel_Process( model := model.proc.stop );
 THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
+THIS^.proc.lock._copyToModel_Process( model := model.proc.lock );
+THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
 </xhtml>
                 </ST>
               </body>
@@ -4610,6 +4763,19 @@ THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Shared services</xhtml>
               </documentation>
             </variable>
+            <variable name="operator_ref">
+              <type><derived name="OperatorStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Shared operator status</xhtml>
+              </documentation>
+            </variable>
           </inOutVars>
           <localVars>
           </localVars>
@@ -4620,7 +4786,8 @@ THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
 parts.VesselTempControl(
     activity_ref := activity_ref,
     services_ref := services_ref,
-    config_ref := config.vesselTempControl);
+    config_ref := config.vesselTempControl,
+    operator_ref := operator_ref);
 parts.configManager();
 stat.health := F_HealthStatus(
     superState := TRUE,
@@ -4730,6 +4897,8 @@ THIS^.proc.initialize._copyToModel_Process( model := model.proc.initialize );
       <ProjectStructure>
         <Folder Name="marvel_STCU">
           <Folder Name="Enums">
+            <Object Name="TempControlStates">
+            </Object>
             <Object Name="TempControlStatus">
             </Object>
           </Folder>
@@ -4800,6 +4969,8 @@ THIS^.proc.initialize._copyToModel_Process( model := model.proc.initialize );
           <Folder Name="Functionblocks">
           </Folder>
           <Folder Name="Functions">
+            <Object Name="F_TempControlStatus">
+            </Object>
           </Folder>
           <Folder Name="Models">
             <Object Name="M_SM_TempMeasurement">
