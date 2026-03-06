@@ -1,0 +1,105 @@
+#######################################################################################################################
+#                                                                                                                      #
+# Model containing the solar telescope plc software design                                           #
+#                                                                                                                      #
+########################################################################################################################
+
+!VERSION marvel:
+
+!IMPORT models/in/marvel/marvel_common.yaml:
+!IMPORT models/in/marvel/marvel_services.yaml:
+
+########################################################################################################################
+# Define the containing PLC library
+########################################################################################################################
+
+# !LIBRARY marvel_solar:
+
+#   !CONFIG SolarConfig:
+#     items:
+#       fanPower:
+#         type: t_double 
+#         comment: "Power of the cooling fan in percent"
+#       fanMaxPowerTemp:
+#         type: marvel_common.Temperature
+#         comment: "Maximum allowed temperature before the cooling fan is turned up to max power"
+#       maxTemp:
+#         type: marvel_common.Temperature
+#         comment: "Maximum allowed temperature before the solar telescope is shut down to prevent damage"
+      
+      
+      
+  
+
+
+
+  
+
+
+#   !STATEMACHINE Solar:
+#     references:
+#       activity_ref            : { type: marvel_common.ActivityStatus              , comment: "Shared activity status"}
+#       services_ref            : { type: marvel_services.Services                  , comment: "Shared services", expand: false}
+#       operator_ref           : { type: marvel_common.OperatorStatus               , comment: "Shared operation status"}
+#       config_ref              : { type: SolarConfig                              , comment: "Reference to the active solar configuration" }
+
+#     variables_input:
+#       fanOk             : { type: t_bool                                                , comment: "True if the cooling fan is working" }
+#       temp              : { type: marvel_common.Temperature           , comment: "The measured temperature" }
+#       lsAl1           : { type: t_bool                                                , comment: "limit switch alti 1 (soft)" , address: "%I*" }
+#       lsAl2           : { type: t_bool                                                , comment: "limit switch alti 2 (hard)" , address: "%I*" }
+#       lsAz1        : { type: t_bool                                                , comment: "limit switch azi 1 (soft)" , address: "%I*" }
+#       lsAz2          : { type: t_bool                                                , comment: "limit switch azi 2 (hard)" , address: "%I*" }
+#       lsAz3           : { type: t_bool                                                , comment: "limit switch azi 3 (soft)" , address: "%I*" }
+#       hsAl            : { type: t_bool                                                , comment: "State of home sensor alti" , address: "%I*" }
+#       hsAz            : { type: t_bool                                                , comment: "State of home sensor azi" ,address: "%I*" }
+#       overwrite             : { type: t_bool                , comment: "overwrite hard limits" }
+      
+
+#     variables_output:
+#       powerPC      : { type: t_bool                   , comment: "True if the solar pc is enabled", address: "%Q*"  }
+#       powerMount   : { type: t_bool                   , comment: "True if the solar mount is enabled", address: "%Q*"  }
+#       powerFan    : { type: t_double                 , comment: "Power of the cooling fan in percent", address: "%Q*"  }
+      
+
+ 
+
+#     stat:
+#       health                      : { type: marvel_common.HealthStatus }
+#       busy                        : { type: marvel_common.BusyStatus                   , comment: "True if the solar telescope is busy" }
+#       init                : { type: marvel_common.InitializationStatus              , comment: "True if the solar telescope is initialized" }
+
+#     proc:
+#       initialize                        : { type: marvel_common.Process                         , comment: "Initialize the solar telescope" }
+#       power_on_pc                    : { type: marvel_common.Process                         , comment: "enable power to to solar pc and mount" }
+#       power_off_pc                    : { type: marvel_common.Process                         , comment: "Stop power to solar pc and mount" }
+#       power_on_mount                     : { type: marvel_common.Process                         , comment: "enable power to to solar mount and mount" }
+#       power_off_mount                    : { type: marvel_common.Process                         , comment: "Stop power to solar mount and mount" }
+#       overwrite_limits                     : { type: marvel_common.Process                         , comment: "overwrite hard limits" }
+#       reset_overwrite                     : { type: marvel_common.Process                         , comment: "reset overwrite of hard limits" }
+
+#     calls:
+#       health:
+#         isGood: !AND [ fanOk, !NOT [lsAl2], !NOT [lsAz2]]
+#         hasWarning: !AND [ !NOT [lsAl1], !NOT [hsAl], lsAz1, lsAz3]
+
+#       power_on_mount:
+#         isEnabled: !OR [ !AND [ !NOT [ !EQ [stat.health, marvel_common.HealthStatus.bad]], 
+#                         [!EQ [stat.init, marvel_common.InitializationStatus.initialized]]], 
+#                         overwrite ]
+
+#       power_off_mount:
+#         isEnabled: powerMount
+
+#       power_on_pc:
+#         isEnabled: !AND [ !EQ [stat.init, marvel_common.InitializationStatus.initialized], !NOT [powerPC]]
+
+#       power_off_pc:
+#         isEnabled: powerPC
+
+#       overwrite_limits:
+#         isEnabled: !AND [ !EQ [stat.health, marvel_common.HealthStatus.bad ], !EQ [operator_ref, marvel_common.OperatorStatus.tech], !NOT [overwrite] ]
+
+#       reset_overwrite:
+#         isEnabled: !AND [ overwrite, !EQ [operator_ref, marvel_common.OperatorStatus.tech] ]
+      

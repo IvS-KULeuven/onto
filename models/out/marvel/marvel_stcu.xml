@@ -60,7 +60,7 @@
           </data>
         </addData>
       </dataType>
-      <dataType name="TempControlParts">
+      <dataType name="VesselControlParts">
         <baseType>
           <struct>
             <variable name="tpT1">
@@ -544,7 +544,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Heater control for Vessel Bottom SW</xhtml>
               </documentation>
             </variable>
-            <variable name="htVesSideNE">
+            <variable name="htVesSideN">
               <type><derived name="HeaterControl" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -557,7 +557,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Heater control for Vessel Side NE</xhtml>
               </documentation>
             </variable>
-            <variable name="htVesSideNW">
+            <variable name="htVesSideS">
               <type><derived name="HeaterControl" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -570,7 +570,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Heater control for Vessel Side NW</xhtml>
               </documentation>
             </variable>
-            <variable name="htVesSideSE">
+            <variable name="htVesSideE">
               <type><derived name="HeaterControl" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -583,7 +583,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Heater control for Vessel Side SE</xhtml>
               </documentation>
             </variable>
-            <variable name="htVesSideSW">
+            <variable name="htVesSideW">
               <type><derived name="HeaterControl" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -654,8 +654,8 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">temp measurement in electrical cabinet</xhtml>
               </documentation>
             </variable>
-            <variable name="VesselTempControl">
-              <type><derived name="TempControl" /></type>
+            <variable name="vesselTempControl">
+              <type><derived name="VesselControl" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -715,7 +715,7 @@
           </struct>
         </baseType>
       </dataType>
-      <dataType name="TempControlProcesses">
+      <dataType name="VesselControlProcesses">
         <baseType>
           <struct>
             <variable name="initialize">
@@ -780,7 +780,7 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Lock the temp control (e.g. when the vessel is opened)</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Lock the vessel control (e.g. when the vessel is opened)</xhtml>
               </documentation>
             </variable>
             <variable name="unlock">
@@ -793,7 +793,7 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Unlock the temp control (e.g. when the vessel is closed)</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Unlock the vessel control (e.g. when the vessel is closed)</xhtml>
               </documentation>
             </variable>
           </struct>
@@ -920,7 +920,7 @@
           </struct>
         </baseType>
       </dataType>
-      <dataType name="TempControlStatuses">
+      <dataType name="VesselControlStatuses">
         <baseType>
           <struct>
             <variable name="init">
@@ -950,7 +950,7 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Is the tempcontrol healthy?</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Is the vessel healthy?</xhtml>
               </documentation>
             </variable>
             <variable name="state">
@@ -965,7 +965,22 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Actual state of the tempcontrol</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Actual state of the vessel</xhtml>
+              </documentation>
+            </variable>
+            <variable name="busy">
+              <type><derived name="BusyStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Is the vessel busy with a procedure?</xhtml>
               </documentation>
             </variable>
           </struct>
@@ -1025,6 +1040,7 @@
             </variable>
             <variable name="enabled">
               <type><BOOL /></type>
+              <initialValue><simpleValue value="TRUE" /></initialValue>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1037,7 +1053,8 @@
               </documentation>
             </variable>
             <variable name="maxPower">
-              <type><REAL /></type>
+              <type><LREAL /></type>
+              <initialValue><simpleValue value="100.0" /></initialValue>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1117,7 +1134,7 @@
           </struct>
         </baseType>
       </dataType>
-      <dataType name="MeasurementConfig">
+      <dataType name="MeasurementConfig2">
         <baseType>
           <struct>
             <variable name="name">
@@ -1135,6 +1152,7 @@
             </variable>
             <variable name="enabled">
               <type><BOOL /></type>
+              <initialValue><simpleValue value="TRUE" /></initialValue>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1144,6 +1162,19 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Is the quantity being measured? (Can be false e.g. if the sensor is deliberately not connected (yet).)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="nrOfSamples">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Number of samples to be used for the moving average (default: 100 = 100*10ms = 1s moving average)</xhtml>
               </documentation>
             </variable>
             <variable name="gain">
@@ -1171,19 +1202,6 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Offset to be added to the measured value (default: 0 = no offset)</xhtml>
-              </documentation>
-            </variable>
-            <variable name="alarms">
-              <type><derived name="HiHiLoLoAlarmConfig" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config</xhtml>
               </documentation>
             </variable>
           </struct>
@@ -1244,37 +1262,10 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">cooling factor (0-1)</xhtml>
               </documentation>
             </variable>
-            <variable name="weights">
-              <type>
-                <array>
-                  <dimension lower="0" upper="30" />
-                  <baseType>
-
-                    <array>
-                      <dimension lower="0" upper="30" />
-                      <baseType>
-                        <REAL />
-                      </baseType>
-                    </array>
-                  
-                  </baseType>
-                </array>
-              </type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">value between 0-1 representing the effect each heater has on each temperature sensor</xhtml>
-              </documentation>
-            </variable>
           </struct>
         </baseType>
       </dataType>
-      <dataType name="TempControlConfig">
+      <dataType name="vesselConfig">
         <baseType>
           <struct>
             <variable name="simulation">
@@ -1288,6 +1279,19 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="alarmsSensors">
+              <type><derived name="HiHiLoLoAlarmConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Alarm config for the temperature sensors</xhtml>
               </documentation>
             </variable>
             <variable name="setPointTarget">
@@ -1368,22 +1372,8 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Deviation from the set point at which a warning is issued in kelvin</xhtml>
               </documentation>
             </variable>
-            <variable name="weights">
-              <type>
-                <array>
-                  <dimension lower="0" upper="30" />
-                  <baseType>
-
-                    <array>
-                      <dimension lower="0" upper="30" />
-                      <baseType>
-                        <REAL />
-                      </baseType>
-                    </array>
-                  
-                  </baseType>
-                </array>
-              </type>
+            <variable name="tpT1">
+              <type><derived name="MeasurementConfig2" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1392,11 +1382,11 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">value between 0-1 representing the weight of each temperature sensor for each heater</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for temp sensor T1</xhtml>
               </documentation>
             </variable>
-            <variable name="measurements">
-              <type><derived name="MeasurementConfig" /></type>
+            <variable name="tpT2">
+              <type><derived name="MeasurementConfig2" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1405,10 +1395,309 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Default config for the temperature measurements in the vessel</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for temp sensor T2</xhtml>
               </documentation>
             </variable>
-            <variable name="heaters">
+            <variable name="tpT3">
+              <type><derived name="MeasurementConfig2" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for temp sensor T3</xhtml>
+              </documentation>
+            </variable>
+            <variable name="tpT4">
+              <type><derived name="MeasurementConfig2" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for temp sensor T4</xhtml>
+              </documentation>
+            </variable>
+            <variable name="tpLegNE">
+              <type><derived name="MeasurementConfig2" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for Leg NE</xhtml>
+              </documentation>
+            </variable>
+            <variable name="tpLegNW">
+              <type><derived name="MeasurementConfig2" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for Leg NW</xhtml>
+              </documentation>
+            </variable>
+            <variable name="tpLegSE">
+              <type><derived name="MeasurementConfig2" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for Leg SE</xhtml>
+              </documentation>
+            </variable>
+            <variable name="tpLegSW">
+              <type><derived name="MeasurementConfig2" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for Leg SW</xhtml>
+              </documentation>
+            </variable>
+            <variable name="tpLegTopNE">
+              <type><derived name="MeasurementConfig2" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for Leg Top NE</xhtml>
+              </documentation>
+            </variable>
+            <variable name="tpLegTopNW">
+              <type><derived name="MeasurementConfig2" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for Leg Top NW</xhtml>
+              </documentation>
+            </variable>
+            <variable name="tpLegTopSE">
+              <type><derived name="MeasurementConfig2" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for Leg Top SE</xhtml>
+              </documentation>
+            </variable>
+            <variable name="tpLegTopSW">
+              <type><derived name="MeasurementConfig2" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for Leg Top SW</xhtml>
+              </documentation>
+            </variable>
+            <variable name="tpVesBotNE">
+              <type><derived name="MeasurementConfig2" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for Vessel Bottom NE</xhtml>
+              </documentation>
+            </variable>
+            <variable name="tpVesBotNW">
+              <type><derived name="MeasurementConfig2" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for Vessel Bottom NW</xhtml>
+              </documentation>
+            </variable>
+            <variable name="tpVesBotSE">
+              <type><derived name="MeasurementConfig2" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for Vessel Bottom SE</xhtml>
+              </documentation>
+            </variable>
+            <variable name="tpVesBotSW">
+              <type><derived name="MeasurementConfig2" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for Vessel Bottom SW</xhtml>
+              </documentation>
+            </variable>
+            <variable name="tpCentre">
+              <type><derived name="MeasurementConfig2" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for Centre</xhtml>
+              </documentation>
+            </variable>
+            <variable name="tpCentreTH10K">
+              <type><derived name="MeasurementConfig2" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for Centre TH10K</xhtml>
+              </documentation>
+            </variable>
+            <variable name="tpVesSideN">
+              <type><derived name="MeasurementConfig2" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for Vessel Side N</xhtml>
+              </documentation>
+            </variable>
+            <variable name="tpVesSideS">
+              <type><derived name="MeasurementConfig2" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for Vessel Side S</xhtml>
+              </documentation>
+            </variable>
+            <variable name="tpVesSideE">
+              <type><derived name="MeasurementConfig2" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for Vessel Side E</xhtml>
+              </documentation>
+            </variable>
+            <variable name="tpVesSideW">
+              <type><derived name="MeasurementConfig2" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for Vessel Side W</xhtml>
+              </documentation>
+            </variable>
+            <variable name="tpVesLidN">
+              <type><derived name="MeasurementConfig2" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for Vessel Lid N</xhtml>
+              </documentation>
+            </variable>
+            <variable name="tpVesLidS">
+              <type><derived name="MeasurementConfig2" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for Vessel Lid S</xhtml>
+              </documentation>
+            </variable>
+            <variable name="tpCryoRear">
+              <type><derived name="MeasurementConfig2" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">config for sensor cryo rear outside</xhtml>
+              </documentation>
+            </variable>
+            <variable name="htLegNE">
               <type><derived name="HeaterConfig" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -1418,7 +1707,241 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Default config for the heaters in the vessel</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for heater Leg NE</xhtml>
+              </documentation>
+            </variable>
+            <variable name="htLegNW">
+              <type><derived name="HeaterConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for heater Leg NW</xhtml>
+              </documentation>
+            </variable>
+            <variable name="htLegSE">
+              <type><derived name="HeaterConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for heater Leg SE</xhtml>
+              </documentation>
+            </variable>
+            <variable name="htLegSW">
+              <type><derived name="HeaterConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for heater Leg  SW</xhtml>
+              </documentation>
+            </variable>
+            <variable name="htLegTopNE">
+              <type><derived name="HeaterConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for heater Leg Top NE</xhtml>
+              </documentation>
+            </variable>
+            <variable name="htLegTopNW">
+              <type><derived name="HeaterConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for heater Leg Top NW</xhtml>
+              </documentation>
+            </variable>
+            <variable name="htLegTopSE">
+              <type><derived name="HeaterConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for heater  Leg Top SE</xhtml>
+              </documentation>
+            </variable>
+            <variable name="htLegTopSW">
+              <type><derived name="HeaterConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for heater  Leg Top SW</xhtml>
+              </documentation>
+            </variable>
+            <variable name="htVesBotNE">
+              <type><derived name="HeaterConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for heater Vessel Bottom NE</xhtml>
+              </documentation>
+            </variable>
+            <variable name="htVesBotNW">
+              <type><derived name="HeaterConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for heater Vessel Bottom NW</xhtml>
+              </documentation>
+            </variable>
+            <variable name="htVesBotSE">
+              <type><derived name="HeaterConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for heater Vessel Bottom SE</xhtml>
+              </documentation>
+            </variable>
+            <variable name="htVesBotSW">
+              <type><derived name="HeaterConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for heater Vessel Bottom SW</xhtml>
+              </documentation>
+            </variable>
+            <variable name="htVesSideN">
+              <type><derived name="HeaterConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for heater Vessel Side NE</xhtml>
+              </documentation>
+            </variable>
+            <variable name="htVesSideS">
+              <type><derived name="HeaterConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for heater Vessel Side NW</xhtml>
+              </documentation>
+            </variable>
+            <variable name="htVesSideE">
+              <type><derived name="HeaterConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for heater Vessel Side SE</xhtml>
+              </documentation>
+            </variable>
+            <variable name="htVesSideW">
+              <type><derived name="HeaterConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for heater Vessel Side SW</xhtml>
+              </documentation>
+            </variable>
+            <variable name="htVesLidN">
+              <type><derived name="HeaterConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for heater Vessel Lid N</xhtml>
+              </documentation>
+            </variable>
+            <variable name="htVesLidS">
+              <type><derived name="HeaterConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for heater Vessel Lid S</xhtml>
+              </documentation>
+            </variable>
+            <variable name="htCryoRear">
+              <type><derived name="HeaterConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">config for heater cryo rear outside</xhtml>
               </documentation>
             </variable>
           </struct>
@@ -1428,7 +1951,7 @@
         <baseType>
           <struct>
             <variable name="vesselTempControl">
-              <type><derived name="TempControlConfig" /></type>
+              <type><derived name="vesselConfig" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1437,11 +1960,11 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for the vessel temperature control</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for the vessel</xhtml>
               </documentation>
             </variable>
             <variable name="tempCabinet">
-              <type><derived name="MeasurementConfig" /></type>
+              <type><derived name="MeasurementConfig2" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1451,6 +1974,19 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for the temperature measurement in the electrical cabinet</xhtml>
+              </documentation>
+            </variable>
+            <variable name="alarmConfigCabinet">
+              <type><derived name="HiHiLoLoAlarmConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Alarm config for the temperature measurement in the electrical cabinet</xhtml>
               </documentation>
             </variable>
           </struct>
@@ -1534,6 +2070,21 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
+            <variable name="error">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
             <variable name="stat">
               <type><derived name="TempMeasurementStatuses" /></type>
               <addData>
@@ -1569,7 +2120,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="zoneTemp">
+            <variable name="temp">
               <type><derived name="Temperature" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -1705,7 +2256,7 @@
           </struct>
         </baseType>
       </dataType>
-      <dataType name="M_SM_TempControl">
+      <dataType name="M_SM_VesselControl">
         <baseType>
           <struct>
             <variable name="stateTstatBottom">
@@ -1933,6 +2484,36 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
+            <variable name="totalPower">
+              <type><REAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="avgPower">
+              <type><REAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
             <variable name="enableTstatBottom">
               <type><BOOL /></type>
               <addData>
@@ -2039,7 +2620,7 @@
               </documentation>
             </variable>
             <variable name="stat">
-              <type><derived name="TempControlStatuses" /></type>
+              <type><derived name="VesselControlStatuses" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -2053,7 +2634,7 @@
               </documentation>
             </variable>
             <variable name="parts">
-              <type><derived name="M_SM_TempControlParts" /></type>
+              <type><derived name="M_SM_VesselControlParts" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -2067,7 +2648,7 @@
               </documentation>
             </variable>
             <variable name="proc">
-              <type><derived name="M_SM_TempControlProcesses" /></type>
+              <type><derived name="M_SM_VesselControlProcesses" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -2086,6 +2667,21 @@
       <dataType name="M_SM_STCU">
         <baseType>
           <struct>
+            <variable name="editableConfig">
+              <type><derived name="STCUConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="3" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
             <variable name="actualStatus">
               <type><string /></type>
               <addData>
@@ -2193,7 +2789,7 @@
           </struct>
         </baseType>
       </dataType>
-      <dataType name="M_SM_TempControlParts">
+      <dataType name="M_SM_VesselControlParts">
         <baseType>
           <struct>
             <variable name="tpT1">
@@ -2677,7 +3273,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="htVesSideNE">
+            <variable name="htVesSideN">
               <type><derived name="M_HeaterControl" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -2690,7 +3286,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="htVesSideNW">
+            <variable name="htVesSideS">
               <type><derived name="M_HeaterControl" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -2703,7 +3299,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="htVesSideSE">
+            <variable name="htVesSideE">
               <type><derived name="M_HeaterControl" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -2716,7 +3312,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="htVesSideSW">
+            <variable name="htVesSideW">
               <type><derived name="M_HeaterControl" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -2771,7 +3367,7 @@
           </struct>
         </baseType>
       </dataType>
-      <dataType name="M_SM_TempControlProcesses">
+      <dataType name="M_SM_VesselControlProcesses">
         <baseType>
           <struct>
             <variable name="initialize">
@@ -2871,8 +3467,8 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="VesselTempControl">
-              <type><derived name="M_TempControl" /></type>
+            <variable name="vesselTempControl">
+              <type><derived name="M_VesselControl" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -3083,6 +3679,20 @@ END_IF;
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Moving average value</xhtml>
               </documentation>
             </variable>
+            <variable name="error">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">true if there is an error</xhtml>
+              </documentation>
+            </variable>
             <variable name="stat">
               <type><derived name="TempMeasurementStatuses" /></type>
               <addData>
@@ -3099,7 +3709,7 @@ END_IF;
           </outputVars>
           <inOutVars>
             <variable name="config_ref">
-              <type><derived name="MeasurementConfig" /></type>
+              <type><derived name="MeasurementConfig2" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -3109,6 +3719,19 @@ END_IF;
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Reference to the config (alarms in degrees celsius)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="alarmConfig_ref">
+              <type><derived name="HiHiLoLoAlarmConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Reference to the alarm config for the sensor</xhtml>
               </documentation>
             </variable>
           </inOutVars>
@@ -3122,11 +3745,11 @@ END_IF;
     isEnabled := config_ref.enabled);
 stat.health := F_HealthStatus(
     superState := stat.enabled = EnabledStatus.enabled,
-    isGood := NOT((stat.alarm = HiHiLoLoAlarmStatus.hiHi) OR (stat.alarm = HiHiLoLoAlarmStatus.loLo)),
+    isGood := NOT((stat.alarm = HiHiLoLoAlarmStatus.hiHi) OR ((stat.alarm = HiHiLoLoAlarmStatus.loLo) OR error)),
     hasWarning := (stat.alarm = HiHiLoLoAlarmStatus.hi) OR (stat.alarm = HiHiLoLoAlarmStatus.lo));
 stat.alarm := F_HiHiLoLoAlarmStatus(
     superState := stat.enabled = EnabledStatus.enabled,
-    config := config_ref.alarms,
+    config := alarmConfig_ref,
     value := average.celsius.value);
 </xhtml>
           </ST>
@@ -3208,6 +3831,7 @@ model.simulatedVal := THIS^.simulatedVal;
 model.actualStatus := THIS^.actualStatus;
 model.actual := THIS^.actual;
 model.average := THIS^.average;
+model.error := THIS^.error;
 model.stat := THIS^.stat;
 </xhtml>
                 </ST>
@@ -3233,7 +3857,7 @@ model.stat := THIS^.stat;
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Current set point of the heater in kelvin</xhtml>
               </documentation>
             </variable>
-            <variable name="zoneTemp">
+            <variable name="temp">
               <type><derived name="Temperature" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -3463,7 +4087,7 @@ THIS^.proc.reset._copyFromModel_Process( model := model.proc.reset );
               <body>
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">model.setPoint := THIS^.setPoint;
-model.zoneTemp := THIS^.zoneTemp;
+model.temp := THIS^.temp;
 model.isSimulated := THIS^.isSimulated;
 model.actualStatus := THIS^.actualStatus;
 model.power := THIS^.power;
@@ -3480,7 +4104,7 @@ THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
           </data>
         </addData>
       </pou>
-      <pou name="SM_TempControl" pouType="functionBlock">
+      <pou name="SM_VesselControl" pouType="functionBlock">
         <interface>
           <inputVars>
             <variable name="stateTstatBottom" address="%I*">
@@ -3695,6 +4319,34 @@ THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">True if there are heaters in bad health</xhtml>
               </documentation>
             </variable>
+            <variable name="totalPower">
+              <type><REAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Total power of all heaters in percentage</xhtml>
+              </documentation>
+            </variable>
+            <variable name="avgPower">
+              <type><REAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Average power of the heaters in percentage</xhtml>
+              </documentation>
+            </variable>
             <variable name="enableTstatBottom" address="%Q*">
               <type><BOOL /></type>
               <addData>
@@ -3794,7 +4446,7 @@ THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
               </documentation>
             </variable>
             <variable name="stat">
-              <type><derived name="TempControlStatuses" /></type>
+              <type><derived name="VesselControlStatuses" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -3807,7 +4459,7 @@ THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
               </documentation>
             </variable>
             <variable name="parts">
-              <type><derived name="TempControlParts" /></type>
+              <type><derived name="VesselControlParts" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -3820,7 +4472,7 @@ THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
               </documentation>
             </variable>
             <variable name="proc">
-              <type><derived name="TempControlProcesses" /></type>
+              <type><derived name="VesselControlProcesses" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -3835,7 +4487,7 @@ THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
           </outputVars>
           <inOutVars>
             <variable name="config_ref">
-              <type><derived name="TempControlConfig" /></type>
+              <type><derived name="vesselConfig" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -3892,50 +4544,103 @@ THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">parts.tpT1( config_ref := config_ref.measurements );
-parts.tpT2( config_ref := config_ref.measurements );
-parts.tpT3( config_ref := config_ref.measurements );
-parts.tpT4( config_ref := config_ref.measurements );
-parts.tpLegNE( config_ref := config_ref.measurements );
-parts.tpLegNW( config_ref := config_ref.measurements );
-parts.tpLegSE( config_ref := config_ref.measurements );
-parts.tpLegSW( config_ref := config_ref.measurements );
-parts.tpLegTopNE( config_ref := config_ref.measurements );
-parts.tpLegTopNW( config_ref := config_ref.measurements );
-parts.tpLegTopSE( config_ref := config_ref.measurements );
-parts.tpLegTopSW( config_ref := config_ref.measurements );
-parts.tpVesBotNE( config_ref := config_ref.measurements );
-parts.tpVesBotNW( config_ref := config_ref.measurements );
-parts.tpVesBotSE( config_ref := config_ref.measurements );
-parts.tpVesBotSW( config_ref := config_ref.measurements );
-parts.tpCentre( config_ref := config_ref.measurements );
-parts.tpCentreTH10K( config_ref := config_ref.measurements );
-parts.tpVesSideN( config_ref := config_ref.measurements );
-parts.tpVesSideS( config_ref := config_ref.measurements );
-parts.tpVesSideE( config_ref := config_ref.measurements );
-parts.tpVesSideW( config_ref := config_ref.measurements );
-parts.tpVesLidN( config_ref := config_ref.measurements );
-parts.tpVesLidS( config_ref := config_ref.measurements );
-parts.tpCryoRear( config_ref := config_ref.measurements );
-parts.htLegNE( config_ref := config_ref.heaters );
-parts.htLegNW( config_ref := config_ref.heaters );
-parts.htLegSE( config_ref := config_ref.heaters );
-parts.htLegSW( config_ref := config_ref.heaters );
-parts.htLegTopNE( config_ref := config_ref.heaters );
-parts.htLegTopNW( config_ref := config_ref.heaters );
-parts.htLegTopSE( config_ref := config_ref.heaters );
-parts.htLegTopSW( config_ref := config_ref.heaters );
-parts.htVesBotNE( config_ref := config_ref.heaters );
-parts.htVesBotNW( config_ref := config_ref.heaters );
-parts.htVesBotSE( config_ref := config_ref.heaters );
-parts.htVesBotSW( config_ref := config_ref.heaters );
-parts.htVesSideNE( config_ref := config_ref.heaters );
-parts.htVesSideNW( config_ref := config_ref.heaters );
-parts.htVesSideSE( config_ref := config_ref.heaters );
-parts.htVesSideSW( config_ref := config_ref.heaters );
-parts.htVesLidN( config_ref := config_ref.heaters );
-parts.htVesLidS( config_ref := config_ref.heaters );
-parts.htCryoRear( config_ref := config_ref.heaters );
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">parts.tpT1(
+    config_ref := config_ref.tpT1,
+    alarmConfig_ref := config_ref.alarmsSensors);
+parts.tpT2(
+    config_ref := config_ref.tpT2,
+    alarmConfig_ref := config_ref.alarmsSensors);
+parts.tpT3(
+    config_ref := config_ref.tpT3,
+    alarmConfig_ref := config_ref.alarmsSensors);
+parts.tpT4(
+    config_ref := config_ref.tpT4,
+    alarmConfig_ref := config_ref.alarmsSensors);
+parts.tpLegNE(
+    config_ref := config_ref.tpLegNE,
+    alarmConfig_ref := config_ref.alarmsSensors);
+parts.tpLegNW(
+    config_ref := config_ref.tpLegNW,
+    alarmConfig_ref := config_ref.alarmsSensors);
+parts.tpLegSE(
+    config_ref := config_ref.tpLegSE,
+    alarmConfig_ref := config_ref.alarmsSensors);
+parts.tpLegSW(
+    config_ref := config_ref.tpLegSW,
+    alarmConfig_ref := config_ref.alarmsSensors);
+parts.tpLegTopNE(
+    config_ref := config_ref.tpLegTopNE,
+    alarmConfig_ref := config_ref.alarmsSensors);
+parts.tpLegTopNW(
+    config_ref := config_ref.tpLegTopNW,
+    alarmConfig_ref := config_ref.alarmsSensors);
+parts.tpLegTopSE(
+    config_ref := config_ref.tpLegTopSE,
+    alarmConfig_ref := config_ref.alarmsSensors);
+parts.tpLegTopSW(
+    config_ref := config_ref.tpLegTopSW,
+    alarmConfig_ref := config_ref.alarmsSensors);
+parts.tpVesBotNE(
+    config_ref := config_ref.tpVesBotNE,
+    alarmConfig_ref := config_ref.alarmsSensors);
+parts.tpVesBotNW(
+    config_ref := config_ref.tpVesBotNW,
+    alarmConfig_ref := config_ref.alarmsSensors);
+parts.tpVesBotSE(
+    config_ref := config_ref.tpVesBotSE,
+    alarmConfig_ref := config_ref.alarmsSensors);
+parts.tpVesBotSW(
+    config_ref := config_ref.tpVesBotSW,
+    alarmConfig_ref := config_ref.alarmsSensors);
+parts.tpCentre(
+    config_ref := config_ref.tpCentre,
+    alarmConfig_ref := config_ref.alarmsSensors);
+parts.tpCentreTH10K(
+    config_ref := config_ref.tpCentreTH10K,
+    alarmConfig_ref := config_ref.alarmsSensors);
+parts.tpVesSideN(
+    config_ref := config_ref.tpVesSideN,
+    alarmConfig_ref := config_ref.alarmsSensors);
+parts.tpVesSideS(
+    config_ref := config_ref.tpVesSideS,
+    alarmConfig_ref := config_ref.alarmsSensors);
+parts.tpVesSideE(
+    config_ref := config_ref.tpVesSideE,
+    alarmConfig_ref := config_ref.alarmsSensors);
+parts.tpVesSideW(
+    config_ref := config_ref.tpVesSideW,
+    alarmConfig_ref := config_ref.alarmsSensors);
+parts.tpVesLidN(
+    config_ref := config_ref.tpVesLidN,
+    alarmConfig_ref := config_ref.alarmsSensors);
+parts.tpVesLidS(
+    config_ref := config_ref.tpVesLidS,
+    alarmConfig_ref := config_ref.alarmsSensors);
+parts.tpCryoRear(
+    config_ref := config_ref.tpCryoRear,
+    alarmConfig_ref := config_ref.alarmsSensors);
+parts.htLegNE( config_ref := config_ref.htLegNE );
+parts.htLegNW( config_ref := config_ref.htLegNW );
+parts.htLegSE( config_ref := config_ref.htLegSE );
+parts.htLegSW( config_ref := config_ref.htLegSW );
+parts.htLegTopNE( config_ref := config_ref.htLegTopNE );
+parts.htLegTopNW( config_ref := config_ref.htLegTopNW );
+parts.htLegTopSE( config_ref := config_ref.htLegTopSE );
+parts.htLegTopSW( config_ref := config_ref.htLegTopSW );
+parts.htVesBotNE( config_ref := config_ref.htVesBotNE );
+parts.htVesBotNW( config_ref := config_ref.htVesBotNW );
+parts.htVesBotSE( config_ref := config_ref.htVesBotSE );
+parts.htVesBotSW( config_ref := config_ref.htVesBotSW );
+parts.htVesSideN( config_ref := config_ref.htVesSideN );
+parts.htVesSideS( config_ref := config_ref.htVesSideS );
+parts.htVesSideE( config_ref := config_ref.htVesSideE );
+parts.htVesSideW( config_ref := config_ref.htVesSideW );
+parts.htVesLidN( config_ref := config_ref.htVesLidN );
+parts.htVesLidS( config_ref := config_ref.htVesLidS );
+parts.htCryoRear( config_ref := config_ref.htCryoRear );
+stat.busy := F_BusyStatus(
+    superState := TRUE,
+    isBusy := (stat.state = TempControlStatus.warming_up) OR (stat.init = InitializationStatus.initializing));
 proc.initialize( isEnabled := NOT((stat.init = InitializationStatus.shutdown) OR ((stat.init = InitializationStatus.initializingFailed) OR ((stat.init = InitializationStatus.initialized) OR (stat.init = InitializationStatus.locked)))) );
 proc.warm_up( isEnabled := (stat.state = TempControlStatus.idle) AND ((stat.init = InitializationStatus.initialized) AND (NOT(stat.init = InitializationStatus.locked))) );
 proc.stop( isEnabled := (stat.state = TempControlStatus.warming_up) OR (stat.state = TempControlStatus.controlling) );
@@ -3947,7 +4652,7 @@ proc.unlock( isEnabled := (operator_ref = OperatorStatus.tech) AND (stat.init = 
         </body>
         <addData>
           <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_copyFromModel_SM_TempControl">
+            <Method name="_copyFromModel_SM_VesselControl">
               <interface>
                 <inputVars>
                 </inputVars>
@@ -3955,7 +4660,7 @@ proc.unlock( isEnabled := (operator_ref = OperatorStatus.tech) AND (stat.init = 
                 </outputVars>
                 <inOutVars>
                   <variable name="model">
-                    <type><derived name="M_SM_TempControl" /></type>
+                    <type><derived name="M_SM_VesselControl" /></type>
                     <addData>
                       <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                         <Attributes>
@@ -4016,10 +4721,10 @@ THIS^.parts.htVesBotNE._copyFromModel_HeaterControl( model := model.parts.htVesB
 THIS^.parts.htVesBotNW._copyFromModel_HeaterControl( model := model.parts.htVesBotNW );
 THIS^.parts.htVesBotSE._copyFromModel_HeaterControl( model := model.parts.htVesBotSE );
 THIS^.parts.htVesBotSW._copyFromModel_HeaterControl( model := model.parts.htVesBotSW );
-THIS^.parts.htVesSideNE._copyFromModel_HeaterControl( model := model.parts.htVesSideNE );
-THIS^.parts.htVesSideNW._copyFromModel_HeaterControl( model := model.parts.htVesSideNW );
-THIS^.parts.htVesSideSE._copyFromModel_HeaterControl( model := model.parts.htVesSideSE );
-THIS^.parts.htVesSideSW._copyFromModel_HeaterControl( model := model.parts.htVesSideSW );
+THIS^.parts.htVesSideN._copyFromModel_HeaterControl( model := model.parts.htVesSideN );
+THIS^.parts.htVesSideS._copyFromModel_HeaterControl( model := model.parts.htVesSideS );
+THIS^.parts.htVesSideE._copyFromModel_HeaterControl( model := model.parts.htVesSideE );
+THIS^.parts.htVesSideW._copyFromModel_HeaterControl( model := model.parts.htVesSideW );
 THIS^.parts.htVesLidN._copyFromModel_HeaterControl( model := model.parts.htVesLidN );
 THIS^.parts.htVesLidS._copyFromModel_HeaterControl( model := model.parts.htVesLidS );
 THIS^.parts.htCryoRear._copyFromModel_HeaterControl( model := model.parts.htCryoRear );
@@ -4035,7 +4740,7 @@ THIS^.proc.unlock._copyFromModel_Process( model := model.proc.unlock );
             </Method>
           </data>
           <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
-            <Method name="_copyToModel_SM_TempControl">
+            <Method name="_copyToModel_SM_VesselControl">
               <interface>
                 <inputVars>
                 </inputVars>
@@ -4043,7 +4748,7 @@ THIS^.proc.unlock._copyFromModel_Process( model := model.proc.unlock );
                 </outputVars>
                 <inOutVars>
                   <variable name="model">
-                    <type><derived name="M_SM_TempControl" /></type>
+                    <type><derived name="M_SM_VesselControl" /></type>
                     <addData>
                       <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                         <Attributes>
@@ -4082,6 +4787,8 @@ model.isControlled := THIS^.isControlled;
 model.setPointRamped := THIS^.setPointRamped;
 model.badHealthSensors := THIS^.badHealthSensors;
 model.badHealthHeaters := THIS^.badHealthHeaters;
+model.totalPower := THIS^.totalPower;
+model.avgPower := THIS^.avgPower;
 model.enableTstatBottom := THIS^.enableTstatBottom;
 model.enableTstatCryoRear := THIS^.enableTstatCryoRear;
 model.enableTstatLid := THIS^.enableTstatLid;
@@ -4127,10 +4834,10 @@ THIS^.parts.htVesBotNE._copyToModel_HeaterControl( model := model.parts.htVesBot
 THIS^.parts.htVesBotNW._copyToModel_HeaterControl( model := model.parts.htVesBotNW );
 THIS^.parts.htVesBotSE._copyToModel_HeaterControl( model := model.parts.htVesBotSE );
 THIS^.parts.htVesBotSW._copyToModel_HeaterControl( model := model.parts.htVesBotSW );
-THIS^.parts.htVesSideNE._copyToModel_HeaterControl( model := model.parts.htVesSideNE );
-THIS^.parts.htVesSideNW._copyToModel_HeaterControl( model := model.parts.htVesSideNW );
-THIS^.parts.htVesSideSE._copyToModel_HeaterControl( model := model.parts.htVesSideSE );
-THIS^.parts.htVesSideSW._copyToModel_HeaterControl( model := model.parts.htVesSideSW );
+THIS^.parts.htVesSideN._copyToModel_HeaterControl( model := model.parts.htVesSideN );
+THIS^.parts.htVesSideS._copyToModel_HeaterControl( model := model.parts.htVesSideS );
+THIS^.parts.htVesSideE._copyToModel_HeaterControl( model := model.parts.htVesSideE );
+THIS^.parts.htVesSideW._copyToModel_HeaterControl( model := model.parts.htVesSideW );
 THIS^.parts.htVesLidN._copyToModel_HeaterControl( model := model.parts.htVesLidN );
 THIS^.parts.htVesLidS._copyToModel_HeaterControl( model := model.parts.htVesLidS );
 THIS^.parts.htCryoRear._copyToModel_HeaterControl( model := model.parts.htCryoRear );
@@ -4150,6 +4857,20 @@ THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
       <pou name="SM_STCU" pouType="functionBlock">
         <interface>
           <inputVars>
+            <variable name="editableConfig">
+              <type><derived name="STCUConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="3" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Editable configuration of the stcu</xhtml>
+              </documentation>
+            </variable>
           </inputVars>
           <outputVars>
             <variable name="actualStatus">
@@ -4266,17 +4987,18 @@ THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">parts.tempCabinet( config_ref := config.tempCabinet );
-parts.VesselTempControl(
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">parts.tempCabinet(
+    config_ref := config.tempCabinet,
+    alarmConfig_ref := config.alarmConfigCabinet);
+parts.vesselTempControl(
     activity_ref := activity_ref,
     services_ref := services_ref,
     operator_ref := operator_ref,
     config_ref := config.vesselTempControl);
-parts.configManager();
-stat.health := F_HealthStatus(
+parts.configManager( isEnabled := operator_ref = OperatorStatus.tech );
+stat.busy := F_BusyStatus(
     superState := TRUE,
-    isGood := parts.VesselTempControl.stat.health = HealthStatus.good,
-    hasWarning := parts.VesselTempControl.stat.health = HealthStatus.warning);
+    isBusy := parts.vesselTempControl.stat.busy = BusyStatus.busy);
 proc.initialize();
 </xhtml>
           </ST>
@@ -4315,8 +5037,9 @@ proc.initialize();
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.parts.tempCabinet._copyFromModel_TempMeasurement( model := model.parts.tempCabinet );
-THIS^.parts.VesselTempControl._copyFromModel_TempControl( model := model.parts.VesselTempControl );
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.editableConfig := model.editableConfig;
+THIS^.parts.tempCabinet._copyFromModel_TempMeasurement( model := model.parts.tempCabinet );
+THIS^.parts.vesselTempControl._copyFromModel_VesselControl( model := model.parts.vesselTempControl );
 THIS^.parts.configManager._copyFromModel_ConfigManager( model := model.parts.configManager );
 THIS^.proc.initialize._copyFromModel_Process( model := model.proc.initialize );
 </xhtml>
@@ -4357,11 +5080,12 @@ THIS^.proc.initialize._copyFromModel_Process( model := model.proc.initialize );
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">model.actualStatus := THIS^.actualStatus;
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">model.editableConfig := THIS^.editableConfig;
+model.actualStatus := THIS^.actualStatus;
 model.config := THIS^.config;
 model.stat := THIS^.stat;
 THIS^.parts.tempCabinet._copyToModel_TempMeasurement( model := model.parts.tempCabinet );
-THIS^.parts.VesselTempControl._copyToModel_TempControl( model := model.parts.VesselTempControl );
+THIS^.parts.vesselTempControl._copyToModel_VesselControl( model := model.parts.vesselTempControl );
 THIS^.parts.configManager._copyToModel_ConfigManager( model := model.parts.configManager );
 THIS^.proc.initialize._copyToModel_Process( model := model.proc.initialize );
 </xhtml>
@@ -4390,7 +5114,7 @@ THIS^.proc.initialize._copyToModel_Process( model := model.proc.initialize );
           </Folder>
           <Folder Name="StateMachines">
             <Folder Name="Parts">
-              <Object Name="TempControlParts">
+              <Object Name="VesselControlParts">
               </Object>
               <Object Name="STCUParts">
               </Object>
@@ -4398,7 +5122,7 @@ THIS^.proc.initialize._copyToModel_Process( model := model.proc.initialize );
             <Folder Name="Processes">
               <Object Name="HeaterControlProcesses">
               </Object>
-              <Object Name="TempControlProcesses">
+              <Object Name="VesselControlProcesses">
               </Object>
               <Object Name="STCUProcesses">
               </Object>
@@ -4408,7 +5132,7 @@ THIS^.proc.initialize._copyToModel_Process( model := model.proc.initialize );
               </Object>
               <Object Name="HeaterControlStatuses">
               </Object>
-              <Object Name="TempControlStatuses">
+              <Object Name="VesselControlStatuses">
               </Object>
               <Object Name="STCUStatuses">
               </Object>
@@ -4423,9 +5147,9 @@ THIS^.proc.initialize._copyToModel_Process( model := model.proc.initialize );
               <Object Name="_copyFromModel_SM_HeaterControl" />
               <Object Name="_copyToModel_SM_HeaterControl" />
             </Object>
-            <Object Name="SM_TempControl">
-              <Object Name="_copyFromModel_SM_TempControl" />
-              <Object Name="_copyToModel_SM_TempControl" />
+            <Object Name="SM_VesselControl">
+              <Object Name="_copyFromModel_SM_VesselControl" />
+              <Object Name="_copyToModel_SM_VesselControl" />
             </Object>
             <Object Name="SM_STCU">
               <Object Name="_copyFromModel_SM_STCU" />
@@ -4435,11 +5159,11 @@ THIS^.proc.initialize._copyToModel_Process( model := model.proc.initialize );
           <Folder Name="Configs">
             <Object Name="HeaterConfig">
             </Object>
-            <Object Name="MeasurementConfig">
+            <Object Name="MeasurementConfig2">
             </Object>
             <Object Name="SimulationConfig">
             </Object>
-            <Object Name="TempControlConfig">
+            <Object Name="vesselConfig">
             </Object>
             <Object Name="STCUConfig">
             </Object>
@@ -4461,7 +5185,7 @@ THIS^.proc.initialize._copyToModel_Process( model := model.proc.initialize );
             </Object>
             <Object Name="M_SM_HeaterControl">
             </Object>
-            <Object Name="M_SM_TempControl">
+            <Object Name="M_SM_VesselControl">
             </Object>
             <Object Name="M_SM_STCU">
             </Object>
@@ -4469,15 +5193,15 @@ THIS^.proc.initialize._copyToModel_Process( model := model.proc.initialize );
             </Object>
             <Object Name="M_HeaterControl">
             </Object>
-            <Object Name="M_TempControl">
+            <Object Name="M_VesselControl">
             </Object>
             <Object Name="M_STCU">
             </Object>
             <Object Name="M_SM_HeaterControlProcesses">
             </Object>
-            <Object Name="M_SM_TempControlParts">
+            <Object Name="M_SM_VesselControlParts">
             </Object>
-            <Object Name="M_SM_TempControlProcesses">
+            <Object Name="M_SM_VesselControlProcesses">
             </Object>
             <Object Name="M_SM_STCUParts">
             </Object>

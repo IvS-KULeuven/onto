@@ -44,22 +44,29 @@
   !CONFIG HeaterConfig:
     items:
       name : { type: t_string, comment: "Name of the heater" }
-      enabled : { type: t_bool, comment: "True if the heater is enabled" }
-      maxPower : { type: t_float, comment: "Maximum power of the heater" }
+      enabled : { type: t_bool, comment: "True if the heater is enabled", initial: !BOOL TRUE }
+      maxPower : { type: t_double, comment: "Maximum power of the heater", initial: !DOUBLE 100.0 }
       Kp : { type: t_float, comment: proportional gain }
       Tn : { type: t_float, comment: integral gain (in seconds) }
       Tv : { type: t_float, comment: derivative gain D-T1 (in seconds) }
       Td : { type: t_float, comment: derivative damping time D-T1 (in seconds) }
       maxDeviation : { type: t_float, comment: "Maximum allowed deviation from the set point for the associated temperature sensors in kelvin" }
+      #weights: { type: !ARRAY [0, 30, t_float], comment: "value between 0-1 representing the weight each temperature sensors for this heater" }
 
 
   ### single temperature sensor config (small variation of version found in marvel_common) ###
-  !CONFIG MeasurementConfig:
+  !CONFIG MeasurementConfig2:
     items:
       name : { type: t_string, comment: "Name of the temperature sensor" }
       enabled:
           type: t_bool
           comment: "Is the quantity being measured? (Can be false e.g. if the sensor is deliberately not connected (yet).)"
+          initial: !BOOL TRUE
+
+      nrOfSamples:
+          type: t_double
+          comment: "Number of samples to be used for the moving average (default: 100 = 100*10ms = 1s moving average)"
+
       gain:
           type: t_double
           comment: "Gain to be applied to the measured value (default: 1 = no gain)"
@@ -67,9 +74,7 @@
       offset:
           type: t_double
           comment: "Offset to be added to the measured value (default: 0 = no offset)"
-      alarms:
-          type: marvel_common.HiHiLoLoAlarmConfig
-          comment: "Config"
+
 
   ### simulation config ###
   !CONFIG SimulationConfig:
@@ -78,87 +83,89 @@
       ambient: { type: marvel_common.Temperature, comment: starting temp of sensors}
       heating: {type: t_float, comment: heating gain/factor (0-1)}
       cooling: {type: t_float, comment: cooling factor (0-1)}
-      weights : { type: !ARRAY [0, 30, !ARRAY [0, 30, t_float]], comment: "value between 0-1 representing the effect each heater has on each temperature sensor" }
+     # weights : { type: !ARRAY [0, 30, !ARRAY [0, 30, t_float]], comment: "value between 0-1 representing the effect each heater has on each temperature sensor" }
 
 
 
   #########################################
   ### vessel temperature control config ###
   #########################################
-  !CONFIG TempControlConfig:
+  !CONFIG vesselConfig:
     items:
       simulation                 : {type: SimulationConfig}
+      alarmsSensors              : { type: marvel_common.HiHiLoLoAlarmConfig, comment: "Alarm config for the temperature sensors" }
       setPointTarget             : { type: marvel_common.Temperature  , comment: "set point temperature in kelvin" }
       rampVPos                   : { type: t_float  , comment: "velocity of temperature change in K/s while ramping up" }
       rampVNeg                   : { type: t_float  , comment: "velocity of temperature change in K/s while ramping down" }
       rampStart                  : { type: t_float  , comment: "temperature in kelvin at which the ramp starts (e.g. to avoid overshoot)" }
       maxDeviation               : { type: marvel_common.Temperature  , comment: "Maximum allowed deviation from other temp sensors in the vessel in kelvin" }
       warnDeviation              : { type: marvel_common.Temperature  , comment: "Deviation from the set point at which a warning is issued in kelvin" }
-      weights : { type: !ARRAY [0, 30, !ARRAY [0, 30, t_float]], comment: "value between 0-1 representing the weight of each temperature sensor for each heater" }
+      #weights : { type: !ARRAY [0, 30, !ARRAY [0, 30, t_float]], comment: "value between 0-1 representing the weight of each temperature sensor for each heater" }
 
-      measurements : { type: MeasurementConfig , comment: "Default config for the temperature measurements in the vessel" }
-      heaters : { type: HeaterConfig , comment: "Default config for the heaters in the vessel" }
+      #measurements : { type: MeasurementConfig2 , comment: "Default config for the temperature measurements in the vessel" }
+      #heaters : { type: HeaterConfig , comment: "Default config for the heaters in the vessel" }
 
 
+  
       #sensors
-      # tpT1:          { type: MeasurementConfig, comment: "Config for temp sensor T1" }
-      # tpT2:          { type: MeasurementConfig, comment: "Config for temp sensor T2" }
-      # tpT3:          { type: MeasurementConfig, comment: "Config for temp sensor T3" }
-      # tpT4:          { type: MeasurementConfig, comment: "Config for temp sensor T4" }
+      tpT1:          { type: MeasurementConfig2, comment: "Config for temp sensor T1" }
+      tpT2:          { type: MeasurementConfig2, comment: "Config for temp sensor T2" }
+      tpT3:          { type: MeasurementConfig2, comment: "Config for temp sensor T3" }
+      tpT4:          { type: MeasurementConfig2, comment: "Config for temp sensor T4" }
 
-      # tpLegNE:       { type: MeasurementConfig, comment: "Config for Leg NE" }
-      # tpLegNW:       { type: MeasurementConfig, comment: "Config for Leg NW" }
-      # tpLegSE:       { type: MeasurementConfig, comment: "Config for Leg SE" }
-      # tpLegSW:       { type: MeasurementConfig, comment: "Config for Leg SW" }
+      tpLegNE:       { type: MeasurementConfig2, comment: "Config for Leg NE" }
+      tpLegNW:       { type: MeasurementConfig2, comment: "Config for Leg NW" }
+      tpLegSE:       { type: MeasurementConfig2, comment: "Config for Leg SE" }
+      tpLegSW:       { type: MeasurementConfig2, comment: "Config for Leg SW" }
 
-      # tpLegTopNE:    { type: MeasurementConfig, comment: "Config for Leg Top NE" }
-      # tpLegTopNW:    { type: MeasurementConfig, comment: "Config for Leg Top NW" }
-      # tpLegTopSE:    { type: MeasurementConfig, comment: "Config for Leg Top SE" }
-      # tpLegTopSW:    { type: MeasurementConfig, comment: "Config for Leg Top SW" }
+      tpLegTopNE:    { type: MeasurementConfig2, comment: "Config for Leg Top NE" }
+      tpLegTopNW:    { type: MeasurementConfig2, comment: "Config for Leg Top NW" }
+      tpLegTopSE:    { type: MeasurementConfig2, comment: "Config for Leg Top SE" }
+      tpLegTopSW:    { type: MeasurementConfig2, comment: "Config for Leg Top SW" }
 
-      # tpVesBotNE:    { type: MeasurementConfig, comment: "Config for Vessel Bottom NE" }
-      # tpVesBotNW:    { type: MeasurementConfig, comment: "Config for Vessel Bottom NW" }
-      # tpVesBotSE:    { type: MeasurementConfig, comment: "Config for Vessel Bottom SE" }
-      # tpVesBotSW:    { type: MeasurementConfig, comment: "Config for Vessel Bottom SW" }
+      tpVesBotNE:    { type: MeasurementConfig2, comment: "Config for Vessel Bottom NE" }
+      tpVesBotNW:    { type: MeasurementConfig2, comment: "Config for Vessel Bottom NW" }
+      tpVesBotSE:    { type: MeasurementConfig2, comment: "Config for Vessel Bottom SE" }
+      tpVesBotSW:    { type: MeasurementConfig2, comment: "Config for Vessel Bottom SW" }
 
-      # tpCentre:      { type: MeasurementConfig, comment: "Config for Centre" }
-      # tpCentreTH10K: { type: MeasurementConfig, comment: "Config for Centre TH10K" }
+      tpCentre:      { type: MeasurementConfig2, comment: "Config for Centre" }
+      tpCentreTH10K: { type: MeasurementConfig2, comment: "Config for Centre TH10K" }
 
-      # tpVesSideN:    { type: MeasurementConfig, comment: "Config for Vessel Side N" }
-      # tpVesSideS:    { type: MeasurementConfig, comment: "Config for Vessel Side S" }
-      # tpVesSideE:    { type: MeasurementConfig, comment: "Config for Vessel Side E" }
-      # tpVesSideW:    { type: MeasurementConfig, comment: "Config for Vessel Side W" }
+      tpVesSideN:    { type: MeasurementConfig2, comment: "Config for Vessel Side N" }
+      tpVesSideS:    { type: MeasurementConfig2, comment: "Config for Vessel Side S" }
+      tpVesSideE:    { type: MeasurementConfig2, comment: "Config for Vessel Side E" }
+      tpVesSideW:    { type: MeasurementConfig2, comment: "Config for Vessel Side W" }
 
-      # tpVesLidN:     { type: MeasurementConfig, comment: "Config for Vessel Lid N" }
-      # tpVesLidS:     { type: MeasurementConfig, comment: "Config for Vessel Lid S" }
+      tpVesLidN:     { type: MeasurementConfig2, comment: "Config for Vessel Lid N" }
+      tpVesLidS:     { type: MeasurementConfig2, comment: "Config for Vessel Lid S" }
 
-      # tpCryoRear:    { type: MeasurementConfig, comment: "config for sensor cryo rear outside"}
+      tpCryoRear:    { type: MeasurementConfig2, comment: "config for sensor cryo rear outside"}
 
-      # #heaters
-      # htLegNE:       { type: HeaterConfig, comment: "Config for heater Leg NE" }
-      # htLegNW:       { type: HeaterConfig, comment: "Config for heater Leg NW" }
-      # htLegSE:       { type: HeaterConfig, comment: "Config for heater Leg SE" }
-      # htLegSW:       { type: HeaterConfig, comment: "Config for heater Leg  SW" }
+      #heaters
+      htLegNE:       { type: HeaterConfig, comment: "Config for heater Leg NE" }
+      htLegNW:       { type: HeaterConfig, comment: "Config for heater Leg NW" }
+      htLegSE:       { type: HeaterConfig, comment: "Config for heater Leg SE" }
+      htLegSW:       { type: HeaterConfig, comment: "Config for heater Leg  SW" }
 
-      # htLegTopNE:    { type: HeaterConfig, comment: "Config for heater Leg Top NE" }
-      # htLegTopNW:    { type: HeaterConfig, comment: "Config for heater Leg Top NW" }
-      # htLegTopSE:    { type: HeaterConfig, comment: "Config for heater  Leg Top SE" }
-      # htLegTopSW:    { type: HeaterConfig, comment: "Config for heater  Leg Top SW" }
+      htLegTopNE:    { type: HeaterConfig, comment: "Config for heater Leg Top NE" }
+      htLegTopNW:    { type: HeaterConfig, comment: "Config for heater Leg Top NW" }
+      htLegTopSE:    { type: HeaterConfig, comment: "Config for heater  Leg Top SE" }
+      htLegTopSW:    { type: HeaterConfig, comment: "Config for heater  Leg Top SW" }
 
-      # htVesBotNE:    { type: HeaterConfig, comment: "Config for heater Vessel Bottom NE" }
-      # htVesBotNW:    { type: HeaterConfig, comment: "Config for heater Vessel Bottom NW" }
-      # htVesBotSE:    { type: HeaterConfig, comment: "Config for heater Vessel Bottom SE" }
-      # htVesBotSW:    { type: HeaterConfig, comment: "Config for heater Vessel Bottom SW" }
+      htVesBotNE:    { type: HeaterConfig, comment: "Config for heater Vessel Bottom NE" }
+      htVesBotNW:    { type: HeaterConfig, comment: "Config for heater Vessel Bottom NW" }
+      htVesBotSE:    { type: HeaterConfig, comment: "Config for heater Vessel Bottom SE" }
+      htVesBotSW:    { type: HeaterConfig, comment: "Config for heater Vessel Bottom SW" }
 
-      # htVesSideNE:    { type: HeaterConfig, comment: "Config for heater Vessel Side NE" }
-      # htVesSideNW:    { type: HeaterConfig, comment: "Config for heater Vessel Side NW" }
-      # htVesSideSE:    { type: HeaterConfig, comment: "Config for heater Vessel Side SE" }
-      # htVesSideSW:    { type: HeaterConfig, comment: "Config for heater Vessel Side SW" }
+      htVesSideN:    { type: HeaterConfig, comment: "Config for heater Vessel Side NE" }
+      htVesSideS:    { type: HeaterConfig, comment: "Config for heater Vessel Side NW" }
+      htVesSideE:    { type: HeaterConfig, comment: "Config for heater Vessel Side SE" }
+      htVesSideW:    { type: HeaterConfig, comment: "Config for heater Vessel Side SW" }
 
-      # htVesLidN:     { type: HeaterConfig, comment: "Config for heater Vessel Lid N" }
-      # htVesLidS:     { type: HeaterConfig, comment: "Config for heater Vessel Lid S" }
+      htVesLidN:     { type: HeaterConfig, comment: "Config for heater Vessel Lid N" }
+      htVesLidS:     { type: HeaterConfig, comment: "Config for heater Vessel Lid S" }
 
-      # htCryoRear:    { type: HeaterConfig, comment: "config for heater cryo rear outside"}
+      htCryoRear:    { type: HeaterConfig, comment: "config for heater cryo rear outside"}
 
 
   ###################
@@ -166,8 +173,9 @@
   ###################
   !CONFIG STCUConfig:
     items:
-      vesselTempControl: { type: TempControlConfig, comment: "Config for the vessel temperature control" }
-      tempCabinet: { type: MeasurementConfig, comment: "Config for the temperature measurement in the electrical cabinet" }
+      vesselTempControl: { type: vesselConfig, comment: "Config for the vessel" }
+      tempCabinet: { type: MeasurementConfig2, comment: "Config for the temperature measurement in the electrical cabinet" }
+      alarmConfigCabinet: { type: marvel_common.HiHiLoLoAlarmConfig, comment: "Alarm config for the temperature measurement in the electrical cabinet" }
       
 
 ########################################################################################################################
@@ -183,13 +191,15 @@
     variables_output:
         actual          : { type: marvel_common.Temperature          , comment: "Actual value" }
         average         : { type: marvel_common.Temperature          , comment: "Moving average value" }
+        error           : { type: t_bool         , comment: "true if there is an error" }
 
     variables_input:
       isSimulated : {type: t_bool}
       simulatedVal: {type: marvel_common.Temperature}
 
     references:
-        config_ref          : { type: MeasurementConfig, comment: "Reference to the config (alarms in degrees celsius)" }
+        config_ref          : { type: MeasurementConfig2, comment: "Reference to the config (alarms in degrees celsius)" }
+        alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig, comment: "Reference to the alarm config for the sensor" }
 
 
     stat:
@@ -204,14 +214,15 @@
 
         alarm:
             superState   : !EQ [ stat.enabled, marvel_common.EnabledStatus.enabled ]
-            config       : config_ref.alarms 
+            config       : alarmConfig_ref
             value        : average.celsius.value
 
         health:
             superState   : !EQ [ stat.enabled, marvel_common.EnabledStatus.enabled ]
             isGood       : !NOT [ !OR [
                                        !EQ [ stat.alarm, marvel_common.HiHiLoLoAlarmStatus.hiHi ],
-                                       !EQ [ stat.alarm, marvel_common.HiHiLoLoAlarmStatus.loLo ]
+                                       !EQ [ stat.alarm, marvel_common.HiHiLoLoAlarmStatus.loLo ],
+                                       error
                                      ] ]
             hasWarning   : !OR [
                                 !EQ [ stat.alarm, marvel_common.HiHiLoLoAlarmStatus.hi ],
@@ -229,12 +240,12 @@
 
     variables_input:     
         setPoint                : { type: t_float, comment: "Current set point of the heater in kelvin" }
-        zoneTemp                : { type: marvel_common.Temperature, comment: "Associated temperature of the heater in kelvin" }
+        temp                : { type: marvel_common.Temperature, comment: "Associated temperature of the heater in kelvin" }
         isSimulated : {type: t_bool}
 
 
     references:
-      config_ref                  : { type: HeaterConfig    , comment: "Reference to the heater config" }
+        config_ref                  : { type: HeaterConfig    , comment: "Reference to the heater config" }
 
     stat:
       init                        : { type: marvel_common.InitializationStatus }
@@ -246,8 +257,8 @@
 
     calls:
         enabled:
-            superState   : !BOOL TRUE
-            isEnabled    : config_ref.enabled
+          superState   : !BOOL TRUE
+          isEnabled    : config_ref.enabled
       #proc
         initialize:
           isEnabled    : !NOT [ !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ],
@@ -260,7 +271,7 @@
 ################################################
 ### state machine vessel temperature control ###
 ################################################
-  !STATEMACHINE TempControl:
+  !STATEMACHINE VesselControl:
     variables_output:
       avgTemp       : { type: marvel_common.Temperature                                              , comment: "Average temperature of the vessel in kelvin" }
       maxDeviation : { type: marvel_common.Temperature                                               , comment: "Maximum deviation of the temperature sensors in kelvin" }
@@ -269,6 +280,8 @@
       setPointRamped          : { type: marvel_common.Temperature                                               , comment: "Set point temperature in kelvin after ramping" }
       badHealthSensors   : { type: t_bool               , comment: "True if there are temperature sensors in bad health" }
       badHealthHeaters   : { type: t_bool               , comment: "True if there are heaters in bad health" }
+      totalPower       : { type: t_float              , comment: "Total power of all heaters in percentage" }
+      avgPower           : { type: t_float              , comment: "Average power of the heaters in percentage" }
 
       #thermostat switch enabled
       enableTstatBottom        :    { type: t_bool, comment: "Thermostat switch vessel bottom enabled ", address: "%Q*" } 
@@ -291,38 +304,38 @@
 
     parts:
       #sensors
-      tpT1:          { type: TempMeasurement, comment: "1st temp sensor",           arguments: { config_ref: { type: MeasurementConfig } } }
-      tpT2:          { type: TempMeasurement, comment: "2nd temp sensor",           arguments: { config_ref: { type: MeasurementConfig } } }
-      tpT3:          { type: TempMeasurement, comment: "3rd temp sensor",           arguments: { config_ref: { type: MeasurementConfig } } }
-      tpT4:          { type: TempMeasurement, comment: "4th temp sensor",           arguments: { config_ref: { type: MeasurementConfig } } }
+      tpT1:          { type: TempMeasurement, comment: "1st temp sensor",           arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tpT2:          { type: TempMeasurement, comment: "2nd temp sensor",           arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tpT3:          { type: TempMeasurement, comment: "3rd temp sensor",           arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tpT4:          { type: TempMeasurement, comment: "4th temp sensor",           arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
 
-      tpLegNE:       { type: TempMeasurement, comment: "Leg NE",                    arguments: { config_ref: { type: MeasurementConfig } } }
-      tpLegNW:       { type: TempMeasurement, comment: "Leg NW",                    arguments: { config_ref: { type: MeasurementConfig } } }
-      tpLegSE:       { type: TempMeasurement, comment: "Leg SE",                    arguments: { config_ref: { type: MeasurementConfig } } }
-      tpLegSW:       { type: TempMeasurement, comment: "Leg SW",                    arguments: { config_ref: { type: MeasurementConfig } } }
+      tpLegNE:       { type: TempMeasurement, comment: "Leg NE",                    arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tpLegNW:       { type: TempMeasurement, comment: "Leg NW",                    arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tpLegSE:       { type: TempMeasurement, comment: "Leg SE",                    arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tpLegSW:       { type: TempMeasurement, comment: "Leg SW",                    arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
 
-      tpLegTopNE:    { type: TempMeasurement, comment: "Leg Top NE",                arguments: { config_ref: { type: MeasurementConfig } } }
-      tpLegTopNW:    { type: TempMeasurement, comment: "Leg Top NW",                arguments: { config_ref: { type: MeasurementConfig } } }
-      tpLegTopSE:    { type: TempMeasurement, comment: "Leg Top SE",                arguments: { config_ref: { type: MeasurementConfig } } }
-      tpLegTopSW:    { type: TempMeasurement, comment: "Leg Top SW",                arguments: { config_ref: { type: MeasurementConfig } } }
+      tpLegTopNE:    { type: TempMeasurement, comment: "Leg Top NE",                arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tpLegTopNW:    { type: TempMeasurement, comment: "Leg Top NW",                arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tpLegTopSE:    { type: TempMeasurement, comment: "Leg Top SE",                arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tpLegTopSW:    { type: TempMeasurement, comment: "Leg Top SW",                arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
 
-      tpVesBotNE:    { type: TempMeasurement, comment: "Vessel Bottom NE",          arguments: { config_ref: { type: MeasurementConfig } } }
-      tpVesBotNW:    { type: TempMeasurement, comment: "Vessel Bottom NW",          arguments: { config_ref: { type: MeasurementConfig } } }
-      tpVesBotSE:    { type: TempMeasurement, comment: "Vessel Bottom SE",          arguments: { config_ref: { type: MeasurementConfig } } }
-      tpVesBotSW:    { type: TempMeasurement, comment: "Vessel Bottom SW",          arguments: { config_ref: { type: MeasurementConfig } } }
+      tpVesBotNE:    { type: TempMeasurement, comment: "Vessel Bottom NE",          arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tpVesBotNW:    { type: TempMeasurement, comment: "Vessel Bottom NW",          arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tpVesBotSE:    { type: TempMeasurement, comment: "Vessel Bottom SE",          arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tpVesBotSW:    { type: TempMeasurement, comment: "Vessel Bottom SW",          arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
 
-      tpCentre:      { type: TempMeasurement, comment: "Centre",                    arguments: { config_ref: { type: MeasurementConfig } } }
-      tpCentreTH10K: { type: TempMeasurement, comment: "Centre TH10K",              arguments: { config_ref: { type: MeasurementConfig } } }
+      tpCentre:      { type: TempMeasurement, comment: "Centre",                    arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tpCentreTH10K: { type: TempMeasurement, comment: "Centre TH10K",              arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
 
-      tpVesSideN:    { type: TempMeasurement, comment: "Vessel Side N",             arguments: { config_ref: { type: MeasurementConfig } } }
-      tpVesSideS:    { type: TempMeasurement, comment: "Vessel Side S",             arguments: { config_ref: { type: MeasurementConfig } } }
-      tpVesSideE:    { type: TempMeasurement, comment: "Vessel Side E",             arguments: { config_ref: { type: MeasurementConfig } } }
-      tpVesSideW:    { type: TempMeasurement, comment: "Vessel Side W",             arguments: { config_ref: { type: MeasurementConfig } } }
+      tpVesSideN:    { type: TempMeasurement, comment: "Vessel Side N",             arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tpVesSideS:    { type: TempMeasurement, comment: "Vessel Side S",             arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tpVesSideE:    { type: TempMeasurement, comment: "Vessel Side E",             arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tpVesSideW:    { type: TempMeasurement, comment: "Vessel Side W",             arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
 
-      tpVesLidN:     { type: TempMeasurement, comment: "Vessel Lid N",              arguments: { config_ref: { type: MeasurementConfig } } }
-      tpVesLidS:     { type: TempMeasurement, comment: "Vessel Lid S",              arguments: { config_ref: { type: MeasurementConfig } } }
+      tpVesLidN:     { type: TempMeasurement, comment: "Vessel Lid N",              arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tpVesLidS:     { type: TempMeasurement, comment: "Vessel Lid S",              arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
 
-      tpCryoRear:     { type: TempMeasurement, comment: "Cryo Rear",                arguments: { config_ref: { type: MeasurementConfig } } }
+      tpCryoRear:    { type: TempMeasurement, comment: "Cryo Rear",                 arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
 
       #heaters
       htLegNE:       { type: HeaterControl, comment: "Heater control for Leg NE",              arguments: { config_ref: { type: HeaterConfig } } }
@@ -340,35 +353,35 @@
       htVesBotSE:    { type: HeaterControl, comment: "Heater control for Vessel Bottom SE",    arguments: { config_ref: { type: HeaterConfig } } }
       htVesBotSW:    { type: HeaterControl, comment: "Heater control for Vessel Bottom SW",    arguments: { config_ref: { type: HeaterConfig } } }
 
-      htVesSideNE:   { type: HeaterControl, comment: "Heater control for Vessel Side NE",      arguments: { config_ref: { type: HeaterConfig } } }
-      htVesSideNW:   { type: HeaterControl, comment: "Heater control for Vessel Side NW",      arguments: { config_ref: { type: HeaterConfig } } }
-      htVesSideSE:   { type: HeaterControl, comment: "Heater control for Vessel Side SE",      arguments: { config_ref: { type: HeaterConfig } } }
-      htVesSideSW:   { type: HeaterControl, comment: "Heater control for Vessel Side SW",      arguments: { config_ref: { type: HeaterConfig } } }
+      htVesSideN:    { type: HeaterControl, comment: "Heater control for Vessel Side NE",      arguments: { config_ref: { type: HeaterConfig } } }
+      htVesSideS:    { type: HeaterControl, comment: "Heater control for Vessel Side NW",      arguments: { config_ref: { type: HeaterConfig } } }
+      htVesSideE:    { type: HeaterControl, comment: "Heater control for Vessel Side SE",      arguments: { config_ref: { type: HeaterConfig } } }
+      htVesSideW:    { type: HeaterControl, comment: "Heater control for Vessel Side SW",      arguments: { config_ref: { type: HeaterConfig } } }
 
       htVesLidN:     { type: HeaterControl, comment: "Heater control for Vessel Lid N",        arguments: { config_ref: { type: HeaterConfig } } }
       htVesLidS:     { type: HeaterControl, comment: "Heater control for Vessel Lid S",        arguments: { config_ref: { type: HeaterConfig } } }
 
-      htCryoRear:     { type: HeaterControl, comment: "Heater control for Cryo Rear",           arguments: { config_ref: { type: HeaterConfig } } }
-          
+      htCryoRear:    { type: HeaterControl, comment: "Heater control for Cryo Rear",           arguments: { config_ref: { type: HeaterConfig } } }       
           
     references:
-      config_ref              : { type: TempControlConfig                              , comment: "Active configuration of the vessel" }
+      config_ref              : { type: vesselConfig                              , comment: "Active configuration of the vessel" }
       activity_ref            : { type: marvel_common.ActivityStatus              , comment: "Shared activity status"}
       services_ref            : { type: marvel_services.Services                  , comment: "Shared services", expand: false}
       operator_ref            : { type: marvel_common.OperatorStatus              , comment: "Shared operator status" }
 
     stat:
       init                        : { type: marvel_common.InitializationStatus }
-      health          : { type: marvel_common.HealthStatus         , comment: "Is the tempcontrol healthy?" }
-      state           : { type: TempControlStatus                   , comment: "Actual state of the tempcontrol" }
+      health          : { type: marvel_common.HealthStatus         , comment: "Is the vessel healthy?" }
+      state           : { type: TempControlStatus                   , comment: "Actual state of the vessel" }
+      busy            : { type: marvel_common.BusyStatus           , comment: "Is the vessel busy with a procedure?" }
 
     proc:
       initialize                  : { type: marvel_common.Process                     , comment: "Start initializing" }
       warm_up                     : { type: marvel_common.Process                     , comment: "Start warming up" }
       stop                        : { type: marvel_common.Process                     , comment: "Stop heating" }
       reset                       : { type: marvel_common.Process                     , comment: "Reset complete" }   
-      lock                        : { type: marvel_common.Process                     , comment: "Lock the temp control (e.g. when the vessel is opened)" }
-      unlock                      : { type: marvel_common.Process                     , comment: "Unlock the temp control (e.g. when the vessel is closed)" }
+      lock                        : { type: marvel_common.Process                     , comment: "Lock the vessel control (e.g. when the vessel is opened)" }
+      unlock                      : { type: marvel_common.Process                     , comment: "Unlock the vessel control (e.g. when the vessel is closed)" }
 
     calls:
       #proc's
@@ -389,133 +402,80 @@
         unlock:
           isEnabled                 : !AND [ !EQ [ operator_ref, marvel_common.OperatorStatus.tech ],
                                             !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
+        busy:
+          superState   : !BOOL TRUE
+          isBusy       : !OR [ !EQ [ stat.state, TempControlStatus.warming_up ], !EQ [ stat.init, marvel_common.InitializationStatus.initializing ] ]
 
       #parts
-        #sensors
-        tpT1:          { config_ref: config_ref.measurements }
-        tpT2:          { config_ref: config_ref.measurements }
-        tpT3:          { config_ref: config_ref.measurements }
-        tpT4:          { config_ref: config_ref.measurements }
 
-        tpLegNE:       { config_ref: config_ref.measurements }
-        tpLegNW:       { config_ref: config_ref.measurements }
-        tpLegSE:       { config_ref: config_ref.measurements }
-        tpLegSW:       { config_ref: config_ref.measurements }
+        tpT1:          { config_ref: config_ref.tpT1, alarmConfig_ref: config_ref.alarmsSensors }
+        tpT2:          { config_ref: config_ref.tpT2, alarmConfig_ref: config_ref.alarmsSensors }
+        tpT3:          { config_ref: config_ref.tpT3, alarmConfig_ref: config_ref.alarmsSensors }
+        tpT4:          { config_ref: config_ref.tpT4, alarmConfig_ref: config_ref.alarmsSensors }
 
-        tpLegTopNE:    { config_ref: config_ref.measurements }
-        tpLegTopNW:    { config_ref: config_ref.measurements }
-        tpLegTopSE:    { config_ref: config_ref.measurements }
-        tpLegTopSW:    { config_ref: config_ref.measurements }
+        tpLegNE:       { config_ref: config_ref.tpLegNE, alarmConfig_ref: config_ref.alarmsSensors }
+        tpLegNW:       { config_ref: config_ref.tpLegNW, alarmConfig_ref: config_ref.alarmsSensors }
+        tpLegSE:       { config_ref: config_ref.tpLegSE, alarmConfig_ref: config_ref.alarmsSensors }
+        tpLegSW:       { config_ref: config_ref.tpLegSW, alarmConfig_ref: config_ref.alarmsSensors }
 
-        tpVesBotNE:    { config_ref: config_ref.measurements }
-        tpVesBotNW:    { config_ref: config_ref.measurements }
-        tpVesBotSE:    { config_ref: config_ref.measurements }
-        tpVesBotSW:    { config_ref: config_ref.measurements }
+        tpLegTopNE:    { config_ref: config_ref.tpLegTopNE, alarmConfig_ref: config_ref.alarmsSensors }
+        tpLegTopNW:    { config_ref: config_ref.tpLegTopNW, alarmConfig_ref: config_ref.alarmsSensors }
+        tpLegTopSE:    { config_ref: config_ref.tpLegTopSE, alarmConfig_ref: config_ref.alarmsSensors }
+        tpLegTopSW:    { config_ref: config_ref.tpLegTopSW, alarmConfig_ref: config_ref.alarmsSensors }
 
-        tpCentre:      { config_ref: config_ref.measurements }
-        tpCentreTH10K: { config_ref: config_ref.measurements }
+        tpVesBotNE:    { config_ref: config_ref.tpVesBotNE, alarmConfig_ref: config_ref.alarmsSensors }
+        tpVesBotNW:    { config_ref: config_ref.tpVesBotNW, alarmConfig_ref: config_ref.alarmsSensors }
+        tpVesBotSE:    { config_ref: config_ref.tpVesBotSE, alarmConfig_ref: config_ref.alarmsSensors }
+        tpVesBotSW:    { config_ref: config_ref.tpVesBotSW, alarmConfig_ref: config_ref.alarmsSensors }
 
-        tpVesSideN:    { config_ref: config_ref.measurements }
-        tpVesSideS:    { config_ref: config_ref.measurements }
-        tpVesSideE:    { config_ref: config_ref.measurements }
-        tpVesSideW:    { config_ref: config_ref.measurements }
+        tpCentre:      { config_ref: config_ref.tpCentre, alarmConfig_ref: config_ref.alarmsSensors }
+        tpCentreTH10K: { config_ref: config_ref.tpCentreTH10K, alarmConfig_ref: config_ref.alarmsSensors }
 
-        tpVesLidN:     { config_ref: config_ref.measurements }
-        tpVesLidS:     { config_ref: config_ref.measurements }
+        tpVesSideN:    { config_ref: config_ref.tpVesSideN, alarmConfig_ref: config_ref.alarmsSensors }
+        tpVesSideS:    { config_ref: config_ref.tpVesSideS, alarmConfig_ref: config_ref.alarmsSensors }
+        tpVesSideE:    { config_ref: config_ref.tpVesSideE, alarmConfig_ref: config_ref.alarmsSensors }
+        tpVesSideW:    { config_ref: config_ref.tpVesSideW, alarmConfig_ref: config_ref.alarmsSensors }
 
-        tpCryoRear:    { config_ref: config_ref.measurements }
+        tpVesLidN:     { config_ref: config_ref.tpVesLidN, alarmConfig_ref: config_ref.alarmsSensors }
+        tpVesLidS:     { config_ref: config_ref.tpVesLidS, alarmConfig_ref: config_ref.alarmsSensors }
 
-        #heaters
-        htLegNE:       { config_ref: config_ref.heaters }
-        htLegNW:       { config_ref: config_ref.heaters }
-        htLegSE:       { config_ref: config_ref.heaters }
-        htLegSW:       { config_ref: config_ref.heaters }
+        tpCryoRear:    { config_ref: config_ref.tpCryoRear, alarmConfig_ref: config_ref.alarmsSensors }
 
-        htLegTopNE:    { config_ref: config_ref.heaters }
-        htLegTopNW:    { config_ref: config_ref.heaters }
-        htLegTopSE:    { config_ref: config_ref.heaters }
-        htLegTopSW:    { config_ref: config_ref.heaters }
+        #heaeters
+        htLegNE:       { config_ref: config_ref.htLegNE}
+        htLegNW:       { config_ref: config_ref.htLegNW}
+        htLegSE:       { config_ref: config_ref.htLegSE }
+        htLegSW:       { config_ref: config_ref.htLegSW }
 
-        htVesBotNE:    { config_ref: config_ref.heaters }
-        htVesBotNW:    { config_ref: config_ref.heaters }
-        htVesBotSE:    { config_ref: config_ref.heaters }
-        htVesBotSW:    { config_ref: config_ref.heaters }
+        htLegTopNE:    { config_ref: config_ref.htLegTopNE }
+        htLegTopNW:    { config_ref: config_ref.htLegTopNW}
+        htLegTopSE:    { config_ref: config_ref.htLegTopSE }
+        htLegTopSW:    { config_ref: config_ref.htLegTopSW }
 
-        htVesSideNE:   { config_ref: config_ref.heaters }
-        htVesSideNW:   { config_ref: config_ref.heaters }
-        htVesSideSE:   { config_ref: config_ref.heaters }
-        htVesSideSW:   { config_ref: config_ref.heaters }
+        htVesBotNE:    { config_ref: config_ref.htVesBotNE}
+        htVesBotNW:    { config_ref: config_ref.htVesBotNW }
+        htVesBotSE:    { config_ref: config_ref.htVesBotSE }
+        htVesBotSW:    { config_ref: config_ref.htVesBotSW }
 
-        htVesLidN:     { config_ref: config_ref.heaters }
-        htVesLidS:     { config_ref: config_ref.heaters }
+        htVesSideN:   { config_ref: config_ref.htVesSideN }
+        htVesSideS:   { config_ref: config_ref.htVesSideS }
+        htVesSideE:   { config_ref: config_ref.htVesSideE }
+        htVesSideW:   { config_ref: config_ref.htVesSideW}
 
-        htCryoRear:    { config_ref: config_ref.heaters }
-        
-        # #sensors
-        # tpT1:          { config_ref: config_ref.tpT1 }
-        # tpT2:          { config_ref: config_ref.tpT2 }
-        # tpT3:          { config_ref: config_ref.tpT3 }
-        # tpT4:          { config_ref: config_ref.tpT4 }
+        htVesLidN:     { config_ref: config_ref.htVesLidN }
+        htVesLidS:     { config_ref: config_ref.htVesLidS }
 
-        # tpLegNE:       { config_ref: config_ref.tpLegNE }
-        # tpLegNW:       { config_ref: config_ref.tpLegNW }
-        # tpLegSE:       { config_ref: config_ref.tpLegSE }
-        # tpLegSW:       { config_ref: config_ref.tpLegSW }
-
-        # tpLegTopNE:    { config_ref: config_ref.tpLegTopNE }
-        # tpLegTopNW:    { config_ref: config_ref.tpLegTopNW }
-        # tpLegTopSE:    { config_ref: config_ref.tpLegTopSE }
-        # tpLegTopSW:    { config_ref: config_ref.tpLegTopSW }
-
-        # tpVesBotNE:    { config_ref: config_ref.tpVesBotNE }
-        # tpVesBotNW:    { config_ref: config_ref.tpVesBotNW }
-        # tpVesBotSE:    { config_ref: config_ref.tpVesBotSE }
-        # tpVesBotSW:    { config_ref: config_ref.tpVesBotSW }
-
-        # tpCentre:      { config_ref: config_ref.tpCentre }
-        # tpCentreTH10K: { config_ref: config_ref.tpCentreTH10K }
-
-        # tpVesSideN:    { config_ref: config_ref.tpVesSideN }
-        # tpVesSideS:    { config_ref: config_ref.tpVesSideS }
-        # tpVesSideE:    { config_ref: config_ref.tpVesSideE }
-        # tpVesSideW:    { config_ref: config_ref.tpVesSideW }
-
-        # tpVesLidN:     { config_ref: config_ref.tpVesLidN }
-        # tpVesLidS:     { config_ref: config_ref.tpVesLidS }
-
-        # tpCryoRear:    { config_ref: config_ref.tpCryoRear}
-
-        # #heaeters
-        # htLegNE:       { config_ref: config_ref.htLegNE }
-        # htLegNW:       { config_ref: config_ref.htLegNW }
-        # htLegSE:       { config_ref: config_ref.htLegSE }
-        # htLegSW:       { config_ref: config_ref.htLegSW }
-
-        # htLegTopNE:    { config_ref: config_ref.htLegTopNE }
-        # htLegTopNW:    { config_ref: config_ref.htLegTopNW }
-        # htLegTopSE:    { config_ref: config_ref.htLegTopSE }
-        # htLegTopSW:    { config_ref: config_ref.htLegTopSW }
-
-        # htVesBotNE:    { config_ref: config_ref.htVesBotNE }
-        # htVesBotNW:    { config_ref: config_ref.htVesBotNW }
-        # htVesBotSE:    { config_ref: config_ref.htVesBotSE }
-        # htVesBotSW:    { config_ref: config_ref.htVesBotSW }
-
-        # htVesSideNE:   { config_ref: config_ref.htVesSideNE }
-        # htVesSideNW:   { config_ref: config_ref.htVesSideNW }
-        # htVesSideSE:   { config_ref: config_ref.htVesSideSE }
-        # htVesSideSW:   { config_ref: config_ref.htVesSideSW }
-
-        # htVesLidN:     { config_ref: config_ref.htVesLidN }
-        # htVesLidS:     { config_ref: config_ref.htVesLidS }
-
-        # htCryoRear:    { config_ref: config_ref.htCryoRear}
+        htCryoRear:    { config_ref: config_ref.htCryoRear }
 
 
 ########################################################################################################################
 # state machine's STCU
 ########################################################################################################################
   !STATEMACHINE STCU:
+
+    variables_input_rw:
+      editableConfig            : { type: STCUConfig                          , comment: "Editable configuration of the stcu" , expand: false }
+
     references:
       activity_ref            : { type: marvel_common.ActivityStatus              , comment: "Shared activity status"}
       services_ref            : { type: marvel_services.Services                  , comment: "Shared services", expand: false}
@@ -525,17 +485,17 @@
       config                  : { type: STCUConfig, comment: "Active configuration of the STCU" }
       
     parts:
-      tempCabinet:     { type: TempMeasurement, comment: "temp measurement in electrical cabinet",              arguments: { config_ref: { type: MeasurementConfig } } }
+      tempCabinet:     { type: TempMeasurement, comment: "temp measurement in electrical cabinet",              arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
 
-      VesselTempControl:
-        type: TempControl
+      vesselTempControl:
+        type: VesselControl
         expand: false
         comment: "State machine for the vessel temperature control" 
         arguments:
                 activity_ref              : { type: marvel_common.ActivityStatus          , expand: false }
                 services_ref              : { type: marvel_services.Services              , expand: false }
                 operator_ref              : { type: marvel_common.OperatorStatus          , expand: false }
-                config_ref                : { type: TempControlConfig                     , expand: false }
+                config_ref                : { type: vesselConfig                     , expand: false }
       configManager:
         comment                     : "The config manager (to load/save/activate configuration data)"
         type                        : marvel_common.ConfigManager
@@ -549,24 +509,21 @@
 
 
     calls:
-      health:
+      busy:
         superState   : !BOOL TRUE
-        isGood      :  !EQ [ parts.VesselTempControl.stat.health, marvel_common.HealthStatus.good ]
-                                
-                              
-        hasWarning  : !EQ [ parts.VesselTempControl.stat.health, marvel_common.HealthStatus.warning ]
+        isBusy       : !EQ [ parts.vesselTempControl.stat.busy, marvel_common.BusyStatus.busy ]
 
     #parts
-      tempCabinet:     { config_ref: config.tempCabinet }
-      VesselTempControl:
+      tempCabinet:     { config_ref: config.tempCabinet, alarmConfig_ref: config.alarmConfigCabinet }
+      vesselTempControl:
               activity_ref        : activity_ref
               services_ref        : services_ref
               operator_ref        : operator_ref
               config_ref          : config.vesselTempControl
-                              
-       # isGood                    : !MTCS_SUMMARIZE_GOOD [ parts.VesselTempControl ] 
-  
-        #hasWarning                : !MTCS_SUMMARIZE_WARN [ parts.VesselTempControl ]
+
+      configManager:
+        isEnabled            : !EQ [ operator_ref, marvel_common.OperatorStatus.tech ]  
+    
 
   
 
