@@ -1265,7 +1265,26 @@
           </struct>
         </baseType>
       </dataType>
-      <dataType name="vesselConfig">
+      <dataType name="VesselSharedConfigs">
+        <baseType>
+          <struct>
+            <variable name="sensors">
+              <type><derived name="HiHiLoLoAlarmConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Alarm config for the temperature sensors in the vessel</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="VesselConfig">
         <baseType>
           <struct>
             <variable name="simulation">
@@ -1281,8 +1300,8 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="alarmsSensors">
-              <type><derived name="HiHiLoLoAlarmConfig" /></type>
+            <variable name="shared">
+              <type><derived name="VesselSharedConfigs" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1291,7 +1310,7 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Alarm config for the temperature sensors</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Shared config for the vessel</xhtml>
               </documentation>
             </variable>
             <variable name="setPointTarget">
@@ -1951,7 +1970,7 @@
         <baseType>
           <struct>
             <variable name="vesselTempControl">
-              <type><derived name="vesselConfig" /></type>
+              <type><derived name="VesselConfig" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -3721,7 +3740,7 @@ END_IF;
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Reference to the config (alarms in degrees celsius)</xhtml>
               </documentation>
             </variable>
-            <variable name="alarmConfig_ref">
+            <variable name="sharedConfig_ref">
               <type><derived name="HiHiLoLoAlarmConfig" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -3749,7 +3768,7 @@ stat.health := F_HealthStatus(
     hasWarning := (stat.alarm = HiHiLoLoAlarmStatus.hi) OR (stat.alarm = HiHiLoLoAlarmStatus.lo));
 stat.alarm := F_HiHiLoLoAlarmStatus(
     superState := stat.enabled = EnabledStatus.enabled,
-    config := alarmConfig_ref,
+    config := sharedConfig_ref,
     value := average.celsius.value);
 </xhtml>
           </ST>
@@ -4487,7 +4506,7 @@ THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
           </outputVars>
           <inOutVars>
             <variable name="config_ref">
-              <type><derived name="vesselConfig" /></type>
+              <type><derived name="VesselConfig" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -4546,79 +4565,79 @@ THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">parts.tpT1(
     config_ref := config_ref.tpT1,
-    alarmConfig_ref := config_ref.alarmsSensors);
+    sharedConfig_ref := config_ref.shared.sensors);
 parts.tpT2(
     config_ref := config_ref.tpT2,
-    alarmConfig_ref := config_ref.alarmsSensors);
+    sharedConfig_ref := config_ref.shared.sensors);
 parts.tpT3(
     config_ref := config_ref.tpT3,
-    alarmConfig_ref := config_ref.alarmsSensors);
+    sharedConfig_ref := config_ref.shared.sensors);
 parts.tpT4(
     config_ref := config_ref.tpT4,
-    alarmConfig_ref := config_ref.alarmsSensors);
+    sharedConfig_ref := config_ref.shared.sensors);
 parts.tpLegNE(
     config_ref := config_ref.tpLegNE,
-    alarmConfig_ref := config_ref.alarmsSensors);
+    sharedConfig_ref := config_ref.shared.sensors);
 parts.tpLegNW(
     config_ref := config_ref.tpLegNW,
-    alarmConfig_ref := config_ref.alarmsSensors);
+    sharedConfig_ref := config_ref.shared.sensors);
 parts.tpLegSE(
     config_ref := config_ref.tpLegSE,
-    alarmConfig_ref := config_ref.alarmsSensors);
+    sharedConfig_ref := config_ref.shared.sensors);
 parts.tpLegSW(
     config_ref := config_ref.tpLegSW,
-    alarmConfig_ref := config_ref.alarmsSensors);
+    sharedConfig_ref := config_ref.shared.sensors);
 parts.tpLegTopNE(
     config_ref := config_ref.tpLegTopNE,
-    alarmConfig_ref := config_ref.alarmsSensors);
+    sharedConfig_ref := config_ref.shared.sensors);
 parts.tpLegTopNW(
     config_ref := config_ref.tpLegTopNW,
-    alarmConfig_ref := config_ref.alarmsSensors);
+    sharedConfig_ref := config_ref.shared.sensors);
 parts.tpLegTopSE(
     config_ref := config_ref.tpLegTopSE,
-    alarmConfig_ref := config_ref.alarmsSensors);
+    sharedConfig_ref := config_ref.shared.sensors);
 parts.tpLegTopSW(
     config_ref := config_ref.tpLegTopSW,
-    alarmConfig_ref := config_ref.alarmsSensors);
+    sharedConfig_ref := config_ref.shared.sensors);
 parts.tpVesBotNE(
     config_ref := config_ref.tpVesBotNE,
-    alarmConfig_ref := config_ref.alarmsSensors);
+    sharedConfig_ref := config_ref.shared.sensors);
 parts.tpVesBotNW(
     config_ref := config_ref.tpVesBotNW,
-    alarmConfig_ref := config_ref.alarmsSensors);
+    sharedConfig_ref := config_ref.shared.sensors);
 parts.tpVesBotSE(
     config_ref := config_ref.tpVesBotSE,
-    alarmConfig_ref := config_ref.alarmsSensors);
+    sharedConfig_ref := config_ref.shared.sensors);
 parts.tpVesBotSW(
     config_ref := config_ref.tpVesBotSW,
-    alarmConfig_ref := config_ref.alarmsSensors);
+    sharedConfig_ref := config_ref.shared.sensors);
 parts.tpCentre(
     config_ref := config_ref.tpCentre,
-    alarmConfig_ref := config_ref.alarmsSensors);
+    sharedConfig_ref := config_ref.shared.sensors);
 parts.tpCentreTH10K(
     config_ref := config_ref.tpCentreTH10K,
-    alarmConfig_ref := config_ref.alarmsSensors);
+    sharedConfig_ref := config_ref.shared.sensors);
 parts.tpVesSideN(
     config_ref := config_ref.tpVesSideN,
-    alarmConfig_ref := config_ref.alarmsSensors);
+    sharedConfig_ref := config_ref.shared.sensors);
 parts.tpVesSideS(
     config_ref := config_ref.tpVesSideS,
-    alarmConfig_ref := config_ref.alarmsSensors);
+    sharedConfig_ref := config_ref.shared.sensors);
 parts.tpVesSideE(
     config_ref := config_ref.tpVesSideE,
-    alarmConfig_ref := config_ref.alarmsSensors);
+    sharedConfig_ref := config_ref.shared.sensors);
 parts.tpVesSideW(
     config_ref := config_ref.tpVesSideW,
-    alarmConfig_ref := config_ref.alarmsSensors);
+    sharedConfig_ref := config_ref.shared.sensors);
 parts.tpVesLidN(
     config_ref := config_ref.tpVesLidN,
-    alarmConfig_ref := config_ref.alarmsSensors);
+    sharedConfig_ref := config_ref.shared.sensors);
 parts.tpVesLidS(
     config_ref := config_ref.tpVesLidS,
-    alarmConfig_ref := config_ref.alarmsSensors);
+    sharedConfig_ref := config_ref.shared.sensors);
 parts.tpCryoRear(
     config_ref := config_ref.tpCryoRear,
-    alarmConfig_ref := config_ref.alarmsSensors);
+    sharedConfig_ref := config_ref.shared.sensors);
 parts.htLegNE( config_ref := config_ref.htLegNE );
 parts.htLegNW( config_ref := config_ref.htLegNW );
 parts.htLegSE( config_ref := config_ref.htLegSE );
@@ -4989,7 +5008,7 @@ THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">parts.tempCabinet(
     config_ref := config.tempCabinet,
-    alarmConfig_ref := config.alarmConfigCabinet);
+    sharedConfig_ref := config.alarmConfigCabinet);
 parts.vesselTempControl(
     activity_ref := activity_ref,
     services_ref := services_ref,
@@ -5163,7 +5182,9 @@ THIS^.proc.initialize._copyToModel_Process( model := model.proc.initialize );
             </Object>
             <Object Name="SimulationConfig">
             </Object>
-            <Object Name="vesselConfig">
+            <Object Name="VesselSharedConfigs">
+            </Object>
+            <Object Name="VesselConfig">
             </Object>
             <Object Name="STCUConfig">
             </Object>

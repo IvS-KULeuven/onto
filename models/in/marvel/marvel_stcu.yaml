@@ -85,15 +85,17 @@
       cooling: {type: t_float, comment: cooling factor (0-1)}
      # weights : { type: !ARRAY [0, 30, !ARRAY [0, 30, t_float]], comment: "value between 0-1 representing the effect each heater has on each temperature sensor" }
 
-
+  !CONFIG VesselSharedConfigs:
+    items:
+      sensors              : { type: marvel_common.HiHiLoLoAlarmConfig, comment: "Alarm config for the temperature sensors in the vessel" }
 
   #########################################
   ### vessel temperature control config ###
   #########################################
-  !CONFIG vesselConfig:
+  !CONFIG VesselConfig:
     items:
       simulation                 : {type: SimulationConfig}
-      alarmsSensors              : { type: marvel_common.HiHiLoLoAlarmConfig, comment: "Alarm config for the temperature sensors" }
+      shared              : { type: VesselSharedConfigs, comment: "Shared config for the vessel" }
       setPointTarget             : { type: marvel_common.Temperature  , comment: "set point temperature in kelvin" }
       rampVPos                   : { type: t_float  , comment: "velocity of temperature change in K/s while ramping up" }
       rampVNeg                   : { type: t_float  , comment: "velocity of temperature change in K/s while ramping down" }
@@ -173,7 +175,7 @@
   ###################
   !CONFIG STCUConfig:
     items:
-      vesselTempControl: { type: vesselConfig, comment: "Config for the vessel" }
+      vesselTempControl: { type: VesselConfig, comment: "Config for the vessel" }
       tempCabinet: { type: MeasurementConfig2, comment: "Config for the temperature measurement in the electrical cabinet" }
       alarmConfigCabinet: { type: marvel_common.HiHiLoLoAlarmConfig, comment: "Alarm config for the temperature measurement in the electrical cabinet" }
       
@@ -199,7 +201,7 @@
 
     references:
         config_ref          : { type: MeasurementConfig2, comment: "Reference to the config (alarms in degrees celsius)" }
-        alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig, comment: "Reference to the alarm config for the sensor" }
+        sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig, comment: "Reference to the alarm config for the sensor" }
 
 
     stat:
@@ -214,7 +216,7 @@
 
         alarm:
             superState   : !EQ [ stat.enabled, marvel_common.EnabledStatus.enabled ]
-            config       : alarmConfig_ref
+            config       : sharedConfig_ref
             value        : average.celsius.value
 
         health:
@@ -304,38 +306,38 @@
 
     parts:
       #sensors
-      tpT1:          { type: TempMeasurement, comment: "1st temp sensor",           arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tpT2:          { type: TempMeasurement, comment: "2nd temp sensor",           arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tpT3:          { type: TempMeasurement, comment: "3rd temp sensor",           arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tpT4:          { type: TempMeasurement, comment: "4th temp sensor",           arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tpT1:          { type: TempMeasurement, comment: "1st temp sensor",           arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tpT2:          { type: TempMeasurement, comment: "2nd temp sensor",           arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tpT3:          { type: TempMeasurement, comment: "3rd temp sensor",           arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tpT4:          { type: TempMeasurement, comment: "4th temp sensor",           arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
 
-      tpLegNE:       { type: TempMeasurement, comment: "Leg NE",                    arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tpLegNW:       { type: TempMeasurement, comment: "Leg NW",                    arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tpLegSE:       { type: TempMeasurement, comment: "Leg SE",                    arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tpLegSW:       { type: TempMeasurement, comment: "Leg SW",                    arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tpLegNE:       { type: TempMeasurement, comment: "Leg NE",                    arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tpLegNW:       { type: TempMeasurement, comment: "Leg NW",                    arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tpLegSE:       { type: TempMeasurement, comment: "Leg SE",                    arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tpLegSW:       { type: TempMeasurement, comment: "Leg SW",                    arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
 
-      tpLegTopNE:    { type: TempMeasurement, comment: "Leg Top NE",                arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tpLegTopNW:    { type: TempMeasurement, comment: "Leg Top NW",                arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tpLegTopSE:    { type: TempMeasurement, comment: "Leg Top SE",                arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tpLegTopSW:    { type: TempMeasurement, comment: "Leg Top SW",                arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tpLegTopNE:    { type: TempMeasurement, comment: "Leg Top NE",                arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tpLegTopNW:    { type: TempMeasurement, comment: "Leg Top NW",                arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tpLegTopSE:    { type: TempMeasurement, comment: "Leg Top SE",                arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tpLegTopSW:    { type: TempMeasurement, comment: "Leg Top SW",                arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
 
-      tpVesBotNE:    { type: TempMeasurement, comment: "Vessel Bottom NE",          arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tpVesBotNW:    { type: TempMeasurement, comment: "Vessel Bottom NW",          arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tpVesBotSE:    { type: TempMeasurement, comment: "Vessel Bottom SE",          arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tpVesBotSW:    { type: TempMeasurement, comment: "Vessel Bottom SW",          arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tpVesBotNE:    { type: TempMeasurement, comment: "Vessel Bottom NE",          arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tpVesBotNW:    { type: TempMeasurement, comment: "Vessel Bottom NW",          arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tpVesBotSE:    { type: TempMeasurement, comment: "Vessel Bottom SE",          arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tpVesBotSW:    { type: TempMeasurement, comment: "Vessel Bottom SW",          arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
 
-      tpCentre:      { type: TempMeasurement, comment: "Centre",                    arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tpCentreTH10K: { type: TempMeasurement, comment: "Centre TH10K",              arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tpCentre:      { type: TempMeasurement, comment: "Centre",                    arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tpCentreTH10K: { type: TempMeasurement, comment: "Centre TH10K",              arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
 
-      tpVesSideN:    { type: TempMeasurement, comment: "Vessel Side N",             arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tpVesSideS:    { type: TempMeasurement, comment: "Vessel Side S",             arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tpVesSideE:    { type: TempMeasurement, comment: "Vessel Side E",             arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tpVesSideW:    { type: TempMeasurement, comment: "Vessel Side W",             arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tpVesSideN:    { type: TempMeasurement, comment: "Vessel Side N",             arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tpVesSideS:    { type: TempMeasurement, comment: "Vessel Side S",             arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tpVesSideE:    { type: TempMeasurement, comment: "Vessel Side E",             arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tpVesSideW:    { type: TempMeasurement, comment: "Vessel Side W",             arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
 
-      tpVesLidN:     { type: TempMeasurement, comment: "Vessel Lid N",              arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tpVesLidS:     { type: TempMeasurement, comment: "Vessel Lid S",              arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tpVesLidN:     { type: TempMeasurement, comment: "Vessel Lid N",              arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tpVesLidS:     { type: TempMeasurement, comment: "Vessel Lid S",              arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
 
-      tpCryoRear:    { type: TempMeasurement, comment: "Cryo Rear",                 arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tpCryoRear:    { type: TempMeasurement, comment: "Cryo Rear",                 arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
 
       #heaters
       htLegNE:       { type: HeaterControl, comment: "Heater control for Leg NE",              arguments: { config_ref: { type: HeaterConfig } } }
@@ -364,7 +366,7 @@
       htCryoRear:    { type: HeaterControl, comment: "Heater control for Cryo Rear",           arguments: { config_ref: { type: HeaterConfig } } }       
           
     references:
-      config_ref              : { type: vesselConfig                              , comment: "Active configuration of the vessel" }
+      config_ref              : { type: VesselConfig                              , comment: "Active configuration of the vessel" }
       activity_ref            : { type: marvel_common.ActivityStatus              , comment: "Shared activity status"}
       services_ref            : { type: marvel_services.Services                  , comment: "Shared services", expand: false}
       operator_ref            : { type: marvel_common.OperatorStatus              , comment: "Shared operator status" }
@@ -408,38 +410,38 @@
 
       #parts
 
-        tpT1:          { config_ref: config_ref.tpT1, alarmConfig_ref: config_ref.alarmsSensors }
-        tpT2:          { config_ref: config_ref.tpT2, alarmConfig_ref: config_ref.alarmsSensors }
-        tpT3:          { config_ref: config_ref.tpT3, alarmConfig_ref: config_ref.alarmsSensors }
-        tpT4:          { config_ref: config_ref.tpT4, alarmConfig_ref: config_ref.alarmsSensors }
+        tpT1:          { config_ref: config_ref.tpT1, sharedConfig_ref: config_ref.shared.sensors }
+        tpT2:          { config_ref: config_ref.tpT2, sharedConfig_ref: config_ref.shared.sensors }
+        tpT3:          { config_ref: config_ref.tpT3, sharedConfig_ref: config_ref.shared.sensors }
+        tpT4:          { config_ref: config_ref.tpT4, sharedConfig_ref: config_ref.shared.sensors }
 
-        tpLegNE:       { config_ref: config_ref.tpLegNE, alarmConfig_ref: config_ref.alarmsSensors }
-        tpLegNW:       { config_ref: config_ref.tpLegNW, alarmConfig_ref: config_ref.alarmsSensors }
-        tpLegSE:       { config_ref: config_ref.tpLegSE, alarmConfig_ref: config_ref.alarmsSensors }
-        tpLegSW:       { config_ref: config_ref.tpLegSW, alarmConfig_ref: config_ref.alarmsSensors }
+        tpLegNE:       { config_ref: config_ref.tpLegNE, sharedConfig_ref: config_ref.shared.sensors }
+        tpLegNW:       { config_ref: config_ref.tpLegNW, sharedConfig_ref: config_ref.shared.sensors }
+        tpLegSE:       { config_ref: config_ref.tpLegSE, sharedConfig_ref: config_ref.shared.sensors }
+        tpLegSW:       { config_ref: config_ref.tpLegSW, sharedConfig_ref: config_ref.shared.sensors }
 
-        tpLegTopNE:    { config_ref: config_ref.tpLegTopNE, alarmConfig_ref: config_ref.alarmsSensors }
-        tpLegTopNW:    { config_ref: config_ref.tpLegTopNW, alarmConfig_ref: config_ref.alarmsSensors }
-        tpLegTopSE:    { config_ref: config_ref.tpLegTopSE, alarmConfig_ref: config_ref.alarmsSensors }
-        tpLegTopSW:    { config_ref: config_ref.tpLegTopSW, alarmConfig_ref: config_ref.alarmsSensors }
+        tpLegTopNE:    { config_ref: config_ref.tpLegTopNE, sharedConfig_ref: config_ref.shared.sensors }
+        tpLegTopNW:    { config_ref: config_ref.tpLegTopNW, sharedConfig_ref: config_ref.shared.sensors }
+        tpLegTopSE:    { config_ref: config_ref.tpLegTopSE, sharedConfig_ref: config_ref.shared.sensors }
+        tpLegTopSW:    { config_ref: config_ref.tpLegTopSW, sharedConfig_ref: config_ref.shared.sensors }
 
-        tpVesBotNE:    { config_ref: config_ref.tpVesBotNE, alarmConfig_ref: config_ref.alarmsSensors }
-        tpVesBotNW:    { config_ref: config_ref.tpVesBotNW, alarmConfig_ref: config_ref.alarmsSensors }
-        tpVesBotSE:    { config_ref: config_ref.tpVesBotSE, alarmConfig_ref: config_ref.alarmsSensors }
-        tpVesBotSW:    { config_ref: config_ref.tpVesBotSW, alarmConfig_ref: config_ref.alarmsSensors }
+        tpVesBotNE:    { config_ref: config_ref.tpVesBotNE, sharedConfig_ref: config_ref.shared.sensors }
+        tpVesBotNW:    { config_ref: config_ref.tpVesBotNW, sharedConfig_ref: config_ref.shared.sensors }
+        tpVesBotSE:    { config_ref: config_ref.tpVesBotSE, sharedConfig_ref: config_ref.shared.sensors }
+        tpVesBotSW:    { config_ref: config_ref.tpVesBotSW, sharedConfig_ref: config_ref.shared.sensors }
 
-        tpCentre:      { config_ref: config_ref.tpCentre, alarmConfig_ref: config_ref.alarmsSensors }
-        tpCentreTH10K: { config_ref: config_ref.tpCentreTH10K, alarmConfig_ref: config_ref.alarmsSensors }
+        tpCentre:      { config_ref: config_ref.tpCentre, sharedConfig_ref: config_ref.shared.sensors }
+        tpCentreTH10K: { config_ref: config_ref.tpCentreTH10K, sharedConfig_ref: config_ref.shared.sensors }
 
-        tpVesSideN:    { config_ref: config_ref.tpVesSideN, alarmConfig_ref: config_ref.alarmsSensors }
-        tpVesSideS:    { config_ref: config_ref.tpVesSideS, alarmConfig_ref: config_ref.alarmsSensors }
-        tpVesSideE:    { config_ref: config_ref.tpVesSideE, alarmConfig_ref: config_ref.alarmsSensors }
-        tpVesSideW:    { config_ref: config_ref.tpVesSideW, alarmConfig_ref: config_ref.alarmsSensors }
+        tpVesSideN:    { config_ref: config_ref.tpVesSideN, sharedConfig_ref: config_ref.shared.sensors }
+        tpVesSideS:    { config_ref: config_ref.tpVesSideS, sharedConfig_ref: config_ref.shared.sensors }
+        tpVesSideE:    { config_ref: config_ref.tpVesSideE, sharedConfig_ref: config_ref.shared.sensors }
+        tpVesSideW:    { config_ref: config_ref.tpVesSideW, sharedConfig_ref: config_ref.shared.sensors }
 
-        tpVesLidN:     { config_ref: config_ref.tpVesLidN, alarmConfig_ref: config_ref.alarmsSensors }
-        tpVesLidS:     { config_ref: config_ref.tpVesLidS, alarmConfig_ref: config_ref.alarmsSensors }
+        tpVesLidN:     { config_ref: config_ref.tpVesLidN, sharedConfig_ref: config_ref.shared.sensors }
+        tpVesLidS:     { config_ref: config_ref.tpVesLidS, sharedConfig_ref: config_ref.shared.sensors }
 
-        tpCryoRear:    { config_ref: config_ref.tpCryoRear, alarmConfig_ref: config_ref.alarmsSensors }
+        tpCryoRear:    { config_ref: config_ref.tpCryoRear, sharedConfig_ref: config_ref.shared.sensors }
 
         #heaeters
         htLegNE:       { config_ref: config_ref.htLegNE}
@@ -485,7 +487,7 @@
       config                  : { type: STCUConfig, comment: "Active configuration of the STCU" }
       
     parts:
-      tempCabinet:     { type: TempMeasurement, comment: "temp measurement in electrical cabinet",              arguments: { config_ref: { type: MeasurementConfig2 }, alarmConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tempCabinet:     { type: TempMeasurement, comment: "temp measurement in electrical cabinet",              arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
 
       vesselTempControl:
         type: VesselControl
@@ -495,7 +497,7 @@
                 activity_ref              : { type: marvel_common.ActivityStatus          , expand: false }
                 services_ref              : { type: marvel_services.Services              , expand: false }
                 operator_ref              : { type: marvel_common.OperatorStatus          , expand: false }
-                config_ref                : { type: vesselConfig                     , expand: false }
+                config_ref                : { type: VesselConfig                     , expand: false }
       configManager:
         comment                     : "The config manager (to load/save/activate configuration data)"
         type                        : marvel_common.ConfigManager
@@ -514,7 +516,7 @@
         isBusy       : !EQ [ parts.vesselTempControl.stat.busy, marvel_common.BusyStatus.busy ]
 
     #parts
-      tempCabinet:     { config_ref: config.tempCabinet, alarmConfig_ref: config.alarmConfigCabinet }
+      tempCabinet:     { config_ref: config.tempCabinet, sharedConfig_ref: config.alarmConfigCabinet }
       vesselTempControl:
               activity_ref        : activity_ref
               services_ref        : services_ref
