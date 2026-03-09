@@ -50,7 +50,7 @@
       Tn : { type: t_float, comment: integral gain (in seconds) }
       Tv : { type: t_float, comment: derivative gain D-T1 (in seconds) }
       Td : { type: t_float, comment: derivative damping time D-T1 (in seconds) }
-      maxDeviation : { type: t_float, comment: "Maximum allowed deviation from the set point for the associated temperature sensors in kelvin" }
+      
       #weights: { type: !ARRAY [0, 30, t_float], comment: "value between 0-1 representing the weight each temperature sensors for this heater" }
 
 
@@ -84,11 +84,18 @@
       heating: {type: t_float, comment: heating gain/factor (0-1)}
       cooling: {type: t_float, comment: cooling factor (0-1)}
      # weights : { type: !ARRAY [0, 30, !ARRAY [0, 30, t_float]], comment: "value between 0-1 representing the effect each heater has on each temperature sensor" }
+  !CONFIG sharedHeaterConfig:
+    items:
+            hihiDeviation               : { type: t_float, comment: "max dev from setpoint" }
+            hiDeviation              : { type: t_float  , comment: "warning dev from setpoint" }
+            maxPower                  : { type: t_double, comment: "Maximum total power of all heaters in percentage", initial: !DOUBLE 100.0 }
+
 
   !CONFIG VesselSharedConfigs:
     items:
       sensors              : { type: marvel_common.HiHiLoLoAlarmConfig, comment: "Alarm config for the temperature sensors in the vessel" }
-
+      heaters: { type: sharedHeaterConfig, comment: "Shared config for the heaters in the vessel" }
+          
   #########################################
   ### vessel temperature control config ###
   #########################################
@@ -100,8 +107,8 @@
       rampVPos                   : { type: t_float  , comment: "velocity of temperature change in K/s while ramping up" }
       rampVNeg                   : { type: t_float  , comment: "velocity of temperature change in K/s while ramping down" }
       rampStart                  : { type: t_float  , comment: "temperature in kelvin at which the ramp starts (e.g. to avoid overshoot)" }
-      maxDeviation               : { type: marvel_common.Temperature  , comment: "Maximum allowed deviation from other temp sensors in the vessel in kelvin" }
-      warnDeviation              : { type: marvel_common.Temperature  , comment: "Deviation from the set point at which a warning is issued in kelvin" }
+      hihiDeviation               : { type: t_float, comment: "max dev from setpoint for the vessel" }
+      hiDeviation              : { type: t_float  , comment: "warning dev from setpoint for the vessel" }
       #weights : { type: !ARRAY [0, 30, !ARRAY [0, 30, t_float]], comment: "value between 0-1 representing the weight of each temperature sensor for each heater" }
 
       #measurements : { type: MeasurementConfig2 , comment: "Default config for the temperature measurements in the vessel" }
@@ -248,6 +255,7 @@
 
     references:
         config_ref                  : { type: HeaterConfig    , comment: "Reference to the heater config" }
+        sharedConfig_ref            : { type: sharedHeaterConfig, comment: "Reference to the shared heater config" }
 
     stat:
       init                        : { type: marvel_common.InitializationStatus }
@@ -340,30 +348,30 @@
       tpCryoRear:    { type: TempMeasurement, comment: "Cryo Rear",                 arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
 
       #heaters
-      htLegNE:       { type: HeaterControl, comment: "Heater control for Leg NE",              arguments: { config_ref: { type: HeaterConfig } } }
-      htLegNW:       { type: HeaterControl, comment: "Heater control for Leg NW",              arguments: { config_ref: { type: HeaterConfig } } }
-      htLegSE:       { type: HeaterControl, comment: "Heater control for Leg SE",              arguments: { config_ref: { type: HeaterConfig } } }
-      htLegSW:       { type: HeaterControl, comment: "Heater control for Leg SW",              arguments: { config_ref: { type: HeaterConfig } } }
+      htLegNE:       { type: HeaterControl, comment: "Heater control for Leg NE",              arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: sharedHeaterConfig } } }
+      htLegNW:       { type: HeaterControl, comment: "Heater control for Leg NW",              arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: sharedHeaterConfig } } }
+      htLegSE:       { type: HeaterControl, comment: "Heater control for Leg SE",              arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: sharedHeaterConfig } } }
+      htLegSW:       { type: HeaterControl, comment: "Heater control for Leg SW",              arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: sharedHeaterConfig } } }
 
-      htLegTopNE:    { type: HeaterControl, comment: "Heater control for Leg Top NE",          arguments: { config_ref: { type: HeaterConfig } } }
-      htLegTopNW:    { type: HeaterControl, comment: "Heater control for Leg Top NW",          arguments: { config_ref: { type: HeaterConfig } } }
-      htLegTopSE:    { type: HeaterControl, comment: "Heater control for Leg Top SE",          arguments: { config_ref: { type: HeaterConfig } } }
-      htLegTopSW:    { type: HeaterControl, comment: "Heater control for Leg Top SW",          arguments: { config_ref: { type: HeaterConfig } } }
+      htLegTopNE:    { type: HeaterControl, comment: "Heater control for Leg Top NE",          arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: sharedHeaterConfig } } }
+      htLegTopNW:    { type: HeaterControl, comment: "Heater control for Leg Top NW",          arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: sharedHeaterConfig } } }
+      htLegTopSE:    { type: HeaterControl, comment: "Heater control for Leg Top SE",          arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: sharedHeaterConfig } } }
+      htLegTopSW:    { type: HeaterControl, comment: "Heater control for Leg Top SW",          arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: sharedHeaterConfig } } }
 
-      htVesBotNE:    { type: HeaterControl, comment: "Heater control for Vessel Bottom NE",    arguments: { config_ref: { type: HeaterConfig } } }
-      htVesBotNW:    { type: HeaterControl, comment: "Heater control for Vessel Bottom NW",    arguments: { config_ref: { type: HeaterConfig } } }
-      htVesBotSE:    { type: HeaterControl, comment: "Heater control for Vessel Bottom SE",    arguments: { config_ref: { type: HeaterConfig } } }
-      htVesBotSW:    { type: HeaterControl, comment: "Heater control for Vessel Bottom SW",    arguments: { config_ref: { type: HeaterConfig } } }
+      htVesBotNE:    { type: HeaterControl, comment: "Heater control for Vessel Bottom NE",    arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: sharedHeaterConfig } } }
+      htVesBotNW:    { type: HeaterControl, comment: "Heater control for Vessel Bottom NW",    arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: sharedHeaterConfig } } }
+      htVesBotSE:    { type: HeaterControl, comment: "Heater control for Vessel Bottom SE",    arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: sharedHeaterConfig } } }
+      htVesBotSW:    { type: HeaterControl, comment: "Heater control for Vessel Bottom SW",    arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: sharedHeaterConfig } } }
 
-      htVesSideN:    { type: HeaterControl, comment: "Heater control for Vessel Side NE",      arguments: { config_ref: { type: HeaterConfig } } }
-      htVesSideS:    { type: HeaterControl, comment: "Heater control for Vessel Side NW",      arguments: { config_ref: { type: HeaterConfig } } }
-      htVesSideE:    { type: HeaterControl, comment: "Heater control for Vessel Side SE",      arguments: { config_ref: { type: HeaterConfig } } }
-      htVesSideW:    { type: HeaterControl, comment: "Heater control for Vessel Side SW",      arguments: { config_ref: { type: HeaterConfig } } }
+      htVesSideN:    { type: HeaterControl, comment: "Heater control for Vessel Side NE",      arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: sharedHeaterConfig } } }
+      htVesSideS:    { type: HeaterControl, comment: "Heater control for Vessel Side NW",      arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: sharedHeaterConfig } } }
+      htVesSideE:    { type: HeaterControl, comment: "Heater control for Vessel Side SE",      arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: sharedHeaterConfig } } }
+      htVesSideW:    { type: HeaterControl, comment: "Heater control for Vessel Side SW",      arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: sharedHeaterConfig } } }
 
-      htVesLidN:     { type: HeaterControl, comment: "Heater control for Vessel Lid N",        arguments: { config_ref: { type: HeaterConfig } } }
-      htVesLidS:     { type: HeaterControl, comment: "Heater control for Vessel Lid S",        arguments: { config_ref: { type: HeaterConfig } } }
+      htVesLidN:     { type: HeaterControl, comment: "Heater control for Vessel Lid N",        arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: sharedHeaterConfig } } }
+      htVesLidS:     { type: HeaterControl, comment: "Heater control for Vessel Lid S",        arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: sharedHeaterConfig } } }
 
-      htCryoRear:    { type: HeaterControl, comment: "Heater control for Cryo Rear",           arguments: { config_ref: { type: HeaterConfig } } }       
+      htCryoRear:    { type: HeaterControl, comment: "Heater control for Cryo Rear",           arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: sharedHeaterConfig } } }       
           
     references:
       config_ref              : { type: VesselConfig                              , comment: "Active configuration of the vessel" }
@@ -444,30 +452,30 @@
         tpCryoRear:    { config_ref: config_ref.tpCryoRear, sharedConfig_ref: config_ref.shared.sensors }
 
         #heaeters
-        htLegNE:       { config_ref: config_ref.htLegNE}
-        htLegNW:       { config_ref: config_ref.htLegNW}
-        htLegSE:       { config_ref: config_ref.htLegSE }
-        htLegSW:       { config_ref: config_ref.htLegSW }
+        htLegNE:       { config_ref: config_ref.htLegNE, sharedConfig_ref: config_ref.shared.heaters}
+        htLegNW:       { config_ref: config_ref.htLegNW, sharedConfig_ref: config_ref.shared.heaters}
+        htLegSE:       { config_ref: config_ref.htLegSE, sharedConfig_ref: config_ref.shared.heaters }
+        htLegSW:       { config_ref: config_ref.htLegSW, sharedConfig_ref: config_ref.shared.heaters }
 
-        htLegTopNE:    { config_ref: config_ref.htLegTopNE }
-        htLegTopNW:    { config_ref: config_ref.htLegTopNW}
-        htLegTopSE:    { config_ref: config_ref.htLegTopSE }
-        htLegTopSW:    { config_ref: config_ref.htLegTopSW }
+        htLegTopNE:    { config_ref: config_ref.htLegTopNE, sharedConfig_ref: config_ref.shared.heaters }
+        htLegTopNW:    { config_ref: config_ref.htLegTopNW, sharedConfig_ref: config_ref.shared.heaters}
+        htLegTopSE:    { config_ref: config_ref.htLegTopSE, sharedConfig_ref: config_ref.shared.heaters }
+        htLegTopSW:    { config_ref: config_ref.htLegTopSW, sharedConfig_ref: config_ref.shared.heaters }
 
-        htVesBotNE:    { config_ref: config_ref.htVesBotNE}
-        htVesBotNW:    { config_ref: config_ref.htVesBotNW }
-        htVesBotSE:    { config_ref: config_ref.htVesBotSE }
-        htVesBotSW:    { config_ref: config_ref.htVesBotSW }
+        htVesBotNE:    { config_ref: config_ref.htVesBotNE, sharedConfig_ref: config_ref.shared.heaters}
+        htVesBotNW:    { config_ref: config_ref.htVesBotNW, sharedConfig_ref: config_ref.shared.heaters }
+        htVesBotSE:    { config_ref: config_ref.htVesBotSE, sharedConfig_ref: config_ref.shared.heaters }
+        htVesBotSW:    { config_ref: config_ref.htVesBotSW, sharedConfig_ref: config_ref.shared.heaters }
 
-        htVesSideN:   { config_ref: config_ref.htVesSideN }
-        htVesSideS:   { config_ref: config_ref.htVesSideS }
-        htVesSideE:   { config_ref: config_ref.htVesSideE }
-        htVesSideW:   { config_ref: config_ref.htVesSideW}
+        htVesSideN:   { config_ref: config_ref.htVesSideN, sharedConfig_ref: config_ref.shared.heaters }
+        htVesSideS:   { config_ref: config_ref.htVesSideS, sharedConfig_ref: config_ref.shared.heaters }
+        htVesSideE:   { config_ref: config_ref.htVesSideE, sharedConfig_ref: config_ref.shared.heaters }
+        htVesSideW:   { config_ref: config_ref.htVesSideW, sharedConfig_ref: config_ref.shared.heaters}
 
-        htVesLidN:     { config_ref: config_ref.htVesLidN }
-        htVesLidS:     { config_ref: config_ref.htVesLidS }
+        htVesLidN:     { config_ref: config_ref.htVesLidN, sharedConfig_ref: config_ref.shared.heaters }
+        htVesLidS:     { config_ref: config_ref.htVesLidS, sharedConfig_ref: config_ref.shared.heaters }
 
-        htCryoRear:    { config_ref: config_ref.htCryoRear }
+        htCryoRear:    { config_ref: config_ref.htCryoRear, sharedConfig_ref: config_ref.shared.heaters }
 
 
 ########################################################################################################################

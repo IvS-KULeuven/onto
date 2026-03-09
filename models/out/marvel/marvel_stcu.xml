@@ -1118,19 +1118,6 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">derivative damping time D-T1 (in seconds)</xhtml>
               </documentation>
             </variable>
-            <variable name="maxDeviation">
-              <type><REAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Maximum allowed deviation from the set point for the associated temperature sensors in kelvin</xhtml>
-              </documentation>
-            </variable>
           </struct>
         </baseType>
       </dataType>
@@ -1265,6 +1252,52 @@
           </struct>
         </baseType>
       </dataType>
+      <dataType name="sharedHeaterConfig">
+        <baseType>
+          <struct>
+            <variable name="hihiDeviation">
+              <type><REAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">max dev from setpoint</xhtml>
+              </documentation>
+            </variable>
+            <variable name="hiDeviation">
+              <type><REAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">warning dev from setpoint</xhtml>
+              </documentation>
+            </variable>
+            <variable name="maxPower">
+              <type><LREAL /></type>
+              <initialValue><simpleValue value="100.0" /></initialValue>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Maximum total power of all heaters in percentage</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
       <dataType name="VesselSharedConfigs">
         <baseType>
           <struct>
@@ -1279,6 +1312,19 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Alarm config for the temperature sensors in the vessel</xhtml>
+              </documentation>
+            </variable>
+            <variable name="heaters">
+              <type><derived name="sharedHeaterConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Shared config for the heaters in the vessel</xhtml>
               </documentation>
             </variable>
           </struct>
@@ -1365,8 +1411,8 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">temperature in kelvin at which the ramp starts (e.g. to avoid overshoot)</xhtml>
               </documentation>
             </variable>
-            <variable name="maxDeviation">
-              <type><derived name="Temperature" /></type>
+            <variable name="hihiDeviation">
+              <type><REAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1375,11 +1421,11 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Maximum allowed deviation from other temp sensors in the vessel in kelvin</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">max dev from setpoint for the vessel</xhtml>
               </documentation>
             </variable>
-            <variable name="warnDeviation">
-              <type><derived name="Temperature" /></type>
+            <variable name="hiDeviation">
+              <type><REAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1388,7 +1434,7 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Deviation from the set point at which a warning is issued in kelvin</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">warning dev from setpoint for the vessel</xhtml>
               </documentation>
             </variable>
             <variable name="tpT1">
@@ -4017,6 +4063,19 @@ model.stat := THIS^.stat;
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Reference to the heater config</xhtml>
               </documentation>
             </variable>
+            <variable name="sharedConfig_ref">
+              <type><derived name="sharedHeaterConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Reference to the shared heater config</xhtml>
+              </documentation>
+            </variable>
           </inOutVars>
           <localVars>
           </localVars>
@@ -4638,25 +4697,63 @@ parts.tpVesLidS(
 parts.tpCryoRear(
     config_ref := config_ref.tpCryoRear,
     sharedConfig_ref := config_ref.shared.sensors);
-parts.htLegNE( config_ref := config_ref.htLegNE );
-parts.htLegNW( config_ref := config_ref.htLegNW );
-parts.htLegSE( config_ref := config_ref.htLegSE );
-parts.htLegSW( config_ref := config_ref.htLegSW );
-parts.htLegTopNE( config_ref := config_ref.htLegTopNE );
-parts.htLegTopNW( config_ref := config_ref.htLegTopNW );
-parts.htLegTopSE( config_ref := config_ref.htLegTopSE );
-parts.htLegTopSW( config_ref := config_ref.htLegTopSW );
-parts.htVesBotNE( config_ref := config_ref.htVesBotNE );
-parts.htVesBotNW( config_ref := config_ref.htVesBotNW );
-parts.htVesBotSE( config_ref := config_ref.htVesBotSE );
-parts.htVesBotSW( config_ref := config_ref.htVesBotSW );
-parts.htVesSideN( config_ref := config_ref.htVesSideN );
-parts.htVesSideS( config_ref := config_ref.htVesSideS );
-parts.htVesSideE( config_ref := config_ref.htVesSideE );
-parts.htVesSideW( config_ref := config_ref.htVesSideW );
-parts.htVesLidN( config_ref := config_ref.htVesLidN );
-parts.htVesLidS( config_ref := config_ref.htVesLidS );
-parts.htCryoRear( config_ref := config_ref.htCryoRear );
+parts.htLegNE(
+    config_ref := config_ref.htLegNE,
+    sharedConfig_ref := config_ref.shared.heaters);
+parts.htLegNW(
+    config_ref := config_ref.htLegNW,
+    sharedConfig_ref := config_ref.shared.heaters);
+parts.htLegSE(
+    config_ref := config_ref.htLegSE,
+    sharedConfig_ref := config_ref.shared.heaters);
+parts.htLegSW(
+    config_ref := config_ref.htLegSW,
+    sharedConfig_ref := config_ref.shared.heaters);
+parts.htLegTopNE(
+    config_ref := config_ref.htLegTopNE,
+    sharedConfig_ref := config_ref.shared.heaters);
+parts.htLegTopNW(
+    config_ref := config_ref.htLegTopNW,
+    sharedConfig_ref := config_ref.shared.heaters);
+parts.htLegTopSE(
+    config_ref := config_ref.htLegTopSE,
+    sharedConfig_ref := config_ref.shared.heaters);
+parts.htLegTopSW(
+    config_ref := config_ref.htLegTopSW,
+    sharedConfig_ref := config_ref.shared.heaters);
+parts.htVesBotNE(
+    config_ref := config_ref.htVesBotNE,
+    sharedConfig_ref := config_ref.shared.heaters);
+parts.htVesBotNW(
+    config_ref := config_ref.htVesBotNW,
+    sharedConfig_ref := config_ref.shared.heaters);
+parts.htVesBotSE(
+    config_ref := config_ref.htVesBotSE,
+    sharedConfig_ref := config_ref.shared.heaters);
+parts.htVesBotSW(
+    config_ref := config_ref.htVesBotSW,
+    sharedConfig_ref := config_ref.shared.heaters);
+parts.htVesSideN(
+    config_ref := config_ref.htVesSideN,
+    sharedConfig_ref := config_ref.shared.heaters);
+parts.htVesSideS(
+    config_ref := config_ref.htVesSideS,
+    sharedConfig_ref := config_ref.shared.heaters);
+parts.htVesSideE(
+    config_ref := config_ref.htVesSideE,
+    sharedConfig_ref := config_ref.shared.heaters);
+parts.htVesSideW(
+    config_ref := config_ref.htVesSideW,
+    sharedConfig_ref := config_ref.shared.heaters);
+parts.htVesLidN(
+    config_ref := config_ref.htVesLidN,
+    sharedConfig_ref := config_ref.shared.heaters);
+parts.htVesLidS(
+    config_ref := config_ref.htVesLidS,
+    sharedConfig_ref := config_ref.shared.heaters);
+parts.htCryoRear(
+    config_ref := config_ref.htCryoRear,
+    sharedConfig_ref := config_ref.shared.heaters);
 stat.busy := F_BusyStatus(
     superState := TRUE,
     isBusy := (stat.state = TempControlStatus.warming_up) OR (stat.init = InitializationStatus.initializing));
@@ -5181,6 +5278,8 @@ THIS^.proc.initialize._copyToModel_Process( model := model.proc.initialize );
             <Object Name="MeasurementConfig2">
             </Object>
             <Object Name="SimulationConfig">
+            </Object>
+            <Object Name="sharedHeaterConfig">
             </Object>
             <Object Name="VesselSharedConfigs">
             </Object>
