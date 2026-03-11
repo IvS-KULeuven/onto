@@ -10,6 +10,7 @@
 !IMPORT models/in/marvel/marvel_unit.yaml:
 !IMPORT models/in/marvel/marvel_services.yaml:
 !IMPORT models/in/marvel/marvel_stcu.yaml:
+!IMPORT models/in/marvel/marvel_solar.yaml:
 
 
 ########################################################################################################################
@@ -236,6 +237,14 @@
                     activity_ref            : { type: marvel_common.ActivityStatus          , expand: false }
                     services_ref            : { type: marvel_services.Services              , expand: false }
                     operator_ref            : { type: marvel_common.OperatorStatus          , expand: false }
+          solar:
+                type : marvel_solar.Solar
+                comment: "The solar telescope"
+                expand: false
+                arguments:
+                    activity_ref            : { type: marvel_common.ActivityStatus          , expand: false }
+                    services_ref            : { type: marvel_services.Services              , expand: false }
+                    operator_ref            : { type: marvel_common.OperatorStatus          , expand: false }
 
 
           services:
@@ -338,6 +347,10 @@
               activity_ref        : stat.activity
               services_ref        : parts.services
           STCU:
+              activity_ref        : stat.activity
+              services_ref        : parts.services
+              operator_ref        : stat.operator
+          solar:
               activity_ref        : stat.activity
               services_ref        : parts.services
               operator_ref        : stat.operator

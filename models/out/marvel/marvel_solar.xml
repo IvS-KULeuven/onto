@@ -89,7 +89,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Stop power to solar mount and mount</xhtml>
               </documentation>
             </variable>
-            <variable name="reset">
+            <variable name="overwrite_limits">
               <type><derived name="Process" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -99,7 +99,20 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Reset the solar telescope</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">overwrite hard limits</xhtml>
+              </documentation>
+            </variable>
+            <variable name="reset_overwrite">
+              <type><derived name="Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">reset overwrite of hard limits</xhtml>
               </documentation>
             </variable>
           </struct>
@@ -339,8 +352,53 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
+            <variable name="overwrite">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="editableConfig">
+              <type><derived name="SolarConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="3" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
             <variable name="actualStatus">
               <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="config">
+              <type><derived name="SolarConfig" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -386,21 +444,6 @@
             </variable>
             <variable name="powerFan">
               <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-            <variable name="stopped">
-              <type><BOOL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -513,7 +556,20 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="reset">
+            <variable name="overwrite_limits">
+              <type><derived name="M_Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="reset_overwrite">
               <type><derived name="M_Process" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -562,7 +618,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">The measured temperature</xhtml>
               </documentation>
             </variable>
-            <variable name="lsAl1">
+            <variable name="lsAl1" address="%I*">
               <type><BOOL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -576,7 +632,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">limit switch alti 1 (soft)</xhtml>
               </documentation>
             </variable>
-            <variable name="lsAl2">
+            <variable name="lsAl2" address="%I*">
               <type><BOOL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -590,7 +646,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">limit switch alti 2 (hard)</xhtml>
               </documentation>
             </variable>
-            <variable name="lsAz1">
+            <variable name="lsAz1" address="%I*">
               <type><BOOL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -604,7 +660,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">limit switch azi 1 (soft)</xhtml>
               </documentation>
             </variable>
-            <variable name="lsAz2">
+            <variable name="lsAz2" address="%I*">
               <type><BOOL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -618,7 +674,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">limit switch azi 2 (hard)</xhtml>
               </documentation>
             </variable>
-            <variable name="lsAz3">
+            <variable name="lsAz3" address="%I*">
               <type><BOOL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -632,7 +688,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">limit switch azi 3 (soft)</xhtml>
               </documentation>
             </variable>
-            <variable name="hsAl">
+            <variable name="hsAl" address="%I*">
               <type><BOOL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -643,10 +699,10 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">State of home sensor alti</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">State of home sensor alti + limit</xhtml>
               </documentation>
             </variable>
-            <variable name="hsAz">
+            <variable name="hsAz" address="%I*">
               <type><BOOL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -658,6 +714,34 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">State of home sensor azi</xhtml>
+              </documentation>
+            </variable>
+            <variable name="overwrite">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">overwrite hard limits</xhtml>
+              </documentation>
+            </variable>
+            <variable name="editableConfig">
+              <type><derived name="SolarConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="3" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Editable configuration of the solar telescope</xhtml>
               </documentation>
             </variable>
           </inputVars>
@@ -676,7 +760,21 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Current status description</xhtml>
               </documentation>
             </variable>
-            <variable name="powerPC">
+            <variable name="config">
+              <type><derived name="SolarConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Configuration of the solar telescope</xhtml>
+              </documentation>
+            </variable>
+            <variable name="powerPC" address="%Q*">
               <type><BOOL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -690,7 +788,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the solar pc is enabled</xhtml>
               </documentation>
             </variable>
-            <variable name="powerMount">
+            <variable name="powerMount" address="%Q*">
               <type><BOOL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -704,7 +802,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the solar mount is enabled</xhtml>
               </documentation>
             </variable>
-            <variable name="powerFan">
+            <variable name="powerFan" address="%Q*">
               <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -716,20 +814,6 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Power of the cooling fan in percent</xhtml>
-              </documentation>
-            </variable>
-            <variable name="stopped">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Error message if an error occurs</xhtml>
               </documentation>
             </variable>
             <variable name="stat">
@@ -799,34 +883,19 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Shared operation status</xhtml>
               </documentation>
             </variable>
-            <variable name="config_ref">
-              <type><derived name="SolarConfig" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="0" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Reference to the active solar configuration</xhtml>
-              </documentation>
-            </variable>
           </inOutVars>
           <localVars>
           </localVars>
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">stat.health := F_HealthStatus(
-    isGood := (NOT(stopped)) AND (fanOk AND ((NOT(lsAl2)) AND lsAz2)),
-    hasWarning := (NOT(lsAl1)) AND ((NOT(hsAl)) AND (lsAz1 AND lsAz3)));
-proc.initialize();
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">proc.initialize( isEnabled := (NOT(stat.init = InitializationStatus.initialized)) AND ((NOT(stat.init = InitializationStatus.initializing)) AND (NOT(stat.init = InitializationStatus.locked))) );
 proc.power_on_pc();
 proc.power_off_pc();
 proc.power_on_mount();
 proc.power_off_mount();
-proc.reset();
+proc.overwrite_limits();
+proc.reset_overwrite();
 </xhtml>
           </ST>
         </body>
@@ -864,12 +933,14 @@ proc.reset();
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.proc.initialize._copyFromModel_Process( model := model.proc.initialize );
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.editableConfig := model.editableConfig;
+THIS^.proc.initialize._copyFromModel_Process( model := model.proc.initialize );
 THIS^.proc.power_on_pc._copyFromModel_Process( model := model.proc.power_on_pc );
 THIS^.proc.power_off_pc._copyFromModel_Process( model := model.proc.power_off_pc );
 THIS^.proc.power_on_mount._copyFromModel_Process( model := model.proc.power_on_mount );
 THIS^.proc.power_off_mount._copyFromModel_Process( model := model.proc.power_off_mount );
-THIS^.proc.reset._copyFromModel_Process( model := model.proc.reset );
+THIS^.proc.overwrite_limits._copyFromModel_Process( model := model.proc.overwrite_limits );
+THIS^.proc.reset_overwrite._copyFromModel_Process( model := model.proc.reset_overwrite );
 </xhtml>
                 </ST>
               </body>
@@ -917,18 +988,21 @@ model.lsAz2 := THIS^.lsAz2;
 model.lsAz3 := THIS^.lsAz3;
 model.hsAl := THIS^.hsAl;
 model.hsAz := THIS^.hsAz;
+model.overwrite := THIS^.overwrite;
+model.editableConfig := THIS^.editableConfig;
 model.actualStatus := THIS^.actualStatus;
+model.config := THIS^.config;
 model.powerPC := THIS^.powerPC;
 model.powerMount := THIS^.powerMount;
 model.powerFan := THIS^.powerFan;
-model.stopped := THIS^.stopped;
 model.stat := THIS^.stat;
 THIS^.proc.initialize._copyToModel_Process( model := model.proc.initialize );
 THIS^.proc.power_on_pc._copyToModel_Process( model := model.proc.power_on_pc );
 THIS^.proc.power_off_pc._copyToModel_Process( model := model.proc.power_off_pc );
 THIS^.proc.power_on_mount._copyToModel_Process( model := model.proc.power_on_mount );
 THIS^.proc.power_off_mount._copyToModel_Process( model := model.proc.power_off_mount );
-THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
+THIS^.proc.overwrite_limits._copyToModel_Process( model := model.proc.overwrite_limits );
+THIS^.proc.reset_overwrite._copyToModel_Process( model := model.proc.reset_overwrite );
 </xhtml>
                 </ST>
               </body>
