@@ -186,7 +186,7 @@
               </documentation>
             </variable>
             <variable name="fanMaxPowerTemp">
-              <type><derived name="Temperature" /></type>
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -199,7 +199,7 @@
               </documentation>
             </variable>
             <variable name="maxTemp">
-              <type><derived name="Temperature" /></type>
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -233,7 +233,7 @@
               </documentation>
             </variable>
             <variable name="temp">
-              <type><derived name="Temperature" /></type>
+              <type><REAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -352,21 +352,6 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="overwrite">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
             <variable name="editableConfig">
               <type><derived name="SolarConfig" /></type>
               <addData>
@@ -443,7 +428,22 @@
               </documentation>
             </variable>
             <variable name="powerFan">
-              <type><LREAL /></type>
+              <type><REAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="overwriten">
+              <type><BOOL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -604,8 +604,8 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the cooling fan is working</xhtml>
               </documentation>
             </variable>
-            <variable name="temp">
-              <type><derived name="Temperature" /></type>
+            <variable name="temp" address="%I*">
+              <type><REAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -716,20 +716,6 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">State of home sensor azi</xhtml>
               </documentation>
             </variable>
-            <variable name="overwrite">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">overwrite hard limits</xhtml>
-              </documentation>
-            </variable>
             <variable name="editableConfig">
               <type><derived name="SolarConfig" /></type>
               <addData>
@@ -803,7 +789,7 @@
               </documentation>
             </variable>
             <variable name="powerFan" address="%Q*">
-              <type><LREAL /></type>
+              <type><REAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -814,6 +800,20 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Power of the cooling fan in percent</xhtml>
+              </documentation>
+            </variable>
+            <variable name="overwriten">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the hard limits are overwritten</xhtml>
               </documentation>
             </variable>
             <variable name="stat">
@@ -988,13 +988,13 @@ model.lsAz2 := THIS^.lsAz2;
 model.lsAz3 := THIS^.lsAz3;
 model.hsAl := THIS^.hsAl;
 model.hsAz := THIS^.hsAz;
-model.overwrite := THIS^.overwrite;
 model.editableConfig := THIS^.editableConfig;
 model.actualStatus := THIS^.actualStatus;
 model.config := THIS^.config;
 model.powerPC := THIS^.powerPC;
 model.powerMount := THIS^.powerMount;
 model.powerFan := THIS^.powerFan;
+model.overwriten := THIS^.overwriten;
 model.stat := THIS^.stat;
 THIS^.proc.initialize._copyToModel_Process( model := model.proc.initialize );
 THIS^.proc.power_on_pc._copyToModel_Process( model := model.proc.power_on_pc );

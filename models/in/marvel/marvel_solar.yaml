@@ -21,10 +21,10 @@
         type: t_double 
         comment: "Power of the cooling fan in percent"
       fanMaxPowerTemp:
-        type: marvel_common.Temperature
+        type: t_double
         comment: "Maximum allowed temperature before the cooling fan is turned up to max power"
       maxTemp:
-        type: marvel_common.Temperature
+        type: t_double
         comment: "Maximum allowed temperature before the solar telescope is shut down to prevent damage"
       
       
@@ -45,15 +45,17 @@
 
     variables_input:
       fanOk             : { type: t_bool                                                , comment: "True if the cooling fan is working" }
-      temp              : { type: marvel_common.Temperature           , comment: "The measured temperature" }
-      lsAl1           : { type: t_bool                                                , comment: "limit switch alti 1 (soft)" , address: "%I*" }
-      lsAl2           : { type: t_bool                                                , comment: "limit switch alti 2 (hard)" , address: "%I*" }
-      lsAz1        : { type: t_bool                                                , comment: "limit switch azi 1 (soft)" , address: "%I*" }
-      lsAz2          : { type: t_bool                                                , comment: "limit switch azi 2 (hard)" , address: "%I*" }
-      lsAz3           : { type: t_bool                                                , comment: "limit switch azi 3 (soft)" , address: "%I*" }
-      hsAl            : { type: t_bool                                                , comment: "State of home sensor alti + limit" , address: "%I*" }
-      hsAz            : { type: t_bool                                                , comment: "State of home sensor azi" ,address: "%I*" }
-      overwrite             : { type: t_bool                , comment: "overwrite hard limits" }
+      temp              : { type: t_float           , comment: "The measured temperature", address: "%I*" }
+
+      #sensors altiude 
+      lsAl1           : { type: t_bool                                                , comment: "limit switch alti 1 (soft) (top) (B5)" , address: "%I*" }
+      lsAl2           : { type: t_bool                                                , comment: "limit switch alti 2 (hard) (mid) (B6)" , address: "%I*" }
+      hsAl            : { type: t_bool                                                , comment: "State of home sensor alti + limit (bottom) (B7)" , address: "%I*" }
+      #sensors azimuth
+      lsAz1        : { type: t_bool                                                , comment: "limit switch azi 1 (soft) (west) (B1)" , address: "%I*" }
+      lsAz2          : { type: t_bool                                                , comment: "limit switch azi 2 (hard) (nord) (B2)" , address: "%I*" }
+      lsAz3           : { type: t_bool                                                , comment: "limit switch azi 3 (soft) (east) (B3)" , address: "%I*" }
+      hsAz            : { type: t_bool                                                , comment: "State of home sensor azi (south) (B4)" ,address: "%I*" }
 
     variables_input_rw:
       editableConfig            : { type: SolarConfig                          , comment: "Editable configuration of the solar telescope" , expand: false }     
@@ -62,11 +64,10 @@
       config : { type: SolarConfig, comment: "Configuration of the solar telescope" }
       powerPC      : { type: t_bool                   , comment: "True if the solar pc is enabled", address: "%Q*"  }
       powerMount   : { type: t_bool                   , comment: "True if the solar mount is enabled", address: "%Q*"  }
-      powerFan    : { type: t_double                 , comment: "Power of the cooling fan in percent", address: "%Q*"  }
+      powerFan    : { type: t_float                 , comment: "Power of the cooling fan in percent", address: "%Q*"  }
+      overwriten    : { type: t_bool                   , comment: "True if the hard limits are overwritten"  }
       
-
  
-
     stat:
       health                      : { type: marvel_common.HealthStatus }
       busy                        : { type: marvel_common.BusyStatus                   , comment: "True if the solar telescope is busy" }

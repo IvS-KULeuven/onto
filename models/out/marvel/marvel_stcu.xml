@@ -796,6 +796,19 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Unlock the vessel control (e.g. when the vessel is closed)</xhtml>
               </documentation>
             </variable>
+            <variable name="calibrate">
+              <type><derived name="Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Start calibration procedure</xhtml>
+              </documentation>
+            </variable>
           </struct>
         </baseType>
       </dataType>
@@ -1067,7 +1080,7 @@
               </documentation>
             </variable>
             <variable name="Kp">
-              <type><REAL /></type>
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1080,7 +1093,7 @@
               </documentation>
             </variable>
             <variable name="Tn">
-              <type><REAL /></type>
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1093,7 +1106,7 @@
               </documentation>
             </variable>
             <variable name="Tv">
-              <type><REAL /></type>
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1106,7 +1119,7 @@
               </documentation>
             </variable>
             <variable name="Td">
-              <type><REAL /></type>
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1211,7 +1224,7 @@
               </documentation>
             </variable>
             <variable name="ambient">
-              <type><derived name="Temperature" /></type>
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1224,7 +1237,7 @@
               </documentation>
             </variable>
             <variable name="heating">
-              <type><REAL /></type>
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1237,7 +1250,7 @@
               </documentation>
             </variable>
             <variable name="cooling">
-              <type><REAL /></type>
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1256,7 +1269,7 @@
         <baseType>
           <struct>
             <variable name="hihiDeviation">
-              <type><REAL /></type>
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1269,7 +1282,7 @@
               </documentation>
             </variable>
             <variable name="hiDeviation">
-              <type><REAL /></type>
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1360,7 +1373,7 @@
               </documentation>
             </variable>
             <variable name="setPointTarget">
-              <type><derived name="Temperature" /></type>
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1373,7 +1386,7 @@
               </documentation>
             </variable>
             <variable name="rampVPos">
-              <type><REAL /></type>
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1386,7 +1399,7 @@
               </documentation>
             </variable>
             <variable name="rampVNeg">
-              <type><REAL /></type>
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1399,7 +1412,7 @@
               </documentation>
             </variable>
             <variable name="rampStart">
-              <type><REAL /></type>
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1412,7 +1425,7 @@
               </documentation>
             </variable>
             <variable name="hihiDeviation">
-              <type><REAL /></type>
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1425,7 +1438,7 @@
               </documentation>
             </variable>
             <variable name="hiDeviation">
-              <type><REAL /></type>
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -2076,7 +2089,7 @@
               </documentation>
             </variable>
             <variable name="simulatedVal">
-              <type><derived name="Temperature" /></type>
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -2106,7 +2119,7 @@
               </documentation>
             </variable>
             <variable name="actual">
-              <type><derived name="Temperature" /></type>
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -2121,7 +2134,7 @@
               </documentation>
             </variable>
             <variable name="average">
-              <type><derived name="Temperature" /></type>
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -2171,7 +2184,7 @@
         <baseType>
           <struct>
             <variable name="setPoint">
-              <type><REAL /></type>
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -2186,7 +2199,7 @@
               </documentation>
             </variable>
             <variable name="temp">
-              <type><derived name="Temperature" /></type>
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -2231,7 +2244,7 @@
               </documentation>
             </variable>
             <variable name="power">
-              <type><REAL /></type>
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -2261,7 +2274,7 @@
               </documentation>
             </variable>
             <variable name="deviation">
-              <type><REAL /></type>
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -2445,7 +2458,7 @@
               </documentation>
             </variable>
             <variable name="avgTemp">
-              <type><derived name="Temperature" /></type>
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -2460,7 +2473,7 @@
               </documentation>
             </variable>
             <variable name="maxDeviation">
-              <type><derived name="Temperature" /></type>
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -2475,7 +2488,7 @@
               </documentation>
             </variable>
             <variable name="avgDeviation">
-              <type><derived name="Temperature" /></type>
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -2505,7 +2518,7 @@
               </documentation>
             </variable>
             <variable name="setPointRamped">
-              <type><derived name="Temperature" /></type>
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -2550,7 +2563,7 @@
               </documentation>
             </variable>
             <variable name="totalPower">
-              <type><REAL /></type>
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -2565,7 +2578,7 @@
               </documentation>
             </variable>
             <variable name="avgPower">
-              <type><REAL /></type>
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -3513,6 +3526,19 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
+            <variable name="calibrate">
+              <type><derived name="M_Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
           </struct>
         </baseType>
       </dataType>
@@ -3661,7 +3687,7 @@ END_IF;
               </documentation>
             </variable>
             <variable name="simulatedVal">
-              <type><derived name="Temperature" /></type>
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -3717,7 +3743,7 @@ END_IF;
               </documentation>
             </variable>
             <variable name="actual">
-              <type><derived name="Temperature" /></type>
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -3731,7 +3757,7 @@ END_IF;
               </documentation>
             </variable>
             <variable name="average">
-              <type><derived name="Temperature" /></type>
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -3812,10 +3838,6 @@ stat.health := F_HealthStatus(
     superState := stat.enabled = EnabledStatus.enabled,
     isGood := NOT((stat.alarm = HiHiLoLoAlarmStatus.hiHi) OR ((stat.alarm = HiHiLoLoAlarmStatus.loLo) OR error)),
     hasWarning := (stat.alarm = HiHiLoLoAlarmStatus.hi) OR (stat.alarm = HiHiLoLoAlarmStatus.lo));
-stat.alarm := F_HiHiLoLoAlarmStatus(
-    superState := stat.enabled = EnabledStatus.enabled,
-    config := sharedConfig_ref,
-    value := average.celsius.value);
 </xhtml>
           </ST>
         </body>
@@ -3909,7 +3931,7 @@ model.stat := THIS^.stat;
         <interface>
           <inputVars>
             <variable name="setPoint">
-              <type><REAL /></type>
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -3923,7 +3945,7 @@ model.stat := THIS^.stat;
               </documentation>
             </variable>
             <variable name="temp">
-              <type><derived name="Temperature" /></type>
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -3967,7 +3989,7 @@ model.stat := THIS^.stat;
               </documentation>
             </variable>
             <variable name="power">
-              <type><REAL /></type>
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -3995,7 +4017,7 @@ model.stat := THIS^.stat;
               </documentation>
             </variable>
             <variable name="deviation">
-              <type><REAL /></type>
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -4300,7 +4322,7 @@ THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
               </documentation>
             </variable>
             <variable name="avgTemp">
-              <type><derived name="Temperature" /></type>
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -4314,7 +4336,7 @@ THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
               </documentation>
             </variable>
             <variable name="maxDeviation">
-              <type><derived name="Temperature" /></type>
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -4328,7 +4350,7 @@ THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
               </documentation>
             </variable>
             <variable name="avgDeviation">
-              <type><derived name="Temperature" /></type>
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -4356,7 +4378,7 @@ THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
               </documentation>
             </variable>
             <variable name="setPointRamped">
-              <type><derived name="Temperature" /></type>
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -4398,7 +4420,7 @@ THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
               </documentation>
             </variable>
             <variable name="totalPower">
-              <type><REAL /></type>
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -4412,7 +4434,7 @@ THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
               </documentation>
             </variable>
             <variable name="avgPower">
-              <type><REAL /></type>
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -4763,6 +4785,7 @@ proc.stop( isEnabled := (stat.state = TempControlStatus.warming_up) OR (stat.sta
 proc.reset( isEnabled := NOT(stat.init = InitializationStatus.locked) );
 proc.lock( isEnabled := (operator_ref = OperatorStatus.tech) AND (stat.init = InitializationStatus.locked) );
 proc.unlock( isEnabled := (operator_ref = OperatorStatus.tech) AND (stat.init = InitializationStatus.locked) );
+proc.calibrate();
 </xhtml>
           </ST>
         </body>
@@ -4850,6 +4873,7 @@ THIS^.proc.stop._copyFromModel_Process( model := model.proc.stop );
 THIS^.proc.reset._copyFromModel_Process( model := model.proc.reset );
 THIS^.proc.lock._copyFromModel_Process( model := model.proc.lock );
 THIS^.proc.unlock._copyFromModel_Process( model := model.proc.unlock );
+THIS^.proc.calibrate._copyFromModel_Process( model := model.proc.calibrate );
 </xhtml>
                 </ST>
               </body>
@@ -4963,6 +4987,7 @@ THIS^.proc.stop._copyToModel_Process( model := model.proc.stop );
 THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
 THIS^.proc.lock._copyToModel_Process( model := model.proc.lock );
 THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
+THIS^.proc.calibrate._copyToModel_Process( model := model.proc.calibrate );
 </xhtml>
                 </ST>
               </body>

@@ -46,12 +46,12 @@
       name : { type: t_string, comment: "Name of the heater" }
       enabled : { type: t_bool, comment: "True if the heater is enabled", initial: !BOOL TRUE }
       maxPower : { type: t_double, comment: "Maximum power of the heater", initial: !DOUBLE 100.0 }
-      Kp : { type: t_float, comment: proportional gain }
-      Tn : { type: t_float, comment: integral gain (in seconds) }
-      Tv : { type: t_float, comment: derivative gain D-T1 (in seconds) }
-      Td : { type: t_float, comment: derivative damping time D-T1 (in seconds) }
+      Kp : { type: t_double, comment: proportional gain }
+      Tn : { type: t_double, comment: integral gain (in seconds) }
+      Tv : { type: t_double, comment: derivative gain D-T1 (in seconds) }
+      Td : { type: t_double, comment: derivative damping time D-T1 (in seconds) }
       
-      #weights: { type: !ARRAY [0, 30, t_float], comment: "value between 0-1 representing the weight each temperature sensors for this heater" }
+      #weights: { type: !ARRAY [0, 30, t_double], comment: "value between 0-1 representing the weight each temperature sensors for this heater" }
 
 
   ### single temperature sensor config (small variation of version found in marvel_common) ###
@@ -80,14 +80,14 @@
   !CONFIG SimulationConfig:
     items:
       isSimulated                : {type: t_bool}
-      ambient: { type: marvel_common.Temperature, comment: starting temp of sensors}
-      heating: {type: t_float, comment: heating gain/factor (0-1)}
-      cooling: {type: t_float, comment: cooling factor (0-1)}
-     # weights : { type: !ARRAY [0, 30, !ARRAY [0, 30, t_float]], comment: "value between 0-1 representing the effect each heater has on each temperature sensor" }
+      ambient: { type: t_double, comment: starting temp of sensors}
+      heating: {type: t_double, comment: heating gain/factor (0-1)}
+      cooling: {type: t_double, comment: cooling factor (0-1)}
+     # weights : { type: !ARRAY [0, 30, !ARRAY [0, 30, t_double]], comment: "value between 0-1 representing the effect each heater has on each temperature sensor" }
   !CONFIG sharedHeaterConfig:
     items:
-            hihiDeviation               : { type: t_float, comment: "max dev from setpoint" }
-            hiDeviation              : { type: t_float  , comment: "warning dev from setpoint" }
+            hihiDeviation               : { type: t_double, comment: "max dev from setpoint" }
+            hiDeviation              : { type: t_double  , comment: "warning dev from setpoint" }
             maxPower                  : { type: t_double, comment: "Maximum total power of all heaters in percentage", initial: !DOUBLE 100.0 }
 
 
@@ -103,13 +103,13 @@
     items:
       simulation                 : {type: SimulationConfig}
       shared              : { type: VesselSharedConfigs, comment: "Shared config for the vessel" }
-      setPointTarget             : { type: marvel_common.Temperature  , comment: "set point temperature in kelvin" }
-      rampVPos                   : { type: t_float  , comment: "velocity of temperature change in K/s while ramping up" }
-      rampVNeg                   : { type: t_float  , comment: "velocity of temperature change in K/s while ramping down" }
-      rampStart                  : { type: t_float  , comment: "temperature in kelvin at which the ramp starts (e.g. to avoid overshoot)" }
-      hihiDeviation               : { type: t_float, comment: "max dev from setpoint for the vessel" }
-      hiDeviation              : { type: t_float  , comment: "warning dev from setpoint for the vessel" }
-      #weights : { type: !ARRAY [0, 30, !ARRAY [0, 30, t_float]], comment: "value between 0-1 representing the weight of each temperature sensor for each heater" }
+      setPointTarget             : { type: t_double  , comment: "set point temperature in kelvin" }
+      rampVPos                   : { type: t_double  , comment: "velocity of temperature change in K/s while ramping up" }
+      rampVNeg                   : { type: t_double  , comment: "velocity of temperature change in K/s while ramping down" }
+      rampStart                  : { type: t_double  , comment: "temperature in kelvin at which the ramp starts (e.g. to avoid overshoot)" }
+      hihiDeviation               : { type: t_double, comment: "max dev from setpoint for the vessel" }
+      hiDeviation              : { type: t_double  , comment: "warning dev from setpoint for the vessel" }
+      #weights : { type: !ARRAY [0, 30, !ARRAY [0, 30, t_double]], comment: "value between 0-1 representing the weight of each temperature sensor for each heater" }
 
       #measurements : { type: MeasurementConfig2 , comment: "Default config for the temperature measurements in the vessel" }
       #heaters : { type: HeaterConfig , comment: "Default config for the heaters in the vessel" }
@@ -198,13 +198,13 @@
         conversionFactor: { type: t_double             , comment: "rawValue * conversionFactor = temperature.degrees.value"  }
 
     variables_output:
-        actual          : { type: marvel_common.Temperature          , comment: "Actual value" }
-        average         : { type: marvel_common.Temperature          , comment: "Moving average value" }
+        actual          : { type: t_double          , comment: "Actual value" }
+        average         : { type: t_double          , comment: "Moving average value" }
         error           : { type: t_bool         , comment: "true if there is an error" }
 
     variables_input:
       isSimulated : {type: t_bool}
-      simulatedVal: {type: marvel_common.Temperature}
+      simulatedVal: {type: t_double}
 
     references:
         config_ref          : { type: MeasurementConfig2, comment: "Reference to the config (alarms in degrees celsius)" }
@@ -220,11 +220,6 @@
         enabled:
             superState   : !BOOL TRUE
             isEnabled    : config_ref.enabled
-
-        alarm:
-            superState   : !EQ [ stat.enabled, marvel_common.EnabledStatus.enabled ]
-            config       : sharedConfig_ref
-            value        : average.celsius.value
 
         health:
             superState   : !EQ [ stat.enabled, marvel_common.EnabledStatus.enabled ]
@@ -242,14 +237,14 @@
 ### state machine single heater ###
   !STATEMACHINE HeaterControl:
     variables_output:
-        power                   : { type: t_float, comment: "Current power of the heater in percentage" } 
+        power                   : { type: t_double, comment: "Current power of the heater in percentage" } 
         active                  : { type: t_bool, comment: "True if the heater is active" }
-        deviation               : { type: t_float, comment: "Current error between set point and associated temperature" }
+        deviation               : { type: t_double, comment: "Current error between set point and associated temperature" }
         isControlled            : { type: t_bool, comment: "True if the heater is in controlled state" }
 
     variables_input:     
-        setPoint                : { type: t_float, comment: "Current set point of the heater in kelvin" }
-        temp                : { type: marvel_common.Temperature, comment: "Associated temperature of the heater in kelvin" }
+        setPoint                : { type: t_double, comment: "Current set point of the heater in kelvin" }
+        temp                : { type: t_double, comment: "Associated temperature of the heater in kelvin" }
         isSimulated : {type: t_bool}
 
 
@@ -283,15 +278,15 @@
 ################################################
   !STATEMACHINE VesselControl:
     variables_output:
-      avgTemp       : { type: marvel_common.Temperature                                              , comment: "Average temperature of the vessel in kelvin" }
-      maxDeviation : { type: marvel_common.Temperature                                               , comment: "Maximum deviation of the temperature sensors in kelvin" }
-      avgDeviation : { type: marvel_common.Temperature                                               , comment: "Average deviation of the temperature sensors in kelvin" }
+      avgTemp       : { type: t_double                                              , comment: "Average temperature of the vessel in kelvin" }
+      maxDeviation : { type: t_double                                               , comment: "Maximum deviation of the temperature sensors in kelvin" }
+      avgDeviation : { type: t_double                                               , comment: "Average deviation of the temperature sensors in kelvin" }
       isControlled            : { type: t_bool                                                , comment: "True if the vessel is in controlled state" }
-      setPointRamped          : { type: marvel_common.Temperature                                               , comment: "Set point temperature in kelvin after ramping" }
+      setPointRamped          : { type: t_double                                               , comment: "Set point temperature in kelvin after ramping" }
       badHealthSensors   : { type: t_bool               , comment: "True if there are temperature sensors in bad health" }
       badHealthHeaters   : { type: t_bool               , comment: "True if there are heaters in bad health" }
-      totalPower       : { type: t_float              , comment: "Total power of all heaters in percentage" }
-      avgPower           : { type: t_float              , comment: "Average power of the heaters in percentage" }
+      totalPower       : { type: t_double              , comment: "Total power of all heaters in percentage" }
+      avgPower           : { type: t_double              , comment: "Average power of the heaters in percentage" }
 
       #thermostat switch enabled
       enableTstatBottom        :    { type: t_bool, comment: "Thermostat switch vessel bottom enabled ", address: "%Q*" } 
@@ -392,6 +387,7 @@
       reset                       : { type: marvel_common.Process                     , comment: "Reset complete" }   
       lock                        : { type: marvel_common.Process                     , comment: "Lock the vessel control (e.g. when the vessel is opened)" }
       unlock                      : { type: marvel_common.Process                     , comment: "Unlock the vessel control (e.g. when the vessel is closed)" }
+      calibrate                   : { type: marvel_common.Process                     , comment: "Start calibration procedure" }
 
     calls:
       #proc's
