@@ -27,6 +27,7 @@
           adc1Sim   : { type: t_bool    , comment: "TRUE if the ADC stage 1 is simulated" }
           adc2Sim   : { type: t_bool    , comment: "TRUE if the ADC stage 2 is simulated" }
           psSim     : { type: t_bool    , comment: "TRUE if the 10V and 5V power supplies are simulated" }
+          ttSim     : { type: t_bool    , comment: "TRUE if the Tip Tilt stage is simulated" }
           temp      : {                   comment: "Temperatures config" }
             
   ########################################################################################################################
@@ -124,6 +125,7 @@
           ledUSF                    : { type: marvel_common.Led                   , comment: "USF LED" }
           guideCam                  : { type: marvel_common.GigECamera            , comment: "Guiding camera" }
           fvCam                     : { type: marvel_common.GigECamera            , comment: "Fibre View camera" }
+          tt                        : { type: marvel_common.TipTilt               , comment: "Tip Tilt piezo stage" }
       stat:
           init                      : { type: marvel_common.InitializationStatus }
           health                    : { type: marvel_common.HealthStatus }
@@ -185,6 +187,10 @@
               {}
           fvCam:
               {}
+          tt:
+              isEnabled           : !AND [ !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ], 
+                                                  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ]
+              isSimulated         : config_ref.ttSim
           health:
               superState          : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ] ]
               isGood              : !AND [ !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.initializingFailed ] ],
@@ -200,4 +206,4 @@
               isBusy              : !MTCS_SUMMARIZE_BUSY [ parts.fs, parts.cm, parts.adc1, parts.adc2,
                                                            parts.relayGuideCam, parts.relayAcqCam, parts.relayAdc, parts.relayTT,
                                                            parts.ledHGF, parts.ledHSF, parts.ledUGF, parts.ledUSF,
-                                                           parts.guideCam, parts.fvCam ]
+                                                           parts.guideCam, parts.fvCam, parts.tt ]

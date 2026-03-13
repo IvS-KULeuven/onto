@@ -1737,6 +1737,35 @@
             isBusy      : !EQ [ proc.setMilliAmps.stat.busy, BusyStatus.busy ]
 
 
+  ########################################################################################################################
+  # TipTilt
+  ########################################################################################################################
+  !STATEMACHINE TipTilt:
+    variables_hidden:
+        isEnabled       : { type: t_bool                , comment: "Is control enabled?" }
+        isSimulated     : { type: t_bool                , comment: "Is the TipTilt simulated?" }
+    variables_output:
+        v1              : { type: t_double              , comment: "Actual output 1 in voltage" }
+        v2              : { type: t_double              , comment: "Actual output 2 in voltage" }
+        v3              : { type: t_double              , comment: "Actual output 3 in voltage" }
+    proc:
+        setV1           : { type: ChangeSetpointProcess  , comment: "Set the output in milliampere" }
+        setV2           : { type: ChangeSetpointProcess  , comment: "Set the output in milliampere" }
+        setV3           : { type: ChangeSetpointProcess  , comment: "Set the output in milliampere" }
+    stat:
+        busy            : { type: BusyStatus            , comment: "Is the TipTilt in a busy state?" }
+    calls:
+        setV1:
+            isEnabled   : !AND [ isEnabled, !EQ [ proc.setV1.stat.busy, BusyStatus.idle ] ]
+        setV2:
+            isEnabled   : !AND [ isEnabled, !EQ [ proc.setV2.stat.busy, BusyStatus.idle ] ]
+        setV3:
+            isEnabled   : !AND [ isEnabled, !EQ [ proc.setV3.stat.busy, BusyStatus.idle ] ]
+        busy:
+            superState  : !BOOL TRUE
+            isBusy      : !MTCS_SUMMARIZE_BUSY [ proc.setV1, proc.setV2, proc.setV3 ]
+
+
 
   ########################################################################################################################
   # ChangeOperatingStateProcess
@@ -2231,49 +2260,8 @@
         - U_FEM_LED_USF
         - U_FEM_GUIDECAM
         - U_FEM_FIBREVIEWCAM
+        - U_FEM_TIPTILT
         - _END_
-
-#   ########################################################################################################################
-#   # ActionArgType
-#   ########################################################################################################################
-#   !ENUMERATION ActionArgType:
-#     items:
-#         - NONE
-#         - STRING_ARG
-#         - LREAL_ARG
-#         - BOOL_ARG
-#         - DINT_ARG
-
-
-#   ########################################################################################################################
-#   # ActionArgUnit
-#   ########################################################################################################################
-#   !ENUMERATION ActionArgUnit:
-#     items:
-#         - NONE
-#         - SEC
-#         - DEG
-#         - DEG_PER_SEC
-#         - MILLIAMP
-#         - MM
-#         - PIXEL
-
-
-  ########################################################################################################################
-  # ActionStatus
-  ########################################################################################################################
-  !ENUMERATION ActionStatus:
-    items:
-        - IDLE
-        - REQUESTED
-        - BUSY
-        - DONE_SUCCESS
-        - DONE_ERROR
-        - DONE_ERROR_ABORTED
-        - DONE_ERROR_PROCESS_FAILED
-        - DONE_ERROR_INVALID_TYPE
-        - DONE_ERROR_INVALID_ARG
-        - DONE_ERROR_INVALID_ACTOR
 
 
   ########################################################################################################################
@@ -2292,7 +2280,32 @@
         - MOVE_ABS_MM
         - MOVE_ABS_DEG
         - MOVE_AZI_ELE
+        - ENABLE
+        - DISABLE
+        - SET_ENABLED
+        - MOVE_REL_MM
+        - MOVE_REL_DEG
+        - SET_CURRENT
+        - SET_VOLTAGE
+        - SET_AXIS_VOLTAGE
+        - POWER
         - _END_
+
+  ########################################################################################################################
+  # ActionStatus
+  ########################################################################################################################
+  !ENUMERATION ActionStatus:
+    items:
+        - IDLE
+        - REQUESTED
+        - BUSY
+        - DONE_SUCCESS
+        - DONE_ERROR
+        - DONE_ERROR_ABORTED
+        - DONE_ERROR_PROCESS_FAILED
+        - DONE_ERROR_INVALID_TYPE
+        - DONE_ERROR_INVALID_ARG
+        - DONE_ERROR_INVALID_ACTOR
 
 
   ########################################################################################################################
@@ -2322,7 +2335,7 @@
         u4          : { type: t_bool        , initial: !BOOL TRUE   , comment: "Apply to U4 (if relevant)" }
 
   ########################################################################################################################
-  # ActionStringConfig
+  # ActionEnumConfig
   ########################################################################################################################
   !CONFIG ActionEnumConfig:
     items:
@@ -2355,7 +2368,6 @@
         id            : { type: t_string  , len: 16                             , comment: "ID of the sequence" }
         length        : { type: t_int16                                         , comment: "Number of actions" }
         configs       : { type: !ARRAY [0, 29, marvel_common.ActionEnumConfig]  , comment: "Actions" , expand: false }
-        statuses      : { type: !ARRAY [0, 29, ActionStatus ]                   , comment: "Statuses", expand: false }
 
   ########################################################################################################################
   # SequenceStatus_M
@@ -2395,6 +2407,7 @@
         editableSeq         : { type: SequenceEnumConfig_M          , comment: "Editable sequence" , expand: false }
     variables_output:
         runnableSeq         : { type: SequenceEnumConfig_M          , comment: "Currently selected sequence for running" , expand: false }
+        runnableStat        : { type: !ARRAY [0, 29, ActionStatus ] , comment: "Statuses of the currently selected sequence for running", expand: false }
         runnableIndex       : { type: t_uint16                      , comment: "Index of the currently selected sequence for running" }
         editableIndex       : { type: t_uint16                      , comment: "Index of the currently selected sequence for editing" }
         ids                 : { type: !ARRAY [0, 50, t_string, 30 ] , comment: "Available IDs", expand: false }

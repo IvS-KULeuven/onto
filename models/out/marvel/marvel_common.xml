@@ -604,32 +604,8 @@
               <value name="U_FEM_LED_USF" value="23" />
               <value name="U_FEM_GUIDECAM" value="24" />
               <value name="U_FEM_FIBREVIEWCAM" value="25" />
-              <value name="_END_" value="26" />
-            </values>
-          </enum>
-        </baseType>
-        <addData>
-          <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-            <Attributes>
-              <Attribute Name="qualified_only" Value="" />
-            </Attributes>
-          </data>
-        </addData>
-      </dataType>
-      <dataType name="ActionStatus">
-        <baseType>
-          <enum>
-            <values>
-              <value name="IDLE" value="0" />
-              <value name="REQUESTED" value="1" />
-              <value name="BUSY" value="2" />
-              <value name="DONE_SUCCESS" value="3" />
-              <value name="DONE_ERROR" value="4" />
-              <value name="DONE_ERROR_ABORTED" value="5" />
-              <value name="DONE_ERROR_PROCESS_FAILED" value="6" />
-              <value name="DONE_ERROR_INVALID_TYPE" value="7" />
-              <value name="DONE_ERROR_INVALID_ARG" value="8" />
-              <value name="DONE_ERROR_INVALID_ACTOR" value="9" />
+              <value name="U_FEM_TIPTILT" value="26" />
+              <value name="_END_" value="27" />
             </values>
           </enum>
         </baseType>
@@ -656,7 +632,41 @@
               <value name="MOVE_ABS_MM" value="8" />
               <value name="MOVE_ABS_DEG" value="9" />
               <value name="MOVE_AZI_ELE" value="10" />
-              <value name="_END_" value="11" />
+              <value name="ENABLE" value="11" />
+              <value name="DISABLE" value="12" />
+              <value name="SET_ENABLED" value="13" />
+              <value name="MOVE_REL_MM" value="14" />
+              <value name="MOVE_REL_DEG" value="15" />
+              <value name="SET_CURRENT" value="16" />
+              <value name="SET_VOLTAGE" value="17" />
+              <value name="SET_AXIS_VOLTAGE" value="18" />
+              <value name="POWER" value="19" />
+              <value name="_END_" value="20" />
+            </values>
+          </enum>
+        </baseType>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+            <Attributes>
+              <Attribute Name="qualified_only" Value="" />
+            </Attributes>
+          </data>
+        </addData>
+      </dataType>
+      <dataType name="ActionStatus">
+        <baseType>
+          <enum>
+            <values>
+              <value name="IDLE" value="0" />
+              <value name="REQUESTED" value="1" />
+              <value name="BUSY" value="2" />
+              <value name="DONE_SUCCESS" value="3" />
+              <value name="DONE_ERROR" value="4" />
+              <value name="DONE_ERROR_ABORTED" value="5" />
+              <value name="DONE_ERROR_PROCESS_FAILED" value="6" />
+              <value name="DONE_ERROR_INVALID_TYPE" value="7" />
+              <value name="DONE_ERROR_INVALID_ARG" value="8" />
+              <value name="DONE_ERROR_INVALID_ACTOR" value="9" />
             </values>
           </enum>
         </baseType>
@@ -930,6 +940,51 @@
         <baseType>
           <struct>
             <variable name="setMilliAmps">
+              <type><derived name="ChangeSetpointProcess" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Set the output in milliampere</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="TipTiltProcesses">
+        <baseType>
+          <struct>
+            <variable name="setV1">
+              <type><derived name="ChangeSetpointProcess" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Set the output in milliampere</xhtml>
+              </documentation>
+            </variable>
+            <variable name="setV2">
+              <type><derived name="ChangeSetpointProcess" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Set the output in milliampere</xhtml>
+              </documentation>
+            </variable>
+            <variable name="setV3">
               <type><derived name="ChangeSetpointProcess" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -2110,6 +2165,27 @@
           </struct>
         </baseType>
       </dataType>
+      <dataType name="TipTiltStatuses">
+        <baseType>
+          <struct>
+            <variable name="busy">
+              <type><derived name="BusyStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Is the TipTilt in a busy state?</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
       <dataType name="ConfigManagerStatuses">
         <baseType>
           <struct>
@@ -2806,26 +2882,6 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Actions</xhtml>
-              </documentation>
-            </variable>
-            <variable name="statuses">
-              <type>
-                <array>
-                  <dimension lower="0" upper="29" />
-                  <baseType>
-                    <derived name="ActionStatus" />
-                  </baseType>
-                </array>
-              </type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Statuses</xhtml>
               </documentation>
             </variable>
           </struct>
@@ -6916,6 +6972,100 @@
           </struct>
         </baseType>
       </dataType>
+      <dataType name="M_SM_TipTilt">
+        <baseType>
+          <struct>
+            <variable name="actualStatus">
+              <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="v1">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="v2">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="v3">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="stat">
+              <type><derived name="TipTiltStatuses" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="proc">
+              <type><derived name="M_SM_TipTiltProcesses" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
       <dataType name="M_SM_ConfigManager">
         <baseType>
           <struct>
@@ -7492,6 +7642,28 @@
             </variable>
             <variable name="runnableSeq">
               <type><derived name="SequenceEnumConfig_M" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="runnableStat">
+              <type>
+                <array>
+                  <dimension lower="0" upper="29" />
+                  <baseType>
+                    <derived name="ActionStatus" />
+                  </baseType>
+                </array>
+              </type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -8932,6 +9104,51 @@
         <baseType>
           <struct>
             <variable name="setMilliAmps">
+              <type><derived name="M_ChangeSetpointProcess" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="M_SM_TipTiltProcesses">
+        <baseType>
+          <struct>
+            <variable name="setV1">
+              <type><derived name="M_ChangeSetpointProcess" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="setV2">
+              <type><derived name="M_ChangeSetpointProcess" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="setV3">
               <type><derived name="M_ChangeSetpointProcess" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -15588,6 +15805,226 @@ THIS^.proc.setMilliAmps._copyToModel_ChangeSetpointProcess( model := model.proc.
           </data>
         </addData>
       </pou>
+      <pou name="SM_TipTilt" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="isEnabled">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Is control enabled?</xhtml>
+              </documentation>
+            </variable>
+            <variable name="isSimulated">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Is the TipTilt simulated?</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="actualStatus">
+              <type><string length="50" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Current status description</xhtml>
+              </documentation>
+            </variable>
+            <variable name="v1">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Actual output 1 in voltage</xhtml>
+              </documentation>
+            </variable>
+            <variable name="v2">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Actual output 2 in voltage</xhtml>
+              </documentation>
+            </variable>
+            <variable name="v3">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Actual output 3 in voltage</xhtml>
+              </documentation>
+            </variable>
+            <variable name="stat">
+              <type><derived name="TipTiltStatuses" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Statuses of the state machine</xhtml>
+              </documentation>
+            </variable>
+            <variable name="proc">
+              <type><derived name="TipTiltProcesses" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Processes of the state machine</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <inOutVars>
+          </inOutVars>
+          <localVars>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">stat.busy := F_BusyStatus(
+    superState := TRUE,
+    isBusy := (proc.setV1.stat.busy = BusyStatus.busy) OR ((proc.setV2.stat.busy = BusyStatus.busy) OR (proc.setV3.stat.busy = BusyStatus.busy)));
+proc.setV1( isEnabled := isEnabled AND (proc.setV1.stat.busy = BusyStatus.idle) );
+proc.setV2( isEnabled := isEnabled AND (proc.setV2.stat.busy = BusyStatus.idle) );
+proc.setV3( isEnabled := isEnabled AND (proc.setV3.stat.busy = BusyStatus.idle) );
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyFromModel_SM_TipTilt">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_SM_TipTilt" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.proc.setV1._copyFromModel_ChangeSetpointProcess( model := model.proc.setV1 );
+THIS^.proc.setV2._copyFromModel_ChangeSetpointProcess( model := model.proc.setV2 );
+THIS^.proc.setV3._copyFromModel_ChangeSetpointProcess( model := model.proc.setV3 );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyToModel_SM_TipTilt">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_SM_TipTilt" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">model.actualStatus := THIS^.actualStatus;
+model.v1 := THIS^.v1;
+model.v2 := THIS^.v2;
+model.v3 := THIS^.v3;
+model.stat := THIS^.stat;
+THIS^.proc.setV1._copyToModel_ChangeSetpointProcess( model := model.proc.setV1 );
+THIS^.proc.setV2._copyToModel_ChangeSetpointProcess( model := model.proc.setV2 );
+THIS^.proc.setV3._copyToModel_ChangeSetpointProcess( model := model.proc.setV3 );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+        </addData>
+      </pou>
       <pou name="SM_ConfigManager" pouType="functionBlock">
         <interface>
           <inputVars>
@@ -16662,6 +17099,27 @@ THIS^.proc.send._copyToModel_Ell114SendProcess( model := model.proc.send );
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Currently selected sequence for running</xhtml>
               </documentation>
             </variable>
+            <variable name="runnableStat">
+              <type>
+                <array>
+                  <dimension lower="0" upper="29" />
+                  <baseType>
+                    <derived name="ActionStatus" />
+                  </baseType>
+                </array>
+              </type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Statuses of the currently selected sequence for running</xhtml>
+              </documentation>
+            </variable>
             <variable name="runnableIndex">
               <type><UINT /></type>
               <addData>
@@ -16910,6 +17368,7 @@ THIS^.proc.cancel._copyFromModel_Process( model := model.proc.cancel );
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">model.editableSeq := THIS^.editableSeq;
 model.actualStatus := THIS^.actualStatus;
 model.runnableSeq := THIS^.runnableSeq;
+model.runnableStat := THIS^.runnableStat;
 model.runnableIndex := THIS^.runnableIndex;
 model.editableIndex := THIS^.editableIndex;
 model.ids := THIS^.ids;
@@ -25186,9 +25645,9 @@ SUPER^._copyToModel_BaseProcess( model := model );
             </Object>
             <Object Name="ActionActor">
             </Object>
-            <Object Name="ActionStatus">
-            </Object>
             <Object Name="ActionKind">
+            </Object>
+            <Object Name="ActionStatus">
             </Object>
           </Folder>
           <Folder Name="Statuses">
@@ -25206,6 +25665,8 @@ SUPER^._copyToModel_BaseProcess( model := model );
               <Object Name="SimpleRelayProcesses">
               </Object>
               <Object Name="LedProcesses">
+              </Object>
+              <Object Name="TipTiltProcesses">
               </Object>
               <Object Name="ConfigManagerProcesses">
               </Object>
@@ -25258,6 +25719,8 @@ SUPER^._copyToModel_BaseProcess( model := model );
               <Object Name="SimpleRelayStatuses">
               </Object>
               <Object Name="LedStatuses">
+              </Object>
+              <Object Name="TipTiltStatuses">
               </Object>
               <Object Name="ConfigManagerStatuses">
               </Object>
@@ -25371,6 +25834,10 @@ SUPER^._copyToModel_BaseProcess( model := model );
             <Object Name="SM_Led">
               <Object Name="_copyFromModel_SM_Led" />
               <Object Name="_copyToModel_SM_Led" />
+            </Object>
+            <Object Name="SM_TipTilt">
+              <Object Name="_copyFromModel_SM_TipTilt" />
+              <Object Name="_copyToModel_SM_TipTilt" />
             </Object>
             <Object Name="SM_ConfigManager">
               <Object Name="_copyFromModel_SM_ConfigManager" />
@@ -25806,6 +26273,8 @@ SUPER^._copyToModel_BaseProcess( model := model );
             </Object>
             <Object Name="M_SM_Led">
             </Object>
+            <Object Name="M_SM_TipTilt">
+            </Object>
             <Object Name="M_SM_ConfigManager">
             </Object>
             <Object Name="M_SM_ModbusRTUBus">
@@ -25934,6 +26403,8 @@ SUPER^._copyToModel_BaseProcess( model := model );
             </Object>
             <Object Name="M_Led">
             </Object>
+            <Object Name="M_TipTilt">
+            </Object>
             <Object Name="M_ConfigManager">
             </Object>
             <Object Name="M_ModbusRTUBus">
@@ -25951,6 +26422,8 @@ SUPER^._copyToModel_BaseProcess( model := model );
             <Object Name="M_SM_SimpleRelayProcesses">
             </Object>
             <Object Name="M_SM_LedProcesses">
+            </Object>
+            <Object Name="M_SM_TipTiltProcesses">
             </Object>
             <Object Name="M_SM_ConfigManagerProcesses">
             </Object>
