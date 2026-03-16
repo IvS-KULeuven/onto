@@ -79,16 +79,17 @@
   ### simulation config ###
   !CONFIG SimulationConfig:
     items:
-      isSimulated                : {type: t_bool}
       ambient: { type: t_double, comment: starting temp of sensors}
       heating: {type: t_double, comment: heating gain/factor (0-1)}
       cooling: {type: t_double, comment: cooling factor (0-1)}
-     # weights : { type: !ARRAY [0, 30, !ARRAY [0, 30, t_double]], comment: "value between 0-1 representing the effect each heater has on each temperature sensor" }
+      noise: {type: t_double, comment: factor (0-1) multiplied with random number (0-1) to create noise in the simulated temperature}
+
   !CONFIG sharedHeaterConfig:
     items:
             hihiDeviation               : { type: t_double, comment: "max dev from setpoint" }
             hiDeviation              : { type: t_double  , comment: "warning dev from setpoint" }
             maxPower                  : { type: t_double, comment: "Maximum total power of all heaters in percentage", initial: !DOUBLE 100.0 }
+            simulation                 : {type: SimulationConfig}
 
 
   !CONFIG VesselSharedConfigs:
@@ -101,7 +102,7 @@
   #########################################
   !CONFIG VesselConfig:
     items:
-      simulation                 : {type: SimulationConfig}
+      isSimulated : {type: t_bool, comment: "True if the vessel temperature control is in simulation mode"}
       shared              : { type: VesselSharedConfigs, comment: "Shared config for the vessel" }
       setPointTarget             : { type: t_double  , comment: "set point temperature in kelvin" }
       rampVPos                   : { type: t_double  , comment: "velocity of temperature change in K/s while ramping up" }
@@ -241,7 +242,8 @@
         active                  : { type: t_bool, comment: "True if the heater is active" }
         deviation               : { type: t_double, comment: "Current error between set point and associated temperature" }
         isControlled            : { type: t_bool, comment: "True if the heater is in controlled state" }
-
+        simTemp                  : { type: t_double, comment: "Simulated temperature for testing the heater control" }
+        
     variables_input:     
         setPoint                : { type: t_double, comment: "Current set point of the heater in kelvin" }
         temp                : { type: t_double, comment: "Associated temperature of the heater in kelvin" }

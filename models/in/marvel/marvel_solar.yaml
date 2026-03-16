@@ -17,15 +17,18 @@
 
   !CONFIG SolarConfig:
     items:
-      fanPower:
+      defPowerFan:
         type: t_double 
         comment: "Power of the cooling fan in percent"
-      fanMaxPowerTemp:
+      highTemp:
         type: t_double
-        comment: "Maximum allowed temperature before the cooling fan is turned up to max power"
+        comment: "Fan turned up to max power at this temperature to prevent damage"
       maxTemp:
         type: t_double
         comment: "Maximum allowed temperature before the solar telescope is shut down to prevent damage"
+      fanEnabled:
+        type: t_bool
+        comment: "True if the cooling fan is enabled"
       
       
       
@@ -44,28 +47,30 @@
      
 
     variables_input:
-      fanOk             : { type: t_bool                                                , comment: "True if the cooling fan is working" }
       temp              : { type: t_float           , comment: "The measured temperature", address: "%I*" }
 
-      #sensors altiude 
-      lsAl1           : { type: t_bool                                                , comment: "limit switch alti 1 (soft) (top) (B5)" , address: "%I*" }
-      lsAl2           : { type: t_bool                                                , comment: "limit switch alti 2 (hard) (mid) (B6)" , address: "%I*" }
-      hsAl            : { type: t_bool                                                , comment: "State of home sensor alti + limit (bottom) (B7)" , address: "%I*" }
-      #sensors azimuth
-      lsAz1        : { type: t_bool                                                , comment: "limit switch azi 1 (soft) (west) (B1)" , address: "%I*" }
-      lsAz2          : { type: t_bool                                                , comment: "limit switch azi 2 (hard) (nord) (B2)" , address: "%I*" }
-      lsAz3           : { type: t_bool                                                , comment: "limit switch azi 3 (soft) (east) (B3)" , address: "%I*" }
-      hsAz            : { type: t_bool                                                , comment: "State of home sensor azi (south) (B4)" ,address: "%I*" }
-
+    #sensors azimuth
+      lsAz1        : { type: t_bool                                                , comment: "limit switch azi 1 (soft) (west) (B1)"  }
+      lsAz2          : { type: t_bool                                                , comment: "limit switch azi 2 (hard) (nord) (B2)" }
+      lsAz3           : { type: t_bool                                                , comment: "limit switch azi 3 (soft) (east) (B3)"  }
+      hsAz            : { type: t_bool                                                , comment: "State of home sensor azi (south) (B4)"  }
+    
+    #sensors altiude 
+      lsAl1           : { type: t_bool                                                , comment: "limit switch alti 1 (soft) (top) (B5)"}
+      lsAl2           : { type: t_bool                                                , comment: "limit switch alti 2 (hard) (mid) (B6)"}
+      hsAl            : { type: t_bool                                                , comment: "State of home sensor alti + limit (bottom) (B7)" }
+    
+    
     variables_input_rw:
       editableConfig            : { type: SolarConfig                          , comment: "Editable configuration of the solar telescope" , expand: false }     
 
     variables_output:
-      config : { type: SolarConfig, comment: "Configuration of the solar telescope" }
+      config       :   { type: SolarConfig, comment: "Configuration of the solar telescope" }
+      fanOk        : { type: t_bool                                                , comment: "True if the cooling fan is working" }
       powerPC      : { type: t_bool                   , comment: "True if the solar pc is enabled", address: "%Q*"  }
       powerMount   : { type: t_bool                   , comment: "True if the solar mount is enabled", address: "%Q*"  }
-      powerFan    : { type: t_float                 , comment: "Power of the cooling fan in percent", address: "%Q*"  }
-      overwriten    : { type: t_bool                   , comment: "True if the hard limits are overwritten"  }
+      powerFan     : { type: t_float                 , comment: "Power of the cooling fan in percent"}
+      overwriten   : { type: t_bool                   , comment: "True if the hard limits are overwritten" }
       
  
     stat:
@@ -79,33 +84,25 @@
       power_off_pc                   : { type: marvel_common.Process                         , comment: "Stop power to solar pc and mount" }
       power_on_mount                     : { type: marvel_common.Process                         , comment: "enable power to to solar mount and mount" }
       power_off_mount                    : { type: marvel_common.Process                         , comment: "Stop power to solar mount and mount" }
-      overwrite_limits                     : { type: marvel_common.Process                         , comment: "overwrite hard limits" }
-      reset_overwrite                     : { type: marvel_common.Process                         , comment: "reset overwrite of hard limits" }
-
+      manual_power_on                     : { type: marvel_common.Process                         , comment: "overwrite hard limits" }
+      manual_power_off                   : { type: marvel_common.Process                         , comment: "Stop overwriting hard limits" }
     
     calls:
-      # health:
-      #   isGood: !AND [ fanOk, !NOT [lsAl2], !NOT [lsAz2]]
-      #   hasWarning: !AND [ !NOT [lsAl1], !NOT [hsAl], lsAz1, lsAz3]
+        power_on_mount:
+          isEnabled: !AND [ !EQ [stat.init, marvel_common.InitializationStatus.initialized],!NOT [powerMount],  !NOT [!EQ [ stat.health, marvel_common.HealthStatus.bad]], !NOT [overwriten]]
+        power_off_mount:
+          isEnabled: !AND [ powerMount, !NOT [ overwriten ] ]
 
-      # power_on_mount:
-      #   isEnabled: !OR [ !AND [ !NOT [ !EQ [stat.health, marvel_common.HealthStatus.bad]], 
-      #                   [!EQ [stat.init, marvel_common.InitializationStatus.initialized]]], 
-      #                   overwrite ]
+        # power_on_pc:
+        #   isEnabled: !AND [ !EQ [stat.init, marvel_common.InitializationStatus.initialized], !NOT [powerPC]]
 
-      # power_off_mount:
-      #   isEnabled: powerMount
+        # power_off_pc:
+        #   isEnabled: powerPC
 
-      # power_on_pc:
-      #   isEnabled: !AND [ !EQ [stat.init, marvel_common.InitializationStatus.initialized], !NOT [powerPC]]
+        manual_power_on:
+          isEnabled: !AND [!EQ [operator_ref, marvel_common.OperatorStatus.tech], !NOT [overwriten] ]
+        manual_power_off:
+          isEnabled: !AND [ overwriten, !EQ [operator_ref, marvel_common.OperatorStatus.tech] ]
 
-      # power_off_pc:
-      #   isEnabled: powerPC
-
-      # overwrite_limits:
-      #   isEnabled: !AND [ !EQ [stat.health, marvel_common.HealthStatus.bad ], !EQ [operator_ref, marvel_common.OperatorStatus.tech], !NOT [overwrite] ]
-
-      # reset_overwrite:
-      #   isEnabled: !AND [ overwrite, !EQ [operator_ref, marvel_common.OperatorStatus.tech] ]
-      initialize:
-        isEnabled: !AND [ !NOT [!EQ [stat.init, marvel_common.InitializationStatus.initialized]], !NOT [!EQ [ stat.init, marvel_common.InitializationStatus.initializing]], !NOT [!EQ [ stat.init, marvel_common.InitializationStatus.locked]] ]
+        initialize:
+          isEnabled: !AND [ !NOT [!EQ [stat.init, marvel_common.InitializationStatus.initialized]], !NOT [!EQ [ stat.init, marvel_common.InitializationStatus.initializing]], !NOT [!EQ [ stat.init, marvel_common.InitializationStatus.locked]] ]

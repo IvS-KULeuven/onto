@@ -1210,19 +1210,6 @@
       <dataType name="SimulationConfig">
         <baseType>
           <struct>
-            <variable name="isSimulated">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
             <variable name="ambient">
               <type><LREAL /></type>
               <addData>
@@ -1260,6 +1247,19 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">cooling factor (0-1)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="noise">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">factor (0-1) multiplied with random number (0-1) to create noise in the simulated temperature</xhtml>
               </documentation>
             </variable>
           </struct>
@@ -1308,6 +1308,19 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Maximum total power of all heaters in percentage</xhtml>
               </documentation>
             </variable>
+            <variable name="simulation">
+              <type><derived name="SimulationConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
           </struct>
         </baseType>
       </dataType>
@@ -1346,8 +1359,8 @@
       <dataType name="VesselConfig">
         <baseType>
           <struct>
-            <variable name="simulation">
-              <type><derived name="SimulationConfig" /></type>
+            <variable name="isSimulated">
+              <type><BOOL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1356,7 +1369,7 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the vessel temperature control is in simulation mode</xhtml>
               </documentation>
             </variable>
             <variable name="shared">
@@ -2290,6 +2303,21 @@
             </variable>
             <variable name="isControlled">
               <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="simTemp">
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -4044,6 +4072,20 @@ model.stat := THIS^.stat;
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the heater is in controlled state</xhtml>
               </documentation>
             </variable>
+            <variable name="simTemp">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Simulated temperature for testing the heater control</xhtml>
+              </documentation>
+            </variable>
             <variable name="stat">
               <type><derived name="HeaterControlStatuses" /></type>
               <addData>
@@ -4194,6 +4236,7 @@ model.power := THIS^.power;
 model.active := THIS^.active;
 model.deviation := THIS^.deviation;
 model.isControlled := THIS^.isControlled;
+model.simTemp := THIS^.simTemp;
 model.stat := THIS^.stat;
 THIS^.proc.initialize._copyToModel_Process( model := model.proc.initialize );
 THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
