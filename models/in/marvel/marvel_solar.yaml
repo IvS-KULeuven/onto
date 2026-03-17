@@ -18,17 +18,21 @@
   !CONFIG SolarConfig:
     items:
       defPowerFan:
-        type: t_double 
+        type: t_float 
         comment: "Power of the cooling fan in percent"
+        initial: 30.0
       highTemp:
-        type: t_double
+        type: t_float
         comment: "Fan turned up to max power at this temperature to prevent damage"
+        initial: 35.0
       maxTemp:
-        type: t_double
+        type: t_float
         comment: "Maximum allowed temperature before the solar telescope is shut down to prevent damage"
+        initial : 40.0
       fanEnabled:
-        type: t_bool
+        type: t_float
         comment: "True if the cooling fan is enabled"
+        initial: true
       
       
       
@@ -80,12 +84,12 @@
 
     proc:
       initialize                        : { type: marvel_common.Process                         , comment: "Initialize the solar telescope" }
-      power_on_pc                    : { type: marvel_common.Process                         , comment: "enable power to to solar pc and mount" }
-      power_off_pc                   : { type: marvel_common.Process                         , comment: "Stop power to solar pc and mount" }
-      power_on_mount                     : { type: marvel_common.Process                         , comment: "enable power to to solar mount and mount" }
-      power_off_mount                    : { type: marvel_common.Process                         , comment: "Stop power to solar mount and mount" }
-      manual_power_on                     : { type: marvel_common.Process                         , comment: "overwrite hard limits" }
-      manual_power_off                   : { type: marvel_common.Process                         , comment: "Stop overwriting hard limits" }
+      powerOnPc                    : { type: marvel_common.Process                         , comment: "enable power to to solar pc and mount" }
+      powerOffPc                   : { type: marvel_common.Process                         , comment: "Stop power to solar pc and mount" }
+      powerOnMount                     : { type: marvel_common.Process                         , comment: "enable power to to solar mount and mount" }
+      powerOffMount                    : { type: marvel_common.Process                         , comment: "Stop power to solar mount and mount" }
+      manualPowerOn                     : { type: marvel_common.Process                         , comment: "overwrite hard limits" }
+      manualPowerOff                   : { type: marvel_common.Process                         , comment: "Stop overwriting hard limits" }
     
     calls:
         power_on_mount:

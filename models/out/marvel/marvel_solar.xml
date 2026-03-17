@@ -37,7 +37,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Initialize the solar telescope</xhtml>
               </documentation>
             </variable>
-            <variable name="power_on_pc">
+            <variable name="powerOnPc">
               <type><derived name="Process" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -50,7 +50,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">enable power to to solar pc and mount</xhtml>
               </documentation>
             </variable>
-            <variable name="power_off_pc">
+            <variable name="powerOffPc">
               <type><derived name="Process" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -63,7 +63,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Stop power to solar pc and mount</xhtml>
               </documentation>
             </variable>
-            <variable name="power_on_mount">
+            <variable name="powerOnMount">
               <type><derived name="Process" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -76,7 +76,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">enable power to to solar mount and mount</xhtml>
               </documentation>
             </variable>
-            <variable name="power_off_mount">
+            <variable name="powerOffMount">
               <type><derived name="Process" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -89,7 +89,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Stop power to solar mount and mount</xhtml>
               </documentation>
             </variable>
-            <variable name="manual_power_on">
+            <variable name="manualPowerOn">
               <type><derived name="Process" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -102,7 +102,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">overwrite hard limits</xhtml>
               </documentation>
             </variable>
-            <variable name="manual_power_off">
+            <variable name="manualPowerOff">
               <type><derived name="Process" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -517,7 +517,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="power_on_pc">
+            <variable name="powerOnPc">
               <type><derived name="M_Process" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -530,7 +530,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="power_off_pc">
+            <variable name="powerOffPc">
               <type><derived name="M_Process" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -543,7 +543,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="power_on_mount">
+            <variable name="powerOnMount">
               <type><derived name="M_Process" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -556,7 +556,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="power_off_mount">
+            <variable name="powerOffMount">
               <type><derived name="M_Process" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -569,7 +569,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="manual_power_on">
+            <variable name="manualPowerOn">
               <type><derived name="M_Process" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -582,7 +582,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="manual_power_off">
+            <variable name="manualPowerOff">
               <type><derived name="M_Process" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -801,7 +801,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the solar mount is enabled</xhtml>
               </documentation>
             </variable>
-            <variable name="powerFan" address="%Q*">
+            <variable name="powerFan">
               <type><REAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -902,13 +902,13 @@
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">proc.initialize();
-proc.power_on_pc();
-proc.power_off_pc();
-proc.power_on_mount( isEnabled := (stat.init = InitializationStatus.initialized) AND ((NOT(powerMount)) AND (NOT(stat.health = HealthStatus.bad))) );
-proc.power_off_mount();
-proc.manual_power_on();
-proc.manual_power_off();
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">proc.initialize( isEnabled := (NOT(stat.init = InitializationStatus.initialized)) AND ((NOT(stat.init = InitializationStatus.initializing)) AND (NOT(stat.init = InitializationStatus.locked))) );
+proc.powerOnPc();
+proc.powerOffPc();
+proc.powerOnMount();
+proc.powerOffMount();
+proc.manualPowerOn();
+proc.manualPowerOff();
 </xhtml>
           </ST>
         </body>
@@ -948,12 +948,12 @@ proc.manual_power_off();
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.editableConfig := model.editableConfig;
 THIS^.proc.initialize._copyFromModel_Process( model := model.proc.initialize );
-THIS^.proc.power_on_pc._copyFromModel_Process( model := model.proc.power_on_pc );
-THIS^.proc.power_off_pc._copyFromModel_Process( model := model.proc.power_off_pc );
-THIS^.proc.power_on_mount._copyFromModel_Process( model := model.proc.power_on_mount );
-THIS^.proc.power_off_mount._copyFromModel_Process( model := model.proc.power_off_mount );
-THIS^.proc.manual_power_on._copyFromModel_Process( model := model.proc.manual_power_on );
-THIS^.proc.manual_power_off._copyFromModel_Process( model := model.proc.manual_power_off );
+THIS^.proc.powerOnPc._copyFromModel_Process( model := model.proc.powerOnPc );
+THIS^.proc.powerOffPc._copyFromModel_Process( model := model.proc.powerOffPc );
+THIS^.proc.powerOnMount._copyFromModel_Process( model := model.proc.powerOnMount );
+THIS^.proc.powerOffMount._copyFromModel_Process( model := model.proc.powerOffMount );
+THIS^.proc.manualPowerOn._copyFromModel_Process( model := model.proc.manualPowerOn );
+THIS^.proc.manualPowerOff._copyFromModel_Process( model := model.proc.manualPowerOff );
 </xhtml>
                 </ST>
               </body>
@@ -1010,12 +1010,12 @@ model.powerFan := THIS^.powerFan;
 model.overwriten := THIS^.overwriten;
 model.stat := THIS^.stat;
 THIS^.proc.initialize._copyToModel_Process( model := model.proc.initialize );
-THIS^.proc.power_on_pc._copyToModel_Process( model := model.proc.power_on_pc );
-THIS^.proc.power_off_pc._copyToModel_Process( model := model.proc.power_off_pc );
-THIS^.proc.power_on_mount._copyToModel_Process( model := model.proc.power_on_mount );
-THIS^.proc.power_off_mount._copyToModel_Process( model := model.proc.power_off_mount );
-THIS^.proc.manual_power_on._copyToModel_Process( model := model.proc.manual_power_on );
-THIS^.proc.manual_power_off._copyToModel_Process( model := model.proc.manual_power_off );
+THIS^.proc.powerOnPc._copyToModel_Process( model := model.proc.powerOnPc );
+THIS^.proc.powerOffPc._copyToModel_Process( model := model.proc.powerOffPc );
+THIS^.proc.powerOnMount._copyToModel_Process( model := model.proc.powerOnMount );
+THIS^.proc.powerOffMount._copyToModel_Process( model := model.proc.powerOffMount );
+THIS^.proc.manualPowerOn._copyToModel_Process( model := model.proc.manualPowerOn );
+THIS^.proc.manualPowerOff._copyToModel_Process( model := model.proc.manualPowerOff );
 </xhtml>
                 </ST>
               </body>
