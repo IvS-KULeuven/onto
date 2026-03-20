@@ -752,7 +752,16 @@
       setPointRamped          : { type: t_double                                               , comment: "Set point temperature in kelvin after ramping" }
       
     parts:
-      ### CLAUDE ---> HERE ADD OUTER ROOM
+      outerRoom:
+        type: OuterRoomControl
+        expand: false
+        comment: "State machine for the outer room temperature control" 
+        arguments:
+                activity_ref              : { type: marvel_common.ActivityStatus          , expand: false }
+                services_ref              : { type: marvel_services.Services              , expand: false }
+                operator_ref              : { type: marvel_common.OperatorStatus          , expand: false }
+                config_ref                : { type: OuterRoomConfig                      , expand: false }
+                sharedConfig_ref          : { type: ThermoSharedConfig                   , expand: false }      
       innerRoom:
         type: InnerRoomControl
         expand: false
@@ -773,7 +782,36 @@
                 operator_ref              : { type: marvel_common.OperatorStatus          , expand: false }
                 config_ref                : { type: VesselConfig                     , expand: false }
                 sharedConfig_ref          : { type: ThermoSharedConfig                   , expand: false }
-      ### CLAUDE ----> HERE ADD SCHIELD, BENCH, CRYO
+      shield:
+        type: ShieldControl
+        expand: false
+        comment: "State machine for the shield temperature control" 
+        arguments:
+                activity_ref              : { type: marvel_common.ActivityStatus          , expand: false }
+                services_ref              : { type: marvel_services.Services              , expand: false }
+                operator_ref              : { type: marvel_common.OperatorStatus          , expand: false }
+                config_ref                : { type: ShieldConfig                         , expand: false }
+                sharedConfig_ref          : { type: ThermoSharedConfig                   , expand: false }
+      bench:
+        type: BenchControl
+        expand: false
+        comment: "State machine for the bench temperature control" 
+        arguments:
+                activity_ref              : { type: marvel_common.ActivityStatus          , expand: false }
+                services_ref              : { type: marvel_services.Services              , expand: false }
+                operator_ref              : { type: marvel_common.OperatorStatus          , expand: false }
+                config_ref                : { type: BenchConfig                          , expand: false }
+                sharedConfig_ref          : { type: ThermoSharedConfig                   , expand: false }
+      cryo:
+        type: CryoControl
+        expand: false
+        comment: "State machine for the cryo temperature control" 
+        arguments:
+                activity_ref              : { type: marvel_common.ActivityStatus          , expand: false }
+                services_ref              : { type: marvel_services.Services              , expand: false }
+                operator_ref              : { type: marvel_common.OperatorStatus          , expand: false }
+                config_ref                : { type: CryoConfig                           , expand: false }
+                sharedConfig_ref          : { type: ThermoSharedConfig                   , expand: false }
 
       configManager:
         comment                     : "The config manager (to load/save/activate configuration data)"
@@ -798,7 +836,12 @@
 
     calls:
     ###parts###
-    ### ----> HERE ADD OUTER ROOM
+      outerRoom:
+              activity_ref        : activity_ref
+              services_ref        : services_ref
+              operator_ref        : operator_ref
+              config_ref          : config.outerRoom
+              sharedConfig_ref    : config.shared
       innerRoom:
               activity_ref        : activity_ref
               services_ref        : services_ref
@@ -813,7 +856,26 @@
               config_ref          : config.vessel
               sharedConfig_ref    : config.shared
     
-    ### ----> HERE ADD SHIELD, BENCH, CRYO
+      shield:
+              activity_ref        : activity_ref
+              services_ref        : services_ref
+              operator_ref        : operator_ref
+              config_ref          : config.shield
+              sharedConfig_ref    : config.shared
+ 
+      bench:
+              activity_ref        : activity_ref
+              services_ref        : services_ref
+              operator_ref        : operator_ref
+              config_ref          : config.bench
+              sharedConfig_ref    : config.shared
+ 
+      cryo:
+              activity_ref        : activity_ref
+              services_ref        : services_ref
+              operator_ref        : operator_ref
+              config_ref          : config.cryo
+              sharedConfig_ref    : config.shared
 
 
       configManager:

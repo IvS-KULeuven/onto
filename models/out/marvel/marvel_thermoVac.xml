@@ -655,8 +655,8 @@
       <dataType name="ThermoControlParts">
         <baseType>
           <struct>
-            <variable name="vessel">
-              <type><derived name="VesselControl" /></type>
+            <variable name="outerRoom">
+              <type><derived name="OuterRoomControl" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -665,7 +665,7 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">State machine for the vessel temperature control</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">State machine for the outer room temperature control</xhtml>
               </documentation>
             </variable>
             <variable name="innerRoom">
@@ -679,6 +679,58 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">State machine for the inner room temperature control</xhtml>
+              </documentation>
+            </variable>
+            <variable name="vessel">
+              <type><derived name="VesselControl" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">State machine for the vessel temperature control</xhtml>
+              </documentation>
+            </variable>
+            <variable name="shield">
+              <type><derived name="ShieldControl" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">State machine for the shield temperature control</xhtml>
+              </documentation>
+            </variable>
+            <variable name="bench">
+              <type><derived name="BenchControl" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">State machine for the bench temperature control</xhtml>
+              </documentation>
+            </variable>
+            <variable name="cryo">
+              <type><derived name="CryoControl" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">State machine for the cryo temperature control</xhtml>
               </documentation>
             </variable>
             <variable name="configManager">
@@ -5556,8 +5608,8 @@
       <dataType name="M_SM_ThermoControlParts">
         <baseType>
           <struct>
-            <variable name="vessel">
-              <type><derived name="M_VesselControl" /></type>
+            <variable name="outerRoom">
+              <type><derived name="M_OuterRoomControl" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -5571,6 +5623,58 @@
             </variable>
             <variable name="innerRoom">
               <type><derived name="M_InnerRoomControl" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="vessel">
+              <type><derived name="M_VesselControl" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="shield">
+              <type><derived name="M_ShieldControl" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="bench">
+              <type><derived name="M_BenchControl" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="cryo">
+              <type><derived name="M_CryoControl" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -8587,17 +8691,41 @@ THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">parts.vessel(
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">parts.outerRoom(
     activity_ref := activity_ref,
     services_ref := services_ref,
     operator_ref := operator_ref,
-    config_ref := config.vessel,
+    config_ref := config.outerRoom,
     sharedConfig_ref := config.shared);
 parts.innerRoom(
     activity_ref := activity_ref,
     services_ref := services_ref,
     operator_ref := operator_ref,
     config_ref := config.innerRoom,
+    sharedConfig_ref := config.shared);
+parts.vessel(
+    activity_ref := activity_ref,
+    services_ref := services_ref,
+    operator_ref := operator_ref,
+    config_ref := config.vessel,
+    sharedConfig_ref := config.shared);
+parts.shield(
+    activity_ref := activity_ref,
+    services_ref := services_ref,
+    operator_ref := operator_ref,
+    config_ref := config.shield,
+    sharedConfig_ref := config.shared);
+parts.bench(
+    activity_ref := activity_ref,
+    services_ref := services_ref,
+    operator_ref := operator_ref,
+    config_ref := config.bench,
+    sharedConfig_ref := config.shared);
+parts.cryo(
+    activity_ref := activity_ref,
+    services_ref := services_ref,
+    operator_ref := operator_ref,
+    config_ref := config.cryo,
     sharedConfig_ref := config.shared);
 parts.configManager( isEnabled := operator_ref = OperatorStatus.tech );
 proc.initialize();
@@ -8644,8 +8772,12 @@ proc.unlock();
               <body>
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.editableConfig := model.editableConfig;
-THIS^.parts.vessel._copyFromModel_VesselControl( model := model.parts.vessel );
+THIS^.parts.outerRoom._copyFromModel_OuterRoomControl( model := model.parts.outerRoom );
 THIS^.parts.innerRoom._copyFromModel_InnerRoomControl( model := model.parts.innerRoom );
+THIS^.parts.vessel._copyFromModel_VesselControl( model := model.parts.vessel );
+THIS^.parts.shield._copyFromModel_ShieldControl( model := model.parts.shield );
+THIS^.parts.bench._copyFromModel_BenchControl( model := model.parts.bench );
+THIS^.parts.cryo._copyFromModel_CryoControl( model := model.parts.cryo );
 THIS^.parts.configManager._copyFromModel_ConfigManager( model := model.parts.configManager );
 THIS^.proc.initialize._copyFromModel_Process( model := model.proc.initialize );
 THIS^.proc.start._copyFromModel_Process( model := model.proc.start );
@@ -8696,8 +8828,12 @@ model.actualStatus := THIS^.actualStatus;
 model.config := THIS^.config;
 model.setPointRamped := THIS^.setPointRamped;
 model.stat := THIS^.stat;
-THIS^.parts.vessel._copyToModel_VesselControl( model := model.parts.vessel );
+THIS^.parts.outerRoom._copyToModel_OuterRoomControl( model := model.parts.outerRoom );
 THIS^.parts.innerRoom._copyToModel_InnerRoomControl( model := model.parts.innerRoom );
+THIS^.parts.vessel._copyToModel_VesselControl( model := model.parts.vessel );
+THIS^.parts.shield._copyToModel_ShieldControl( model := model.parts.shield );
+THIS^.parts.bench._copyToModel_BenchControl( model := model.parts.bench );
+THIS^.parts.cryo._copyToModel_CryoControl( model := model.parts.cryo );
 THIS^.parts.configManager._copyToModel_ConfigManager( model := model.parts.configManager );
 THIS^.proc.initialize._copyToModel_Process( model := model.proc.initialize );
 THIS^.proc.start._copyToModel_Process( model := model.proc.start );
