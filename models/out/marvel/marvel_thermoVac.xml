@@ -733,6 +733,38 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">State machine for the cryo temperature control</xhtml>
               </documentation>
             </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="ThermoVacControlParts">
+        <baseType>
+          <struct>
+            <variable name="thermo">
+              <type><derived name="ThermoControl" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">statemachine of the thermal control system</xhtml>
+              </documentation>
+            </variable>
+            <variable name="vac">
+              <type><derived name="VacControl" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">statemachine of the vac control system</xhtml>
+              </documentation>
+            </variable>
             <variable name="configManager">
               <type><derived name="ConfigManager" /></type>
               <addData>
@@ -1933,6 +1965,27 @@
           </struct>
         </baseType>
       </dataType>
+      <dataType name="ThermoVacControlStatuses">
+        <baseType>
+          <struct>
+            <variable name="health">
+              <type><derived name="HealthStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Is the vessel healthy?</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
       <dataType name="HeaterConfig">
         <baseType>
           <struct>
@@ -2326,7 +2379,7 @@
       <dataType name="ThermoSharedConfig">
         <baseType>
           <struct>
-            <variable name="bool">
+            <variable name="spacer">
               <type><BOOL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -3216,6 +3269,57 @@
           </struct>
         </baseType>
       </dataType>
+      <dataType name="VacConfig">
+        <baseType>
+          <struct>
+            <variable name="spacer">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">place holder, vac not yet used</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="ThermoVacConfig">
+        <baseType>
+          <struct>
+            <variable name="thermo">
+              <type><derived name="ThermoConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config for the thermo control system</xhtml>
+              </documentation>
+            </variable>
+            <variable name="vac">
+              <type><derived name="VacConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">config for the vacum control system</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
       <dataType name="M_SM_TempMeasurement">
         <baseType>
           <struct>
@@ -3895,6 +3999,21 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
+            <variable name="setPointRamped">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
             <variable name="tStatBottomPwr">
               <type><BOOL /></type>
               <addData>
@@ -4374,53 +4493,8 @@
       <dataType name="M_SM_ThermoControl">
         <baseType>
           <struct>
-            <variable name="editableConfig">
-              <type><derived name="ThermoConfig" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="3" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
             <variable name="actualStatus">
               <type><string /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-            <variable name="config">
-              <type><derived name="ThermoConfig" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-            <variable name="setPointRamped">
-              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -4464,6 +4538,106 @@
             </variable>
             <variable name="proc">
               <type><derived name="M_SM_ThermoControlProcesses" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="M_SM_VacControl">
+        <baseType>
+          <struct>
+            <variable name="actualStatus">
+              <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="M_SM_ThermoVacControl">
+        <baseType>
+          <struct>
+            <variable name="editableConfig">
+              <type><derived name="ThermoVacConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="3" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="actualStatus">
+              <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="config">
+              <type><derived name="ThermoVacConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="stat">
+              <type><derived name="ThermoVacControlStatuses" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="parts">
+              <type><derived name="M_SM_ThermoVacControlParts" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -5686,19 +5860,6 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="configManager">
-              <type><derived name="M_ConfigManager" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
           </struct>
         </baseType>
       </dataType>
@@ -5772,6 +5933,51 @@
             </variable>
             <variable name="unlock">
               <type><derived name="M_Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="M_SM_ThermoVacControlParts">
+        <baseType>
+          <struct>
+            <variable name="thermo">
+              <type><derived name="M_ThermoControl" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="vac">
+              <type><derived name="M_VacControl" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="configManager">
+              <type><derived name="M_ConfigManager" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -7179,6 +7385,20 @@ THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Average power of the heaters in percentage</xhtml>
               </documentation>
             </variable>
+            <variable name="setPointRamped">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The ramped setpoint used by the pid</xhtml>
+              </documentation>
+            </variable>
             <variable name="tStatBottomPwr" address="%Q*">
               <type><BOOL /></type>
               <addData>
@@ -7581,6 +7801,7 @@ model.maxDeviation := THIS^.maxDeviation;
 model.avgDeviation := THIS^.avgDeviation;
 model.totalPower := THIS^.totalPower;
 model.avgPower := THIS^.avgPower;
+model.setPointRamped := THIS^.setPointRamped;
 model.tStatBottomPwr := THIS^.tStatBottomPwr;
 model.tStatCryoRearPwr := THIS^.tStatCryoRearPwr;
 model.tStatLidPwr := THIS^.tStatLidPwr;
@@ -8547,20 +8768,6 @@ THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
       <pou name="SM_ThermoControl" pouType="functionBlock">
         <interface>
           <inputVars>
-            <variable name="editableConfig">
-              <type><derived name="ThermoConfig" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="3" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Editable configuration of the thermo system</xhtml>
-              </documentation>
-            </variable>
           </inputVars>
           <outputVars>
             <variable name="actualStatus">
@@ -8575,34 +8782,6 @@ THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Current status description</xhtml>
-              </documentation>
-            </variable>
-            <variable name="config">
-              <type><derived name="ThermoConfig" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Active configuration of the thermo system</xhtml>
-              </documentation>
-            </variable>
-            <variable name="setPointRamped">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Set point temperature in kelvin after ramping</xhtml>
               </documentation>
             </variable>
             <variable name="stat">
@@ -8646,6 +8825,19 @@ THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
             </variable>
           </outputVars>
           <inOutVars>
+            <variable name="config_ref">
+              <type><derived name="ThermoConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">active configuration of the thermo control system</xhtml>
+              </documentation>
+            </variable>
             <variable name="activity_ref">
               <type><derived name="ActivityStatus" /></type>
               <addData>
@@ -8695,39 +8887,38 @@ THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
     activity_ref := activity_ref,
     services_ref := services_ref,
     operator_ref := operator_ref,
-    config_ref := config.outerRoom,
-    sharedConfig_ref := config.shared);
+    config_ref := config_ref.outerRoom,
+    sharedConfig_ref := config_ref.shared);
 parts.innerRoom(
     activity_ref := activity_ref,
     services_ref := services_ref,
     operator_ref := operator_ref,
-    config_ref := config.innerRoom,
-    sharedConfig_ref := config.shared);
+    config_ref := config_ref.innerRoom,
+    sharedConfig_ref := config_ref.shared);
 parts.vessel(
     activity_ref := activity_ref,
     services_ref := services_ref,
     operator_ref := operator_ref,
-    config_ref := config.vessel,
-    sharedConfig_ref := config.shared);
+    config_ref := config_ref.vessel,
+    sharedConfig_ref := config_ref.shared);
 parts.shield(
     activity_ref := activity_ref,
     services_ref := services_ref,
     operator_ref := operator_ref,
-    config_ref := config.shield,
-    sharedConfig_ref := config.shared);
+    config_ref := config_ref.shield,
+    sharedConfig_ref := config_ref.shared);
 parts.bench(
     activity_ref := activity_ref,
     services_ref := services_ref,
     operator_ref := operator_ref,
-    config_ref := config.bench,
-    sharedConfig_ref := config.shared);
+    config_ref := config_ref.bench,
+    sharedConfig_ref := config_ref.shared);
 parts.cryo(
     activity_ref := activity_ref,
     services_ref := services_ref,
     operator_ref := operator_ref,
-    config_ref := config.cryo,
-    sharedConfig_ref := config.shared);
-parts.configManager( isEnabled := operator_ref = OperatorStatus.tech );
+    config_ref := config_ref.cryo,
+    sharedConfig_ref := config_ref.shared);
 proc.initialize();
 proc.start();
 proc.stop();
@@ -8771,14 +8962,12 @@ proc.unlock();
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.editableConfig := model.editableConfig;
-THIS^.parts.outerRoom._copyFromModel_OuterRoomControl( model := model.parts.outerRoom );
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.parts.outerRoom._copyFromModel_OuterRoomControl( model := model.parts.outerRoom );
 THIS^.parts.innerRoom._copyFromModel_InnerRoomControl( model := model.parts.innerRoom );
 THIS^.parts.vessel._copyFromModel_VesselControl( model := model.parts.vessel );
 THIS^.parts.shield._copyFromModel_ShieldControl( model := model.parts.shield );
 THIS^.parts.bench._copyFromModel_BenchControl( model := model.parts.bench );
 THIS^.parts.cryo._copyFromModel_CryoControl( model := model.parts.cryo );
-THIS^.parts.configManager._copyFromModel_ConfigManager( model := model.parts.configManager );
 THIS^.proc.initialize._copyFromModel_Process( model := model.proc.initialize );
 THIS^.proc.start._copyFromModel_Process( model := model.proc.start );
 THIS^.proc.stop._copyFromModel_Process( model := model.proc.stop );
@@ -8823,10 +9012,7 @@ THIS^.proc.unlock._copyFromModel_Process( model := model.proc.unlock );
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">model.editableConfig := THIS^.editableConfig;
-model.actualStatus := THIS^.actualStatus;
-model.config := THIS^.config;
-model.setPointRamped := THIS^.setPointRamped;
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">model.actualStatus := THIS^.actualStatus;
 model.stat := THIS^.stat;
 THIS^.parts.outerRoom._copyToModel_OuterRoomControl( model := model.parts.outerRoom );
 THIS^.parts.innerRoom._copyToModel_InnerRoomControl( model := model.parts.innerRoom );
@@ -8834,13 +9020,398 @@ THIS^.parts.vessel._copyToModel_VesselControl( model := model.parts.vessel );
 THIS^.parts.shield._copyToModel_ShieldControl( model := model.parts.shield );
 THIS^.parts.bench._copyToModel_BenchControl( model := model.parts.bench );
 THIS^.parts.cryo._copyToModel_CryoControl( model := model.parts.cryo );
-THIS^.parts.configManager._copyToModel_ConfigManager( model := model.parts.configManager );
 THIS^.proc.initialize._copyToModel_Process( model := model.proc.initialize );
 THIS^.proc.start._copyToModel_Process( model := model.proc.start );
 THIS^.proc.stop._copyToModel_Process( model := model.proc.stop );
 THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
 THIS^.proc.lock._copyToModel_Process( model := model.proc.lock );
 THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+        </addData>
+      </pou>
+      <pou name="SM_VacControl" pouType="functionBlock">
+        <interface>
+          <inputVars>
+          </inputVars>
+          <outputVars>
+            <variable name="actualStatus">
+              <type><string length="50" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Current status description</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <inOutVars>
+            <variable name="config_ref">
+              <type><derived name="VacConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">active configuration of the thermo control system</xhtml>
+              </documentation>
+            </variable>
+            <variable name="activity_ref">
+              <type><derived name="ActivityStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Shared activity status</xhtml>
+              </documentation>
+            </variable>
+            <variable name="services_ref">
+              <type><derived name="Services" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Shared services</xhtml>
+              </documentation>
+            </variable>
+            <variable name="operator_ref">
+              <type><derived name="OperatorStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Shared operator status</xhtml>
+              </documentation>
+            </variable>
+          </inOutVars>
+          <localVars>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyFromModel_SM_VacControl">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_SM_VacControl" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyToModel_SM_VacControl">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_SM_VacControl" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">model.actualStatus := THIS^.actualStatus;
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+        </addData>
+      </pou>
+      <pou name="SM_ThermoVacControl" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="editableConfig">
+              <type><derived name="ThermoVacConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="3" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Editable configuration of the thermo vac system</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="actualStatus">
+              <type><string length="50" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Current status description</xhtml>
+              </documentation>
+            </variable>
+            <variable name="config">
+              <type><derived name="ThermoVacConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">active configuration of the thermo vac system</xhtml>
+              </documentation>
+            </variable>
+            <variable name="stat">
+              <type><derived name="ThermoVacControlStatuses" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Statuses of the state machine</xhtml>
+              </documentation>
+            </variable>
+            <variable name="parts">
+              <type><derived name="ThermoVacControlParts" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Parts of the state machine</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <inOutVars>
+            <variable name="activity_ref">
+              <type><derived name="ActivityStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Shared activity status</xhtml>
+              </documentation>
+            </variable>
+            <variable name="services_ref">
+              <type><derived name="Services" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Shared services</xhtml>
+              </documentation>
+            </variable>
+            <variable name="operator_ref">
+              <type><derived name="OperatorStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Shared operator status</xhtml>
+              </documentation>
+            </variable>
+          </inOutVars>
+          <localVars>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">parts.thermo(
+    activity_ref := activity_ref,
+    services_ref := services_ref,
+    operator_ref := operator_ref,
+    config_ref := config.thermo);
+parts.vac(
+    activity_ref := activity_ref,
+    services_ref := services_ref,
+    operator_ref := operator_ref,
+    config_ref := config.vac);
+parts.configManager( isEnabled := operator_ref = OperatorStatus.tech );
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyFromModel_SM_ThermoVacControl">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_SM_ThermoVacControl" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.editableConfig := model.editableConfig;
+THIS^.parts.thermo._copyFromModel_ThermoControl( model := model.parts.thermo );
+THIS^.parts.vac._copyFromModel_VacControl( model := model.parts.vac );
+THIS^.parts.configManager._copyFromModel_ConfigManager( model := model.parts.configManager );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyToModel_SM_ThermoVacControl">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_SM_ThermoVacControl" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">model.editableConfig := THIS^.editableConfig;
+model.actualStatus := THIS^.actualStatus;
+model.config := THIS^.config;
+model.stat := THIS^.stat;
+THIS^.parts.thermo._copyToModel_ThermoControl( model := model.parts.thermo );
+THIS^.parts.vac._copyToModel_VacControl( model := model.parts.vac );
+THIS^.parts.configManager._copyToModel_ConfigManager( model := model.parts.configManager );
 </xhtml>
                 </ST>
               </body>
@@ -8874,6 +9445,8 @@ THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
               <Object Name="CryoControlParts">
               </Object>
               <Object Name="ThermoControlParts">
+              </Object>
+              <Object Name="ThermoVacControlParts">
               </Object>
             </Folder>
             <Folder Name="Processes">
@@ -8912,6 +9485,8 @@ THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
               <Object Name="CryoControlStatuses">
               </Object>
               <Object Name="ThermoControlStatuses">
+              </Object>
+              <Object Name="ThermoVacControlStatuses">
               </Object>
             </Folder>
             <Folder Name="Models">
@@ -8952,6 +9527,14 @@ THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
               <Object Name="_copyFromModel_SM_ThermoControl" />
               <Object Name="_copyToModel_SM_ThermoControl" />
             </Object>
+            <Object Name="SM_VacControl">
+              <Object Name="_copyFromModel_SM_VacControl" />
+              <Object Name="_copyToModel_SM_VacControl" />
+            </Object>
+            <Object Name="SM_ThermoVacControl">
+              <Object Name="_copyFromModel_SM_ThermoVacControl" />
+              <Object Name="_copyToModel_SM_ThermoVacControl" />
+            </Object>
           </Folder>
           <Folder Name="Configs">
             <Object Name="HeaterConfig">
@@ -8990,6 +9573,10 @@ THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
             </Object>
             <Object Name="ThermoConfig">
             </Object>
+            <Object Name="VacConfig">
+            </Object>
+            <Object Name="ThermoVacConfig">
+            </Object>
           </Folder>
           <Folder Name="Structs">
           </Folder>
@@ -9022,6 +9609,10 @@ THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
             </Object>
             <Object Name="M_SM_ThermoControl">
             </Object>
+            <Object Name="M_SM_VacControl">
+            </Object>
+            <Object Name="M_SM_ThermoVacControl">
+            </Object>
             <Object Name="M_TempMeasurement">
             </Object>
             <Object Name="M_HeaterControl">
@@ -9039,6 +9630,10 @@ THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
             <Object Name="M_CryoControl">
             </Object>
             <Object Name="M_ThermoControl">
+            </Object>
+            <Object Name="M_VacControl">
+            </Object>
+            <Object Name="M_ThermoVacControl">
             </Object>
             <Object Name="M_SM_HeaterControlProcesses">
             </Object>
@@ -9063,6 +9658,8 @@ THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
             <Object Name="M_SM_ThermoControlParts">
             </Object>
             <Object Name="M_SM_ThermoControlProcesses">
+            </Object>
+            <Object Name="M_SM_ThermoVacControlParts">
             </Object>
           </Folder>
         </Folder>

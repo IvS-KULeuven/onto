@@ -126,7 +126,7 @@
   ### shared config for all thermo parts ###
   !CONFIG ThermoSharedConfig:
     items:
-      bool : { type: t_bool, comment : "place holder, shared config currently not used"}
+      spacer : { type: t_bool, comment : "place holder, shared config currently not used"}
           
 
 
@@ -234,8 +234,8 @@
       tpCryoRear:    { type: MeasurementConfig2, comment: "config for sensor cryo rear (outside)" }
       htCryoRear:    { type: HeaterConfig, comment: "config for heater cryo rear (outside)" }
 
-  ###### thermo config ######
-  ###########################
+  ##### thermo config #####
+  #########################
   !CONFIG ThermoConfig:
     items:
       outerRoom: { type: OuterRoomConfig, comment: "Config for the outer room" }
@@ -245,7 +245,19 @@
       bench: { type: BenchConfig, comment: "Config for the bench" }
       cryo: { type: CryoConfig, comment: "Config for the cryo" }
       shared: { type: ThermoSharedConfig, comment: "Shared config for the thermo system" }
+
+  ##### vac config #####
+  ######################
+  !CONFIG VacConfig:
+    items:
+      spacer: {type: t_bool, comment: "place holder, vac not yet used"}
       
+  ####### thermoVac config #######
+  ################################
+  !CONFIG ThermoVacConfig:
+    items:
+      thermo: {type: ThermoConfig, comment: "Config for the thermo control system"}
+      vac:    {type: VacConfig, comment: "config for the vacum control system"}
       
       
 
@@ -443,6 +455,7 @@
       avgDeviation : { type: t_double                                               , comment: "Average deviation of the temperature sensors in kelvin" }
       totalPower       : { type: t_double              , comment: "Total power of all heaters in percentage" }
       avgPower           : { type: t_double              , comment: "Average power of the heaters in percentage" }
+      setPointRamped : {type: t_double, comment : "The ramped setpoint used by the pid"}
 
       tStatBottomPwr        :    { type: t_bool, comment: "Thermostat switch vessel bottom power ", address: "%Q*" } 
       tStatCryoRearPwr     :    { type: t_bool, comment: "Thermostat switch cryo rear power ", address: "%Q*" }
@@ -739,18 +752,12 @@
   ###################################
   !STATEMACHINE ThermoControl:
 
-    variables_input_rw:
-      editableConfig            : { type: ThermoConfig                          , comment: "Editable configuration of the thermo system" , expand: false }
-
     references:
+      config_ref              : { type: ThermoConfig, comment: "active configuration of the thermo control system"}
       activity_ref            : { type: marvel_common.ActivityStatus              , comment: "Shared activity status"}
       services_ref            : { type: marvel_services.Services                  , comment: "Shared services", expand: false}
       operator_ref            : { type: marvel_common.OperatorStatus              , comment: "Shared operator status" }
 
-    variables_output:
-      config                  : { type: ThermoConfig, comment: "Active configuration of the thermo system" }
-      setPointRamped          : { type: t_double                                               , comment: "Set point temperature in kelvin after ramping" }
-      
     parts:
       outerRoom:
         type: OuterRoomControl
@@ -813,10 +820,6 @@
                 config_ref                : { type: CryoConfig                           , expand: false }
                 sharedConfig_ref          : { type: ThermoSharedConfig                   , expand: false }
 
-      configManager:
-        comment                     : "The config manager (to load/save/activate configuration data)"
-        type                        : marvel_common.ConfigManager
-
     stat:
       init                        : { type: marvel_common.InitializationStatus }
       health          : { type: marvel_common.HealthStatus         , comment: "Is the vessel healthy?" }
@@ -840,45 +843,118 @@
               activity_ref        : activity_ref
               services_ref        : services_ref
               operator_ref        : operator_ref
-              config_ref          : config.outerRoom
-              sharedConfig_ref    : config.shared
+              config_ref          : config_ref.outerRoom
+              sharedConfig_ref    : config_ref.shared
       innerRoom:
               activity_ref        : activity_ref
               services_ref        : services_ref
               operator_ref        : operator_ref
-              config_ref          : config.innerRoom
-              sharedConfig_ref    : config.shared
+              config_ref          : config_ref.innerRoom
+              sharedConfig_ref    : config_ref.shared
 
       vessel:
               activity_ref        : activity_ref
               services_ref        : services_ref
               operator_ref        : operator_ref
-              config_ref          : config.vessel
-              sharedConfig_ref    : config.shared
+              config_ref          : config_ref.vessel
+              sharedConfig_ref    : config_ref.shared
     
       shield:
               activity_ref        : activity_ref
               services_ref        : services_ref
               operator_ref        : operator_ref
-              config_ref          : config.shield
-              sharedConfig_ref    : config.shared
+              config_ref          : config_ref.shield
+              sharedConfig_ref    : config_ref.shared
  
       bench:
               activity_ref        : activity_ref
               services_ref        : services_ref
               operator_ref        : operator_ref
-              config_ref          : config.bench
-              sharedConfig_ref    : config.shared
+              config_ref          : config_ref.bench
+              sharedConfig_ref    : config_ref.shared
  
       cryo:
               activity_ref        : activity_ref
               services_ref        : services_ref
               operator_ref        : operator_ref
-              config_ref          : config.cryo
-              sharedConfig_ref    : config.shared
+              config_ref          : config_ref.cryo
+              sharedConfig_ref    : config_ref.shared
 
 
-      configManager:
-        isEnabled            : !EQ [ operator_ref, marvel_common.OperatorStatus.tech ]  
-    
+  ############################
+  ### state machine vacuum ###
+  ############################
+  !STATEMACHINE VacControl:
+    references:
+        config_ref              : { type: VacConfig, comment: "active configuration of the thermo control system"}
+        activity_ref            : { type: marvel_common.ActivityStatus              , comment: "Shared activity status"}
+        services_ref            : { type: marvel_services.Services                  , comment: "Shared services", expand: false}
+        operator_ref            : { type: marvel_common.OperatorStatus              , comment: "Shared operator status" }
+
+
+
+  ### MAIN STATEMACHINE #################################### 
+
+  ###############################
+  ### state machine thermovac ###
+  ###############################
+  !STATEMACHINE ThermoVacControl:
+
+      variables_input_rw:
+        editableConfig            : { type: ThermoVacConfig                          , comment: "Editable configuration of the thermo vac system" , expand: false }
+
+      variables_output:
+        config            : { type: ThermoVacConfig                          , comment: "active configuration of the thermo vac system" }
+
+      references:
+        activity_ref            : { type: marvel_common.ActivityStatus              , comment: "Shared activity status"}
+        services_ref            : { type: marvel_services.Services                  , comment: "Shared services", expand: false}
+        operator_ref            : { type: marvel_common.OperatorStatus              , comment: "Shared operator status" }
+
+      stat:
+        health          : { type: marvel_common.HealthStatus         , comment: "Is the vessel healthy?" }
+
+      parts:
+        thermo:
+          type: ThermoControl
+          expand: false
+          comment: "statemachine of the thermal control system" 
+          arguments:
+            activity_ref              : { type: marvel_common.ActivityStatus          , expand: false }
+            services_ref              : { type: marvel_services.Services              , expand: false }
+            operator_ref              : { type: marvel_common.OperatorStatus          , expand: false }
+            config_ref                : { type: ThermoConfig                           , expand: false }
+
+        vac:
+          type: VacControl
+          expand: false
+          comment: "statemachine of the vac control system"
+          arguments:
+            activity_ref              : { type: marvel_common.ActivityStatus          , expand: false }
+            services_ref              : { type: marvel_services.Services              , expand: false }
+            operator_ref              : { type: marvel_common.OperatorStatus          , expand: false }
+            config_ref                : { type: VacConfig                           , expand: false }
+        
+
+        configManager:
+          comment                     : "The config manager (to load/save/activate configuration data)"
+          type                        : marvel_common.ConfigManager
+        
+
+      calls:
+        thermo:
+          activity_ref        : activity_ref
+          services_ref        : services_ref
+          operator_ref        : operator_ref
+          config_ref          : config.thermo
+        
+        vac:
+          activity_ref        : activity_ref
+          services_ref        : services_ref
+          operator_ref        : operator_ref
+          config_ref          : config.vac     
+
+
+        configManager:
+          isEnabled            : !EQ [ operator_ref, marvel_common.OperatorStatus.tech ]  
 
