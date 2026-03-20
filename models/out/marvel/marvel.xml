@@ -76,8 +76,8 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Unit 4</xhtml>
               </documentation>
             </variable>
-            <variable name="stcu">
-              <type><derived name="STCU" /></type>
+            <variable name="thermo">
+              <type><derived name="ThermoControl" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -86,7 +86,7 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">The STCU</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The thermo system</xhtml>
               </documentation>
             </variable>
             <variable name="solar">
@@ -842,8 +842,8 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="stcu">
-              <type><derived name="M_STCU" /></type>
+            <variable name="thermo">
+              <type><derived name="M_ThermoControl" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -1216,7 +1216,7 @@ parts.u4(
     operator_ref := stat.operator,
     activity_ref := stat.activity,
     services_ref := parts.services);
-parts.stcu(
+parts.thermo(
     activity_ref := stat.activity,
     services_ref := parts.services,
     operator_ref := stat.operator);
@@ -1299,7 +1299,7 @@ THIS^.parts.u1._copyFromModel_Unit( model := model.parts.u1 );
 THIS^.parts.u2._copyFromModel_Unit( model := model.parts.u2 );
 THIS^.parts.u3._copyFromModel_Unit( model := model.parts.u3 );
 THIS^.parts.u4._copyFromModel_Unit( model := model.parts.u4 );
-THIS^.parts.stcu._copyFromModel_STCU( model := model.parts.stcu );
+THIS^.parts.thermo._copyFromModel_ThermoControl( model := model.parts.thermo );
 THIS^.parts.solar._copyFromModel_Solar( model := model.parts.solar );
 THIS^.parts.services._copyFromModel_Services( model := model.parts.services );
 THIS^.parts.sequencer._copyFromModel_Sequencer( model := model.parts.sequencer );
@@ -1364,7 +1364,7 @@ THIS^.parts.u1._copyToModel_Unit( model := model.parts.u1 );
 THIS^.parts.u2._copyToModel_Unit( model := model.parts.u2 );
 THIS^.parts.u3._copyToModel_Unit( model := model.parts.u3 );
 THIS^.parts.u4._copyToModel_Unit( model := model.parts.u4 );
-THIS^.parts.stcu._copyToModel_STCU( model := model.parts.stcu );
+THIS^.parts.thermo._copyToModel_ThermoControl( model := model.parts.thermo );
 THIS^.parts.solar._copyToModel_Solar( model := model.parts.solar );
 THIS^.parts.services._copyToModel_Services( model := model.parts.services );
 THIS^.parts.sequencer._copyToModel_Sequencer( model := model.parts.sequencer );

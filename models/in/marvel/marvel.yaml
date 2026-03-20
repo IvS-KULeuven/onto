@@ -9,7 +9,7 @@
 
 !IMPORT models/in/marvel/marvel_unit.yaml:
 !IMPORT models/in/marvel/marvel_services.yaml:
-!IMPORT models/in/marvel/marvel_stcu.yaml:
+!IMPORT models/in/marvel/marvel_thermoVac.yaml:
 !IMPORT models/in/marvel/marvel_solar.yaml:
 
 
@@ -229,9 +229,9 @@
                             attributes:
                                 isEnabled : { type: t_bool }
 
-          stcu:
-                type : marvel_STCU.STCU
-                comment: "The STCU"
+          thermo:
+                type : marvel_thermoVac.ThermoControl
+                comment: "The thermo system"
                 expand: false
                 arguments:
                     activity_ref            : { type: marvel_common.ActivityStatus          , expand: false }
@@ -346,7 +346,7 @@
               operator_ref        : stat.operator
               activity_ref        : stat.activity
               services_ref        : parts.services
-          stcu:
+          thermo:
               activity_ref        : stat.activity
               services_ref        : parts.services
               operator_ref        : stat.operator

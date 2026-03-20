@@ -9,13 +9,13 @@
 !IMPORT models/in/marvel/marvel_common.yaml:
 !IMPORT models/in/marvel/marvel_services.yaml:
 
-!LIBRARY marvel_STCU:
+!LIBRARY marvel_thermoVac:
 
 ########################################################################################################################
 # stuses
 ########################################################################################################################
-  # !ENUMERATION TempControlStates:
-  #   items: [idle, warming_up, controlled ]
+  !ENUMERATION TempControlStates:
+     items: [idle, warming_up, unstable, controlled ]
 
   !STATUS TempControlStatus:
       variables_input:
@@ -24,7 +24,7 @@
           isWarmingUp: { type: t_bool, comment: "True if the vessel is warming up" }
       states:
           idle:
-              expr: !NOT isActive
+              expr: !NOT [isActive]
               comment: "idle"
           warming_up:
               expr: !AND [ isActive, isWarmingUp ]
@@ -43,10 +43,11 @@
 # configs
 ########################################################################################################################
 
+  ### common configs ##########################################
+
   ### single heater config ####
   !CONFIG HeaterConfig:
     items:
-      #name : { type: t_string, comment: "Name of the heater" }
       enabled : { type: t_bool, comment: "True if the heater is enabled", initial: !BOOL TRUE }
       maxPower : { type: t_double, comment: "Maximum power of the heater", initial: !DOUBLE 100.0 }
       Kp : { type: t_double, comment: proportional gain }
@@ -57,12 +58,10 @@
   ### single temperature sensor config (small variation of version found in marvel_common) ###
   !CONFIG MeasurementConfig2:
     items:
-      #name : { type: t_string, comment: "Name of the temperature sensor" }
       enabled:
           type: t_bool
           comment: "Is the quantity being measured? (Can be false e.g. if the sensor is deliberately not connected (yet).)"
           initial: !BOOL TRUE
-
       gain:
           type: t_double
           comment: "Gain to be applied to the measured value (default: 1 = no gain)"
@@ -82,9 +81,9 @@
 
 
 
-  ##### shared configs ###############
+  ##### shared configs ##############################################################
 
-  ### shared config for heaters ###
+  ### shared config for heaters ### (COMMON)
   !CONFIG SharedHeaterConfig:
     items:
             hihiDeviation               : { type: t_double, comment: "max dev from setpoint" }
@@ -92,19 +91,68 @@
             maxPower                  : { type: t_double, comment: "Maximum total power of all heaters in percentage", initial: !DOUBLE 100.0 }
             simulation                 : {type: SimulationConfig}
 
-  ### shared configs for the vessel ###
+  ### shared config for the outer room###
+  !CONFIG OuterRoomSharedConfig:
+    items:
+      sensors              : { type: marvel_common.HiHiLoLoAlarmConfig, comment: "Alarm config for the temperature sensors in the outer room" }
+  
+  ### shared config for the inner room###
+  !CONFIG InnerRoomSharedConfig:
+    items:
+      sensors              : { type: marvel_common.HiHiLoLoAlarmConfig, comment: "Alarm config for the temperature sensors in the inner room" }
+
+  ### shared config for the vessel ###
   !CONFIG VesselSharedConfig:
     items:
       sensors              : { type: marvel_common.HiHiLoLoAlarmConfig, comment: "Alarm config for the temperature sensors in the vessel" }
       heaters: { type: SharedHeaterConfig, comment: "Shared config for the heaters in the vessel" }
 
-  ### shared config for the room ###
-  !CONFIG SharedRoomConfig:
+  ### shared config for the shield ###
+  !CONFIG ShieldSharedConfig:
     items:
-      sensors              : { type: marvel_common.HiHiLoLoAlarmConfig, comment: "Alarm config for the temperature sensors in the room" }
+      sensors              : { type: marvel_common.HiHiLoLoAlarmConfig, comment: "Alarm config for the temperature sensors in the shield" }
+  
+  ### shared config for the bench ###
+  !CONFIG BenchSharedConfig:
+    items:
+      sensors              : { type: marvel_common.HiHiLoLoAlarmConfig, comment: "Alarm config for the temperature sensors in the bench" }
+
+  ### shared config for the cryo ###
+  !CONFIG CryoSharedConfig:
+    items:
+      sensors              : { type: marvel_common.HiHiLoLoAlarmConfig, comment: "Alarm config for the temperature sensors in the cryo" }
+      heaters:             { type: SharedHeaterConfig, comment: "Shared config for the heaters in the cryo" }
+
+  ### shared config for all thermo parts ###
+  !CONFIG ThermoSharedConfig:
+    items:
+      bool : { type: t_bool, comment : "place holder, shared config currently not used"}
           
-  ### shared config for the stcu ###
-  !CONFIG STCUSharedConfig:
+
+
+  ### main configs ########################################################
+
+  ### outer room config ###
+  #########################
+  !CONFIG OuterRoomConfig:
+    items:
+      shared              : { type: OuterRoomSharedConfig, comment: "Shared config for the outer room" }
+
+  ### inner room config ###
+  #########################
+  !CONFIG InnerRoomConfig:
+    items:
+      tpT1:          { type: MeasurementConfig2, comment: "Config for temp sensor T1" }
+      tpT2:          { type: MeasurementConfig2, comment: "Config for temp sensor T2" }
+      tpT3:          { type: MeasurementConfig2, comment: "Config for temp sensor T3" }
+      tpT4:          { type: MeasurementConfig2, comment: "Config for temp sensor T4" }
+      shared              : { type: InnerRoomSharedConfig, comment: "Shared config for the inner room" }
+
+  ###### vessel config ######
+  ###########################
+  !CONFIG VesselConfig:
+    items:
+      isSimulated : {type: t_bool, comment: "True if the vessel temperature control is in simulation mode"}
       setPointTarget             : { type: t_double  , comment: "set point temperature in kelvin" }
       rampVPos                   : { type: t_double  , comment: "velocity of temperature change in K/s while ramping up" }
       rampVNeg                   : { type: t_double  , comment: "velocity of temperature change in K/s while ramping down" }
@@ -112,14 +160,7 @@
       hihiDeviation               : { type: t_double, comment: "max dev from setpoint for the vessel" }
       hiDeviation              : { type: t_double  , comment: "warning dev from setpoint for the vessel" }
 
-  ### main configs ############
-
-  ###### vessel config ######
-  ###########################
-  !CONFIG VesselConfig:
-    items:
-      isSimulated : {type: t_bool, comment: "True if the vessel temperature control is in simulation mode"}
-      shared              : { type: SharedVesselConfig, comment: "Shared config for the vessel" }
+      shared              : { type: VesselSharedConfig, comment: "Shared config for the vessel" }
 
       #sensors
       tpLegNE:       { type: MeasurementConfig2, comment: "Config for Leg NE" }
@@ -148,8 +189,6 @@
       tpVesLidN:     { type: MeasurementConfig2, comment: "Config for Vessel Lid N" }
       tpVesLidS:     { type: MeasurementConfig2, comment: "Config for Vessel Lid S" }
 
-      tpCryoRear:    { type: MeasurementConfig2, comment: "config for sensor cryo rear outside"}
-
       #heaters
       htLegNE:       { type: HeaterConfig, comment: "Config for heater Leg NE" }
       htLegNW:       { type: HeaterConfig, comment: "Config for heater Leg NW" }
@@ -174,26 +213,38 @@
       htVesLidN:     { type: HeaterConfig, comment: "Config for heater Vessel Lid N" }
       htVesLidS:     { type: HeaterConfig, comment: "Config for heater Vessel Lid S" }
 
-      htCryoRear:    { type: HeaterConfig, comment: "config for heater cryo rear outside"}
 
-  ###### room config ######
-  #########################
-  !CONFIG RoomConfig:
+  ### shield config ###
+  #####################
+  !CONFIG ShieldConfig:
     items:
-      tpT1:          { type: MeasurementConfig2, comment: "Config for temp sensor T1" }
-      tpT2:          { type: MeasurementConfig2, comment: "Config for temp sensor T2" }
-      tpT3:          { type: MeasurementConfig2, comment: "Config for temp sensor T3" }
-      tpT4:          { type: MeasurementConfig2, comment: "Config for temp sensor T4" }
-      shared              : { type: SharedRoomConfig, comment: "Shared config for the room" }
-      
+      shared              : { type: ShieldSharedConfig, comment: "Shared config for the shield" }
+  
+  ### bench config ###
+  ####################
+  !CONFIG BenchConfig:
+    items:
+      shared              : { type: BenchSharedConfig, comment: "Shared config for the bench" }
+  
+  ### cryo config ###
+  ###################
+  !CONFIG CryoConfig:
+    items:
+      shared              : { type: CryoSharedConfig, comment: "Shared config for the cryo" }
+      tpCryoRear:    { type: MeasurementConfig2, comment: "config for sensor cryo rear (outside)" }
+      htCryoRear:    { type: HeaterConfig, comment: "config for heater cryo rear (outside)" }
 
-  ###### stcu config ######
-  #########################
-  !CONFIG STCUConfig:
+  ###### thermo config ######
+  ###########################
+  !CONFIG ThermoConfig:
     items:
-      vesselControl: { type: VesselConfig, comment: "Config for the vessel" }
-      roomControl: { type: RoomConfig, comment: "Config for the room" }
-      shared: { type: STCUSharedConfig, comment: "Shared config for the stcu" }
+      outerRoom: { type: OuterRoomConfig, comment: "Config for the outer room" }
+      innerRoom: { type: InnerRoomConfig, comment: "Config for the inner room" }
+      vessel: { type: VesselConfig, comment: "Config for the vessel" }
+      shield: { type: ShieldConfig, comment: "Config for the shield" }
+      bench: { type: BenchConfig, comment: "Config for the bench" }
+      cryo: { type: CryoConfig, comment: "Config for the cryo" }
+      shared: { type: ThermoSharedConfig, comment: "Shared config for the thermo system" }
       
       
       
@@ -201,6 +252,8 @@
 ########################################################################################################################
 # state machine's 
 ########################################################################################################################
+
+### COMMON state machines ###############################################
 
 ### state machine single temp measurement ###
   !STATEMACHINE TempMeasurement:
@@ -285,6 +338,101 @@
         reset:
           isEnabled    : !BOOL TRUE
 
+
+### main state machines ##########################################################    
+
+  ################################
+  ### state machine outer room ###
+  ################################
+  !STATEMACHINE OuterRoomControl:
+    variables_output:
+      avgTemp       : { type: t_double, comment: "Average temperature of the outer room in kelvin" }
+      maxDeviation : { type: t_double                                               , comment: "Maximum deviation of the temperature sensors in kelvin" }
+      avgDeviation : { type: t_double                                               , comment: "Average deviation of the temperature sensors in kelvin" }
+      totalPower       : { type: t_double              , comment: "Total power of all heaters in percentage" }
+      avgPower           : { type: t_double              , comment: "Average power of the heaters in percentage" }
+    
+    references:
+      config_ref              : { type: OuterRoomConfig                              , comment: "Active configuration of the outer room" }
+      sharedConfig_ref        : { type: ThermoSharedConfig                        , comment: "Shared config for the thermo system" }
+      activity_ref            : { type: marvel_common.ActivityStatus              , comment: "Shared activity status"}
+      services_ref            : { type: marvel_services.Services                  , comment: "Shared services", expand: false}
+      operator_ref            : { type: marvel_common.OperatorStatus              , comment: "Shared operator status" }
+
+    stat:
+      init                        : { type: marvel_common.InitializationStatus }
+      health          : { type: marvel_common.HealthStatus         , comment: "Is the outer room healthy?" }
+      control           : { type: TempControlStatus                   , comment: "Actual state of the outer room" }
+      busy            : { type: marvel_common.BusyStatus           , comment: "Is the outer room busy with a procedure?" }
+
+    proc:
+      initialize                  : { type: marvel_common.Process                     , comment: "Start initializing" }
+      start                       : { type: marvel_common.Process                     , comment: "Start warming up" }
+      stop                        : { type: marvel_common.Process                     , comment: "Stop heating" }
+      reset                       : { type: marvel_common.Process                     , comment: "Reset complete" }   
+      lock                        : { type: marvel_common.Process                     , comment: "Lock the outer room control (e.g. when the outer room is opened)" }
+      unlock                      : { type: marvel_common.Process                     , comment: "Unlock the outer room control (e.g. when the outer room is closed)" }
+
+    calls:
+    ###proc's###
+        initialize:
+          isEnabled    : !NOT [ !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ],
+                                      !EQ [ stat.init, marvel_common.InitializationStatus.initializingFailed ],
+                                      !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ,
+                                      !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ] 
+
+  ################################
+  ### state machine inner room ###
+  ################################
+  !STATEMACHINE InnerRoomControl:
+    variables_output:
+      avgTemp       : { type: t_double, comment: "Average temperature of the inner room in kelvin" }
+      maxDeviation : { type: t_double                                               , comment: "Maximum deviation of the temperature sensors in kelvin" }
+      avgDeviation : { type: t_double                                               , comment: "Average deviation of the temperature sensors in kelvin" }
+      totalPower       : { type: t_double              , comment: "Total power of all heaters in percentage" }
+      avgPower           : { type: t_double              , comment: "Average power of the heaters in percentage" }
+
+    parts:
+      tpT1:          { type: TempMeasurement, comment: "1st temp sensor",           arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tpT2:          { type: TempMeasurement, comment: "2nd temp sensor",           arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tpT3:          { type: TempMeasurement, comment: "3rd temp sensor",           arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tpT4:          { type: TempMeasurement, comment: "4th temp sensor",           arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+
+    references:
+      config_ref              : { type: InnerRoomConfig                              , comment: "Active configuration of the inner room" }
+      sharedConfig_ref        : { type: ThermoSharedConfig                        , comment: "Shared config for the thermo system" }
+      activity_ref            : { type: marvel_common.ActivityStatus              , comment: "Shared activity status"}
+      services_ref            : { type: marvel_services.Services                  , comment: "Shared services", expand: false}
+      operator_ref            : { type: marvel_common.OperatorStatus              , comment: "Shared operator status" }
+
+    stat:
+      init                        : { type: marvel_common.InitializationStatus }
+      health          : { type: marvel_common.HealthStatus         , comment: "Is the vessel healthy?" }
+      control           : { type: TempControlStatus                   , comment: "Actual state of the vessel" }
+      busy            : { type: marvel_common.BusyStatus           , comment: "Is the vessel busy with a procedure?" }
+
+    proc:
+      initialize                  : { type: marvel_common.Process                     , comment: "Start initializing" }
+      start                       : { type: marvel_common.Process                     , comment: "Start warming up" }
+      stop                        : { type: marvel_common.Process                     , comment: "Stop heating" }
+      reset                       : { type: marvel_common.Process                     , comment: "Reset complete" }   
+      lock                        : { type: marvel_common.Process                     , comment: "Lock the vessel control (e.g. when the vessel is opened)" }
+      unlock                      : { type: marvel_common.Process                     , comment: "Unlock the vessel control (e.g. when the vessel is closed)" }
+
+    calls:
+    ###proc's###
+        initialize:
+          isEnabled    : !NOT [ !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ],
+                                      !EQ [ stat.init, marvel_common.InitializationStatus.initializingFailed ],
+                                      !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ,
+                                      !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ] 
+    ###parts###
+        tpT1          :  { config_ref : config_ref.tpT1, sharedConfig_ref : config_ref.shared.sensors }
+        tpT2          :  { config_ref : config_ref.tpT2, sharedConfig_ref : config_ref.shared.sensors }
+        tpT3          :  { config_ref : config_ref.tpT3, sharedConfig_ref : config_ref.shared.sensors }
+        tpT4          :  { config_ref : config_ref.tpT4, sharedConfig_ref : config_ref.shared.sensors }
+
+
 ####################################
 ### state machine vessel control ###
 ####################################
@@ -293,33 +441,22 @@
       avgTemp       : { type: t_double                                              , comment: "Average temperature of the vessel in kelvin" }
       maxDeviation : { type: t_double                                               , comment: "Maximum deviation of the temperature sensors in kelvin" }
       avgDeviation : { type: t_double                                               , comment: "Average deviation of the temperature sensors in kelvin" }
-      badHealthSensors   : { type: t_bool               , comment: "True if there are temperature sensors in bad health" }
-      badHealthHeaters   : { type: t_bool               , comment: "True if there are heaters in bad health" }
       totalPower       : { type: t_double              , comment: "Total power of all heaters in percentage" }
       avgPower           : { type: t_double              , comment: "Average power of the heaters in percentage" }
 
-      #thermostat switch enabled
-      enableTstatBottom        :    { type: t_bool, comment: "Thermostat switch vessel bottom enabled ", address: "%Q*" } 
-      enableTstatCryoRear     :    { type: t_bool, comment: "Thermostat switch cryo rear enabled ", address: "%Q*" }
-      enableTstatLid       :    { type: t_bool, comment: "Thermostat switch lid top enabled ", address: "%Q*" }
-      enableK6                 :    { type: t_bool, comment: "relay k6 enabled (place holder for future tstat's)", address: "%Q*" }
-      enableK7                 :    { type: t_bool, comment: "relay k7 enabled (place holder for future tstat's)", address: "%Q*" }
-      enableK8                 :    { type: t_bool, comment: "relay k8 enabled (place holder for future tstat's)", address: "%Q*" }
-      enableK9                 :    { type: t_bool, comment: "relay k9 enabled (place holder for future tstat's)", address: "%Q*" }
+      tStatBottomPwr        :    { type: t_bool, comment: "Thermostat switch vessel bottom power ", address: "%Q*" } 
+      tStatCryoRearPwr     :    { type: t_bool, comment: "Thermostat switch cryo rear power ", address: "%Q*" }
+      tStatLidPwr       :    { type: t_bool, comment: "Thermostat switch lid top power ", address: "%Q*" }
+     
 
     variables_input:
-      #thermostat switch states
-      stateTstatBottom              :    { type: t_bool, comment: "State of the thermostat switch at the vessel bottom", address: "%I*" }
-      stateTstatCryoRear             :    { type: t_bool, comment: "State of the thermostat switch at the cryo rear", address: "%I*" }
-      stateTstatLid                 :    { type: t_bool, comment: "State of the thermostat switch at the lid top", address: "%I*" }
-      stateK6                       :    { type: t_bool, comment: "State of relay k6 (place holder for future tstat's)", address: "%I*" }
-      stateK7                       :    { type: t_bool, comment: "State of relay k7 (place holder for future tstat's)", address: "%I*" }
-      stateK8                       :    { type: t_bool, comment: "State of relay k8 (place holder for future tstat's)", address: "%I*" }
-      stateK9                       :    { type: t_bool, comment: "State of relay k9 (place holder for future tstat's)", address: "%I*" }
+      tStatBottomOk              :    { type: t_bool, comment: "State of the thermostat switch at the vessel bottom", address: "%I*" }
+      tStatCryoRearOk             :    { type: t_bool, comment: "State of the thermostat switch at the cryo rear", address: "%I*" }
+      tStatLidOk                 :    { type: t_bool, comment: "State of the thermostat switch at the lid top", address: "%I*" }
+
 
     parts:
       #sensors
-
       tpLegNE:       { type: TempMeasurement, comment: "Leg NE",                    arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
       tpLegNW:       { type: TempMeasurement, comment: "Leg NW",                    arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
       tpLegSE:       { type: TempMeasurement, comment: "Leg SE",                    arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
@@ -346,7 +483,6 @@
       tpVesLidN:     { type: TempMeasurement, comment: "Vessel Lid N",              arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
       tpVesLidS:     { type: TempMeasurement, comment: "Vessel Lid S",              arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
 
-      tpCryoRear:    { type: TempMeasurement, comment: "Cryo Rear",                 arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
 
       #heaters
       htLegNE:       { type: HeaterControl, comment: "Heater control for Leg NE",              arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
@@ -372,11 +508,10 @@
       htVesLidN:     { type: HeaterControl, comment: "Heater control for Vessel Lid N",        arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
       htVesLidS:     { type: HeaterControl, comment: "Heater control for Vessel Lid S",        arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
 
-      htCryoRear:    { type: HeaterControl, comment: "Heater control for Cryo Rear",           arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }       
           
     references:
       config_ref              : { type: VesselConfig                              , comment: "Active configuration of the vessel" }
-      sharedConfig_ref        : { type: STCUSharedConfig                        , comment: "Shared config for the stcu" }
+      sharedConfig_ref        : { type: ThermoSharedConfig                        , comment: "Shared config for the thermo system" }
       activity_ref            : { type: marvel_common.ActivityStatus              , comment: "Shared activity status"}
       services_ref            : { type: marvel_services.Services                  , comment: "Shared services", expand: false}
       operator_ref            : { type: marvel_common.OperatorStatus              , comment: "Shared operator status" }
@@ -396,30 +531,30 @@
       unlock                      : { type: marvel_common.Process                     , comment: "Unlock the vessel control (e.g. when the vessel is closed)" }
 
     calls:
-      #proc's
+    ###proc's###
         initialize:
           isEnabled    : !NOT [ !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ],
                                       !EQ [ stat.init, marvel_common.InitializationStatus.initializingFailed ],
                                       !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ,
                                       !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ] 
-        start:
-          isEnabled    : !AND [ !EQ [ stat.state, TempControlStatus.idle ], !EQ [ stat.init, marvel_common.InitializationStatus.initialized ],!NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
-        stop:
-          isEnabled    : !OR [ !EQ [ stat.state, TempControlStatus.warming_up ], !EQ [ stat.state, TempControlStatus.controlling ] ]
-        reset:
-          isEnabled    : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
+        # start:
+        #   isEnabled    : !AND [ !EQ [ stat.state, TempControlStatus.idle ], !EQ [ stat.init, marvel_common.InitializationStatus.initialized ],!NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
+        # stop:
+        #   isEnabled    : !OR [ !EQ [ stat.state, TempControlStatus.warming_up ], !EQ [ stat.state, TempControlStatus.controlling ] ]
+        # reset:
+        #   isEnabled    : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
 
-        lock:
-          isEnabled                 : !AND [ !EQ [ operator_ref, marvel_common.OperatorStatus.tech ], !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
-        unlock:
-          isEnabled                 : !AND [ !EQ [ operator_ref, marvel_common.OperatorStatus.tech ],
-                                            !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
-        busy:
-          superState   : !BOOL TRUE
-          isBusy       : !OR [ !EQ [ stat.state, TempControlStatus.warming_up ], !EQ [ stat.init, marvel_common.InitializationStatus.initializing ] ]
+        # lock:
+        #   isEnabled                 : !AND [ !EQ [ operator_ref, marvel_common.OperatorStatus.tech ], !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
+        # unlock:
+        #   isEnabled                 : !AND [ !EQ [ operator_ref, marvel_common.OperatorStatus.tech ],
+        #                                     !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
+        # busy:
+        #   superState   : !BOOL TRUE
+        #   isBusy       : !OR [ !EQ [ stat.state, TempControlStatus.warming_up ], !EQ [ stat.init, marvel_common.InitializationStatus.initializing ] ]
 
-      #parts
-
+    ###parts###
+        #sensors
         tpLegNE:       { config_ref: config_ref.tpLegNE, sharedConfig_ref: config_ref.shared.sensors }
         tpLegNW:       { config_ref: config_ref.tpLegNW, sharedConfig_ref: config_ref.shared.sensors }
         tpLegSE:       { config_ref: config_ref.tpLegSE, sharedConfig_ref: config_ref.shared.sensors }
@@ -435,9 +570,6 @@
         tpVesBotSE:    { config_ref: config_ref.tpVesBotSE, sharedConfig_ref: config_ref.shared.sensors }
         tpVesBotSW:    { config_ref: config_ref.tpVesBotSW, sharedConfig_ref: config_ref.shared.sensors }
 
-        tpCentre:      { config_ref: config_ref.tpCentre, sharedConfig_ref: config_ref.shared.sensors }
-        tpCentreTH10K: { config_ref: config_ref.tpCentreTH10K, sharedConfig_ref: config_ref.shared.sensors }
-
         tpVesSideN:    { config_ref: config_ref.tpVesSideN, sharedConfig_ref: config_ref.shared.sensors }
         tpVesSideS:    { config_ref: config_ref.tpVesSideS, sharedConfig_ref: config_ref.shared.sensors }
         tpVesSideE:    { config_ref: config_ref.tpVesSideE, sharedConfig_ref: config_ref.shared.sensors }
@@ -446,7 +578,9 @@
         tpVesLidN:     { config_ref: config_ref.tpVesLidN, sharedConfig_ref: config_ref.shared.sensors }
         tpVesLidS:     { config_ref: config_ref.tpVesLidS, sharedConfig_ref: config_ref.shared.sensors }
 
-        tpCryoRear:    { config_ref: config_ref.tpCryoRear, sharedConfig_ref: config_ref.shared.sensors }
+        tpCentre:      { config_ref: config_ref.tpCentre, sharedConfig_ref: config_ref.shared.sensors }
+        tpCentreTH10K: { config_ref: config_ref.tpCentreTH10K, sharedConfig_ref: config_ref.shared.sensors }
+
 
         #heaeters
         htLegNE:       { config_ref: config_ref.htLegNE, sharedConfig_ref: config_ref.shared.heaters}
@@ -472,81 +606,141 @@
         htVesLidN:     { config_ref: config_ref.htVesLidN, sharedConfig_ref: config_ref.shared.heaters }
         htVesLidS:     { config_ref: config_ref.htVesLidS, sharedConfig_ref: config_ref.shared.heaters }
 
-        htCryoRear:    { config_ref: config_ref.htCryoRear, sharedConfig_ref: config_ref.shared.heaters }
-
-  ##########################
-  ### state machine room ###
-  ##########################
-  !STATEMACHINE RoomControl:
+  ####################################
+  ### state machine shield control ###
+  ####################################
+  !STATEMACHINE ShieldControl:
     variables_output:
-      avgTemp       : { type: t_double, comment: "Average temperature of the room in kelvin" }
+      avgTemp       : { type: t_double, comment: "Average temperature of the shield in kelvin" }
       maxDeviation : { type: t_double                                               , comment: "Maximum deviation of the temperature sensors in kelvin" }
       avgDeviation : { type: t_double                                               , comment: "Average deviation of the temperature sensors in kelvin" }
-      badHealthSensors   : { type: t_bool               , comment: "True if there are temperature sensors in bad health" }
-
-    parts:
-      tpT1:          { type: TempMeasurement, comment: "1st temp sensor",           arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tpT2:          { type: TempMeasurement, comment: "2nd temp sensor",           arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tpT3:          { type: TempMeasurement, comment: "3rd temp sensor",           arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tpT4:          { type: TempMeasurement, comment: "4th temp sensor",           arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-
+      totalPower       : { type: t_double              , comment: "Total power of all heaters in percentage" }
+      avgPower           : { type: t_double              , comment: "Average power of the heaters in percentage" }
+      
     references:
-      config_ref              : { type: RoomConfig                              , comment: "Active configuration of the room" }
-      sharedConfig_ref        : { type: STCUSharedConfig                        , comment: "Shared config for the stcu" }
+      config_ref              : { type: ShieldConfig                              , comment: "Active configuration of the shield" }
+      sharedConfig_ref        : { type: ThermoSharedConfig                        , comment: "Shared config for the thermo system" }
       activity_ref            : { type: marvel_common.ActivityStatus              , comment: "Shared activity status"}
       services_ref            : { type: marvel_services.Services                  , comment: "Shared services", expand: false}
       operator_ref            : { type: marvel_common.OperatorStatus              , comment: "Shared operator status" }
 
     stat:
       init                        : { type: marvel_common.InitializationStatus }
-      health          : { type: marvel_common.HealthStatus         , comment: "Is the vessel healthy?" }
-      control           : { type: TempControlStatus                   , comment: "Actual state of the vessel" }
-      busy            : { type: marvel_common.BusyStatus           , comment: "Is the vessel busy with a procedure?" }
+      health          : { type: marvel_common.HealthStatus         , comment: "Is the shield healthy?" }
+      control           : { type: TempControlStatus                   , comment: "Actual state of the shield" }
+      busy            : { type: marvel_common.BusyStatus           , comment: "Is the shield busy with a procedure?" }  
+
+    proc:
+      initialize                  : { type: marvel_common.Process                     , comment: "Start initializing" }
+      start                       : { type: marvel_common.Process                     , comment: "Start warming up" }
+      stop                        : { type: marvel_common.Process                     , comment: "Stop heating" }
+      reset                       : { type: marvel_common.Process                     , comment: "Reset complete" }
+      lock                        : { type: marvel_common.Process                     , comment: "Lock the shield control (e.g. when the shield is opened)" }
+      unlock                      : { type: marvel_common.Process                     , comment: "Unlock the shield control (e.g. when the shield is closed)" }
+
+    calls:
+    ###proc's###
+        initialize:
+          isEnabled    : !NOT [ !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ],
+                                      !EQ [ stat.init, marvel_common.InitializationStatus.initializingFailed ],
+                                      !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ,
+                                      !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
+
+  ###################################
+  ### state machine bench control ###
+  ###################################
+  !STATEMACHINE BenchControl:
+    variables_output:
+      avgTemp       : { type: t_double, comment: "Average temperature of the bench in kelvin" }
+      maxDeviation : { type: t_double                                               , comment: "Maximum deviation of the temperature sensors in kelvin" }
+      avgDeviation : { type: t_double                                               , comment: "Average deviation of the temperature sensors in kelvin" }
+      totalPower       : { type: t_double              , comment: "Total power of all heaters in percentage" }
+      avgPower           : { type: t_double              , comment: "Average power of the heaters in percentage" }
+      
+    references:
+      config_ref              : { type: BenchConfig                              , comment: "Active configuration of the bench" }
+      sharedConfig_ref        : { type: ThermoSharedConfig                        , comment: "Shared config for the thermo system" }
+      activity_ref            : { type: marvel_common.ActivityStatus              , comment: "Shared activity status"}
+      services_ref            : { type: marvel_services.Services                  , comment: "Shared services", expand: false}
+      operator_ref            : { type: marvel_common.OperatorStatus              , comment: "Shared operator status" }
+
+    stat:
+      init                        : { type: marvel_common.InitializationStatus }
+      health          : { type: marvel_common.HealthStatus         , comment: "Is the bench healthy?" }
+      control           : { type: TempControlStatus                   , comment: "Actual state of the bench" }
+      busy            : { type: marvel_common.BusyStatus           , comment: "Is the bench busy with a procedure?" }  
 
     proc:
       initialize                  : { type: marvel_common.Process                     , comment: "Start initializing" }
       start                       : { type: marvel_common.Process                     , comment: "Start warming up" }
       stop                        : { type: marvel_common.Process                     , comment: "Stop heating" }
       reset                       : { type: marvel_common.Process                     , comment: "Reset complete" }   
-      lock                        : { type: marvel_common.Process                     , comment: "Lock the vessel control (e.g. when the vessel is opened)" }
-      unlock                      : { type: marvel_common.Process                     , comment: "Unlock the vessel control (e.g. when the vessel is closed)" }
+      lock                        : { type: marvel_common.Process                     , comment: "Lock the bench control (e.g. when the bench is opened)" }
+      unlock                      : { type: marvel_common.Process                     , comment: "Unlock the bench control (e.g. when the bench is closed)" }
 
     calls:
-      #proc's
+    ###proc's###
         initialize:
           isEnabled    : !NOT [ !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ],
                                       !EQ [ stat.init, marvel_common.InitializationStatus.initializingFailed ],
                                       !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ,
-                                      !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ] 
-        start:
-          isEnabled    : !AND [ !EQ [ stat.state, TempControlStatus.idle ], !EQ [ stat.init, marvel_common.InitializationStatus.initialized ],!NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
-        stop:
-          isEnabled    : !OR [ !EQ [ stat.state, TempControlStatus.warming_up ], !EQ [ stat.state, TempControlStatus.controlling ] ]
-        reset:
-          isEnabled    : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
+                                      !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
 
-        lock:
-          isEnabled                 : !AND [ !EQ [ operator_ref, marvel_common.OperatorStatus.tech ], !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
-        unlock:
-          isEnabled                 : !AND [ !EQ [ operator_ref, marvel_common.OperatorStatus.tech ],
-                                            !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
-        busy:
-          superState   : !BOOL TRUE
-          isBusy       : !OR [ !EQ [ stat.state, TempControlStatus.warming_up ], !EQ [ stat.init, marvel_common.InitializationStatus.initializing ] ]
+  ##################################
+  ### state machine cryo control ###
+  ##################################
+  !STATEMACHINE CryoControl:
+    variables_output:
+      avgTemp       : { type: t_double, comment: "Average temperature of the bench in kelvin" }
+      maxDeviation : { type: t_double                                               , comment: "Maximum deviation of the temperature sensors in kelvin" }
+      avgDeviation : { type: t_double                                               , comment: "Average deviation of the temperature sensors in kelvin" }
+      totalPower       : { type: t_double              , comment: "Total power of all heaters in percentage" }
+      avgPower           : { type: t_double              , comment: "Average power of the heaters in percentage" }
+      
+    references:
+      config_ref              : { type: CryoConfig                              , comment: "Active configuration of the bench" }
+      sharedConfig_ref        : { type: ThermoSharedConfig                        , comment: "Shared config for the thermo system" }
+      activity_ref            : { type: marvel_common.ActivityStatus              , comment: "Shared activity status"}
+      services_ref            : { type: marvel_services.Services                  , comment: "Shared services", expand: false}
+      operator_ref            : { type: marvel_common.OperatorStatus              , comment: "Shared operator status" }
 
-      #parts
-        tpT1          :  { config_ref : config_ref.tpT1, sharedConfig_ref : config_ref.shared.sensors }
-        tpT2          :  { config_ref : config_ref.tpT2, sharedConfig_ref : config_ref.shared.sensors }
-        tpT3          :  { config_ref : config_ref.tpT3, sharedConfig_ref : config_ref.shared.sensors }
-        tpT4          :  { config_ref : config_ref.tpT4, sharedConfig_ref : config_ref.shared.sensors }
+    parts:
+      tpCryoRear:     { type: TempMeasurement, comment: "temp cryo rear / outside",              arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      htCryoRear:     { type: HeaterControl, comment: "heater cryo rear / outside",              arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
 
-  ##########################
-  ### state machine stcu ###
-  ##########################
-  !STATEMACHINE STCU:
+    stat:
+      init                        : { type: marvel_common.InitializationStatus }
+      health          : { type: marvel_common.HealthStatus         , comment: "Is the bench healthy?" }
+      control           : { type: TempControlStatus                   , comment: "Actual state of the bench" }
+      busy            : { type: marvel_common.BusyStatus           , comment: "Is the bench busy with a procedure?" }  
+
+    proc:
+      initialize                  : { type: marvel_common.Process                     , comment: "Start initializing" }
+      start                       : { type: marvel_common.Process                     , comment: "Start warming up" }
+      stop                        : { type: marvel_common.Process                     , comment: "Stop heating" }
+      reset                       : { type: marvel_common.Process                     , comment: "Reset complete" }   
+      lock                        : { type: marvel_common.Process                     , comment: "Lock the bench control (e.g. when the bench is opened)" }
+      unlock                      : { type: marvel_common.Process                     , comment: "Unlock the bench control (e.g. when the bench is closed)" }
+
+    calls:
+    ###proc's###
+        initialize:
+          isEnabled    : !NOT [ !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ],
+                                      !EQ [ stat.init, marvel_common.InitializationStatus.initializingFailed ],
+                                      !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ,
+                                      !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
+    ###parts###
+        tpCryoRear:     { config_ref: config_ref.tpCryoRear, sharedConfig_ref: config_ref.shared.sensors }
+        htCryoRear:     { config_ref: config_ref.htCryoRear, sharedConfig_ref: config_ref.shared.heaters }
+    
+
+  ###################################
+  ### state machine thermo system ###
+  ###################################
+  !STATEMACHINE ThermoControl:
 
     variables_input_rw:
-      editableConfig            : { type: STCUConfig                          , comment: "Editable configuration of the stcu" , expand: false }
+      editableConfig            : { type: ThermoConfig                          , comment: "Editable configuration of the thermo system" , expand: false }
 
     references:
       activity_ref            : { type: marvel_common.ActivityStatus              , comment: "Shared activity status"}
@@ -554,11 +748,22 @@
       operator_ref            : { type: marvel_common.OperatorStatus              , comment: "Shared operator status" }
 
     variables_output:
-      config                  : { type: STCUConfig, comment: "Active configuration of the STCU" }
+      config                  : { type: ThermoConfig, comment: "Active configuration of the thermo system" }
       setPointRamped          : { type: t_double                                               , comment: "Set point temperature in kelvin after ramping" }
       
     parts:
-      vesselControl:
+      ### CLAUDE ---> HERE ADD OUTER ROOM
+      innerRoom:
+        type: InnerRoomControl
+        expand: false
+        comment: "State machine for the inner room temperature control" 
+        arguments:
+                activity_ref              : { type: marvel_common.ActivityStatus          , expand: false }
+                services_ref              : { type: marvel_services.Services              , expand: false }
+                operator_ref              : { type: marvel_common.OperatorStatus          , expand: false }
+                config_ref                : { type: InnerRoomConfig                     , expand: false }
+                sharedConfig_ref          : { type: ThermoSharedConfig                   , expand: false }
+      vessel:
         type: VesselControl
         expand: false
         comment: "State machine for the vessel temperature control" 
@@ -567,17 +772,9 @@
                 services_ref              : { type: marvel_services.Services              , expand: false }
                 operator_ref              : { type: marvel_common.OperatorStatus          , expand: false }
                 config_ref                : { type: VesselConfig                     , expand: false }
-                sharedConfig_ref          : { type: STCUSharedConfig                   , expand: false }
-      roomControl:
-        type: RoomControl
-        expand: false
-        comment: "State machine for the room temperature control" 
-        arguments:
-                activity_ref              : { type: marvel_common.ActivityStatus          , expand: false }
-                services_ref              : { type: marvel_services.Services              , expand: false }
-                operator_ref              : { type: marvel_common.OperatorStatus          , expand: false }
-                config_ref                : { type: RoomConfig                     , expand: false }
-                sharedConfig_ref          : { type: STCUSharedConfig                   , expand: false }
+                sharedConfig_ref          : { type: ThermoSharedConfig                   , expand: false }
+      ### CLAUDE ----> HERE ADD SCHIELD, BENCH, CRYO
+
       configManager:
         comment                     : "The config manager (to load/save/activate configuration data)"
         type                        : marvel_common.ConfigManager
@@ -600,27 +797,26 @@
 
 
     calls:
-      busy:
-        superState   : !BOOL TRUE
-        isBusy       : !EQ [ parts.vesselControl.stat.busy, marvel_common.BusyStatus.busy ]
+    ###parts###
+    ### ----> HERE ADD OUTER ROOM
+      innerRoom:
+              activity_ref        : activity_ref
+              services_ref        : services_ref
+              operator_ref        : operator_ref
+              config_ref          : config.innerRoom
+              sharedConfig_ref    : config.shared
 
-    #parts
-      vesselControl:
+      vessel:
               activity_ref        : activity_ref
               services_ref        : services_ref
               operator_ref        : operator_ref
-              config_ref          : config.vesselControl
+              config_ref          : config.vessel
               sharedConfig_ref    : config.shared
-      roomControl:
-              activity_ref        : activity_ref
-              services_ref        : services_ref
-              operator_ref        : operator_ref
-              config_ref          : config.roomControl
-              sharedConfig_ref    : config.shared
+    
+    ### ----> HERE ADD SHIELD, BENCH, CRYO
+
 
       configManager:
         isEnabled            : !EQ [ operator_ref, marvel_common.OperatorStatus.tech ]  
     
-
-  
 

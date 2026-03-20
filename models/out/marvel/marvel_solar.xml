@@ -517,7 +517,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="overwriten">
+            <variable name="forced">
               <type><BOOL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -737,7 +737,7 @@
       <pou name="SM_Solar" pouType="functionBlock">
         <interface>
           <inputVars>
-            <variable name="temp" address="%I*">
+            <variable name="temp">
               <type><REAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -949,7 +949,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Power of the cooling fan in percent</xhtml>
               </documentation>
             </variable>
-            <variable name="overwriten">
+            <variable name="forced">
               <type><BOOL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -960,7 +960,7 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the hard limits are overwritten</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">True if power of the mount is forced</xhtml>
               </documentation>
             </variable>
             <variable name="stat">
@@ -1051,12 +1051,12 @@
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">parts.configManager( isEnabled := operator_ref = OperatorStatus.tech );
 proc.initialize( isEnabled := (NOT(stat.init = InitializationStatus.initialized)) AND ((NOT(stat.init = InitializationStatus.initializing)) AND (NOT(stat.init = InitializationStatus.locked))) );
-proc.powerOnPc();
-proc.powerOffPc();
-proc.powerOnMount( isEnabled := (stat.init = InitializationStatus.initialized) AND ((NOT(powerMount)) AND ((NOT(stat.health = HealthStatus.bad)) AND (NOT(overwriten)))) );
-proc.powerOffMount( isEnabled := powerMount AND (NOT(overwriten)) );
-proc.manualPowerOn( isEnabled := (operator_ref = OperatorStatus.tech) AND (NOT(overwriten)) );
-proc.manualPowerOff( isEnabled := overwriten AND (operator_ref = OperatorStatus.tech) );
+proc.powerOnPc( isEnabled := (stat.init = InitializationStatus.initialized) AND (NOT(powerPC)) );
+proc.powerOffPc( isEnabled := powerPC );
+proc.powerOnMount( isEnabled := (stat.init = InitializationStatus.initialized) AND ((NOT(powerMount)) AND ((NOT(stat.health = HealthStatus.bad)) AND (NOT(forced)))) );
+proc.powerOffMount( isEnabled := powerMount AND (NOT(forced)) );
+proc.manualPowerOn( isEnabled := (operator_ref = OperatorStatus.tech) AND (NOT(forced)) );
+proc.manualPowerOff( isEnabled := forced AND (operator_ref = OperatorStatus.tech) );
 proc.lock( isEnabled := (operator_ref = OperatorStatus.tech) AND (NOT(stat.init = InitializationStatus.locked)) );
 proc.unlock( isEnabled := (operator_ref = OperatorStatus.tech) AND (stat.init = InitializationStatus.locked) );
 proc.reset( isEnabled := TRUE );
@@ -1162,7 +1162,7 @@ model.fanOk := THIS^.fanOk;
 model.powerPC := THIS^.powerPC;
 model.powerMount := THIS^.powerMount;
 model.powerFan := THIS^.powerFan;
-model.overwriten := THIS^.overwriten;
+model.forced := THIS^.forced;
 model.stat := THIS^.stat;
 THIS^.parts.configManager._copyToModel_ConfigManager( model := model.parts.configManager );
 THIS^.proc.initialize._copyToModel_Process( model := model.proc.initialize );
