@@ -32,7 +32,7 @@
      
 
     variables_input:
-      temp              : { type: t_float           , comment: "The measured temperature", address: "%I*" }
+      temp              : { type: t_float           , comment: "The measured temperature"}
 
     #sensors azimuth
       lsAz1        : { type: t_bool                                                , comment: "limit switch azi 1 (soft) (west) (B1)"  }
@@ -55,7 +55,7 @@
       powerPC      : { type: t_bool                   , comment: "True if the solar pc is enabled", address: "%Q*"  }
       powerMount   : { type: t_bool                   , comment: "True if the solar mount is enabled", address: "%Q*"  }
       powerFan     : { type: t_float                 , comment: "Power of the cooling fan in percent"}
-      overwriten   : { type: t_bool                   , comment: "True if the hard limits are overwritten" }
+      forced   : { type: t_bool                   , comment: "True if power of the mount is forced" }
 
     parts:
         configManager:
@@ -81,21 +81,21 @@
     
     calls:
         powerOnMount:
-          isEnabled: !AND [ !EQ [stat.init, marvel_common.InitializationStatus.initialized],!NOT [powerMount],  !NOT [!EQ [ stat.health, marvel_common.HealthStatus.bad]], !NOT [overwriten]]
+          isEnabled: !AND [ !EQ [stat.init, marvel_common.InitializationStatus.initialized],!NOT [powerMount],  !NOT [!EQ [ stat.health, marvel_common.HealthStatus.bad]], !NOT [forced]]
         powerOffMount:
-          isEnabled: !AND [ powerMount, !NOT [ overwriten ] ]
+          isEnabled: !AND [ powerMount, !NOT [ forced ] ]
 
-        # power_on_pc:
-        #   isEnabled: !AND [ !EQ [stat.init, marvel_common.InitializationStatus.initialized], !NOT [powerPC]]
+        powerOnPc:
+           isEnabled: !AND [ !EQ [stat.init, marvel_common.InitializationStatus.initialized], !NOT [powerPC]]
 
-        # power_off_pc:
-        #   isEnabled: powerPC
+        powerOffPc:
+           isEnabled: powerPC
 
         manualPowerOn:
-          isEnabled: !AND [!EQ [operator_ref, marvel_common.OperatorStatus.tech], !NOT [overwriten] ]
+          isEnabled: !AND [!EQ [operator_ref, marvel_common.OperatorStatus.tech], !NOT [forced] ]
 
         manualPowerOff:
-          isEnabled: !AND [ overwriten, !EQ [operator_ref, marvel_common.OperatorStatus.tech] ]
+          isEnabled: !AND [ forced, !EQ [operator_ref, marvel_common.OperatorStatus.tech] ]
 
         initialize:
           isEnabled: !AND [ !NOT [!EQ [stat.init, marvel_common.InitializationStatus.initialized]], !NOT [!EQ [ stat.init, marvel_common.InitializationStatus.initializing]], !NOT [!EQ [ stat.init, marvel_common.InitializationStatus.locked]] ]
