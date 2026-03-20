@@ -17,30 +17,11 @@
 
   !CONFIG SolarConfig:
     items:
-      defPowerFan:
-        type: t_float 
-        comment: "Power of the cooling fan in percent"
-        initial: 30.0
-      highTemp:
-        type: t_float
-        comment: "Fan turned up to max power at this temperature to prevent damage"
-        initial: 35.0
-      maxTemp:
-        type: t_float
-        comment: "Maximum allowed temperature before the solar telescope is shut down to prevent damage"
-        initial : 40.0
-      fanEnabled:
-        type: t_float
-        comment: "True if the cooling fan is enabled"
-        initial: true
-      
-      
-      
-  
+      defPowerFan: {type: t_float, comment: "Default power of the cooling fan in percent", initial: !DOUBLE 30.0}
+      highTemp: {type: t_float, comment: "Fan turned up to max power at this temperature to prevent damage", initial: !DOUBLE 35.0}
+      maxTemp: {type: t_float, comment: "Maximum allowed temperature before the solar telescope is shut down to prevent damage", initial: !DOUBLE 40.0}
+      fanEnabled: {type: t_bool, comment: "True if the cooling fan is enabled", initial: !BOOL TRUE}
 
-
-
-  
 
 
   !STATEMACHINE Solar:
@@ -75,8 +56,12 @@
       powerMount   : { type: t_bool                   , comment: "True if the solar mount is enabled", address: "%Q*"  }
       powerFan     : { type: t_float                 , comment: "Power of the cooling fan in percent"}
       overwriten   : { type: t_bool                   , comment: "True if the hard limits are overwritten" }
-      
- 
+
+    parts:
+        configManager:
+          comment                     : "The config manager (to load/save/activate configuration data)"
+          type                        : marvel_common.ConfigManager
+
     stat:
       health                      : { type: marvel_common.HealthStatus }
       busy                        : { type: marvel_common.BusyStatus                   , comment: "True if the solar telescope is busy" }
@@ -90,11 +75,14 @@
       powerOffMount                    : { type: marvel_common.Process                         , comment: "Stop power to solar mount and mount" }
       manualPowerOn                     : { type: marvel_common.Process                         , comment: "overwrite hard limits" }
       manualPowerOff                   : { type: marvel_common.Process                         , comment: "Stop overwriting hard limits" }
+      lock                 : { type: marvel_common.Process                         , comment: "Lock the solar telescope"}
+      unlock               : { type: marvel_common.Process                         , comment: "Unlock the solar telescope"}
+      reset                : { type: marvel_common.Process                         , comment: "Reset the solar telescope"}
     
     calls:
-        power_on_mount:
+        powerOnMount:
           isEnabled: !AND [ !EQ [stat.init, marvel_common.InitializationStatus.initialized],!NOT [powerMount],  !NOT [!EQ [ stat.health, marvel_common.HealthStatus.bad]], !NOT [overwriten]]
-        power_off_mount:
+        powerOffMount:
           isEnabled: !AND [ powerMount, !NOT [ overwriten ] ]
 
         # power_on_pc:
@@ -103,10 +91,23 @@
         # power_off_pc:
         #   isEnabled: powerPC
 
-        manual_power_on:
+        manualPowerOn:
           isEnabled: !AND [!EQ [operator_ref, marvel_common.OperatorStatus.tech], !NOT [overwriten] ]
-        manual_power_off:
+
+        manualPowerOff:
           isEnabled: !AND [ overwriten, !EQ [operator_ref, marvel_common.OperatorStatus.tech] ]
 
         initialize:
           isEnabled: !AND [ !NOT [!EQ [stat.init, marvel_common.InitializationStatus.initialized]], !NOT [!EQ [ stat.init, marvel_common.InitializationStatus.initializing]], !NOT [!EQ [ stat.init, marvel_common.InitializationStatus.locked]] ]
+
+        configManager:
+          isEnabled: !EQ [operator_ref, marvel_common.OperatorStatus.tech]
+
+        lock:
+          isEnabled: !AND [!EQ [operator_ref, marvel_common.OperatorStatus.tech], !NOT [!EQ [ stat.init, marvel_common.InitializationStatus.locked]]]   
+
+        unlock:
+          isEnabled: !AND [!EQ [operator_ref, marvel_common.OperatorStatus.tech], !EQ [ stat.init, marvel_common.InitializationStatus.locked]]    
+        
+        reset:
+          isEnabled: !BOOL TRUE

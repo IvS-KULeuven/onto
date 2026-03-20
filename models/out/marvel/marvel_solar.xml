@@ -21,6 +21,25 @@
   </contentHeader>
   <types>
     <dataTypes>
+      <dataType name="SolarParts">
+        <baseType>
+          <struct>
+            <variable name="configManager">
+              <type><derived name="ConfigManager" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">The config manager (to load/save/activate configuration data)</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
       <dataType name="SolarProcesses">
         <baseType>
           <struct>
@@ -115,6 +134,45 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Stop overwriting hard limits</xhtml>
               </documentation>
             </variable>
+            <variable name="lock">
+              <type><derived name="Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Lock the solar telescope</xhtml>
+              </documentation>
+            </variable>
+            <variable name="unlock">
+              <type><derived name="Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Unlock the solar telescope</xhtml>
+              </documentation>
+            </variable>
+            <variable name="reset">
+              <type><derived name="Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Reset the solar telescope</xhtml>
+              </documentation>
+            </variable>
           </struct>
         </baseType>
       </dataType>
@@ -173,7 +231,8 @@
         <baseType>
           <struct>
             <variable name="defPowerFan">
-              <type><LREAL /></type>
+              <type><REAL /></type>
+              <initialValue><simpleValue value="30.0" /></initialValue>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -182,11 +241,12 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Power of the cooling fan in percent</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Default power of the cooling fan in percent</xhtml>
               </documentation>
             </variable>
             <variable name="highTemp">
-              <type><LREAL /></type>
+              <type><REAL /></type>
+              <initialValue><simpleValue value="35.0" /></initialValue>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -199,7 +259,8 @@
               </documentation>
             </variable>
             <variable name="maxTemp">
-              <type><LREAL /></type>
+              <type><REAL /></type>
+              <initialValue><simpleValue value="40.0" /></initialValue>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -213,6 +274,7 @@
             </variable>
             <variable name="fanEnabled">
               <type><BOOL /></type>
+              <initialValue><simpleValue value="TRUE" /></initialValue>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -484,12 +546,45 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
+            <variable name="parts">
+              <type><derived name="M_SM_SolarParts" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
             <variable name="proc">
               <type><derived name="M_SM_SolarProcesses" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
                     <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="M_SM_SolarParts">
+        <baseType>
+          <struct>
+            <variable name="configManager">
+              <type><derived name="M_ConfigManager" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
                     <Attribute Name="TcHmiSymbol.Show" Value="" />
                   </Attributes>
                 </data>
@@ -583,6 +678,45 @@
               </documentation>
             </variable>
             <variable name="manualPowerOff">
+              <type><derived name="M_Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="lock">
+              <type><derived name="M_Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="unlock">
+              <type><derived name="M_Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="reset">
               <type><derived name="M_Process" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -842,6 +976,19 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Statuses of the state machine</xhtml>
               </documentation>
             </variable>
+            <variable name="parts">
+              <type><derived name="SolarParts" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Parts of the state machine</xhtml>
+              </documentation>
+            </variable>
             <variable name="proc">
               <type><derived name="SolarProcesses" /></type>
               <addData>
@@ -902,13 +1049,17 @@
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">proc.initialize( isEnabled := (NOT(stat.init = InitializationStatus.initialized)) AND ((NOT(stat.init = InitializationStatus.initializing)) AND (NOT(stat.init = InitializationStatus.locked))) );
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">parts.configManager( isEnabled := operator_ref = OperatorStatus.tech );
+proc.initialize( isEnabled := (NOT(stat.init = InitializationStatus.initialized)) AND ((NOT(stat.init = InitializationStatus.initializing)) AND (NOT(stat.init = InitializationStatus.locked))) );
 proc.powerOnPc();
 proc.powerOffPc();
-proc.powerOnMount();
-proc.powerOffMount();
-proc.manualPowerOn();
-proc.manualPowerOff();
+proc.powerOnMount( isEnabled := (stat.init = InitializationStatus.initialized) AND ((NOT(powerMount)) AND ((NOT(stat.health = HealthStatus.bad)) AND (NOT(overwriten)))) );
+proc.powerOffMount( isEnabled := powerMount AND (NOT(overwriten)) );
+proc.manualPowerOn( isEnabled := (operator_ref = OperatorStatus.tech) AND (NOT(overwriten)) );
+proc.manualPowerOff( isEnabled := overwriten AND (operator_ref = OperatorStatus.tech) );
+proc.lock( isEnabled := (operator_ref = OperatorStatus.tech) AND (NOT(stat.init = InitializationStatus.locked)) );
+proc.unlock( isEnabled := (operator_ref = OperatorStatus.tech) AND (stat.init = InitializationStatus.locked) );
+proc.reset( isEnabled := TRUE );
 </xhtml>
           </ST>
         </body>
@@ -947,6 +1098,7 @@ proc.manualPowerOff();
               <body>
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.editableConfig := model.editableConfig;
+THIS^.parts.configManager._copyFromModel_ConfigManager( model := model.parts.configManager );
 THIS^.proc.initialize._copyFromModel_Process( model := model.proc.initialize );
 THIS^.proc.powerOnPc._copyFromModel_Process( model := model.proc.powerOnPc );
 THIS^.proc.powerOffPc._copyFromModel_Process( model := model.proc.powerOffPc );
@@ -954,6 +1106,9 @@ THIS^.proc.powerOnMount._copyFromModel_Process( model := model.proc.powerOnMount
 THIS^.proc.powerOffMount._copyFromModel_Process( model := model.proc.powerOffMount );
 THIS^.proc.manualPowerOn._copyFromModel_Process( model := model.proc.manualPowerOn );
 THIS^.proc.manualPowerOff._copyFromModel_Process( model := model.proc.manualPowerOff );
+THIS^.proc.lock._copyFromModel_Process( model := model.proc.lock );
+THIS^.proc.unlock._copyFromModel_Process( model := model.proc.unlock );
+THIS^.proc.reset._copyFromModel_Process( model := model.proc.reset );
 </xhtml>
                 </ST>
               </body>
@@ -1009,6 +1164,7 @@ model.powerMount := THIS^.powerMount;
 model.powerFan := THIS^.powerFan;
 model.overwriten := THIS^.overwriten;
 model.stat := THIS^.stat;
+THIS^.parts.configManager._copyToModel_ConfigManager( model := model.parts.configManager );
 THIS^.proc.initialize._copyToModel_Process( model := model.proc.initialize );
 THIS^.proc.powerOnPc._copyToModel_Process( model := model.proc.powerOnPc );
 THIS^.proc.powerOffPc._copyToModel_Process( model := model.proc.powerOffPc );
@@ -1016,6 +1172,9 @@ THIS^.proc.powerOnMount._copyToModel_Process( model := model.proc.powerOnMount )
 THIS^.proc.powerOffMount._copyToModel_Process( model := model.proc.powerOffMount );
 THIS^.proc.manualPowerOn._copyToModel_Process( model := model.proc.manualPowerOn );
 THIS^.proc.manualPowerOff._copyToModel_Process( model := model.proc.manualPowerOff );
+THIS^.proc.lock._copyToModel_Process( model := model.proc.lock );
+THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
+THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
 </xhtml>
                 </ST>
               </body>
@@ -1038,6 +1197,8 @@ THIS^.proc.manualPowerOff._copyToModel_Process( model := model.proc.manualPowerO
           </Folder>
           <Folder Name="StateMachines">
             <Folder Name="Parts">
+              <Object Name="SolarParts">
+              </Object>
             </Folder>
             <Folder Name="Processes">
               <Object Name="SolarProcesses">
@@ -1072,6 +1233,8 @@ THIS^.proc.manualPowerOff._copyToModel_Process( model := model.proc.manualPowerO
             <Object Name="M_SM_Solar">
             </Object>
             <Object Name="M_Solar">
+            </Object>
+            <Object Name="M_SM_SolarParts">
             </Object>
             <Object Name="M_SM_SolarProcesses">
             </Object>
