@@ -111,11 +111,13 @@
   !CONFIG ShieldSharedConfig:
     items:
       sensors              : { type: marvel_common.HiHiLoLoAlarmConfig, comment: "Alarm config for the temperature sensors in the shield" }
+      heaters:             { type: SharedHeaterConfig, comment: "Shared config for the heaters in the shield" }
   
   ### shared config for the bench ###
   !CONFIG BenchSharedConfig:
     items:
       sensors              : { type: marvel_common.HiHiLoLoAlarmConfig, comment: "Alarm config for the temperature sensors in the bench" }
+      heaters:             { type: SharedHeaterConfig, comment: "Shared config for the heaters in the bench" }
 
   ### shared config for the cryo ###
   !CONFIG CryoSharedConfig:
@@ -137,6 +139,12 @@
   !CONFIG OuterRoomConfig:
     items:
       shared              : { type: OuterRoomSharedConfig, comment: "Shared config for the outer room" }
+
+      #sensors
+      tFloorE:      { type: MeasurementConfig2, comment: "Config for floor sensor East" }
+      tFloorW:      { type: MeasurementConfig2, comment: "Config for floor sensor West" }
+      tTopN:        { type: MeasurementConfig2, comment: "Config for top sensor North" }
+      tTopS:        { type: MeasurementConfig2, comment: "Config for top sensor South" }
 
   ### inner room config ###
   #########################
@@ -219,20 +227,79 @@
   !CONFIG ShieldConfig:
     items:
       shared              : { type: ShieldSharedConfig, comment: "Shared config for the shield" }
+
+      #sensors
+      tTopNE:       { type: MeasurementConfig2, comment: "Config for shield top NE" }
+      tTopNW:       { type: MeasurementConfig2, comment: "Config for shield top NW" }
+      tTopSE:       { type: MeasurementConfig2, comment: "Config for shield top SE" }
+      tTopSW:       { type: MeasurementConfig2, comment: "Config for shield top SW" }
+      tSideN:       { type: MeasurementConfig2, comment: "Config for shield side N" }
+      tSideS:       { type: MeasurementConfig2, comment: "Config for shield side S" }
+      tSideNE:      { type: MeasurementConfig2, comment: "Config for shield side NE" }
+      tSideSE:      { type: MeasurementConfig2, comment: "Config for shield side SE" }
+      tSideNW:      { type: MeasurementConfig2, comment: "Config for shield side NW" }
+      tSideSW:      { type: MeasurementConfig2, comment: "Config for shield side SW" }
+      tBotNE:       { type: MeasurementConfig2, comment: "Config for shield bottom NE" }
+      tBotNW:       { type: MeasurementConfig2, comment: "Config for shield bottom NW" }
+      tBotS:        { type: MeasurementConfig2, comment: "Config for shield bottom S" }
+      tCentre:      { type: MeasurementConfig2, comment: "Config for shield centre" }
+      tCentreTh10k: { type: MeasurementConfig2, comment: "Config for shield centre TH10k" }
+
+      #heaters
+      htTopNE:       { type: HeaterConfig, comment: "Config for heater shield top NE" }
+      htTopNW:       { type: HeaterConfig, comment: "Config for heater shield top NW" }
+      htTopSE:       { type: HeaterConfig, comment: "Config for heater shield top SE" }
+      htTopSW:       { type: HeaterConfig, comment: "Config for heater shield top SW" }
+      htSideN:       { type: HeaterConfig, comment: "Config for heater shield side N" }
+      htSideS:       { type: HeaterConfig, comment: "Config for heater shield side S" }
+      htSideNE:      { type: HeaterConfig, comment: "Config for heater shield side NE" }
+      htSideSE:      { type: HeaterConfig, comment: "Config for heater shield side SE" }
+      htSideNW:      { type: HeaterConfig, comment: "Config for heater shield side NW" }
+      htSideSW:      { type: HeaterConfig, comment: "Config for heater shield side SW" }
+      htBotNE:       { type: HeaterConfig, comment: "Config for heater shield bottom NE" }
+      htBotNW:       { type: HeaterConfig, comment: "Config for heater shield bottom NW" }
+      htBotS:        { type: HeaterConfig, comment: "Config for heater shield bottom S" }
+      htCentre:      { type: HeaterConfig, comment: "Config for heater shield centre" }
   
   ### bench config ###
   ####################
   !CONFIG BenchConfig:
     items:
       shared              : { type: BenchSharedConfig, comment: "Shared config for the bench" }
+
+      #sensors
+      tCentre:        { type: MeasurementConfig2, comment: "Config for bench centre" }
+      tCentreTH10k:   { type: MeasurementConfig2, comment: "Config for bench centre TH10k" }
+      tCollBench:     { type: MeasurementConfig2, comment: "Config for collimator bench" }
+      tEchelleCryo:   { type: MeasurementConfig2, comment: "Config for echelle cryo" }
+      tCamCryo:       { type: MeasurementConfig2, comment: "Config for camera cryo" }
+      tColl:          { type: MeasurementConfig2, comment: "Config for collimator" }
+      tPrism:         { type: MeasurementConfig2, comment: "Config for prism" }
+      tEchelle:       { type: MeasurementConfig2, comment: "Config for echelle" }
+      tCam:           { type: MeasurementConfig2, comment: "Config for camera" }
+      tInOptics:      { type: MeasurementConfig2, comment: "Config for in-optics" }
+
+      #heaters
+      htCollBench:     { type: HeaterConfig, comment: "Config for heater collimator bench" }
+      htEchelleCryo:   { type: HeaterConfig, comment: "Config for heater echelle cryo" }
+      htCamCryo:       { type: HeaterConfig, comment: "Config for heater camera cryo" }
+      htEchellePrism:  { type: HeaterConfig, comment: "Config for heater echelle/prism" }
   
   ### cryo config ###
   ###################
   !CONFIG CryoConfig:
     items:
       shared              : { type: CryoSharedConfig, comment: "Shared config for the cryo" }
-      tpCryoRear:    { type: MeasurementConfig2, comment: "config for sensor cryo rear (outside)" }
-      htCryoRear:    { type: HeaterConfig, comment: "config for heater cryo rear (outside)" }
+
+      #sensors
+      tRearOut:     { type: MeasurementConfig2, comment: "Config for cryo rear outside" }
+      tRearIn:      { type: MeasurementConfig2, comment: "Config for cryo rear inside" }
+      tFront:       { type: MeasurementConfig2, comment: "Config for cryo front" }
+
+      #heaters
+      htRearOut:     { type: HeaterConfig, comment: "Config for heater cryo rear outside" }
+      htRearIn:      { type: HeaterConfig, comment: "Config for heater cryo rear inside" }
+      htRearFront:   { type: HeaterConfig, comment: "Config for heater cryo front" }
 
   ##### thermo config #####
   #########################
@@ -363,6 +430,12 @@
       avgDeviation : { type: t_double                                               , comment: "Average deviation of the temperature sensors in kelvin" }
       totalPower       : { type: t_double              , comment: "Total power of all heaters in percentage" }
       avgPower           : { type: t_double              , comment: "Average power of the heaters in percentage" }
+
+    parts:
+      tFloorE:      { type: TempMeasurement, comment: "Floor sensor East",         arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tFloorW:      { type: TempMeasurement, comment: "Floor sensor West",         arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tTopN:        { type: TempMeasurement, comment: "Top sensor North",          arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tTopS:        { type: TempMeasurement, comment: "Top sensor South",          arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
     
     references:
       config_ref              : { type: OuterRoomConfig                              , comment: "Active configuration of the outer room" }
@@ -392,6 +465,11 @@
                                       !EQ [ stat.init, marvel_common.InitializationStatus.initializingFailed ],
                                       !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ,
                                       !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ] 
+    ###parts###
+        tFloorE:      { config_ref: config_ref.tFloorE, sharedConfig_ref: config_ref.shared.sensors }
+        tFloorW:      { config_ref: config_ref.tFloorW, sharedConfig_ref: config_ref.shared.sensors }
+        tTopN:        { config_ref: config_ref.tTopN, sharedConfig_ref: config_ref.shared.sensors }
+        tTopS:        { config_ref: config_ref.tTopS, sharedConfig_ref: config_ref.shared.sensors }
 
   ################################
   ### state machine inner room ###
@@ -629,6 +707,40 @@
       avgDeviation : { type: t_double                                               , comment: "Average deviation of the temperature sensors in kelvin" }
       totalPower       : { type: t_double              , comment: "Total power of all heaters in percentage" }
       avgPower           : { type: t_double              , comment: "Average power of the heaters in percentage" }
+
+    parts:
+      #sensors
+      tTopNE:       { type: TempMeasurement, comment: "Shield top NE",             arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tTopNW:       { type: TempMeasurement, comment: "Shield top NW",             arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tTopSE:       { type: TempMeasurement, comment: "Shield top SE",             arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tTopSW:       { type: TempMeasurement, comment: "Shield top SW",             arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tSideN:       { type: TempMeasurement, comment: "Shield side N",             arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tSideS:       { type: TempMeasurement, comment: "Shield side S",             arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tSideNE:      { type: TempMeasurement, comment: "Shield side NE",            arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tSideSE:      { type: TempMeasurement, comment: "Shield side SE",            arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tSideNW:      { type: TempMeasurement, comment: "Shield side NW",            arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tSideSW:      { type: TempMeasurement, comment: "Shield side SW",            arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tBotNE:       { type: TempMeasurement, comment: "Shield bottom NE",          arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tBotNW:       { type: TempMeasurement, comment: "Shield bottom NW",          arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tBotS:        { type: TempMeasurement, comment: "Shield bottom S",           arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tCentre:      { type: TempMeasurement, comment: "Shield centre",             arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tCentreTh10k: { type: TempMeasurement, comment: "Shield centre TH10k",       arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+
+      #heaters
+      htTopNE:       { type: HeaterControl, comment: "Heater control for shield top NE",     arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
+      htTopNW:       { type: HeaterControl, comment: "Heater control for shield top NW",     arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
+      htTopSE:       { type: HeaterControl, comment: "Heater control for shield top SE",     arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
+      htTopSW:       { type: HeaterControl, comment: "Heater control for shield top SW",     arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
+      htSideN:       { type: HeaterControl, comment: "Heater control for shield side N",     arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
+      htSideS:       { type: HeaterControl, comment: "Heater control for shield side S",     arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
+      htSideNE:      { type: HeaterControl, comment: "Heater control for shield side NE",    arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
+      htSideSE:      { type: HeaterControl, comment: "Heater control for shield side SE",    arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
+      htSideNW:      { type: HeaterControl, comment: "Heater control for shield side NW",    arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
+      htSideSW:      { type: HeaterControl, comment: "Heater control for shield side SW",    arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
+      htBotNE:       { type: HeaterControl, comment: "Heater control for shield bottom NE",  arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
+      htBotNW:       { type: HeaterControl, comment: "Heater control for shield bottom NW",  arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
+      htBotS:        { type: HeaterControl, comment: "Heater control for shield bottom S",   arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
+      htCentre:      { type: HeaterControl, comment: "Heater control for shield centre",     arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
       
     references:
       config_ref              : { type: ShieldConfig                              , comment: "Active configuration of the shield" }
@@ -658,6 +770,39 @@
                                       !EQ [ stat.init, marvel_common.InitializationStatus.initializingFailed ],
                                       !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ,
                                       !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
+    ###parts###
+        #sensors
+        tTopNE:       { config_ref: config_ref.tTopNE, sharedConfig_ref: config_ref.shared.sensors }
+        tTopNW:       { config_ref: config_ref.tTopNW, sharedConfig_ref: config_ref.shared.sensors }
+        tTopSE:       { config_ref: config_ref.tTopSE, sharedConfig_ref: config_ref.shared.sensors }
+        tTopSW:       { config_ref: config_ref.tTopSW, sharedConfig_ref: config_ref.shared.sensors }
+        tSideN:       { config_ref: config_ref.tSideN, sharedConfig_ref: config_ref.shared.sensors }
+        tSideS:       { config_ref: config_ref.tSideS, sharedConfig_ref: config_ref.shared.sensors }
+        tSideNE:      { config_ref: config_ref.tSideNE, sharedConfig_ref: config_ref.shared.sensors }
+        tSideSE:      { config_ref: config_ref.tSideSE, sharedConfig_ref: config_ref.shared.sensors }
+        tSideNW:      { config_ref: config_ref.tSideNW, sharedConfig_ref: config_ref.shared.sensors }
+        tSideSW:      { config_ref: config_ref.tSideSW, sharedConfig_ref: config_ref.shared.sensors }
+        tBotNE:       { config_ref: config_ref.tBotNE, sharedConfig_ref: config_ref.shared.sensors }
+        tBotNW:       { config_ref: config_ref.tBotNW, sharedConfig_ref: config_ref.shared.sensors }
+        tBotS:        { config_ref: config_ref.tBotS, sharedConfig_ref: config_ref.shared.sensors }
+        tCentre:      { config_ref: config_ref.tCentre, sharedConfig_ref: config_ref.shared.sensors }
+        tCentreTh10k: { config_ref: config_ref.tCentreTh10k, sharedConfig_ref: config_ref.shared.sensors }
+
+        #heaters
+        htTopNE:       { config_ref: config_ref.htTopNE, sharedConfig_ref: config_ref.shared.heaters }
+        htTopNW:       { config_ref: config_ref.htTopNW, sharedConfig_ref: config_ref.shared.heaters }
+        htTopSE:       { config_ref: config_ref.htTopSE, sharedConfig_ref: config_ref.shared.heaters }
+        htTopSW:       { config_ref: config_ref.htTopSW, sharedConfig_ref: config_ref.shared.heaters }
+        htSideN:       { config_ref: config_ref.htSideN, sharedConfig_ref: config_ref.shared.heaters }
+        htSideS:       { config_ref: config_ref.htSideS, sharedConfig_ref: config_ref.shared.heaters }
+        htSideNE:      { config_ref: config_ref.htSideNE, sharedConfig_ref: config_ref.shared.heaters }
+        htSideSE:      { config_ref: config_ref.htSideSE, sharedConfig_ref: config_ref.shared.heaters }
+        htSideNW:      { config_ref: config_ref.htSideNW, sharedConfig_ref: config_ref.shared.heaters }
+        htSideSW:      { config_ref: config_ref.htSideSW, sharedConfig_ref: config_ref.shared.heaters }
+        htBotNE:       { config_ref: config_ref.htBotNE, sharedConfig_ref: config_ref.shared.heaters }
+        htBotNW:       { config_ref: config_ref.htBotNW, sharedConfig_ref: config_ref.shared.heaters }
+        htBotS:        { config_ref: config_ref.htBotS, sharedConfig_ref: config_ref.shared.heaters }
+        htCentre:      { config_ref: config_ref.htCentre, sharedConfig_ref: config_ref.shared.heaters }
 
   ###################################
   ### state machine bench control ###
@@ -669,6 +814,25 @@
       avgDeviation : { type: t_double                                               , comment: "Average deviation of the temperature sensors in kelvin" }
       totalPower       : { type: t_double              , comment: "Total power of all heaters in percentage" }
       avgPower           : { type: t_double              , comment: "Average power of the heaters in percentage" }
+
+    parts:
+      #sensors
+      tCentre:        { type: TempMeasurement, comment: "Bench centre",             arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tCentreTH10k:   { type: TempMeasurement, comment: "Bench centre TH10k",       arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tCollBench:     { type: TempMeasurement, comment: "Collimator bench",          arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tEchelleCryo:   { type: TempMeasurement, comment: "Echelle cryo",             arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tCamCryo:       { type: TempMeasurement, comment: "Camera cryo",              arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tColl:          { type: TempMeasurement, comment: "Collimator",               arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tPrism:         { type: TempMeasurement, comment: "Prism",                    arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tEchelle:       { type: TempMeasurement, comment: "Echelle",                  arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tCam:           { type: TempMeasurement, comment: "Camera",                   arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tInOptics:      { type: TempMeasurement, comment: "In-optics",                arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+
+      #heaters
+      htCollBench:     { type: HeaterControl, comment: "Heater control for collimator bench",  arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
+      htEchelleCryo:   { type: HeaterControl, comment: "Heater control for echelle cryo",      arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
+      htCamCryo:       { type: HeaterControl, comment: "Heater control for camera cryo",       arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
+      htEchellePrism:  { type: HeaterControl, comment: "Heater control for echelle/prism",     arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
       
     references:
       config_ref              : { type: BenchConfig                              , comment: "Active configuration of the bench" }
@@ -698,6 +862,24 @@
                                       !EQ [ stat.init, marvel_common.InitializationStatus.initializingFailed ],
                                       !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ,
                                       !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
+    ###parts###
+        #sensors
+        tCentre:        { config_ref: config_ref.tCentre, sharedConfig_ref: config_ref.shared.sensors }
+        tCentreTH10k:   { config_ref: config_ref.tCentreTH10k, sharedConfig_ref: config_ref.shared.sensors }
+        tCollBench:     { config_ref: config_ref.tCollBench, sharedConfig_ref: config_ref.shared.sensors }
+        tEchelleCryo:   { config_ref: config_ref.tEchelleCryo, sharedConfig_ref: config_ref.shared.sensors }
+        tCamCryo:       { config_ref: config_ref.tCamCryo, sharedConfig_ref: config_ref.shared.sensors }
+        tColl:          { config_ref: config_ref.tColl, sharedConfig_ref: config_ref.shared.sensors }
+        tPrism:         { config_ref: config_ref.tPrism, sharedConfig_ref: config_ref.shared.sensors }
+        tEchelle:       { config_ref: config_ref.tEchelle, sharedConfig_ref: config_ref.shared.sensors }
+        tCam:           { config_ref: config_ref.tCam, sharedConfig_ref: config_ref.shared.sensors }
+        tInOptics:      { config_ref: config_ref.tInOptics, sharedConfig_ref: config_ref.shared.sensors }
+
+        #heaters
+        htCollBench:     { config_ref: config_ref.htCollBench, sharedConfig_ref: config_ref.shared.heaters }
+        htEchelleCryo:   { config_ref: config_ref.htEchelleCryo, sharedConfig_ref: config_ref.shared.heaters }
+        htCamCryo:       { config_ref: config_ref.htCamCryo, sharedConfig_ref: config_ref.shared.heaters }
+        htEchellePrism:  { config_ref: config_ref.htEchellePrism, sharedConfig_ref: config_ref.shared.heaters }
 
   ##################################
   ### state machine cryo control ###
@@ -718,8 +900,15 @@
       operator_ref            : { type: marvel_common.OperatorStatus              , comment: "Shared operator status" }
 
     parts:
-      tpCryoRear:     { type: TempMeasurement, comment: "temp cryo rear / outside",              arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      htCryoRear:     { type: HeaterControl, comment: "heater cryo rear / outside",              arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
+      #sensors
+      tRearOut:     { type: TempMeasurement, comment: "Cryo rear outside",              arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tRearIn:      { type: TempMeasurement, comment: "Cryo rear inside",               arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tFront:       { type: TempMeasurement, comment: "Cryo front",                     arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+
+      #heaters
+      htRearOut:     { type: HeaterControl, comment: "Heater control for cryo rear outside",  arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
+      htRearIn:      { type: HeaterControl, comment: "Heater control for cryo rear inside",   arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
+      htRearFront:   { type: HeaterControl, comment: "Heater control for cryo front",         arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
 
     stat:
       init                        : { type: marvel_common.InitializationStatus }
@@ -743,8 +932,15 @@
                                       !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ,
                                       !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
     ###parts###
-        tpCryoRear:     { config_ref: config_ref.tpCryoRear, sharedConfig_ref: config_ref.shared.sensors }
-        htCryoRear:     { config_ref: config_ref.htCryoRear, sharedConfig_ref: config_ref.shared.heaters }
+        #sensors
+        tRearOut:     { config_ref: config_ref.tRearOut, sharedConfig_ref: config_ref.shared.sensors }
+        tRearIn:      { config_ref: config_ref.tRearIn, sharedConfig_ref: config_ref.shared.sensors }
+        tFront:       { config_ref: config_ref.tFront, sharedConfig_ref: config_ref.shared.sensors }
+
+        #heaters
+        htRearOut:     { config_ref: config_ref.htRearOut, sharedConfig_ref: config_ref.shared.heaters }
+        htRearIn:      { config_ref: config_ref.htRearIn, sharedConfig_ref: config_ref.shared.heaters }
+        htRearFront:   { config_ref: config_ref.htRearFront, sharedConfig_ref: config_ref.shared.heaters }
     
 
   ###################################
