@@ -36,6 +36,16 @@
               expr: !AND [ isActive, !NOT [isWarmingUp] , isControlled ]
               comment: "controlling"
 
+########################################################################################################################
+# Proc's
+########################################################################################################################
+  !PROCESS ForceHeater:
+    extends: marvel_common.BaseProcess
+    arguments: 
+      power: {type: t_float}
+
+
+
 
 
 
@@ -91,38 +101,44 @@
             maxPower                  : { type: t_double, comment: "Maximum total power of all heaters in percentage", initial: !DOUBLE 100.0 }
             simulation                 : {type: SimulationConfig}
 
+  ### shared config for measurements ### (COMMON)
+  !CONFIG SharedMeasurementConfig:
+    items:
+      alarms: { type: marvel_common.HiHiLoLoAlarmConfig, comment: "Alarm config for the temperature sensors" }
+      timeFrame : { type: t_uint16, comment: "timeframe in minutes for the ptp and sd calculations", initial: !UINT16 10 }
+      nrOfSamples : { type: t_uint16, comment: "number of samples of the moving average (10ms per sample)" , initial: !UINT16 100 }
+
   ### shared config for the outer room###
   !CONFIG OuterRoomSharedConfig:
     items:
-      sensors              : { type: marvel_common.HiHiLoLoAlarmConfig, comment: "Alarm config for the temperature sensors in the outer room" }
-  
+      sensors: { type: SharedMeasurementConfig, comment: "Shared config for the temperature sensors" }  
   ### shared config for the inner room###
   !CONFIG InnerRoomSharedConfig:
     items:
-      sensors              : { type: marvel_common.HiHiLoLoAlarmConfig, comment: "Alarm config for the temperature sensors in the inner room" }
+      sensors: { type: SharedMeasurementConfig, comment: "Shared config for the temperature sensors" }
 
   ### shared config for the vessel ###
   !CONFIG VesselSharedConfig:
     items:
-      sensors              : { type: marvel_common.HiHiLoLoAlarmConfig, comment: "Alarm config for the temperature sensors in the vessel" }
+      sensors: { type: SharedMeasurementConfig, comment: "Shared config for the temperature sensors in the vessel" }
       heaters: { type: SharedHeaterConfig, comment: "Shared config for the heaters in the vessel" }
 
   ### shared config for the shield ###
   !CONFIG ShieldSharedConfig:
     items:
-      sensors              : { type: marvel_common.HiHiLoLoAlarmConfig, comment: "Alarm config for the temperature sensors in the shield" }
+      sensors              : { type: SharedMeasurementConfig, comment: "Shared config for the temperature sensors in the shield" }
       heaters:             { type: SharedHeaterConfig, comment: "Shared config for the heaters in the shield" }
   
   ### shared config for the bench ###
   !CONFIG BenchSharedConfig:
     items:
-      sensors              : { type: marvel_common.HiHiLoLoAlarmConfig, comment: "Alarm config for the temperature sensors in the bench" }
+      sensors              : { type: SharedMeasurementConfig, comment: "Shared config for the temperature sensors in the bench" }
       heaters:             { type: SharedHeaterConfig, comment: "Shared config for the heaters in the bench" }
 
   ### shared config for the cryo ###
   !CONFIG CryoSharedConfig:
     items:
-      sensors              : { type: marvel_common.HiHiLoLoAlarmConfig, comment: "Alarm config for the temperature sensors in the cryo" }
+      sensors              : { type: SharedMeasurementConfig, comment: "Shared config for the temperature sensors in the cryo" }
       heaters:             { type: SharedHeaterConfig, comment: "Shared config for the heaters in the cryo" }
 
   ### shared config for all thermo parts ###
@@ -165,8 +181,8 @@
       rampVPos                   : { type: t_double  , comment: "velocity of temperature change in K/s while ramping up" }
       rampVNeg                   : { type: t_double  , comment: "velocity of temperature change in K/s while ramping down" }
       rampStart                  : { type: t_double  , comment: "temperature in kelvin at which the ramp starts (e.g. to avoid overshoot)" }
-      hihiDeviation               : { type: t_double, comment: "max dev from setpoint for the vessel" }
-      hiDeviation              : { type: t_double  , comment: "warning dev from setpoint for the vessel" }
+      hihiPtp               : { type: t_double, comment: "max dev from setpoint for the vessel" }
+      hiPtp            : { type: t_double  , comment: "warning dev from setpoint for the vessel" }
  
       shared              : { type: VesselSharedConfig, comment: "Shared config for the vessel" }
  
@@ -208,18 +224,18 @@
       htLegTopSE:    { type: HeaterConfig, comment: "Config for heater  Leg Top SE" }
       htLegTopSW:    { type: HeaterConfig, comment: "Config for heater  Leg Top SW" }
  
-      htVesBotNE:    { type: HeaterConfig, comment: "Config for heater Vessel Bottom NE" }
-      htVesBotNW:    { type: HeaterConfig, comment: "Config for heater Vessel Bottom NW" }
-      htVesBotSE:    { type: HeaterConfig, comment: "Config for heater Vessel Bottom SE" }
-      htVesBotSW:    { type: HeaterConfig, comment: "Config for heater Vessel Bottom SW" }
+      htBotNE:    { type: HeaterConfig, comment: "Config for heater Vessel Bottom NE" }
+      htBotNW:    { type: HeaterConfig, comment: "Config for heater Vessel Bottom NW" }
+      htBotSE:    { type: HeaterConfig, comment: "Config for heater Vessel Bottom SE" }
+      htBotSW:    { type: HeaterConfig, comment: "Config for heater Vessel Bottom SW" }
  
-      htVesSideN:    { type: HeaterConfig, comment: "Config for heater Vessel Side NE" }
-      htVesSideS:    { type: HeaterConfig, comment: "Config for heater Vessel Side NW" }
-      htVesSideE:    { type: HeaterConfig, comment: "Config for heater Vessel Side SE" }
-      htVesSideW:    { type: HeaterConfig, comment: "Config for heater Vessel Side SW" }
+      htSideN:    { type: HeaterConfig, comment: "Config for heater Vessel Side NE" }
+      htSideS:    { type: HeaterConfig, comment: "Config for heater Vessel Side NW" }
+      htSideE:    { type: HeaterConfig, comment: "Config for heater Vessel Side SE" }
+      htSideW:    { type: HeaterConfig, comment: "Config for heater Vessel Side SW" }
  
-      htVesLidN:     { type: HeaterConfig, comment: "Config for heater Vessel Lid N" }
-      htVesLidS:     { type: HeaterConfig, comment: "Config for heater Vessel Lid S" }
+      htLidN:     { type: HeaterConfig, comment: "Config for heater Vessel Lid N" }
+      htLidS:     { type: HeaterConfig, comment: "Config for heater Vessel Lid S" }
 
 
   ### shield config ###
@@ -338,12 +354,12 @@
   !STATEMACHINE TempMeasurement:
     variables_hidden:
         rawValue        : { type: t_float              , comment: "Measured raw value"                                        , address: "%I*" }
-        conversionFactor: { type: t_double             , comment: "rawValue * conversionFactor = temperature.degrees.value"  }
 
     variables_output:
-        actual          : { type: t_double          , comment: "Actual value" }
-        average         : { type: t_double          , comment: "Moving average value" }
-        error           : { type: t_bool         , comment: "true if there is an error" }
+        value          : { type: t_double          , comment: "Actual value" }
+        sd    : { type: t_double,  comment: "the standard deviation of the measurements"} 
+        ptp : {type: t_double}
+        error          : { type: t_bool            , comment: "True if sensor has errors"}
 
     variables_input:
       isSimulated : {type: t_bool}
@@ -351,7 +367,7 @@
 
     references:
         config_ref          : { type: MeasurementConfig2, comment: "Reference to the config (alarms in degrees celsius)" }
-        sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig, comment: "Reference to the alarm config for the sensor" }
+        sharedConfig_ref: { type: SharedMeasurementConfig, comment: "Reference to the alarm config for the sensor" }
 
 
     stat:
@@ -360,28 +376,31 @@
         alarm           : { type: marvel_common.HiHiLoLoAlarmStatus  , comment: "Alarm status"}
 
     calls:
+
         enabled:
             superState   : !BOOL TRUE
             isEnabled    : config_ref.enabled
 
         health:
             superState   : !EQ [ stat.enabled, marvel_common.EnabledStatus.enabled ]
-            isGood       : !NOT [ !OR [
-                                       !EQ [ stat.alarm, marvel_common.HiHiLoLoAlarmStatus.hiHi ],
-                                       !EQ [ stat.alarm, marvel_common.HiHiLoLoAlarmStatus.loLo ],
-                                       error
-                                     ] ]
+            isGood       : !AND [ !NOT [ !OR [
+                                              !EQ [ stat.alarm, marvel_common.HiHiLoLoAlarmStatus.hiHi ],
+                                              !EQ [ stat.alarm, marvel_common.HiHiLoLoAlarmStatus.loLo ],
+                                              error ] ],
+                                  config_ref.enabled ]
+
             hasWarning   : !OR [
                                 !EQ [ stat.alarm, marvel_common.HiHiLoLoAlarmStatus.hi ],
-                                !EQ [ stat.alarm, marvel_common.HiHiLoLoAlarmStatus.lo ]
+                                !EQ [ stat.alarm, marvel_common.HiHiLoLoAlarmStatus.lo ],
+                                !NOT [ sharedConfig_ref.alarms.enabled ]
                                ]
+            
 
 
 ### state machine single heater ###
   !STATEMACHINE HeaterControl:
     variables_output:
         power                   : { type: t_double, comment: "Current power of the heater in percentage" } 
-        active                  : { type: t_bool, comment: "True if the heater is active" }
         deviation               : { type: t_double, comment: "Current error between set point and associated temperature" }
         isControlled            : { type: t_bool, comment: "True if the heater is in controlled state" }
         simTemp                  : { type: t_double, comment: "Simulated temperature for testing the heater control" }
@@ -389,7 +408,7 @@
     variables_input:     
         setPoint                : { type: t_double, comment: "Current set point of the heater in kelvin" }
         temp                : { type: t_double, comment: "Associated temperature of the heater in kelvin" }
-        isSimulated : {type: t_bool}
+        isSimulated :       {type: t_bool}
 
 
     references:
@@ -400,14 +419,14 @@
       init                        : { type: marvel_common.InitializationStatus }
       enabled         : { type: marvel_common.EnabledStatus        , comment: "Is the heater enabled?" }
       health          : { type: marvel_common.HealthStatus         , comment: "Is the heater healthy?" }
+
     proc:
       initialize      : { type: marvel_common.Process                     , comment: "Initialize the heater" }
       reset           : { type: marvel_common.Process                     , comment: "Reset the heater" }
+      force : {type: ForceHeater, comment: "Force a certain power output to the heater"}
 
     calls:
-        enabled:
-          superState   : !BOOL TRUE
-          isEnabled    : config_ref.enabled
+
       #proc
         initialize:
           isEnabled    : !NOT [ !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ],
@@ -417,6 +436,8 @@
         reset:
           isEnabled    : !BOOL TRUE
 
+        #force:
+        #  isEnabled: !EQ [operator_ref, marvel_common.OperatorStatus.Tech]
 
 ### main state machines ##########################################################    
 
@@ -425,17 +446,22 @@
   ################################
   !STATEMACHINE OuterRoomControl:
     variables_output:
-      avgTemp       : { type: t_double, comment: "Average temperature of the outer room in kelvin" }
-      maxDeviation : { type: t_double                                               , comment: "Maximum deviation of the temperature sensors in kelvin" }
-      avgDeviation : { type: t_double                                               , comment: "Average deviation of the temperature sensors in kelvin" }
-      totalPower       : { type: t_double              , comment: "Total power of all heaters in percentage" }
+      setPoint: {type: t_double, comment: "the setpoint value of the outer room in celsius"}
+
+      avgTemp       : { type: t_double, comment: "Average temperature of the outer room in celsius" }
+
+      totalPower       : { type: t_double              , comment: "Total power of all heaters in watt" }
       avgPower           : { type: t_double              , comment: "Average power of the heaters in percentage" }
 
+      isSimulated: {type: t_bool, comment : "true if the outroom is simulated"}
+
+
+
     parts:
-      tFloorE:      { type: TempMeasurement, comment: "Floor sensor East",         arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tFloorW:      { type: TempMeasurement, comment: "Floor sensor West",         arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tTopN:        { type: TempMeasurement, comment: "Top sensor North",          arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tTopS:        { type: TempMeasurement, comment: "Top sensor South",          arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tFloorE:      { type: TempMeasurement, comment: "Floor sensor East",         arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+      tFloorW:      { type: TempMeasurement, comment: "Floor sensor West",         arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+      tTopN:        { type: TempMeasurement, comment: "Top sensor North",          arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+      tTopS:        { type: TempMeasurement, comment: "Top sensor South",          arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
     
     references:
       config_ref              : { type: OuterRoomConfig                              , comment: "Active configuration of the outer room" }
@@ -483,10 +509,10 @@
       avgPower           : { type: t_double              , comment: "Average power of the heaters in percentage" }
 
     parts:
-      tpT1:          { type: TempMeasurement, comment: "1st temp sensor",           arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tpT2:          { type: TempMeasurement, comment: "2nd temp sensor",           arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tpT3:          { type: TempMeasurement, comment: "3rd temp sensor",           arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tpT4:          { type: TempMeasurement, comment: "4th temp sensor",           arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tpT1:          { type: TempMeasurement, comment: "1st temp sensor",           arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+      tpT2:          { type: TempMeasurement, comment: "2nd temp sensor",           arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+      tpT3:          { type: TempMeasurement, comment: "3rd temp sensor",           arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+      tpT4:          { type: TempMeasurement, comment: "4th temp sensor",           arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
 
     references:
       config_ref              : { type: InnerRoomConfig                              , comment: "Active configuration of the inner room" }
@@ -528,13 +554,18 @@
 ####################################
   !STATEMACHINE VesselControl:
     variables_output:
-      avgTemp       : { type: t_double                                              , comment: "Average temperature of the vessel in kelvin" }
-      maxDeviation : { type: t_double                                               , comment: "Maximum deviation of the temperature sensors in kelvin" }
-      avgDeviation : { type: t_double                                               , comment: "Average deviation of the temperature sensors in kelvin" }
-      totalPower       : { type: t_double              , comment: "Total power of all heaters in percentage" }
+      setPoint : {type: t_double, comment : "The ramped setpoint used by the pid"}  
+      avgTemp       : { type: t_double, comment: "Average temperature of the vessel in kelvin" }
       avgPower           : { type: t_double              , comment: "Average power of the heaters in percentage" }
-      setPointRamped : {type: t_double, comment : "The ramped setpoint used by the pid"}
- 
+      totalPower       : { type: t_double              , comment: "Total power of all heaters in percentage" }
+      
+      avgPtp : {type: t_double, comment: "Average ptp of the vessel temperature sensors in kelvin"}
+      avgSd : {type: t_double, comment: "Average standard deviation of the vessel temperature sensors in kelvin"}
+      totalPtp : {type: t_double, comment: "Total ptp of the vessel temperature sensors in kelvin"}
+      totalSd : {type: t_double, comment: "Total standard deviation of the vessel temperature sensors in kelvin"}
+      PtpAvgTemp : {type: t_double, comment: "Average temperature calculated from the ptp of the sensors in kelvin"}
+      SdAvgTemp : {type: t_double, comment: "Average temperature calculated from the standard deviation of the sensors in kelvin"}
+
       tStatBottomPwr        :    { type: t_bool, comment: "Thermostat switch vessel bottom power ", address: "%Q*" } 
       tStatCryoRearPwr     :    { type: t_bool, comment: "Thermostat switch cryo rear power ", address: "%Q*" }
       tStatLidPwr       :    { type: t_bool, comment: "Thermostat switch lid top power ", address: "%Q*" }
@@ -548,32 +579,32 @@
  
     parts:
       #sensors
-      tLegNE:       { type: TempMeasurement, comment: "Leg NE",                    arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tLegNW:       { type: TempMeasurement, comment: "Leg NW",                    arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tLegSE:       { type: TempMeasurement, comment: "Leg SE",                    arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tLegSW:       { type: TempMeasurement, comment: "Leg SW",                    arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tLegNE:       { type: TempMeasurement, comment: "Leg NE",                    arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+      tLegNW:       { type: TempMeasurement, comment: "Leg NW",                    arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+      tLegSE:       { type: TempMeasurement, comment: "Leg SE",                    arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+      tLegSW:       { type: TempMeasurement, comment: "Leg SW",                    arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
  
-      tLegTopNE:    { type: TempMeasurement, comment: "Leg Top NE",                arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tLegTopNW:    { type: TempMeasurement, comment: "Leg Top NW",                arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tLegTopSE:    { type: TempMeasurement, comment: "Leg Top SE",                arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tLegTopSW:    { type: TempMeasurement, comment: "Leg Top SW",                arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tLegTopNE:    { type: TempMeasurement, comment: "Leg Top NE",                arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+      tLegTopNW:    { type: TempMeasurement, comment: "Leg Top NW",                arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+      tLegTopSE:    { type: TempMeasurement, comment: "Leg Top SE",                arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+      tLegTopSW:    { type: TempMeasurement, comment: "Leg Top SW",                arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
  
-      tBotNE:    { type: TempMeasurement, comment: "Vessel Bottom NE",          arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tBotNW:    { type: TempMeasurement, comment: "Vessel Bottom NW",          arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tBotSE:    { type: TempMeasurement, comment: "Vessel Bottom SE",          arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tBotSW:    { type: TempMeasurement, comment: "Vessel Bottom SW",          arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tBotNE:    { type: TempMeasurement, comment: "Vessel Bottom NE",          arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+      tBotNW:    { type: TempMeasurement, comment: "Vessel Bottom NW",          arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+      tBotSE:    { type: TempMeasurement, comment: "Vessel Bottom SE",          arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+      tBotSW:    { type: TempMeasurement, comment: "Vessel Bottom SW",          arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
  
-      tCenter:      { type: TempMeasurement, comment: "Centre",                    arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tCenterTH10K: { type: TempMeasurement, comment: "Centre TH10K",              arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tCenter:      { type: TempMeasurement, comment: "Centre",                    arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+      tCenterTH10K: { type: TempMeasurement, comment: "Centre TH10K",              arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
  
-      tSideN:    { type: TempMeasurement, comment: "Vessel Side N",             arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tSideS:    { type: TempMeasurement, comment: "Vessel Side S",             arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tSideE:    { type: TempMeasurement, comment: "Vessel Side E",             arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tSideW:    { type: TempMeasurement, comment: "Vessel Side W",             arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tSideN:    { type: TempMeasurement, comment: "Vessel Side N",             arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+      tSideS:    { type: TempMeasurement, comment: "Vessel Side S",             arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+      tSideE:    { type: TempMeasurement, comment: "Vessel Side E",             arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+      tSideW:    { type: TempMeasurement, comment: "Vessel Side W",             arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
  
-      tLidN:     { type: TempMeasurement, comment: "Vessel Lid N",              arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tLidS:     { type: TempMeasurement, comment: "Vessel Lid S",              arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
- 
+      tLidN:     { type: TempMeasurement, comment: "Vessel Lid N",              arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+      tLidS:     { type: TempMeasurement, comment: "Vessel Lid S",              arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+  
  
       #heaters
       htLegNE:       { type: HeaterControl, comment: "Heater control for Leg NE",              arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
@@ -586,18 +617,18 @@
       htLegTopSE:    { type: HeaterControl, comment: "Heater control for Leg Top SE",          arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
       htLegTopSW:    { type: HeaterControl, comment: "Heater control for Leg Top SW",          arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
  
-      htVesBotNE:    { type: HeaterControl, comment: "Heater control for Vessel Bottom NE",    arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
-      htVesBotNW:    { type: HeaterControl, comment: "Heater control for Vessel Bottom NW",    arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
-      htVesBotSE:    { type: HeaterControl, comment: "Heater control for Vessel Bottom SE",    arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
-      htVesBotSW:    { type: HeaterControl, comment: "Heater control for Vessel Bottom SW",    arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
+      htBotNE:    { type: HeaterControl, comment: "Heater control for Vessel Bottom NE",    arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
+      htBotNW:    { type: HeaterControl, comment: "Heater control for Vessel Bottom NW",    arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
+      htBotSE:    { type: HeaterControl, comment: "Heater control for Vessel Bottom SE",    arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
+      htBotSW:    { type: HeaterControl, comment: "Heater control for Vessel Bottom SW",    arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
  
-      htVesSideN:    { type: HeaterControl, comment: "Heater control for Vessel Side NE",      arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
-      htVesSideS:    { type: HeaterControl, comment: "Heater control for Vessel Side NW",      arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
-      htVesSideE:    { type: HeaterControl, comment: "Heater control for Vessel Side SE",      arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
-      htVesSideW:    { type: HeaterControl, comment: "Heater control for Vessel Side SW",      arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
+      htSideN:    { type: HeaterControl, comment: "Heater control for Vessel Side NE",      arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
+      htSideS:    { type: HeaterControl, comment: "Heater control for Vessel Side NW",      arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
+      htSideE:    { type: HeaterControl, comment: "Heater control for Vessel Side SE",      arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
+      htSideW:    { type: HeaterControl, comment: "Heater control for Vessel Side SW",      arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
  
-      htVesLidN:     { type: HeaterControl, comment: "Heater control for Vessel Lid N",        arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
-      htVesLidS:     { type: HeaterControl, comment: "Heater control for Vessel Lid S",        arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
+      htLidN:     { type: HeaterControl, comment: "Heater control for Vessel Lid N",        arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
+      htLidS:     { type: HeaterControl, comment: "Heater control for Vessel Lid S",        arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
  
           
     references:
@@ -622,27 +653,27 @@
       unlock                      : { type: marvel_common.Process                     , comment: "Unlock the vessel control (e.g. when the vessel is closed)" }
  
     calls:
-    ###proc's###
+      ##proc##
+        start:
+          isEnabled    : !AND [ !EQ [ stat.control, TempControlStatus.idle ], !EQ [ stat.init, marvel_common.InitializationStatus.initialized ],!NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
+        stop:
+          isEnabled    : !NOT [!EQ [ stat.control, TempControlStatus.idle ]]
+
         initialize:
-          isEnabled    : !NOT [ !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ],
-                                      !EQ [ stat.init, marvel_common.InitializationStatus.initializingFailed ],
-                                      !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ,
-                                      !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ] 
-        # start:
-        #   isEnabled    : !AND [ !EQ [ stat.state, TempControlStatus.idle ], !EQ [ stat.init, marvel_common.InitializationStatus.initialized ],!NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
-        # stop:
-        #   isEnabled    : !OR [ !EQ [ stat.state, TempControlStatus.warming_up ], !EQ [ stat.state, TempControlStatus.controlling ] ]
-        # reset:
-        #   isEnabled    : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
- 
-        # lock:
-        #   isEnabled                 : !AND [ !EQ [ operator_ref, marvel_common.OperatorStatus.tech ], !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
-        # unlock:
-        #   isEnabled                 : !AND [ !EQ [ operator_ref, marvel_common.OperatorStatus.tech ],
-        #                                     !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
-        # busy:
-        #   superState   : !BOOL TRUE
-        #   isBusy       : !OR [ !EQ [ stat.state, TempControlStatus.warming_up ], !EQ [ stat.init, marvel_common.InitializationStatus.initializing ] ]
+          isEnabled    : !NOT [ !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ,
+                                      !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
+        lock:
+          isEnabled    : !AND [  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ,
+                                !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
+        unlock:
+          isEnabled    : !AND [  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ,
+                                !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
+        reset:
+          isEnabled : !EQ [ stat.init, marvel_common.InitializationStatus.initialized ]
+      ##stat##
+        busy:
+          superState   : !BOOL TRUE
+          isBusy       : !OR [ !EQ [ stat.control, TempControlStatus.warming_up ], !EQ [ stat.init, marvel_common.InitializationStatus.initializing ] ]
  
     ###parts###
         #sensors
@@ -684,18 +715,18 @@
         htLegTopSE:    { config_ref: config_ref.htLegTopSE, sharedConfig_ref: config_ref.shared.heaters }
         htLegTopSW:    { config_ref: config_ref.htLegTopSW, sharedConfig_ref: config_ref.shared.heaters }
  
-        htVesBotNE:    { config_ref: config_ref.htVesBotNE, sharedConfig_ref: config_ref.shared.heaters}
-        htVesBotNW:    { config_ref: config_ref.htVesBotNW, sharedConfig_ref: config_ref.shared.heaters }
-        htVesBotSE:    { config_ref: config_ref.htVesBotSE, sharedConfig_ref: config_ref.shared.heaters }
-        htVesBotSW:    { config_ref: config_ref.htVesBotSW, sharedConfig_ref: config_ref.shared.heaters }
+        htBotNE:    { config_ref: config_ref.htBotNE, sharedConfig_ref: config_ref.shared.heaters}
+        htBotNW:    { config_ref: config_ref.htBotNW, sharedConfig_ref: config_ref.shared.heaters }
+        htBotSE:    { config_ref: config_ref.htBotSE, sharedConfig_ref: config_ref.shared.heaters }
+        htBotSW:    { config_ref: config_ref.htBotSW, sharedConfig_ref: config_ref.shared.heaters }
  
-        htVesSideN:   { config_ref: config_ref.htVesSideN, sharedConfig_ref: config_ref.shared.heaters }
-        htVesSideS:   { config_ref: config_ref.htVesSideS, sharedConfig_ref: config_ref.shared.heaters }
-        htVesSideE:   { config_ref: config_ref.htVesSideE, sharedConfig_ref: config_ref.shared.heaters }
-        htVesSideW:   { config_ref: config_ref.htVesSideW, sharedConfig_ref: config_ref.shared.heaters}
+        htSideN:   { config_ref: config_ref.htSideN, sharedConfig_ref: config_ref.shared.heaters }
+        htSideS:   { config_ref: config_ref.htSideS, sharedConfig_ref: config_ref.shared.heaters }
+        htSideE:   { config_ref: config_ref.htSideE, sharedConfig_ref: config_ref.shared.heaters }
+        htSideW:   { config_ref: config_ref.htSideW, sharedConfig_ref: config_ref.shared.heaters}
  
-        htVesLidN:     { config_ref: config_ref.htVesLidN, sharedConfig_ref: config_ref.shared.heaters }
-        htVesLidS:     { config_ref: config_ref.htVesLidS, sharedConfig_ref: config_ref.shared.heaters }
+        htLidN:     { config_ref: config_ref.htLidN, sharedConfig_ref: config_ref.shared.heaters }
+        htLidS:     { config_ref: config_ref.htLidS, sharedConfig_ref: config_ref.shared.heaters }
 
   ####################################
   ### state machine shield control ###
@@ -710,21 +741,21 @@
 
     parts:
       #sensors
-      tTopNE:       { type: TempMeasurement, comment: "Shield top NE",             arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tTopNW:       { type: TempMeasurement, comment: "Shield top NW",             arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tTopSE:       { type: TempMeasurement, comment: "Shield top SE",             arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tTopSW:       { type: TempMeasurement, comment: "Shield top SW",             arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tSideN:       { type: TempMeasurement, comment: "Shield side N",             arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tSideS:       { type: TempMeasurement, comment: "Shield side S",             arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tSideNE:      { type: TempMeasurement, comment: "Shield side NE",            arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tSideSE:      { type: TempMeasurement, comment: "Shield side SE",            arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tSideNW:      { type: TempMeasurement, comment: "Shield side NW",            arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tSideSW:      { type: TempMeasurement, comment: "Shield side SW",            arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tBotNE:       { type: TempMeasurement, comment: "Shield bottom NE",          arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tBotNW:       { type: TempMeasurement, comment: "Shield bottom NW",          arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tBotS:        { type: TempMeasurement, comment: "Shield bottom S",           arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tCentre:      { type: TempMeasurement, comment: "Shield centre",             arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tCentreTh10k: { type: TempMeasurement, comment: "Shield centre TH10k",       arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tTopNE:       { type: TempMeasurement, comment: "Shield top NE",             arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+      tTopNW:       { type: TempMeasurement, comment: "Shield top NW",             arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+      tTopSE:       { type: TempMeasurement, comment: "Shield top SE",             arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+      tTopSW:       { type: TempMeasurement, comment: "Shield top SW",             arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+      tSideN:       { type: TempMeasurement, comment: "Shield side N",             arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+      tSideS:       { type: TempMeasurement, comment: "Shield side S",             arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+      tSideNE:      { type: TempMeasurement, comment: "Shield side NE",            arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+      tSideSE:      { type: TempMeasurement, comment: "Shield side SE",            arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+      tSideNW:      { type: TempMeasurement, comment: "Shield side NW",            arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+      tSideSW:      { type: TempMeasurement, comment: "Shield side SW",            arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+      tBotNE:       { type: TempMeasurement, comment: "Shield bottom NE",          arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+      tBotNW:       { type: TempMeasurement, comment: "Shield bottom NW",          arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+      tBotS:        { type: TempMeasurement, comment: "Shield bottom S",           arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+      tCentre:      { type: TempMeasurement, comment: "Shield centre",             arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+      tCentreTh10k: { type: TempMeasurement, comment: "Shield centre TH10k",       arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
 
       #heaters
       htTopNE:       { type: HeaterControl, comment: "Heater control for shield top NE",     arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
@@ -765,11 +796,18 @@
 
     calls:
     ###proc's###
+      ##proc##
         initialize:
-          isEnabled    : !NOT [ !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ],
-                                      !EQ [ stat.init, marvel_common.InitializationStatus.initializingFailed ],
-                                      !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ,
+          isEnabled    : !NOT [ !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ,
                                       !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
+        lock:
+          isEnabled    : !AND [  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ,
+                                !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
+        unlock:
+          isEnabled    : !AND [  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ,
+                                !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
+        reset:
+          isEnabled : !EQ [ stat.init, marvel_common.InitializationStatus.initialized ]
     ###parts###
         #sensors
         tTopNE:       { config_ref: config_ref.tTopNE, sharedConfig_ref: config_ref.shared.sensors }
@@ -817,16 +855,16 @@
 
     parts:
       #sensors
-      tCentre:        { type: TempMeasurement, comment: "Bench centre",             arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tCentreTH10k:   { type: TempMeasurement, comment: "Bench centre TH10k",       arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tCollBench:     { type: TempMeasurement, comment: "Collimator bench",          arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tEchelleCryo:   { type: TempMeasurement, comment: "Echelle cryo",             arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tCamCryo:       { type: TempMeasurement, comment: "Camera cryo",              arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tColl:          { type: TempMeasurement, comment: "Collimator",               arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tPrism:         { type: TempMeasurement, comment: "Prism",                    arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tEchelle:       { type: TempMeasurement, comment: "Echelle",                  arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tCam:           { type: TempMeasurement, comment: "Camera",                   arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tInOptics:      { type: TempMeasurement, comment: "In-optics",                arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tCentre:        { type: TempMeasurement, comment: "Bench centre",             arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+      tCentreTH10k:   { type: TempMeasurement, comment: "Bench centre TH10k",       arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+      tCollBench:     { type: TempMeasurement, comment: "Collimator bench",          arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+      tEchelleCryo:   { type: TempMeasurement, comment: "Echelle cryo",             arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+      tCamCryo:       { type: TempMeasurement, comment: "Camera cryo",              arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+      tColl:          { type: TempMeasurement, comment: "Collimator",               arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+      tPrism:         { type: TempMeasurement, comment: "Prism",                    arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+      tEchelle:       { type: TempMeasurement, comment: "Echelle",                  arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+      tCam:           { type: TempMeasurement, comment: "Camera",                   arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+      tInOptics:      { type: TempMeasurement, comment: "In-optics",                arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
 
       #heaters
       htCollBench:     { type: HeaterControl, comment: "Heater control for collimator bench",  arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
@@ -856,12 +894,18 @@
       unlock                      : { type: marvel_common.Process                     , comment: "Unlock the bench control (e.g. when the bench is closed)" }
 
     calls:
-    ###proc's###
+      ##proc##
         initialize:
-          isEnabled    : !NOT [ !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ],
-                                      !EQ [ stat.init, marvel_common.InitializationStatus.initializingFailed ],
-                                      !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ,
+          isEnabled    : !NOT [ !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ,
                                       !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
+        lock:
+          isEnabled    : !AND [  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ,
+                                !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
+        unlock:
+          isEnabled    : !AND [  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ,
+                                !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
+        reset:
+          isEnabled : !EQ [ stat.init, marvel_common.InitializationStatus.initialized ]
     ###parts###
         #sensors
         tCentre:        { config_ref: config_ref.tCentre, sharedConfig_ref: config_ref.shared.sensors }
@@ -901,9 +945,9 @@
 
     parts:
       #sensors
-      tRearOut:     { type: TempMeasurement, comment: "Cryo rear outside",              arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tRearIn:      { type: TempMeasurement, comment: "Cryo rear inside",               arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
-      tFront:       { type: TempMeasurement, comment: "Cryo front",                     arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: marvel_common.HiHiLoLoAlarmConfig } } }
+      tRearOut:     { type: TempMeasurement, comment: "Cryo rear outside",              arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+      tRearIn:      { type: TempMeasurement, comment: "Cryo rear inside",               arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+      tFront:       { type: TempMeasurement, comment: "Cryo front",                     arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
 
       #heaters
       htRearOut:     { type: HeaterControl, comment: "Heater control for cryo rear outside",  arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig } } }
@@ -926,11 +970,19 @@
 
     calls:
     ###proc's###
+      ##proc##
         initialize:
-          isEnabled    : !NOT [ !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ],
-                                      !EQ [ stat.init, marvel_common.InitializationStatus.initializingFailed ],
-                                      !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ,
+          isEnabled    : !NOT [ !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ,
                                       !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
+        lock:
+          isEnabled    : !AND [  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ,
+                                !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
+        unlock:
+          isEnabled    : !AND [  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ,
+                                !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
+        reset:
+          isEnabled : !EQ [ stat.init, marvel_common.InitializationStatus.initialized ]
+
     ###parts###
         #sensors
         tRearOut:     { config_ref: config_ref.tRearOut, sharedConfig_ref: config_ref.shared.sensors }
@@ -1034,6 +1086,51 @@
 
 
     calls:
+    ##stat##
+      health:
+          superState          : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ] ]
+          isGood :  !MTCS_SUMMARIZE_GOOD [ parts.outerRoom, parts.innerRoom, parts.vessel, parts.shield, parts.bench, parts.cryo ]
+          hasWarning: !MTCS_SUMMARIZE_WARN [ parts.outerRoom, parts.innerRoom, parts.vessel, parts.shield, parts.bench, parts.cryo ]
+      busy:
+          superState          : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ] ]
+          isBusy : !MTCS_SUMMARIZE_BUSY [ parts.outerRoom, parts.innerRoom, parts.vessel, parts.shield, parts.bench, parts.cryo ]
+
+      control:
+          superState          : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ] ]
+          isActive: !NOT [ !AND [ !EQ [parts.outerRoom.stat.control, TempControlStatus.idle ],
+                                  !EQ [parts.innerRoom.stat.control, TempControlStatus.idle],
+                                  !EQ [parts.vessel.stat.control, TempControlStatus.idle ],
+                                  !EQ [parts.shield.stat.control, TempControlStatus.idle ],
+                                  !EQ [parts.bench.stat.control, TempControlStatus.idle ],
+                                  !EQ [parts.cryo.stat.control, TempControlStatus.idle ] ] ]
+                                  
+          isWarmingUp: !OR [ !EQ [parts.outerRoom.stat.control, TempControlStatus.warming_up ],
+                                  !EQ [parts.innerRoom.stat.control, TempControlStatus.warming_up],
+                                  !EQ [parts.vessel.stat.control, TempControlStatus.warming_up ],
+                                  !EQ [parts.shield.stat.control, TempControlStatus.warming_up ],
+                                  !EQ [parts.bench.stat.control, TempControlStatus.warming_up ],
+                                  !EQ [parts.cryo.stat.control, TempControlStatus.warming_up ] ] 
+
+          isControlled: !AND [ !EQ [parts.outerRoom.stat.control, TempControlStatus.controlled ],
+                                  !EQ [parts.innerRoom.stat.control, TempControlStatus.controlled],
+                                  !EQ [parts.vessel.stat.control, TempControlStatus.controlled ],
+                                  !EQ [parts.shield.stat.control, TempControlStatus.controlled ],
+                                  !EQ [parts.bench.stat.control, TempControlStatus.controlled ],
+                                  !EQ [parts.cryo.stat.control, TempControlStatus.controlled ] ]
+
+    ##proc##
+      initialize:
+        isEnabled    : !NOT [ !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ,
+                                    !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
+      lock:
+        isEnabled    : !AND [  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ,
+                              !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
+      unlock:
+        isEnabled    : !AND [  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ,
+                              !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
+      reset:
+        isEnabled : !EQ [ stat.init, marvel_common.InitializationStatus.initialized ]
+          
     ###parts###
       outerRoom:
               activity_ref        : activity_ref
@@ -1087,7 +1184,30 @@
         services_ref            : { type: marvel_services.Services                  , comment: "Shared services", expand: false}
         operator_ref            : { type: marvel_common.OperatorStatus              , comment: "Shared operator status" }
 
+    stat:
+        init                        : { type: marvel_common.InitializationStatus }
+        health          : { type: marvel_common.HealthStatus         , comment: "Is the vessel healthy?" }
+        busy :           { type: marvel_common.BusyStatus           , comment: "Is the vessel busy with a procedure?" }
 
+    proc:
+        initialize                  : { type: marvel_common.Process                     , comment: "Start initializing" }
+        reset                       : { type: marvel_common.Process                     , comment: "Reset complete" }   
+        lock                        : { type: marvel_common.Process                     , comment: "Lock the vessel control (e.g. when the vessel is opened)" }
+        unlock                      : { type: marvel_common.Process                     , comment: "Unlock the vessel control (e.g. when the vessel is closed)" }
+    
+    calls:
+        ##proc##
+        initialize:
+          isEnabled    : !NOT [ !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ,
+                                      !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
+        lock:
+          isEnabled    : !AND [  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ,
+                                !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
+        unlock:
+          isEnabled    : !AND [  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ,
+                                !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
+        reset:
+          isEnabled : !EQ [ stat.init, marvel_common.InitializationStatus.initialized ]
 
   ### MAIN STATEMACHINE #################################### 
 
@@ -1108,7 +1228,15 @@
         operator_ref            : { type: marvel_common.OperatorStatus              , comment: "Shared operator status" }
 
       stat:
+        init                        : { type: marvel_common.InitializationStatus }
         health          : { type: marvel_common.HealthStatus         , comment: "Is the vessel healthy?" }
+        busy :           { type: marvel_common.BusyStatus           , comment: "Is the vessel busy with a procedure?" }
+
+      proc:
+        initialize                  : { type: marvel_common.Process                     , comment: "Start initializing" }
+        reset                       : { type: marvel_common.Process                     , comment: "Reset complete" }   
+        lock                        : { type: marvel_common.Process                     , comment: "Lock the vessel control (e.g. when the vessel is opened)" }
+        unlock                      : { type: marvel_common.Process                     , comment: "Unlock the vessel control (e.g. when the vessel is closed)" }
 
       parts:
         thermo:
@@ -1138,6 +1266,28 @@
         
 
       calls:
+      ##stat##
+        health:
+          superState          : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ] ]
+          isGood :  !MTCS_SUMMARIZE_GOOD [ parts.thermo, parts.vac ]
+          hasWarning: !MTCS_SUMMARIZE_WARN [ parts.thermo, parts.vac ]
+        busy:
+          superState          : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ] ]
+          isBusy : !MTCS_SUMMARIZE_BUSY [ parts.thermo, parts.vac ]
+      ##proc##
+        initialize:
+          isEnabled    : !NOT [ !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ,
+                                      !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
+        lock:
+          isEnabled    : !AND [  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ,
+                                !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
+        unlock:
+          isEnabled    : !AND [  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ,
+                                !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
+        reset:
+          isEnabled : !EQ [ stat.init, marvel_common.InitializationStatus.initialized ]
+
+      ###parts##
         thermo:
           activity_ref        : activity_ref
           services_ref        : services_ref
@@ -1153,4 +1303,5 @@
 
         configManager:
           isEnabled            : !EQ [ operator_ref, marvel_common.OperatorStatus.tech ]  
+
 
