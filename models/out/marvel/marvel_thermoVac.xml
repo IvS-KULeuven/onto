@@ -3071,6 +3071,19 @@
       <dataType name="SharedHeaterConfig">
         <baseType>
           <struct>
+            <variable name="simulation">
+              <type><derived name="SimulationConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
             <variable name="hihiDeviation">
               <type><LREAL /></type>
               <addData>
@@ -3097,6 +3110,20 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">warning dev from setpoint</xhtml>
               </documentation>
             </variable>
+            <variable name="pwmPeriod">
+              <type><LREAL /></type>
+              <initialValue><simpleValue value="1000.0" /></initialValue>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">period of the pwm signlas in ms</xhtml>
+              </documentation>
+            </variable>
             <variable name="maxPower">
               <type><LREAL /></type>
               <initialValue><simpleValue value="100.0" /></initialValue>
@@ -3111,8 +3138,9 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Maximum total power of all heaters in percentage</xhtml>
               </documentation>
             </variable>
-            <variable name="simulation">
-              <type><derived name="SimulationConfig" /></type>
+            <variable name="pidCycleTime">
+              <type><LREAL /></type>
+              <initialValue><simpleValue value="100.0" /></initialValue>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -3121,7 +3149,21 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">cycle time of the heater control loop in ms</xhtml>
+              </documentation>
+            </variable>
+            <variable name="arwOnlyIpart">
+              <type><BOOL /></type>
+              <initialValue><simpleValue value="TRUE" /></initialValue>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the anti reset windup only applies to the integral part of the PID controller</xhtml>
               </documentation>
             </variable>
           </struct>
@@ -3143,9 +3185,9 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Alarm config for the temperature sensors</xhtml>
               </documentation>
             </variable>
-            <variable name="timeFrame">
+            <variable name="cycleTime">
               <type><UINT /></type>
-              <initialValue><simpleValue value="10" /></initialValue>
+              <initialValue><simpleValue value="100" /></initialValue>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -3154,12 +3196,12 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">timeframe in minutes for the ptp and sd calculations</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">time in ms between temp measurements</xhtml>
               </documentation>
             </variable>
             <variable name="nrOfSamples">
               <type><UINT /></type>
-              <initialValue><simpleValue value="100" /></initialValue>
+              <initialValue><simpleValue value="50" /></initialValue>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -4984,21 +5026,6 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="simulatedVal">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
             <variable name="actualStatus">
               <type><string /></type>
               <addData>
@@ -5015,21 +5042,6 @@
               </documentation>
             </variable>
             <variable name="value">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-            <variable name="sd">
               <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -5539,21 +5551,6 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="tStatCryoRearOk">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
             <variable name="tStatLidOk">
               <type><BOOL /></type>
               <addData>
@@ -5644,8 +5641,15 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="avgPtp">
-              <type><LREAL /></type>
+            <variable name="ptpAvgTemp">
+              <type>
+                <array>
+                  <dimension lower="1" upper="5" />
+                  <baseType>
+                    <LREAL />
+                  </baseType>
+                </array>
+              </type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -5659,68 +5663,15 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="avgSd">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-            <variable name="totalPtp">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-            <variable name="totalSd">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-            <variable name="PtpAvgTemp">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-            <variable name="SdAvgTemp">
-              <type><LREAL /></type>
+            <variable name="ptpAllTemp">
+              <type>
+                <array>
+                  <dimension lower="1" upper="5" />
+                  <baseType>
+                    <LREAL />
+                  </baseType>
+                </array>
+              </type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -5735,21 +5686,6 @@
               </documentation>
             </variable>
             <variable name="tStatBottomPwr">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-            <variable name="tStatCryoRearPwr">
               <type><BOOL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -6103,6 +6039,21 @@
       <dataType name="M_SM_CryoControl">
         <baseType>
           <struct>
+            <variable name="tStatCryoRearOk">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
             <variable name="actualStatus">
               <type><string /></type>
               <addData>
@@ -6180,6 +6131,21 @@
             </variable>
             <variable name="avgPower">
               <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="tStatCryoRearPwr">
+              <type><BOOL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -8726,20 +8692,6 @@ END_IF;
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="simulatedVal">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
             <variable name="rawValue" address="%I*">
               <type><REAL /></type>
               <addData>
@@ -8781,20 +8733,6 @@ END_IF;
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Actual value</xhtml>
-              </documentation>
-            </variable>
-            <variable name="sd">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">the standard deviation of the measurements</xhtml>
               </documentation>
             </variable>
             <variable name="ptp">
@@ -8955,10 +8893,8 @@ stat.health := F_HealthStatus(
               <body>
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">model.isSimulated := THIS^.isSimulated;
-model.simulatedVal := THIS^.simulatedVal;
 model.actualStatus := THIS^.actualStatus;
 model.value := THIS^.value;
-model.sd := THIS^.sd;
 model.ptp := THIS^.ptp;
 model.error := THIS^.error;
 model.stat := THIS^.stat;
@@ -9146,10 +9082,7 @@ model.stat := THIS^.stat;
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">stat.enabled := F_EnabledStatus(
-    superState := TRUE,
-    isEnabled := config_ref.enabled);
-proc.initialize( isEnabled := NOT((stat.init = InitializationStatus.shutdown) OR ((stat.init = InitializationStatus.initializingFailed) OR (stat.init = InitializationStatus.initialized))) );
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">proc.initialize( isEnabled := NOT((stat.init = InitializationStatus.shutdown) OR ((stat.init = InitializationStatus.initializingFailed) OR (stat.init = InitializationStatus.initialized))) );
 proc.reset( isEnabled := TRUE );
 proc.force();
 </xhtml>
@@ -9922,20 +9855,6 @@ THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">State of the thermostat switch at the vessel bottom</xhtml>
               </documentation>
             </variable>
-            <variable name="tStatCryoRearOk" address="%I*">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">State of the thermostat switch at the cryo rear</xhtml>
-              </documentation>
-            </variable>
             <variable name="tStatLidOk" address="%I*">
               <type><BOOL /></type>
               <addData>
@@ -10019,11 +9938,18 @@ THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Total power of all heaters in percentage</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Total power of all heaters in watt</xhtml>
               </documentation>
             </variable>
-            <variable name="avgPtp">
-              <type><LREAL /></type>
+            <variable name="ptpAvgTemp">
+              <type>
+                <array>
+                  <dimension lower="1" upper="5" />
+                  <baseType>
+                    <LREAL />
+                  </baseType>
+                </array>
+              </type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -10033,11 +9959,18 @@ THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Average ptp of the vessel temperature sensors in kelvin</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">ptp values of the average temperature of the vessel&quot;</xhtml>
               </documentation>
             </variable>
-            <variable name="avgSd">
-              <type><LREAL /></type>
+            <variable name="ptpAllTemp">
+              <type>
+                <array>
+                  <dimension lower="1" upper="5" />
+                  <baseType>
+                    <LREAL />
+                  </baseType>
+                </array>
+              </type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -10047,63 +9980,7 @@ THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Average standard deviation of the vessel temperature sensors in kelvin</xhtml>
-              </documentation>
-            </variable>
-            <variable name="totalPtp">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Total ptp of the vessel temperature sensors in kelvin</xhtml>
-              </documentation>
-            </variable>
-            <variable name="totalSd">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Total standard deviation of the vessel temperature sensors in kelvin</xhtml>
-              </documentation>
-            </variable>
-            <variable name="PtpAvgTemp">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Average temperature calculated from the ptp of the sensors in kelvin</xhtml>
-              </documentation>
-            </variable>
-            <variable name="SdAvgTemp">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Average temperature calculated from the standard deviation of the sensors in kelvin</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">ptp values of all temp measurements in the vessel&quot;</xhtml>
               </documentation>
             </variable>
             <variable name="tStatBottomPwr" address="%Q*">
@@ -10118,20 +9995,6 @@ THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Thermostat switch vessel bottom power </xhtml>
-              </documentation>
-            </variable>
-            <variable name="tStatCryoRearPwr" address="%Q*">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Thermostat switch cryo rear power </xhtml>
               </documentation>
             </variable>
             <variable name="tStatLidPwr" address="%Q*">
@@ -10379,7 +10242,7 @@ stat.busy := F_BusyStatus(
     isBusy := (stat.control = TempControlStatus.warming_up) OR (stat.init = InitializationStatus.initializing));
 proc.initialize( isEnabled := NOT((stat.init = InitializationStatus.initialized) OR (stat.init = InitializationStatus.locked)) );
 proc.start( isEnabled := (stat.control = TempControlStatus.idle) AND ((stat.init = InitializationStatus.initialized) AND (NOT(stat.init = InitializationStatus.locked))) );
-proc.stop( isEnabled := NOT(stat.control = TempControlStatus.idle) );
+proc.stop( isEnabled := (NOT(stat.control = TempControlStatus.idle)) AND (stat.init = InitializationStatus.initialized) );
 proc.reset( isEnabled := stat.init = InitializationStatus.initialized );
 proc.lock( isEnabled := (operator_ref = OperatorStatus.tech) AND (NOT(stat.init = InitializationStatus.locked)) );
 proc.unlock( isEnabled := (operator_ref = OperatorStatus.tech) AND (stat.init = InitializationStatus.locked) );
@@ -10503,21 +10366,15 @@ THIS^.proc.unlock._copyFromModel_Process( model := model.proc.unlock );
               <body>
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">model.tStatBottomOk := THIS^.tStatBottomOk;
-model.tStatCryoRearOk := THIS^.tStatCryoRearOk;
 model.tStatLidOk := THIS^.tStatLidOk;
 model.actualStatus := THIS^.actualStatus;
 model.setPoint := THIS^.setPoint;
 model.avgTemp := THIS^.avgTemp;
 model.avgPower := THIS^.avgPower;
 model.totalPower := THIS^.totalPower;
-model.avgPtp := THIS^.avgPtp;
-model.avgSd := THIS^.avgSd;
-model.totalPtp := THIS^.totalPtp;
-model.totalSd := THIS^.totalSd;
-model.PtpAvgTemp := THIS^.PtpAvgTemp;
-model.SdAvgTemp := THIS^.SdAvgTemp;
+model.ptpAvgTemp := THIS^.ptpAvgTemp;
+model.ptpAllTemp := THIS^.ptpAllTemp;
 model.tStatBottomPwr := THIS^.tStatBottomPwr;
-model.tStatCryoRearPwr := THIS^.tStatCryoRearPwr;
 model.tStatLidPwr := THIS^.tStatLidPwr;
 model.stat := THIS^.stat;
 THIS^.parts.tLegNE._copyToModel_TempMeasurement( model := model.parts.tLegNE );
@@ -11405,6 +11262,20 @@ THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
       <pou name="SM_CryoControl" pouType="functionBlock">
         <interface>
           <inputVars>
+            <variable name="tStatCryoRearOk" address="%I*">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">State of the thermostat switch at the cryo rear</xhtml>
+              </documentation>
+            </variable>
           </inputVars>
           <outputVars>
             <variable name="actualStatus">
@@ -11489,6 +11360,20 @@ THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Average power of the heaters in percentage</xhtml>
+              </documentation>
+            </variable>
+            <variable name="tStatCryoRearPwr" address="%Q*">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Thermostat switch cryo rear power </xhtml>
               </documentation>
             </variable>
             <variable name="stat">
@@ -11714,12 +11599,14 @@ THIS^.proc.unlock._copyFromModel_Process( model := model.proc.unlock );
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">model.actualStatus := THIS^.actualStatus;
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">model.tStatCryoRearOk := THIS^.tStatCryoRearOk;
+model.actualStatus := THIS^.actualStatus;
 model.avgTemp := THIS^.avgTemp;
 model.maxDeviation := THIS^.maxDeviation;
 model.avgDeviation := THIS^.avgDeviation;
 model.totalPower := THIS^.totalPower;
 model.avgPower := THIS^.avgPower;
+model.tStatCryoRearPwr := THIS^.tStatCryoRearPwr;
 model.stat := THIS^.stat;
 THIS^.parts.tRearOut._copyToModel_TempMeasurement( model := model.parts.tRearOut );
 THIS^.parts.tRearIn._copyToModel_TempMeasurement( model := model.parts.tRearIn );

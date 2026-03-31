@@ -96,17 +96,21 @@
   ### shared config for heaters ### (COMMON)
   !CONFIG SharedHeaterConfig:
     items:
+            simulation                 : {type: SimulationConfig}
             hihiDeviation               : { type: t_double, comment: "max dev from setpoint" }
             hiDeviation              : { type: t_double  , comment: "warning dev from setpoint" }
+            pwmPeriod                   : { type: t_double, comment: "period of the pwm signlas in ms", initial: !DOUBLE 1000.0 }
             maxPower                  : { type: t_double, comment: "Maximum total power of all heaters in percentage", initial: !DOUBLE 100.0 }
-            simulation                 : {type: SimulationConfig}
+            pidCycleTime                   : { type: t_double, comment: "cycle time of the heater control loop in ms", initial: !DOUBLE 100.0 }
+            arwOnlyIpart  :        { type: t_bool, comment: "True if the anti reset windup only applies to the integral part of the PID controller", initial: !BOOL TRUE }
 
   ### shared config for measurements ### (COMMON)
   !CONFIG SharedMeasurementConfig:
     items:
       alarms: { type: marvel_common.HiHiLoLoAlarmConfig, comment: "Alarm config for the temperature sensors" }
-      timeFrame : { type: t_uint16, comment: "timeframe in minutes for the ptp and sd calculations", initial: !UINT16 10 }
-      nrOfSamples : { type: t_uint16, comment: "number of samples of the moving average (10ms per sample)" , initial: !UINT16 100 }
+      cycleTime : { type: t_uint16, comment: "time in ms between temp measurements", initial: !UINT16 100 }
+      nrOfSamples : { type: t_uint16, comment: "number of samples of the moving average (10ms per sample)" , initial: !UINT16 50 }
+
 
   ### shared config for the outer room###
   !CONFIG OuterRoomSharedConfig:
@@ -357,13 +361,12 @@
 
     variables_output:
         value          : { type: t_double          , comment: "Actual value" }
-        sd    : { type: t_double,  comment: "the standard deviation of the measurements"} 
         ptp : {type: t_double}
         error          : { type: t_bool            , comment: "True if sensor has errors"}
 
     variables_input:
       isSimulated : {type: t_bool}
-      simulatedVal: {type: t_double}
+
 
     references:
         config_ref          : { type: MeasurementConfig2, comment: "Reference to the config (alarms in degrees celsius)" }
@@ -551,29 +554,25 @@
 
 ####################################
 ### state machine vessel control ###
+
 ####################################
   !STATEMACHINE VesselControl:
     variables_output:
       setPoint : {type: t_double, comment : "The ramped setpoint used by the pid"}  
       avgTemp       : { type: t_double, comment: "Average temperature of the vessel in kelvin" }
       avgPower           : { type: t_double              , comment: "Average power of the heaters in percentage" }
-      totalPower       : { type: t_double              , comment: "Total power of all heaters in percentage" }
+      totalPower       : { type: t_double              , comment: "Total power of all heaters in watt" }
       
-      avgPtp : {type: t_double, comment: "Average ptp of the vessel temperature sensors in kelvin"}
-      avgSd : {type: t_double, comment: "Average standard deviation of the vessel temperature sensors in kelvin"}
-      totalPtp : {type: t_double, comment: "Total ptp of the vessel temperature sensors in kelvin"}
-      totalSd : {type: t_double, comment: "Total standard deviation of the vessel temperature sensors in kelvin"}
-      PtpAvgTemp : {type: t_double, comment: "Average temperature calculated from the ptp of the sensors in kelvin"}
-      SdAvgTemp : {type: t_double, comment: "Average temperature calculated from the standard deviation of the sensors in kelvin"}
+      ptpAvgTemp : {type: !ARRAY [ 1, 5, t_double ], comment:  ptp values of the average temperature of the vessel", expand: false}
+      ptpAllTemp : {type: !ARRAY [ 1, 5, t_double ], comment:  ptp values of all temp measurements in the vessel", expand: false}
+
 
       tStatBottomPwr        :    { type: t_bool, comment: "Thermostat switch vessel bottom power ", address: "%Q*" } 
-      tStatCryoRearPwr     :    { type: t_bool, comment: "Thermostat switch cryo rear power ", address: "%Q*" }
       tStatLidPwr       :    { type: t_bool, comment: "Thermostat switch lid top power ", address: "%Q*" }
      
  
     variables_input:
       tStatBottomOk              :    { type: t_bool, comment: "State of the thermostat switch at the vessel bottom", address: "%I*" }
-      tStatCryoRearOk             :    { type: t_bool, comment: "State of the thermostat switch at the cryo rear", address: "%I*" }
       tStatLidOk                 :    { type: t_bool, comment: "State of the thermostat switch at the lid top", address: "%I*" }
  
  
@@ -657,7 +656,7 @@
         start:
           isEnabled    : !AND [ !EQ [ stat.control, TempControlStatus.idle ], !EQ [ stat.init, marvel_common.InitializationStatus.initialized ],!NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
         stop:
-          isEnabled    : !NOT [!EQ [ stat.control, TempControlStatus.idle ]]
+          isEnabled    : !AND [ !NOT [!EQ [ stat.control, TempControlStatus.idle ] ], !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ]
 
         initialize:
           isEnabled    : !NOT [ !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ,
@@ -935,6 +934,10 @@
       avgDeviation : { type: t_double                                               , comment: "Average deviation of the temperature sensors in kelvin" }
       totalPower       : { type: t_double              , comment: "Total power of all heaters in percentage" }
       avgPower           : { type: t_double              , comment: "Average power of the heaters in percentage" }
+      tStatCryoRearPwr     :    { type: t_bool, comment: "Thermostat switch cryo rear power ", address: "%Q*" }
+
+    variables_input:
+      tStatCryoRearOk             :    { type: t_bool, comment: "State of the thermostat switch at the cryo rear", address: "%I*" }
       
     references:
       config_ref              : { type: CryoConfig                              , comment: "Active configuration of the bench" }
