@@ -1462,6 +1462,38 @@
           </struct>
         </baseType>
       </dataType>
+      <dataType name="TempMeasurementProcesses">
+        <baseType>
+          <struct>
+            <variable name="initialize">
+              <type><derived name="Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Initialize the measurement</xhtml>
+              </documentation>
+            </variable>
+            <variable name="resetPtp">
+              <type><derived name="Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Reset the ptp values</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
       <dataType name="HeaterControlProcesses">
         <baseType>
           <struct>
@@ -1728,6 +1760,19 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Reset complete</xhtml>
+              </documentation>
+            </variable>
+            <variable name="resetPtp">
+              <type><derived name="Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Reset the ptp values</xhtml>
               </documentation>
             </variable>
             <variable name="lock">
@@ -2214,6 +2259,21 @@
       <dataType name="TempMeasurementStatuses">
         <baseType>
           <struct>
+            <variable name="init">
+              <type><derived name="InitializationStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
             <variable name="enabled">
               <type><derived name="EnabledStatus" /></type>
               <addData>
@@ -5056,7 +5116,22 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="ptp">
+            <variable name="ptp1">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="ptp2">
               <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -5088,6 +5163,20 @@
             </variable>
             <variable name="stat">
               <type><derived name="TempMeasurementStatuses" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="proc">
+              <type><derived name="M_SM_TempMeasurementProcesses" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -5305,51 +5394,6 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="totalPower">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-            <variable name="avgPower">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-            <variable name="isSimulated">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
             <variable name="stat">
               <type><derived name="OuterRoomControlStatuses" /></type>
               <addData>
@@ -5414,66 +5458,6 @@
               </documentation>
             </variable>
             <variable name="avgTemp">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-            <variable name="maxDeviation">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-            <variable name="avgDeviation">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-            <variable name="totalPower">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-            <variable name="avgPower">
               <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -5793,22 +5777,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="maxDeviation">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-            <variable name="avgDeviation">
+            <variable name="avgPower">
               <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -5824,21 +5793,6 @@
               </documentation>
             </variable>
             <variable name="totalPower">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-            <variable name="avgPower">
               <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -5917,36 +5871,6 @@
               </documentation>
             </variable>
             <variable name="avgTemp">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-            <variable name="maxDeviation">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-            <variable name="avgDeviation">
               <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -6070,36 +5994,6 @@
               </documentation>
             </variable>
             <variable name="avgTemp">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-            <variable name="maxDeviation">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-            <variable name="avgDeviation">
               <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -6436,6 +6330,38 @@
           </Inheritance>
         </data>
         </addData>
+      </dataType>
+      <dataType name="M_SM_TempMeasurementProcesses">
+        <baseType>
+          <struct>
+            <variable name="initialize">
+              <type><derived name="M_Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="resetPtp">
+              <type><derived name="M_Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
       </dataType>
       <dataType name="M_SM_HeaterControlProcesses">
         <baseType>
@@ -7309,6 +7235,19 @@
               </documentation>
             </variable>
             <variable name="reset">
+              <type><derived name="M_Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="resetPtp">
               <type><derived name="M_Process" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -8735,7 +8674,21 @@ END_IF;
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Actual value</xhtml>
               </documentation>
             </variable>
-            <variable name="ptp">
+            <variable name="ptp1">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="ptp2">
               <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -8774,6 +8727,19 @@ END_IF;
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Statuses of the state machine</xhtml>
+              </documentation>
+            </variable>
+            <variable name="proc">
+              <type><derived name="TempMeasurementProcesses" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Processes of the state machine</xhtml>
               </documentation>
             </variable>
           </outputVars>
@@ -8817,6 +8783,8 @@ stat.health := F_HealthStatus(
     superState := stat.enabled = EnabledStatus.enabled,
     isGood := (NOT((stat.alarm = HiHiLoLoAlarmStatus.hiHi) OR ((stat.alarm = HiHiLoLoAlarmStatus.loLo) OR error))) AND config_ref.enabled,
     hasWarning := (stat.alarm = HiHiLoLoAlarmStatus.hi) OR ((stat.alarm = HiHiLoLoAlarmStatus.lo) OR (NOT(sharedConfig_ref.alarms.enabled))));
+proc.initialize( isEnabled := NOT((stat.init = InitializationStatus.shutdown) OR ((stat.init = InitializationStatus.initializingFailed) OR ((stat.init = InitializationStatus.initialized) OR (stat.init = InitializationStatus.locked)))) );
+proc.resetPtp( isEnabled := stat.init = InitializationStatus.initialized );
 </xhtml>
           </ST>
         </body>
@@ -8854,7 +8822,9 @@ stat.health := F_HealthStatus(
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.proc.initialize._copyFromModel_Process( model := model.proc.initialize );
+THIS^.proc.resetPtp._copyFromModel_Process( model := model.proc.resetPtp );
+</xhtml>
                 </ST>
               </body>
             </Method>
@@ -8895,9 +8865,12 @@ stat.health := F_HealthStatus(
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">model.isSimulated := THIS^.isSimulated;
 model.actualStatus := THIS^.actualStatus;
 model.value := THIS^.value;
-model.ptp := THIS^.ptp;
+model.ptp1 := THIS^.ptp1;
+model.ptp2 := THIS^.ptp2;
 model.error := THIS^.error;
 model.stat := THIS^.stat;
+THIS^.proc.initialize._copyToModel_Process( model := model.proc.initialize );
+THIS^.proc.resetPtp._copyToModel_Process( model := model.proc.resetPtp );
 </xhtml>
                 </ST>
               </body>
@@ -9076,6 +9049,19 @@ model.stat := THIS^.stat;
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Reference to the shared heater config</xhtml>
               </documentation>
             </variable>
+            <variable name="operator_ref">
+              <type><derived name="OperatorStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Shared operator status</xhtml>
+              </documentation>
+            </variable>
           </inOutVars>
           <localVars>
           </localVars>
@@ -9083,8 +9069,8 @@ model.stat := THIS^.stat;
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">proc.initialize( isEnabled := NOT((stat.init = InitializationStatus.shutdown) OR ((stat.init = InitializationStatus.initializingFailed) OR (stat.init = InitializationStatus.initialized))) );
-proc.reset( isEnabled := TRUE );
-proc.force();
+proc.reset( isEnabled := stat.init = InitializationStatus.initialized );
+proc.force( isEnabled := (operator_ref = OperatorStatus.tech) AND (stat.init = InitializationStatus.initialized) );
 </xhtml>
           </ST>
         </body>
@@ -9227,48 +9213,6 @@ THIS^.proc.force._copyToModel_ForceHeater( model := model.proc.force );
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Average temperature of the outer room in celsius</xhtml>
-              </documentation>
-            </variable>
-            <variable name="totalPower">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Total power of all heaters in watt</xhtml>
-              </documentation>
-            </variable>
-            <variable name="avgPower">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Average power of the heaters in percentage</xhtml>
-              </documentation>
-            </variable>
-            <variable name="isSimulated">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">true if the outroom is simulated</xhtml>
               </documentation>
             </variable>
             <variable name="stat">
@@ -9489,9 +9433,6 @@ THIS^.proc.unlock._copyFromModel_Process( model := model.proc.unlock );
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">model.actualStatus := THIS^.actualStatus;
 model.setPoint := THIS^.setPoint;
 model.avgTemp := THIS^.avgTemp;
-model.totalPower := THIS^.totalPower;
-model.avgPower := THIS^.avgPower;
-model.isSimulated := THIS^.isSimulated;
 model.stat := THIS^.stat;
 THIS^.parts.tFloorE._copyToModel_TempMeasurement( model := model.parts.tFloorE );
 THIS^.parts.tFloorW._copyToModel_TempMeasurement( model := model.parts.tFloorW );
@@ -9541,62 +9482,6 @@ THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Average temperature of the inner room in kelvin</xhtml>
-              </documentation>
-            </variable>
-            <variable name="maxDeviation">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Maximum deviation of the temperature sensors in kelvin</xhtml>
-              </documentation>
-            </variable>
-            <variable name="avgDeviation">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Average deviation of the temperature sensors in kelvin</xhtml>
-              </documentation>
-            </variable>
-            <variable name="totalPower">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Total power of all heaters in percentage</xhtml>
-              </documentation>
-            </variable>
-            <variable name="avgPower">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Average power of the heaters in percentage</xhtml>
               </documentation>
             </variable>
             <variable name="stat">
@@ -9816,10 +9701,6 @@ THIS^.proc.unlock._copyFromModel_Process( model := model.proc.unlock );
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">model.actualStatus := THIS^.actualStatus;
 model.avgTemp := THIS^.avgTemp;
-model.maxDeviation := THIS^.maxDeviation;
-model.avgDeviation := THIS^.avgDeviation;
-model.totalPower := THIS^.totalPower;
-model.avgPower := THIS^.avgPower;
 model.stat := THIS^.stat;
 THIS^.parts.tpT1._copyToModel_TempMeasurement( model := model.parts.tpT1 );
 THIS^.parts.tpT2._copyToModel_TempMeasurement( model := model.parts.tpT2 );
@@ -10185,58 +10066,76 @@ parts.tLidS(
     sharedConfig_ref := config_ref.shared.sensors);
 parts.htLegNE(
     config_ref := config_ref.htLegNE,
-    sharedConfig_ref := config_ref.shared.heaters);
+    sharedConfig_ref := config_ref.shared.heaters,
+    operator_ref := operator_ref);
 parts.htLegNW(
     config_ref := config_ref.htLegNW,
-    sharedConfig_ref := config_ref.shared.heaters);
+    sharedConfig_ref := config_ref.shared.heaters,
+    operator_ref := operator_ref);
 parts.htLegSE(
     config_ref := config_ref.htLegSE,
-    sharedConfig_ref := config_ref.shared.heaters);
+    sharedConfig_ref := config_ref.shared.heaters,
+    operator_ref := operator_ref);
 parts.htLegSW(
     config_ref := config_ref.htLegSW,
-    sharedConfig_ref := config_ref.shared.heaters);
+    sharedConfig_ref := config_ref.shared.heaters,
+    operator_ref := operator_ref);
 parts.htLegTopNE(
     config_ref := config_ref.htLegTopNE,
-    sharedConfig_ref := config_ref.shared.heaters);
+    sharedConfig_ref := config_ref.shared.heaters,
+    operator_ref := operator_ref);
 parts.htLegTopNW(
     config_ref := config_ref.htLegTopNW,
-    sharedConfig_ref := config_ref.shared.heaters);
+    sharedConfig_ref := config_ref.shared.heaters,
+    operator_ref := operator_ref);
 parts.htLegTopSE(
     config_ref := config_ref.htLegTopSE,
-    sharedConfig_ref := config_ref.shared.heaters);
+    sharedConfig_ref := config_ref.shared.heaters,
+    operator_ref := operator_ref);
 parts.htLegTopSW(
     config_ref := config_ref.htLegTopSW,
-    sharedConfig_ref := config_ref.shared.heaters);
+    sharedConfig_ref := config_ref.shared.heaters,
+    operator_ref := operator_ref);
 parts.htBotNE(
     config_ref := config_ref.htBotNE,
-    sharedConfig_ref := config_ref.shared.heaters);
+    sharedConfig_ref := config_ref.shared.heaters,
+    operator_ref := operator_ref);
 parts.htBotNW(
     config_ref := config_ref.htBotNW,
-    sharedConfig_ref := config_ref.shared.heaters);
+    sharedConfig_ref := config_ref.shared.heaters,
+    operator_ref := operator_ref);
 parts.htBotSE(
     config_ref := config_ref.htBotSE,
-    sharedConfig_ref := config_ref.shared.heaters);
+    sharedConfig_ref := config_ref.shared.heaters,
+    operator_ref := operator_ref);
 parts.htBotSW(
     config_ref := config_ref.htBotSW,
-    sharedConfig_ref := config_ref.shared.heaters);
+    sharedConfig_ref := config_ref.shared.heaters,
+    operator_ref := operator_ref);
 parts.htSideN(
     config_ref := config_ref.htSideN,
-    sharedConfig_ref := config_ref.shared.heaters);
+    sharedConfig_ref := config_ref.shared.heaters,
+    operator_ref := operator_ref);
 parts.htSideS(
     config_ref := config_ref.htSideS,
-    sharedConfig_ref := config_ref.shared.heaters);
+    sharedConfig_ref := config_ref.shared.heaters,
+    operator_ref := operator_ref);
 parts.htSideE(
     config_ref := config_ref.htSideE,
-    sharedConfig_ref := config_ref.shared.heaters);
+    sharedConfig_ref := config_ref.shared.heaters,
+    operator_ref := operator_ref);
 parts.htSideW(
     config_ref := config_ref.htSideW,
-    sharedConfig_ref := config_ref.shared.heaters);
+    sharedConfig_ref := config_ref.shared.heaters,
+    operator_ref := operator_ref);
 parts.htLidN(
     config_ref := config_ref.htLidN,
-    sharedConfig_ref := config_ref.shared.heaters);
+    sharedConfig_ref := config_ref.shared.heaters,
+    operator_ref := operator_ref);
 parts.htLidS(
     config_ref := config_ref.htLidS,
-    sharedConfig_ref := config_ref.shared.heaters);
+    sharedConfig_ref := config_ref.shared.heaters,
+    operator_ref := operator_ref);
 stat.busy := F_BusyStatus(
     superState := TRUE,
     isBusy := (stat.control = TempControlStatus.warming_up) OR (stat.init = InitializationStatus.initializing));
@@ -10244,6 +10143,7 @@ proc.initialize( isEnabled := NOT((stat.init = InitializationStatus.initialized)
 proc.start( isEnabled := (stat.control = TempControlStatus.idle) AND ((stat.init = InitializationStatus.initialized) AND (NOT(stat.init = InitializationStatus.locked))) );
 proc.stop( isEnabled := (NOT(stat.control = TempControlStatus.idle)) AND (stat.init = InitializationStatus.initialized) );
 proc.reset( isEnabled := stat.init = InitializationStatus.initialized );
+proc.resetPtp( isEnabled := stat.init = InitializationStatus.initialized );
 proc.lock( isEnabled := (operator_ref = OperatorStatus.tech) AND (NOT(stat.init = InitializationStatus.locked)) );
 proc.unlock( isEnabled := (operator_ref = OperatorStatus.tech) AND (stat.init = InitializationStatus.locked) );
 </xhtml>
@@ -10325,6 +10225,7 @@ THIS^.proc.initialize._copyFromModel_Process( model := model.proc.initialize );
 THIS^.proc.start._copyFromModel_Process( model := model.proc.start );
 THIS^.proc.stop._copyFromModel_Process( model := model.proc.stop );
 THIS^.proc.reset._copyFromModel_Process( model := model.proc.reset );
+THIS^.proc.resetPtp._copyFromModel_Process( model := model.proc.resetPtp );
 THIS^.proc.lock._copyFromModel_Process( model := model.proc.lock );
 THIS^.proc.unlock._copyFromModel_Process( model := model.proc.unlock );
 </xhtml>
@@ -10419,6 +10320,7 @@ THIS^.proc.initialize._copyToModel_Process( model := model.proc.initialize );
 THIS^.proc.start._copyToModel_Process( model := model.proc.start );
 THIS^.proc.stop._copyToModel_Process( model := model.proc.stop );
 THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
+THIS^.proc.resetPtp._copyToModel_Process( model := model.proc.resetPtp );
 THIS^.proc.lock._copyToModel_Process( model := model.proc.lock );
 THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
 </xhtml>
@@ -10461,7 +10363,7 @@ THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Average temperature of the shield in kelvin</xhtml>
               </documentation>
             </variable>
-            <variable name="maxDeviation">
+            <variable name="avgPower">
               <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -10472,21 +10374,7 @@ THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Maximum deviation of the temperature sensors in kelvin</xhtml>
-              </documentation>
-            </variable>
-            <variable name="avgDeviation">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Average deviation of the temperature sensors in kelvin</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Average power of the heaters in percentage</xhtml>
               </documentation>
             </variable>
             <variable name="totalPower">
@@ -10500,21 +10388,7 @@ THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Total power of all heaters in percentage</xhtml>
-              </documentation>
-            </variable>
-            <variable name="avgPower">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Average power of the heaters in percentage</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Total power of all heaters in watt</xhtml>
               </documentation>
             </variable>
             <variable name="stat">
@@ -10676,46 +10550,60 @@ parts.tCentreTh10k(
     sharedConfig_ref := config_ref.shared.sensors);
 parts.htTopNE(
     config_ref := config_ref.htTopNE,
-    sharedConfig_ref := config_ref.shared.heaters);
+    sharedConfig_ref := config_ref.shared.heaters,
+    operator_ref := operator_ref);
 parts.htTopNW(
     config_ref := config_ref.htTopNW,
-    sharedConfig_ref := config_ref.shared.heaters);
+    sharedConfig_ref := config_ref.shared.heaters,
+    operator_ref := operator_ref);
 parts.htTopSE(
     config_ref := config_ref.htTopSE,
-    sharedConfig_ref := config_ref.shared.heaters);
+    sharedConfig_ref := config_ref.shared.heaters,
+    operator_ref := operator_ref);
 parts.htTopSW(
     config_ref := config_ref.htTopSW,
-    sharedConfig_ref := config_ref.shared.heaters);
+    sharedConfig_ref := config_ref.shared.heaters,
+    operator_ref := operator_ref);
 parts.htSideN(
     config_ref := config_ref.htSideN,
-    sharedConfig_ref := config_ref.shared.heaters);
+    sharedConfig_ref := config_ref.shared.heaters,
+    operator_ref := operator_ref);
 parts.htSideS(
     config_ref := config_ref.htSideS,
-    sharedConfig_ref := config_ref.shared.heaters);
+    sharedConfig_ref := config_ref.shared.heaters,
+    operator_ref := operator_ref);
 parts.htSideNE(
     config_ref := config_ref.htSideNE,
-    sharedConfig_ref := config_ref.shared.heaters);
+    sharedConfig_ref := config_ref.shared.heaters,
+    operator_ref := operator_ref);
 parts.htSideSE(
     config_ref := config_ref.htSideSE,
-    sharedConfig_ref := config_ref.shared.heaters);
+    sharedConfig_ref := config_ref.shared.heaters,
+    operator_ref := operator_ref);
 parts.htSideNW(
     config_ref := config_ref.htSideNW,
-    sharedConfig_ref := config_ref.shared.heaters);
+    sharedConfig_ref := config_ref.shared.heaters,
+    operator_ref := operator_ref);
 parts.htSideSW(
     config_ref := config_ref.htSideSW,
-    sharedConfig_ref := config_ref.shared.heaters);
+    sharedConfig_ref := config_ref.shared.heaters,
+    operator_ref := operator_ref);
 parts.htBotNE(
     config_ref := config_ref.htBotNE,
-    sharedConfig_ref := config_ref.shared.heaters);
+    sharedConfig_ref := config_ref.shared.heaters,
+    operator_ref := operator_ref);
 parts.htBotNW(
     config_ref := config_ref.htBotNW,
-    sharedConfig_ref := config_ref.shared.heaters);
+    sharedConfig_ref := config_ref.shared.heaters,
+    operator_ref := operator_ref);
 parts.htBotS(
     config_ref := config_ref.htBotS,
-    sharedConfig_ref := config_ref.shared.heaters);
+    sharedConfig_ref := config_ref.shared.heaters,
+    operator_ref := operator_ref);
 parts.htCentre(
     config_ref := config_ref.htCentre,
-    sharedConfig_ref := config_ref.shared.heaters);
+    sharedConfig_ref := config_ref.shared.heaters,
+    operator_ref := operator_ref);
 proc.initialize( isEnabled := NOT((stat.init = InitializationStatus.initialized) OR (stat.init = InitializationStatus.locked)) );
 proc.start();
 proc.stop();
@@ -10834,10 +10722,8 @@ THIS^.proc.unlock._copyFromModel_Process( model := model.proc.unlock );
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">model.actualStatus := THIS^.actualStatus;
 model.avgTemp := THIS^.avgTemp;
-model.maxDeviation := THIS^.maxDeviation;
-model.avgDeviation := THIS^.avgDeviation;
-model.totalPower := THIS^.totalPower;
 model.avgPower := THIS^.avgPower;
+model.totalPower := THIS^.totalPower;
 model.stat := THIS^.stat;
 THIS^.parts.tTopNE._copyToModel_TempMeasurement( model := model.parts.tTopNE );
 THIS^.parts.tTopNW._copyToModel_TempMeasurement( model := model.parts.tTopNW );
@@ -10914,34 +10800,6 @@ THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Average temperature of the bench in kelvin</xhtml>
               </documentation>
             </variable>
-            <variable name="maxDeviation">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Maximum deviation of the temperature sensors in kelvin</xhtml>
-              </documentation>
-            </variable>
-            <variable name="avgDeviation">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Average deviation of the temperature sensors in kelvin</xhtml>
-              </documentation>
-            </variable>
             <variable name="totalPower">
               <type><LREAL /></type>
               <addData>
@@ -10953,7 +10811,7 @@ THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Total power of all heaters in percentage</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Total power of all heaters in watt</xhtml>
               </documentation>
             </variable>
             <variable name="avgPower">
@@ -10967,7 +10825,7 @@ THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Average power of the heaters in percentage</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Average power of the heaters in %</xhtml>
               </documentation>
             </variable>
             <variable name="stat">
@@ -11114,16 +10972,20 @@ parts.tInOptics(
     sharedConfig_ref := config_ref.shared.sensors);
 parts.htCollBench(
     config_ref := config_ref.htCollBench,
-    sharedConfig_ref := config_ref.shared.heaters);
+    sharedConfig_ref := config_ref.shared.heaters,
+    operator_ref := operator_ref);
 parts.htEchelleCryo(
     config_ref := config_ref.htEchelleCryo,
-    sharedConfig_ref := config_ref.shared.heaters);
+    sharedConfig_ref := config_ref.shared.heaters,
+    operator_ref := operator_ref);
 parts.htCamCryo(
     config_ref := config_ref.htCamCryo,
-    sharedConfig_ref := config_ref.shared.heaters);
+    sharedConfig_ref := config_ref.shared.heaters,
+    operator_ref := operator_ref);
 parts.htEchellePrism(
     config_ref := config_ref.htEchellePrism,
-    sharedConfig_ref := config_ref.shared.heaters);
+    sharedConfig_ref := config_ref.shared.heaters,
+    operator_ref := operator_ref);
 proc.initialize( isEnabled := NOT((stat.init = InitializationStatus.initialized) OR (stat.init = InitializationStatus.locked)) );
 proc.start();
 proc.stop();
@@ -11227,8 +11089,6 @@ THIS^.proc.unlock._copyFromModel_Process( model := model.proc.unlock );
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">model.actualStatus := THIS^.actualStatus;
 model.avgTemp := THIS^.avgTemp;
-model.maxDeviation := THIS^.maxDeviation;
-model.avgDeviation := THIS^.avgDeviation;
 model.totalPower := THIS^.totalPower;
 model.avgPower := THIS^.avgPower;
 model.stat := THIS^.stat;
@@ -11304,34 +11164,6 @@ THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Average temperature of the bench in kelvin</xhtml>
-              </documentation>
-            </variable>
-            <variable name="maxDeviation">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Maximum deviation of the temperature sensors in kelvin</xhtml>
-              </documentation>
-            </variable>
-            <variable name="avgDeviation">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Average deviation of the temperature sensors in kelvin</xhtml>
               </documentation>
             </variable>
             <variable name="totalPower">
@@ -11499,13 +11331,16 @@ parts.tFront(
     sharedConfig_ref := config_ref.shared.sensors);
 parts.htRearOut(
     config_ref := config_ref.htRearOut,
-    sharedConfig_ref := config_ref.shared.heaters);
+    sharedConfig_ref := config_ref.shared.heaters,
+    operator_ref := operator_ref);
 parts.htRearIn(
     config_ref := config_ref.htRearIn,
-    sharedConfig_ref := config_ref.shared.heaters);
+    sharedConfig_ref := config_ref.shared.heaters,
+    operator_ref := operator_ref);
 parts.htRearFront(
     config_ref := config_ref.htRearFront,
-    sharedConfig_ref := config_ref.shared.heaters);
+    sharedConfig_ref := config_ref.shared.heaters,
+    operator_ref := operator_ref);
 proc.initialize( isEnabled := NOT((stat.init = InitializationStatus.initialized) OR (stat.init = InitializationStatus.locked)) );
 proc.start();
 proc.stop();
@@ -11602,8 +11437,6 @@ THIS^.proc.unlock._copyFromModel_Process( model := model.proc.unlock );
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">model.tStatCryoRearOk := THIS^.tStatCryoRearOk;
 model.actualStatus := THIS^.actualStatus;
 model.avgTemp := THIS^.avgTemp;
-model.maxDeviation := THIS^.maxDeviation;
-model.avgDeviation := THIS^.avgDeviation;
 model.totalPower := THIS^.totalPower;
 model.avgPower := THIS^.avgPower;
 model.tStatCryoRearPwr := THIS^.tStatCryoRearPwr;
@@ -11794,8 +11627,8 @@ stat.busy := F_BusyStatus(
     superState := NOT(stat.init = InitializationStatus.shutdown),
     isBusy := (parts.outerRoom.stat.busy = BusyStatus.busy) OR ((parts.innerRoom.stat.busy = BusyStatus.busy) OR ((parts.vessel.stat.busy = BusyStatus.busy) OR ((parts.shield.stat.busy = BusyStatus.busy) OR ((parts.bench.stat.busy = BusyStatus.busy) OR (parts.cryo.stat.busy = BusyStatus.busy))))));
 proc.initialize( isEnabled := NOT((stat.init = InitializationStatus.initialized) OR (stat.init = InitializationStatus.locked)) );
-proc.start();
-proc.stop();
+proc.start( isEnabled := (stat.init = InitializationStatus.initialized) AND (stat.control = TempControlStatus.idle) );
+proc.stop( isEnabled := (stat.init = InitializationStatus.initialized) AND (NOT(stat.control = TempControlStatus.idle)) );
 proc.reset( isEnabled := stat.init = InitializationStatus.initialized );
 proc.lock( isEnabled := (operator_ref = OperatorStatus.tech) AND (NOT(stat.init = InitializationStatus.locked)) );
 proc.unlock( isEnabled := (operator_ref = OperatorStatus.tech) AND (stat.init = InitializationStatus.locked) );
@@ -12626,6 +12459,8 @@ SUPER^._copyToModel_BaseProcess( model := model );
               </Object>
             </Folder>
             <Folder Name="Processes">
+              <Object Name="TempMeasurementProcesses">
+              </Object>
               <Object Name="HeaterControlProcesses">
               </Object>
               <Object Name="OuterRoomControlProcesses">
@@ -12828,6 +12663,8 @@ SUPER^._copyToModel_BaseProcess( model := model );
             <Object Name="M_VacControl">
             </Object>
             <Object Name="M_ThermoVacControl">
+            </Object>
+            <Object Name="M_SM_TempMeasurementProcesses">
             </Object>
             <Object Name="M_SM_HeaterControlProcesses">
             </Object>
