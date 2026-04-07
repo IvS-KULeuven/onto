@@ -185,7 +185,7 @@
       rampVPos                   : { type: t_double  , comment: "velocity of temperature change in K/s while ramping up" }
       rampVNeg                   : { type: t_double  , comment: "velocity of temperature change in K/s while ramping down" }
       rampStart                  : { type: t_double  , comment: "temperature in kelvin at which the ramp starts (e.g. to avoid overshoot)" }
-      hihiPtp               : { type: t_double, comment: "max dev from setpoint for the vessel" }
+      maxPtp               : { type: t_double, comment: "max dev from setpoint for the vessel" }
       hiPtp            : { type: t_double  , comment: "warning dev from setpoint for the vessel" }
  
       shared              : { type: VesselSharedConfig, comment: "Shared config for the vessel" }
@@ -247,6 +247,7 @@
   !CONFIG ShieldConfig:
     items:
       shared              : { type: ShieldSharedConfig, comment: "Shared config for the shield" }
+      maxPtp               : { type: t_double, comment: "max ptp for the cryo" }
 
       #sensors
       tTopNE:       { type: MeasurementConfig2, comment: "Config for shield top NE" }
@@ -286,6 +287,7 @@
   !CONFIG BenchConfig:
     items:
       shared              : { type: BenchSharedConfig, comment: "Shared config for the bench" }
+      maxPtp               : { type: t_double, comment: "max ptp for the cryo" }
 
       #sensors
       tCentre:        { type: MeasurementConfig2, comment: "Config for bench centre" }
@@ -310,6 +312,7 @@
   !CONFIG CryoConfig:
     items:
       shared              : { type: CryoSharedConfig, comment: "Shared config for the cryo" }
+      maxPtp               : { type: t_double, comment: "max ptp for the cryo" }
 
       #sensors
       tRearOut:     { type: MeasurementConfig2, comment: "Config for cryo rear outside" }
@@ -419,7 +422,9 @@
         power                   : { type: t_double, comment: "Current power of the heater in percentage" } 
         deviation               : { type: t_double, comment: "Current error between set point and associated temperature" }
         isControlled            : { type: t_bool, comment: "True if the heater is in controlled state" }
+        isForced                 : { type: t_bool, comment: "True if the heater power is forced (overwriting the normal control)" }
         simTemp                  : { type: t_double, comment: "Simulated temperature for testing the heater control" }
+        
         
     variables_input:     
         setPoint                : { type: t_double, comment: "Current set point of the heater in kelvin" }
@@ -441,6 +446,7 @@
       initialize      : { type: marvel_common.Process                     , comment: "Initialize the heater" }
       reset           : { type: marvel_common.Process                     , comment: "Reset the heater" }
       force : {type: ForceHeater, comment: "Force a certain power output to the heater"}
+      stopForce: {type: marvel_common.Process, comment: "Stop forcing the heater, return to normal control"}
 
     calls:
 
@@ -451,13 +457,14 @@
                                       !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ] ] 
 
         reset:
-          isEnabled    : !EQ [ stat.init, marvel_common.InitializationStatus.initialized ]
+          isEnabled    : !BOOL TRUE
         resetPtp:
           isEnabled    : !EQ [ stat.init, marvel_common.InitializationStatus.initialized ]
 
         force:
-          isEnabled: !AND [ !EQ [operator_ref, marvel_common.OperatorStatus.tech], 
-                        !EQ [stat.init, marvel_common.InitializationStatus.initialized ]]
+          isEnabled: !AND [ !EQ [operator_ref, marvel_common.OperatorStatus.tech], !EQ [stat.init, marvel_common.InitializationStatus.initialized ], !NOT [isForced]]
+        stopForce:
+          isEnabled: !AND [ !EQ [operator_ref, marvel_common.OperatorStatus.tech], isForced ,  !EQ [stat.init, marvel_common.InitializationStatus.initialized ]]
 
 ### main state machines ##########################################################    
 
@@ -498,11 +505,27 @@
 
     calls:
     ###proc's###
+        start:
+          isEnabled    : !AND [ !EQ [ stat.control, TempControlStatus.idle ], !EQ [ stat.init, marvel_common.InitializationStatus.initialized ],!NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
+        stop:
+          isEnabled    : !AND [ !NOT [!EQ [ stat.control, TempControlStatus.idle ] ], !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ]
+
         initialize:
-          isEnabled    : !NOT [ !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ],
-                                      !EQ [ stat.init, marvel_common.InitializationStatus.initializingFailed ],
-                                      !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ,
-                                      !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ] 
+          isEnabled    : !NOT [ !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ,
+                                      !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
+        lock:
+          isEnabled    : !AND [  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ,
+                                !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
+        unlock:
+          isEnabled    : !AND [  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ,
+                                !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
+        reset:
+          isEnabled : !BOOL TRUE
+
+      ##stat##
+        busy:
+          superState   : !BOOL TRUE
+          isBusy       : !OR [ !EQ [ stat.control, TempControlStatus.warming_up ], !EQ [ stat.init, marvel_common.InitializationStatus.initializing ] ]
     ###parts###
         tFloorE:      { config_ref: config_ref.tFloorE, sharedConfig_ref: config_ref.shared.sensors }
         tFloorW:      { config_ref: config_ref.tFloorW, sharedConfig_ref: config_ref.shared.sensors }
@@ -546,11 +569,27 @@
 
     calls:
     ###proc's###
+        start:
+          isEnabled    : !AND [ !EQ [ stat.control, TempControlStatus.idle ], !EQ [ stat.init, marvel_common.InitializationStatus.initialized ],!NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
+        stop:
+          isEnabled    : !AND [ !NOT [!EQ [ stat.control, TempControlStatus.idle ] ], !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ]
+
         initialize:
-          isEnabled    : !NOT [ !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ],
-                                      !EQ [ stat.init, marvel_common.InitializationStatus.initializingFailed ],
-                                      !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ,
-                                      !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ] 
+          isEnabled    : !NOT [ !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ,
+                                      !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
+        lock:
+          isEnabled    : !AND [  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ,
+                                !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
+        unlock:
+          isEnabled    : !AND [  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ,
+                                !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
+        reset:
+          isEnabled : !BOOL TRUE
+   
+      ##stat##
+        busy:
+          superState   : !BOOL TRUE
+          isBusy       : !OR [ !EQ [ stat.control, TempControlStatus.warming_up ], !EQ [ stat.init, marvel_common.InitializationStatus.initializing ] ]
     ###parts###
         tpT1          :  { config_ref : config_ref.tpT1, sharedConfig_ref : config_ref.shared.sensors }
         tpT2          :  { config_ref : config_ref.tpT2, sharedConfig_ref : config_ref.shared.sensors }
@@ -675,7 +714,7 @@
           isEnabled    : !AND [  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ,
                                 !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
         reset:
-          isEnabled : !EQ [ stat.init, marvel_common.InitializationStatus.initialized ]
+          isEnabled : !BOOL TRUE
         
         resetPtp:
           isEnabled : !EQ [ stat.init, marvel_common.InitializationStatus.initialized ]
@@ -798,12 +837,18 @@
       start                       : { type: marvel_common.Process                     , comment: "Start warming up" }
       stop                        : { type: marvel_common.Process                     , comment: "Stop heating" }
       reset                       : { type: marvel_common.Process                     , comment: "Reset complete" }
+      resetPtp                    : { type: marvel_common.Process                     , comment: "Reset the ptp values" }
       lock                        : { type: marvel_common.Process                     , comment: "Lock the shield control (e.g. when the shield is opened)" }
       unlock                      : { type: marvel_common.Process                     , comment: "Unlock the shield control (e.g. when the shield is closed)" }
 
     calls:
     ###proc's###
       ##proc##
+        start:
+          isEnabled    : !AND [ !EQ [ stat.control, TempControlStatus.idle ], !EQ [ stat.init, marvel_common.InitializationStatus.initialized ],!NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
+        stop:
+          isEnabled    : !AND [ !NOT [!EQ [ stat.control, TempControlStatus.idle ] ], !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ]
+
         initialize:
           isEnabled    : !NOT [ !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ,
                                       !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
@@ -814,7 +859,14 @@
           isEnabled    : !AND [  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ,
                                 !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
         reset:
+          isEnabled : !BOOL TRUE
+        
+        resetPtp:
           isEnabled : !EQ [ stat.init, marvel_common.InitializationStatus.initialized ]
+      ##stat##
+        busy:
+          superState   : !BOOL TRUE
+          isBusy       : !OR [ !EQ [ stat.control, TempControlStatus.warming_up ], !EQ [ stat.init, marvel_common.InitializationStatus.initializing ] ]
     ###parts###
         #sensors
         tTopNE:       { config_ref: config_ref.tTopNE, sharedConfig_ref: config_ref.shared.sensors }
@@ -894,12 +946,18 @@
       initialize                  : { type: marvel_common.Process                     , comment: "Start initializing" }
       start                       : { type: marvel_common.Process                     , comment: "Start warming up" }
       stop                        : { type: marvel_common.Process                     , comment: "Stop heating" }
-      reset                       : { type: marvel_common.Process                     , comment: "Reset complete" }   
+      reset                       : { type: marvel_common.Process                     , comment: "Reset complete" }  
+      resetPtp                    : { type: marvel_common.Process                     , comment: "Reset the ptp values" } 
       lock                        : { type: marvel_common.Process                     , comment: "Lock the bench control (e.g. when the bench is opened)" }
       unlock                      : { type: marvel_common.Process                     , comment: "Unlock the bench control (e.g. when the bench is closed)" }
 
     calls:
       ##proc##
+        start:
+          isEnabled    : !AND [ !EQ [ stat.control, TempControlStatus.idle ], !EQ [ stat.init, marvel_common.InitializationStatus.initialized ],!NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
+        stop:
+          isEnabled    : !AND [ !NOT [!EQ [ stat.control, TempControlStatus.idle ] ], !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ]
+
         initialize:
           isEnabled    : !NOT [ !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ,
                                       !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
@@ -910,7 +968,14 @@
           isEnabled    : !AND [  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ,
                                 !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
         reset:
+          isEnabled : !BOOL TRUE
+        
+        resetPtp:
           isEnabled : !EQ [ stat.init, marvel_common.InitializationStatus.initialized ]
+      ##stat##
+        busy:
+          superState   : !BOOL TRUE
+          isBusy       : !OR [ !EQ [ stat.control, TempControlStatus.warming_up ], !EQ [ stat.init, marvel_common.InitializationStatus.initializing ] ]
     ###parts###
         #sensors
         tCentre:        { config_ref: config_ref.tCentre, sharedConfig_ref: config_ref.shared.sensors }
@@ -973,12 +1038,17 @@
       start                       : { type: marvel_common.Process                     , comment: "Start warming up" }
       stop                        : { type: marvel_common.Process                     , comment: "Stop heating" }
       reset                       : { type: marvel_common.Process                     , comment: "Reset complete" }   
+      resetPtp                    : { type: marvel_common.Process                     , comment: "Reset the ptp values" }
       lock                        : { type: marvel_common.Process                     , comment: "Lock the bench control (e.g. when the bench is opened)" }
       unlock                      : { type: marvel_common.Process                     , comment: "Unlock the bench control (e.g. when the bench is closed)" }
 
     calls:
     ###proc's###
-      ##proc##
+        start:
+          isEnabled    : !AND [ !EQ [ stat.control, TempControlStatus.idle ], !EQ [ stat.init, marvel_common.InitializationStatus.initialized ],!NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
+        stop:
+          isEnabled    : !AND [ !NOT [!EQ [ stat.control, TempControlStatus.idle ] ], !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ]
+
         initialize:
           isEnabled    : !NOT [ !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ,
                                       !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
@@ -989,7 +1059,14 @@
           isEnabled    : !AND [  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ,
                                 !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
         reset:
+          isEnabled : !BOOL TRUE
+        
+        resetPtp:
           isEnabled : !EQ [ stat.init, marvel_common.InitializationStatus.initialized ]
+      ##stat##
+        busy:
+          superState   : !BOOL TRUE
+          isBusy       : !OR [ !EQ [ stat.control, TempControlStatus.warming_up ], !EQ [ stat.init, marvel_common.InitializationStatus.initializing ] ]
 
     ###parts###
         #sensors
@@ -1013,6 +1090,9 @@
       activity_ref            : { type: marvel_common.ActivityStatus              , comment: "Shared activity status"}
       services_ref            : { type: marvel_services.Services                  , comment: "Shared services", expand: false}
       operator_ref            : { type: marvel_common.OperatorStatus              , comment: "Shared operator status" }
+    
+    variables_output:
+      error:         { type: t_bool, comment: "Indicates if thermo itself has an error" }
 
     parts:
       outerRoom:
@@ -1087,6 +1167,7 @@
       initialize                  : { type: marvel_common.Process                     , comment: "Start initializing" }
       start                       : { type: marvel_common.Process                     , comment: "Start warming up" }
       stop                        : { type: marvel_common.Process                     , comment: "Stop heating" }
+      resetPtp                    : { type: marvel_common.Process                     , comment: "Reset the ptp values" }
       reset                       : { type: marvel_common.Process                     , comment: "Reset complete" }   
       lock                        : { type: marvel_common.Process                     , comment: "Lock the vessel control (e.g. when the vessel is opened)" }
       unlock                      : { type: marvel_common.Process                     , comment: "Unlock the vessel control (e.g. when the vessel is closed)" }
@@ -1097,20 +1178,21 @@
     ##stat##
       health:
           superState          : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ] ]
-          isGood :  !MTCS_SUMMARIZE_GOOD [ parts.outerRoom, parts.innerRoom, parts.vessel, parts.shield, parts.bench, parts.cryo ]
+          isGood :  !AND [!MTCS_SUMMARIZE_GOOD [ parts.outerRoom, parts.innerRoom, parts.vessel, parts.shield, parts.bench, parts.cryo ], !NOT [error]]
           hasWarning: !MTCS_SUMMARIZE_WARN [ parts.outerRoom, parts.innerRoom, parts.vessel, parts.shield, parts.bench, parts.cryo ]
+
       busy:
           superState          : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ] ]
           isBusy : !MTCS_SUMMARIZE_BUSY [ parts.outerRoom, parts.innerRoom, parts.vessel, parts.shield, parts.bench, parts.cryo ]
 
       control:
-          superState          : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ] ]
+          superState          : !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] 
           isActive: !NOT [ !AND [ !EQ [parts.outerRoom.stat.control, TempControlStatus.idle ],
                                   !EQ [parts.innerRoom.stat.control, TempControlStatus.idle],
                                   !EQ [parts.vessel.stat.control, TempControlStatus.idle ],
                                   !EQ [parts.shield.stat.control, TempControlStatus.idle ],
                                   !EQ [parts.bench.stat.control, TempControlStatus.idle ],
-                                  !EQ [parts.cryo.stat.control, TempControlStatus.idle ] ] ]
+                                  !EQ [parts.cryo.stat.control, TempControlStatus.idle ], ] ]
                                   
           isWarmingUp: !OR [ !EQ [parts.outerRoom.stat.control, TempControlStatus.warming_up ],
                                   !EQ [parts.innerRoom.stat.control, TempControlStatus.warming_up],
@@ -1126,6 +1208,26 @@
                                   !EQ [parts.bench.stat.control, TempControlStatus.controlled ],
                                   !EQ [parts.cryo.stat.control, TempControlStatus.controlled ] ]
 
+      start:
+        isEnabled    : !AND [ !EQ [ stat.control, TempControlStatus.idle ], !EQ [ stat.init, marvel_common.InitializationStatus.initialized ],!NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
+      stop:
+        isEnabled    : !AND [ !NOT [!EQ [ stat.control, TempControlStatus.idle ] ], !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ]
+
+      initialize:
+        isEnabled    : !NOT [ !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ,
+                                    !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
+      lock:
+        isEnabled    : !AND [  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ,
+                              !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
+      unlock:
+        isEnabled    : !AND [  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ,
+                              !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
+      reset:
+        isEnabled : !BOOL TRUE
+      
+      resetPtp:
+        isEnabled : !EQ [ stat.init, marvel_common.InitializationStatus.initialized ]
+   
     ##proc##
       initialize:
         isEnabled    : !NOT [ !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ,
@@ -1222,7 +1324,7 @@
           isEnabled    : !AND [  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ,
                                 !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
         reset:
-          isEnabled : !EQ [ stat.init, marvel_common.InitializationStatus.initialized ]
+          isEnabled : !BOOL TRUE
 
   ### MAIN STATEMACHINE #################################### 
 
@@ -1236,6 +1338,7 @@
 
       variables_output:
         config            : { type: ThermoVacConfig                          , comment: "active configuration of the thermo vac system" }
+        error:           { type: t_bool, comment: "Indicates if thermo vac itself has an error" }
 
       references:
         activity_ref            : { type: marvel_common.ActivityStatus              , comment: "Shared activity status"}
@@ -1284,7 +1387,7 @@
       ##stat##
         health:
           superState          : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ] ]
-          isGood :  !MTCS_SUMMARIZE_GOOD [ parts.thermo, parts.vac ]
+          isGood :  !AND [ !MTCS_SUMMARIZE_GOOD [ parts.thermo, parts.vac ], !NOT [error] ]
           hasWarning: !MTCS_SUMMARIZE_WARN [ parts.thermo, parts.vac ]
         busy:
           superState          : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ] ]
@@ -1300,7 +1403,7 @@
           isEnabled    : !AND [  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ,
                                 !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
         reset:
-          isEnabled : !EQ [ stat.init, marvel_common.InitializationStatus.initialized ]
+          isEnabled : !BOOL TRUE
 
       ###parts##
         thermo:

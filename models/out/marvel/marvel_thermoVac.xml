@@ -1536,6 +1536,19 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Force a certain power output to the heater</xhtml>
               </documentation>
             </variable>
+            <variable name="stopForce">
+              <type><derived name="Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Stop forcing the heater, return to normal control</xhtml>
+              </documentation>
+            </variable>
           </struct>
         </baseType>
       </dataType>
@@ -1859,6 +1872,19 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Reset complete</xhtml>
               </documentation>
             </variable>
+            <variable name="resetPtp">
+              <type><derived name="Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Reset the ptp values</xhtml>
+              </documentation>
+            </variable>
             <variable name="lock">
               <type><derived name="Process" /></type>
               <addData>
@@ -1941,6 +1967,19 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Reset complete</xhtml>
+              </documentation>
+            </variable>
+            <variable name="resetPtp">
+              <type><derived name="Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Reset the ptp values</xhtml>
               </documentation>
             </variable>
             <variable name="lock">
@@ -2027,6 +2066,19 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Reset complete</xhtml>
               </documentation>
             </variable>
+            <variable name="resetPtp">
+              <type><derived name="Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Reset the ptp values</xhtml>
+              </documentation>
+            </variable>
             <variable name="lock">
               <type><derived name="Process" /></type>
               <addData>
@@ -2096,6 +2148,19 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Stop heating</xhtml>
+              </documentation>
+            </variable>
+            <variable name="resetPtp">
+              <type><derived name="Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Reset the ptp values</xhtml>
               </documentation>
             </variable>
             <variable name="reset">
@@ -3671,7 +3736,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">temperature in kelvin at which the ramp starts (e.g. to avoid overshoot)</xhtml>
               </documentation>
             </variable>
-            <variable name="hihiPtp">
+            <variable name="maxPtp">
               <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -4223,6 +4288,19 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Shared config for the shield</xhtml>
               </documentation>
             </variable>
+            <variable name="maxPtp">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">max ptp for the cryo</xhtml>
+              </documentation>
+            </variable>
             <variable name="tTopNE">
               <type><derived name="MeasurementConfig2" /></type>
               <addData>
@@ -4619,6 +4697,19 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Shared config for the bench</xhtml>
               </documentation>
             </variable>
+            <variable name="maxPtp">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">max ptp for the cryo</xhtml>
+              </documentation>
+            </variable>
             <variable name="tCentre">
               <type><derived name="MeasurementConfig2" /></type>
               <addData>
@@ -4818,6 +4909,19 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Shared config for the cryo</xhtml>
+              </documentation>
+            </variable>
+            <variable name="maxPtp">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">max ptp for the cryo</xhtml>
               </documentation>
             </variable>
             <variable name="tRearOut">
@@ -5286,6 +5390,21 @@
               </documentation>
             </variable>
             <variable name="isControlled">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="isForced">
               <type><BOOL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -6116,6 +6235,21 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
+            <variable name="error">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
             <variable name="stat">
               <type><derived name="ThermoControlStatuses" /></type>
               <addData>
@@ -6245,6 +6379,21 @@
             </variable>
             <variable name="config">
               <type><derived name="ThermoVacConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="error">
+              <type><BOOL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -6394,6 +6543,19 @@
             </variable>
             <variable name="force">
               <type><derived name="M_ForceHeater" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="stopForce">
+              <type><derived name="M_Process" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -7727,6 +7889,19 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
+            <variable name="resetPtp">
+              <type><derived name="M_Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
             <variable name="lock">
               <type><derived name="M_Process" /></type>
               <addData>
@@ -7999,6 +8174,19 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
+            <variable name="resetPtp">
+              <type><derived name="M_Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
             <variable name="lock">
               <type><derived name="M_Process" /></type>
               <addData>
@@ -8167,6 +8355,19 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
+            <variable name="resetPtp">
+              <type><derived name="M_Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
             <variable name="lock">
               <type><derived name="M_Process" /></type>
               <addData>
@@ -8310,6 +8511,19 @@
               </documentation>
             </variable>
             <variable name="stop">
+              <type><derived name="M_Process" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="resetPtp">
               <type><derived name="M_Process" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -8981,6 +9195,20 @@ THIS^.proc.resetPtp._copyToModel_Process( model := model.proc.resetPtp );
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the heater is in controlled state</xhtml>
               </documentation>
             </variable>
+            <variable name="isForced">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the heater power is forced (overwriting the normal control)</xhtml>
+              </documentation>
+            </variable>
             <variable name="simTemp">
               <type><LREAL /></type>
               <addData>
@@ -9069,8 +9297,9 @@ THIS^.proc.resetPtp._copyToModel_Process( model := model.proc.resetPtp );
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">proc.initialize( isEnabled := NOT((stat.init = InitializationStatus.shutdown) OR ((stat.init = InitializationStatus.initializingFailed) OR (stat.init = InitializationStatus.initialized))) );
-proc.reset( isEnabled := stat.init = InitializationStatus.initialized );
-proc.force( isEnabled := (operator_ref = OperatorStatus.tech) AND (stat.init = InitializationStatus.initialized) );
+proc.reset( isEnabled := TRUE );
+proc.force( isEnabled := (operator_ref = OperatorStatus.tech) AND ((stat.init = InitializationStatus.initialized) AND (NOT(isForced))) );
+proc.stopForce( isEnabled := (operator_ref = OperatorStatus.tech) AND (isForced AND (stat.init = InitializationStatus.initialized)) );
 </xhtml>
           </ST>
         </body>
@@ -9111,6 +9340,7 @@ proc.force( isEnabled := (operator_ref = OperatorStatus.tech) AND (stat.init = I
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.proc.initialize._copyFromModel_Process( model := model.proc.initialize );
 THIS^.proc.reset._copyFromModel_Process( model := model.proc.reset );
 THIS^.proc.force._copyFromModel_ForceHeater( model := model.proc.force );
+THIS^.proc.stopForce._copyFromModel_Process( model := model.proc.stopForce );
 </xhtml>
                 </ST>
               </body>
@@ -9156,11 +9386,13 @@ model.actualStatus := THIS^.actualStatus;
 model.power := THIS^.power;
 model.deviation := THIS^.deviation;
 model.isControlled := THIS^.isControlled;
+model.isForced := THIS^.isForced;
 model.simTemp := THIS^.simTemp;
 model.stat := THIS^.stat;
 THIS^.proc.initialize._copyToModel_Process( model := model.proc.initialize );
 THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
 THIS^.proc.force._copyToModel_ForceHeater( model := model.proc.force );
+THIS^.proc.stopForce._copyToModel_Process( model := model.proc.stopForce );
 </xhtml>
                 </ST>
               </body>
@@ -9339,12 +9571,15 @@ parts.tTopN(
 parts.tTopS(
     config_ref := config_ref.tTopS,
     sharedConfig_ref := config_ref.shared.sensors);
-proc.initialize( isEnabled := NOT((stat.init = InitializationStatus.shutdown) OR ((stat.init = InitializationStatus.initializingFailed) OR ((stat.init = InitializationStatus.initialized) OR (stat.init = InitializationStatus.locked)))) );
-proc.start();
-proc.stop();
-proc.reset();
-proc.lock();
-proc.unlock();
+stat.busy := F_BusyStatus(
+    superState := TRUE,
+    isBusy := (stat.control = TempControlStatus.warming_up) OR (stat.init = InitializationStatus.initializing));
+proc.initialize( isEnabled := NOT((stat.init = InitializationStatus.initialized) OR (stat.init = InitializationStatus.locked)) );
+proc.start( isEnabled := (stat.control = TempControlStatus.idle) AND ((stat.init = InitializationStatus.initialized) AND (NOT(stat.init = InitializationStatus.locked))) );
+proc.stop( isEnabled := (NOT(stat.control = TempControlStatus.idle)) AND (stat.init = InitializationStatus.initialized) );
+proc.reset( isEnabled := TRUE );
+proc.lock( isEnabled := (operator_ref = OperatorStatus.tech) AND (NOT(stat.init = InitializationStatus.locked)) );
+proc.unlock( isEnabled := (operator_ref = OperatorStatus.tech) AND (stat.init = InitializationStatus.locked) );
 </xhtml>
           </ST>
         </body>
@@ -9608,12 +9843,15 @@ parts.tpT3(
 parts.tpT4(
     config_ref := config_ref.tpT4,
     sharedConfig_ref := config_ref.shared.sensors);
-proc.initialize( isEnabled := NOT((stat.init = InitializationStatus.shutdown) OR ((stat.init = InitializationStatus.initializingFailed) OR ((stat.init = InitializationStatus.initialized) OR (stat.init = InitializationStatus.locked)))) );
-proc.start();
-proc.stop();
-proc.reset();
-proc.lock();
-proc.unlock();
+stat.busy := F_BusyStatus(
+    superState := TRUE,
+    isBusy := (stat.control = TempControlStatus.warming_up) OR (stat.init = InitializationStatus.initializing));
+proc.initialize( isEnabled := NOT((stat.init = InitializationStatus.initialized) OR (stat.init = InitializationStatus.locked)) );
+proc.start( isEnabled := (stat.control = TempControlStatus.idle) AND ((stat.init = InitializationStatus.initialized) AND (NOT(stat.init = InitializationStatus.locked))) );
+proc.stop( isEnabled := (NOT(stat.control = TempControlStatus.idle)) AND (stat.init = InitializationStatus.initialized) );
+proc.reset( isEnabled := TRUE );
+proc.lock( isEnabled := (operator_ref = OperatorStatus.tech) AND (NOT(stat.init = InitializationStatus.locked)) );
+proc.unlock( isEnabled := (operator_ref = OperatorStatus.tech) AND (stat.init = InitializationStatus.locked) );
 </xhtml>
           </ST>
         </body>
@@ -10142,7 +10380,7 @@ stat.busy := F_BusyStatus(
 proc.initialize( isEnabled := NOT((stat.init = InitializationStatus.initialized) OR (stat.init = InitializationStatus.locked)) );
 proc.start( isEnabled := (stat.control = TempControlStatus.idle) AND ((stat.init = InitializationStatus.initialized) AND (NOT(stat.init = InitializationStatus.locked))) );
 proc.stop( isEnabled := (NOT(stat.control = TempControlStatus.idle)) AND (stat.init = InitializationStatus.initialized) );
-proc.reset( isEnabled := stat.init = InitializationStatus.initialized );
+proc.reset( isEnabled := TRUE );
 proc.resetPtp( isEnabled := stat.init = InitializationStatus.initialized );
 proc.lock( isEnabled := (operator_ref = OperatorStatus.tech) AND (NOT(stat.init = InitializationStatus.locked)) );
 proc.unlock( isEnabled := (operator_ref = OperatorStatus.tech) AND (stat.init = InitializationStatus.locked) );
@@ -10604,10 +10842,14 @@ parts.htCentre(
     config_ref := config_ref.htCentre,
     sharedConfig_ref := config_ref.shared.heaters,
     operator_ref := operator_ref);
+stat.busy := F_BusyStatus(
+    superState := TRUE,
+    isBusy := (stat.control = TempControlStatus.warming_up) OR (stat.init = InitializationStatus.initializing));
 proc.initialize( isEnabled := NOT((stat.init = InitializationStatus.initialized) OR (stat.init = InitializationStatus.locked)) );
-proc.start();
-proc.stop();
-proc.reset( isEnabled := stat.init = InitializationStatus.initialized );
+proc.start( isEnabled := (stat.control = TempControlStatus.idle) AND ((stat.init = InitializationStatus.initialized) AND (NOT(stat.init = InitializationStatus.locked))) );
+proc.stop( isEnabled := (NOT(stat.control = TempControlStatus.idle)) AND (stat.init = InitializationStatus.initialized) );
+proc.reset( isEnabled := TRUE );
+proc.resetPtp( isEnabled := stat.init = InitializationStatus.initialized );
 proc.lock( isEnabled := (operator_ref = OperatorStatus.tech) AND (NOT(stat.init = InitializationStatus.locked)) );
 proc.unlock( isEnabled := (operator_ref = OperatorStatus.tech) AND (stat.init = InitializationStatus.locked) );
 </xhtml>
@@ -10680,6 +10922,7 @@ THIS^.proc.initialize._copyFromModel_Process( model := model.proc.initialize );
 THIS^.proc.start._copyFromModel_Process( model := model.proc.start );
 THIS^.proc.stop._copyFromModel_Process( model := model.proc.stop );
 THIS^.proc.reset._copyFromModel_Process( model := model.proc.reset );
+THIS^.proc.resetPtp._copyFromModel_Process( model := model.proc.resetPtp );
 THIS^.proc.lock._copyFromModel_Process( model := model.proc.lock );
 THIS^.proc.unlock._copyFromModel_Process( model := model.proc.unlock );
 </xhtml>
@@ -10758,6 +11001,7 @@ THIS^.proc.initialize._copyToModel_Process( model := model.proc.initialize );
 THIS^.proc.start._copyToModel_Process( model := model.proc.start );
 THIS^.proc.stop._copyToModel_Process( model := model.proc.stop );
 THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
+THIS^.proc.resetPtp._copyToModel_Process( model := model.proc.resetPtp );
 THIS^.proc.lock._copyToModel_Process( model := model.proc.lock );
 THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
 </xhtml>
@@ -10986,10 +11230,14 @@ parts.htEchellePrism(
     config_ref := config_ref.htEchellePrism,
     sharedConfig_ref := config_ref.shared.heaters,
     operator_ref := operator_ref);
+stat.busy := F_BusyStatus(
+    superState := TRUE,
+    isBusy := (stat.control = TempControlStatus.warming_up) OR (stat.init = InitializationStatus.initializing));
 proc.initialize( isEnabled := NOT((stat.init = InitializationStatus.initialized) OR (stat.init = InitializationStatus.locked)) );
-proc.start();
-proc.stop();
-proc.reset( isEnabled := stat.init = InitializationStatus.initialized );
+proc.start( isEnabled := (stat.control = TempControlStatus.idle) AND ((stat.init = InitializationStatus.initialized) AND (NOT(stat.init = InitializationStatus.locked))) );
+proc.stop( isEnabled := (NOT(stat.control = TempControlStatus.idle)) AND (stat.init = InitializationStatus.initialized) );
+proc.reset( isEnabled := TRUE );
+proc.resetPtp( isEnabled := stat.init = InitializationStatus.initialized );
 proc.lock( isEnabled := (operator_ref = OperatorStatus.tech) AND (NOT(stat.init = InitializationStatus.locked)) );
 proc.unlock( isEnabled := (operator_ref = OperatorStatus.tech) AND (stat.init = InitializationStatus.locked) );
 </xhtml>
@@ -11047,6 +11295,7 @@ THIS^.proc.initialize._copyFromModel_Process( model := model.proc.initialize );
 THIS^.proc.start._copyFromModel_Process( model := model.proc.start );
 THIS^.proc.stop._copyFromModel_Process( model := model.proc.stop );
 THIS^.proc.reset._copyFromModel_Process( model := model.proc.reset );
+THIS^.proc.resetPtp._copyFromModel_Process( model := model.proc.resetPtp );
 THIS^.proc.lock._copyFromModel_Process( model := model.proc.lock );
 THIS^.proc.unlock._copyFromModel_Process( model := model.proc.unlock );
 </xhtml>
@@ -11110,6 +11359,7 @@ THIS^.proc.initialize._copyToModel_Process( model := model.proc.initialize );
 THIS^.proc.start._copyToModel_Process( model := model.proc.start );
 THIS^.proc.stop._copyToModel_Process( model := model.proc.stop );
 THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
+THIS^.proc.resetPtp._copyToModel_Process( model := model.proc.resetPtp );
 THIS^.proc.lock._copyToModel_Process( model := model.proc.lock );
 THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
 </xhtml>
@@ -11341,10 +11591,14 @@ parts.htRearFront(
     config_ref := config_ref.htRearFront,
     sharedConfig_ref := config_ref.shared.heaters,
     operator_ref := operator_ref);
+stat.busy := F_BusyStatus(
+    superState := TRUE,
+    isBusy := (stat.control = TempControlStatus.warming_up) OR (stat.init = InitializationStatus.initializing));
 proc.initialize( isEnabled := NOT((stat.init = InitializationStatus.initialized) OR (stat.init = InitializationStatus.locked)) );
-proc.start();
-proc.stop();
-proc.reset( isEnabled := stat.init = InitializationStatus.initialized );
+proc.start( isEnabled := (stat.control = TempControlStatus.idle) AND ((stat.init = InitializationStatus.initialized) AND (NOT(stat.init = InitializationStatus.locked))) );
+proc.stop( isEnabled := (NOT(stat.control = TempControlStatus.idle)) AND (stat.init = InitializationStatus.initialized) );
+proc.reset( isEnabled := TRUE );
+proc.resetPtp( isEnabled := stat.init = InitializationStatus.initialized );
 proc.lock( isEnabled := (operator_ref = OperatorStatus.tech) AND (NOT(stat.init = InitializationStatus.locked)) );
 proc.unlock( isEnabled := (operator_ref = OperatorStatus.tech) AND (stat.init = InitializationStatus.locked) );
 </xhtml>
@@ -11394,6 +11648,7 @@ THIS^.proc.initialize._copyFromModel_Process( model := model.proc.initialize );
 THIS^.proc.start._copyFromModel_Process( model := model.proc.start );
 THIS^.proc.stop._copyFromModel_Process( model := model.proc.stop );
 THIS^.proc.reset._copyFromModel_Process( model := model.proc.reset );
+THIS^.proc.resetPtp._copyFromModel_Process( model := model.proc.resetPtp );
 THIS^.proc.lock._copyFromModel_Process( model := model.proc.lock );
 THIS^.proc.unlock._copyFromModel_Process( model := model.proc.unlock );
 </xhtml>
@@ -11451,6 +11706,7 @@ THIS^.proc.initialize._copyToModel_Process( model := model.proc.initialize );
 THIS^.proc.start._copyToModel_Process( model := model.proc.start );
 THIS^.proc.stop._copyToModel_Process( model := model.proc.stop );
 THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
+THIS^.proc.resetPtp._copyToModel_Process( model := model.proc.resetPtp );
 THIS^.proc.lock._copyToModel_Process( model := model.proc.lock );
 THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
 </xhtml>
@@ -11477,6 +11733,20 @@ THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Current status description</xhtml>
+              </documentation>
+            </variable>
+            <variable name="error">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Indicates if thermo itself has an error</xhtml>
               </documentation>
             </variable>
             <variable name="stat">
@@ -11616,10 +11886,10 @@ parts.cryo(
     sharedConfig_ref := config_ref.shared);
 stat.health := F_HealthStatus(
     superState := NOT(stat.init = InitializationStatus.shutdown),
-    isGood := ((parts.outerRoom.stat.health = HealthStatus.good) OR (parts.outerRoom.stat.health = HealthStatus.warning)) AND (((parts.innerRoom.stat.health = HealthStatus.good) OR (parts.innerRoom.stat.health = HealthStatus.warning)) AND (((parts.vessel.stat.health = HealthStatus.good) OR (parts.vessel.stat.health = HealthStatus.warning)) AND (((parts.shield.stat.health = HealthStatus.good) OR (parts.shield.stat.health = HealthStatus.warning)) AND (((parts.bench.stat.health = HealthStatus.good) OR (parts.bench.stat.health = HealthStatus.warning)) AND ((parts.cryo.stat.health = HealthStatus.good) OR (parts.cryo.stat.health = HealthStatus.warning)))))),
+    isGood := (((parts.outerRoom.stat.health = HealthStatus.good) OR (parts.outerRoom.stat.health = HealthStatus.warning)) AND (((parts.innerRoom.stat.health = HealthStatus.good) OR (parts.innerRoom.stat.health = HealthStatus.warning)) AND (((parts.vessel.stat.health = HealthStatus.good) OR (parts.vessel.stat.health = HealthStatus.warning)) AND (((parts.shield.stat.health = HealthStatus.good) OR (parts.shield.stat.health = HealthStatus.warning)) AND (((parts.bench.stat.health = HealthStatus.good) OR (parts.bench.stat.health = HealthStatus.warning)) AND ((parts.cryo.stat.health = HealthStatus.good) OR (parts.cryo.stat.health = HealthStatus.warning))))))) AND (NOT(error)),
     hasWarning := (parts.outerRoom.stat.health = HealthStatus.warning) OR ((parts.innerRoom.stat.health = HealthStatus.warning) OR ((parts.vessel.stat.health = HealthStatus.warning) OR ((parts.shield.stat.health = HealthStatus.warning) OR ((parts.bench.stat.health = HealthStatus.warning) OR (parts.cryo.stat.health = HealthStatus.warning))))));
 stat.control := F_TempControlStatus(
-    superState := NOT(stat.init = InitializationStatus.shutdown),
+    superState := stat.init = InitializationStatus.initialized,
     isActive := NOT((parts.outerRoom.stat.control = TempControlStatus.idle) AND ((parts.innerRoom.stat.control = TempControlStatus.idle) AND ((parts.vessel.stat.control = TempControlStatus.idle) AND ((parts.shield.stat.control = TempControlStatus.idle) AND ((parts.bench.stat.control = TempControlStatus.idle) AND (parts.cryo.stat.control = TempControlStatus.idle)))))),
     isWarmingUp := (parts.outerRoom.stat.control = TempControlStatus.warming_up) OR ((parts.innerRoom.stat.control = TempControlStatus.warming_up) OR ((parts.vessel.stat.control = TempControlStatus.warming_up) OR ((parts.shield.stat.control = TempControlStatus.warming_up) OR ((parts.bench.stat.control = TempControlStatus.warming_up) OR (parts.cryo.stat.control = TempControlStatus.warming_up))))),
     isControlled := (parts.outerRoom.stat.control = TempControlStatus.controlled) AND ((parts.innerRoom.stat.control = TempControlStatus.controlled) AND ((parts.vessel.stat.control = TempControlStatus.controlled) AND ((parts.shield.stat.control = TempControlStatus.controlled) AND ((parts.bench.stat.control = TempControlStatus.controlled) AND (parts.cryo.stat.control = TempControlStatus.controlled))))));
@@ -11629,6 +11899,7 @@ stat.busy := F_BusyStatus(
 proc.initialize( isEnabled := NOT((stat.init = InitializationStatus.initialized) OR (stat.init = InitializationStatus.locked)) );
 proc.start( isEnabled := (stat.init = InitializationStatus.initialized) AND (stat.control = TempControlStatus.idle) );
 proc.stop( isEnabled := (stat.init = InitializationStatus.initialized) AND (NOT(stat.control = TempControlStatus.idle)) );
+proc.resetPtp( isEnabled := stat.init = InitializationStatus.initialized );
 proc.reset( isEnabled := stat.init = InitializationStatus.initialized );
 proc.lock( isEnabled := (operator_ref = OperatorStatus.tech) AND (NOT(stat.init = InitializationStatus.locked)) );
 proc.unlock( isEnabled := (operator_ref = OperatorStatus.tech) AND (stat.init = InitializationStatus.locked) );
@@ -11678,6 +11949,7 @@ THIS^.parts.cryo._copyFromModel_CryoControl( model := model.parts.cryo );
 THIS^.proc.initialize._copyFromModel_Process( model := model.proc.initialize );
 THIS^.proc.start._copyFromModel_Process( model := model.proc.start );
 THIS^.proc.stop._copyFromModel_Process( model := model.proc.stop );
+THIS^.proc.resetPtp._copyFromModel_Process( model := model.proc.resetPtp );
 THIS^.proc.reset._copyFromModel_Process( model := model.proc.reset );
 THIS^.proc.lock._copyFromModel_Process( model := model.proc.lock );
 THIS^.proc.unlock._copyFromModel_Process( model := model.proc.unlock );
@@ -11720,6 +11992,7 @@ THIS^.proc.unlock._copyFromModel_Process( model := model.proc.unlock );
               <body>
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">model.actualStatus := THIS^.actualStatus;
+model.error := THIS^.error;
 model.stat := THIS^.stat;
 THIS^.parts.outerRoom._copyToModel_OuterRoomControl( model := model.parts.outerRoom );
 THIS^.parts.innerRoom._copyToModel_InnerRoomControl( model := model.parts.innerRoom );
@@ -11730,6 +12003,7 @@ THIS^.parts.cryo._copyToModel_CryoControl( model := model.parts.cryo );
 THIS^.proc.initialize._copyToModel_Process( model := model.proc.initialize );
 THIS^.proc.start._copyToModel_Process( model := model.proc.start );
 THIS^.proc.stop._copyToModel_Process( model := model.proc.stop );
+THIS^.proc.resetPtp._copyToModel_Process( model := model.proc.resetPtp );
 THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
 THIS^.proc.lock._copyToModel_Process( model := model.proc.lock );
 THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
@@ -11846,7 +12120,7 @@ THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">proc.initialize( isEnabled := NOT((stat.init = InitializationStatus.initialized) OR (stat.init = InitializationStatus.locked)) );
-proc.reset( isEnabled := stat.init = InitializationStatus.initialized );
+proc.reset( isEnabled := TRUE );
 proc.lock( isEnabled := (operator_ref = OperatorStatus.tech) AND (NOT(stat.init = InitializationStatus.locked)) );
 proc.unlock( isEnabled := (operator_ref = OperatorStatus.tech) AND (stat.init = InitializationStatus.locked) );
 </xhtml>
@@ -11988,6 +12262,20 @@ THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">active configuration of the thermo vac system</xhtml>
               </documentation>
             </variable>
+            <variable name="error">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Indicates if thermo vac itself has an error</xhtml>
+              </documentation>
+            </variable>
             <variable name="stat">
               <type><derived name="ThermoVacControlStatuses" /></type>
               <addData>
@@ -12087,13 +12375,13 @@ parts.vac(
 parts.configManager( isEnabled := operator_ref = OperatorStatus.tech );
 stat.health := F_HealthStatus(
     superState := NOT(stat.init = InitializationStatus.shutdown),
-    isGood := ((parts.thermo.stat.health = HealthStatus.good) OR (parts.thermo.stat.health = HealthStatus.warning)) AND ((parts.vac.stat.health = HealthStatus.good) OR (parts.vac.stat.health = HealthStatus.warning)),
+    isGood := (((parts.thermo.stat.health = HealthStatus.good) OR (parts.thermo.stat.health = HealthStatus.warning)) AND ((parts.vac.stat.health = HealthStatus.good) OR (parts.vac.stat.health = HealthStatus.warning))) AND (NOT(error)),
     hasWarning := (parts.thermo.stat.health = HealthStatus.warning) OR (parts.vac.stat.health = HealthStatus.warning));
 stat.busy := F_BusyStatus(
     superState := NOT(stat.init = InitializationStatus.shutdown),
     isBusy := (parts.thermo.stat.busy = BusyStatus.busy) OR (parts.vac.stat.busy = BusyStatus.busy));
 proc.initialize( isEnabled := NOT((stat.init = InitializationStatus.initialized) OR (stat.init = InitializationStatus.locked)) );
-proc.reset( isEnabled := stat.init = InitializationStatus.initialized );
+proc.reset( isEnabled := TRUE );
 proc.lock( isEnabled := (operator_ref = OperatorStatus.tech) AND (NOT(stat.init = InitializationStatus.locked)) );
 proc.unlock( isEnabled := (operator_ref = OperatorStatus.tech) AND (stat.init = InitializationStatus.locked) );
 </xhtml>
@@ -12182,6 +12470,7 @@ THIS^.proc.unlock._copyFromModel_Process( model := model.proc.unlock );
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">model.editableConfig := THIS^.editableConfig;
 model.actualStatus := THIS^.actualStatus;
 model.config := THIS^.config;
+model.error := THIS^.error;
 model.stat := THIS^.stat;
 THIS^.parts.thermo._copyToModel_ThermoControl( model := model.parts.thermo );
 THIS^.parts.vac._copyToModel_VacControl( model := model.parts.vac );
