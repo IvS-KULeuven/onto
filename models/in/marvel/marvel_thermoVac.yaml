@@ -116,10 +116,12 @@
   !CONFIG OuterRoomSharedConfig:
     items:
       sensors: { type: SharedMeasurementConfig, comment: "Shared config for the temperature sensors" }  
+
   ### shared config for the inner room###
   !CONFIG InnerRoomSharedConfig:
     items:
       sensors: { type: SharedMeasurementConfig, comment: "Shared config for the temperature sensors" }
+      heaters: { type: SharedHeaterConfig, comment: "Shared config for the heaters" }
 
   ### shared config for the vessel ###
   !CONFIG VesselSharedConfig:
@@ -159,7 +161,6 @@
   !CONFIG OuterRoomConfig:
     items:
       shared              : { type: OuterRoomSharedConfig, comment: "Shared config for the outer room" }
-
       #sensors
       tFloorE:      { type: MeasurementConfig2, comment: "Config for floor sensor East" }
       tFloorW:      { type: MeasurementConfig2, comment: "Config for floor sensor West" }
@@ -170,12 +171,27 @@
   #########################
   !CONFIG InnerRoomConfig:
     items:
-      tpT1:          { type: MeasurementConfig2, comment: "Config for temp sensor T1" }
-      tpT2:          { type: MeasurementConfig2, comment: "Config for temp sensor T2" }
-      tpT3:          { type: MeasurementConfig2, comment: "Config for temp sensor T3" }
-      tpT4:          { type: MeasurementConfig2, comment: "Config for temp sensor T4" }
       shared              : { type: InnerRoomSharedConfig, comment: "Shared config for the inner room" }
+      
+      isSimulated : {type: t_bool, comment: "True if the vessel temperature control is in simulation mode"}
+      setPointTarget             : { type: t_double  , comment: "set point temperature in kelvin" }
+      rampVPos                   : { type: t_double  , comment: "velocity of temperature change in K/s while ramping up" }
+      rampVNeg                   : { type: t_double  , comment: "velocity of temperature change in K/s while ramping down" }
+      rampStart                  : { type: t_double  , comment: "temperature in kelvin at which the ramp starts (e.g. to avoid overshoot)" }
+      maxPtp               : { type: t_double, comment: "max dev from setpoint for the vessel" }
+      hiPtp            : { type: t_double  , comment: "warning dev from setpoint for the vessel" }
 
+      #sensors
+      tAbove:          { type: MeasurementConfig2, comment: "Config for temp sensor above the vessel" }
+      tBelow:          { type: MeasurementConfig2, comment: "Config for temp sensor below the vessel" }
+      tEast:          { type: MeasurementConfig2, comment: "Config for temp sensor East of the vessel" }
+      tWest:          { type: MeasurementConfig2, comment: "Config for temp sensor West of the vessel" }
+
+      #heaters
+      testHeater : { type: HeaterConfig, comment: "Config for test heater" }
+
+      
+      
    ###### vessel config ######
   ###########################
   !CONFIG VesselConfig:
@@ -537,14 +553,23 @@
   ################################
   !STATEMACHINE InnerRoomControl:
     variables_output:
-      avgTemp       : { type: t_double, comment: "Average temperature of the inner room in kelvin" }
-
+      setPoint : {type: t_double, comment : "The ramped setpoint used by the pid"}  
+      avgTemp       : { type: t_double, comment: "Average temperature of the vessel in kelvin" }
+      avgPower           : { type: t_double              , comment: "Average power of the heaters in percentage" }
+      totalPower       : { type: t_double              , comment: "Total power of all heaters in watt" }
+      
+      ptpAvgTemp : {type: !ARRAY [ 1, 5, t_double ], comment:  ptp values of the average temperature of the vessel", expand: false}
+      ptpAllTemp : {type: !ARRAY [ 1, 5, t_double ], comment:  ptp values of all temp measurements in the vessel", expand: false}
 
     parts:
-      tpT1:          { type: TempMeasurement, comment: "1st temp sensor",           arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
-      tpT2:          { type: TempMeasurement, comment: "2nd temp sensor",           arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
-      tpT3:          { type: TempMeasurement, comment: "3rd temp sensor",           arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
-      tpT4:          { type: TempMeasurement, comment: "4th temp sensor",           arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+      tAbove:          { type: TempMeasurement, comment: "1st temp sensor",           arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+      tBelow:          { type: TempMeasurement, comment: "2nd temp sensor",           arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+      tEast:          { type: TempMeasurement, comment: "3rd temp sensor",           arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+      tWest:          { type: TempMeasurement, comment: "4th temp sensor",           arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
+
+      testHeater:      { type: HeaterControl, comment: "Test heater",               arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
+
+
 
     references:
       config_ref              : { type: InnerRoomConfig                              , comment: "Active configuration of the inner room" }
@@ -564,6 +589,7 @@
       start                       : { type: marvel_common.Process                     , comment: "Start warming up" }
       stop                        : { type: marvel_common.Process                     , comment: "Stop heating" }
       reset                       : { type: marvel_common.Process                     , comment: "Reset complete" }   
+      resetPtp                    : { type: marvel_common.Process                     , comment: "Reset the ptp values" }
       lock                        : { type: marvel_common.Process                     , comment: "Lock the vessel control (e.g. when the vessel is opened)" }
       unlock                      : { type: marvel_common.Process                     , comment: "Unlock the vessel control (e.g. when the vessel is closed)" }
 
@@ -585,16 +611,21 @@
                                 !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
         reset:
           isEnabled : !BOOL TRUE
+        resetPtp:
+          isEnabled : !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] 
    
       ##stat##
         busy:
           superState   : !BOOL TRUE
           isBusy       : !OR [ !EQ [ stat.control, TempControlStatus.warming_up ], !EQ [ stat.init, marvel_common.InitializationStatus.initializing ] ]
     ###parts###
-        tpT1          :  { config_ref : config_ref.tpT1, sharedConfig_ref : config_ref.shared.sensors }
-        tpT2          :  { config_ref : config_ref.tpT2, sharedConfig_ref : config_ref.shared.sensors }
-        tpT3          :  { config_ref : config_ref.tpT3, sharedConfig_ref : config_ref.shared.sensors }
-        tpT4          :  { config_ref : config_ref.tpT4, sharedConfig_ref : config_ref.shared.sensors }
+        tAbove          :  { config_ref : config_ref.tAbove, sharedConfig_ref : config_ref.shared.sensors }
+        tBelow          :  { config_ref : config_ref.tBelow, sharedConfig_ref : config_ref.shared.sensors }
+        tEast          :  { config_ref : config_ref.tEast, sharedConfig_ref : config_ref.shared.sensors }
+        tWest          :  { config_ref : config_ref.tWest, sharedConfig_ref : config_ref.shared.sensors }
+
+        testHeater      :  { config_ref : config_ref.testHeater, sharedConfig_ref: config_ref.shared.heaters, operator_ref: operator_ref }
+
 
 
 ####################################
