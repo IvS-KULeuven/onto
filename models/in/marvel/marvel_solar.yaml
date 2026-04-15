@@ -15,12 +15,18 @@
 
 !LIBRARY marvel_solar:
 
+  !STRUCT FanStruct:
+    items:
+      health: {type: marvel_common.HealthStatus, comment: "Health status of the cooling fan"}
+      power: {type: t_float, comment: "Power of the cooling fan in percent"}
+
   !CONFIG SolarConfig:
     items:
       defPowerFan: {type: t_float, comment: "Default power of the cooling fan in percent", initial: !DOUBLE 30.0}
-      highTemp: {type: t_float, comment: "Fan turned up to max power at this temperature to prevent damage", initial: !DOUBLE 35.0}
-      maxTemp: {type: t_float, comment: "Maximum allowed temperature before the solar telescope is shut down to prevent damage", initial: !DOUBLE 40.0}
+      hiTemp: {type: t_float, comment: "Fan turned up to max power at this temperature to prevent damage", initial: !DOUBLE 35.0}
+      hihiTemp: {type: t_float, comment: "Maximum allowed temperature before the solar telescope is shut down to prevent damage", initial: !DOUBLE 40.0}
       fanEnabled: {type: t_bool, comment: "True if the cooling fan is enabled", initial: !BOOL TRUE}
+      maxTimeInLimit: {type: t_float, comment: "Maximum time in seconds that the solar telescope is allowed to stay in a limit position before an error is raised", initial: !DOUBLE 60.0}
 
 
 
@@ -50,11 +56,10 @@
       editableConfig            : { type: SolarConfig                          , comment: "Editable configuration of the solar telescope" , expand: false }     
 
     variables_output:
+      fan          : { type: FanStruct, comment: "Status of the cooling fan", expand: false }
       config       :   { type: SolarConfig, comment: "Configuration of the solar telescope" }
-      fanOk        : { type: t_bool                                                , comment: "True if the cooling fan is working" }
       powerPC      : { type: t_bool                   , comment: "True if the solar pc is enabled", address: "%Q*"  }
       powerMount   : { type: t_bool                   , comment: "True if the solar mount is enabled", address: "%Q*"  }
-      powerFan     : { type: t_float                 , comment: "Power of the cooling fan in percent"}
       forced   : { type: t_bool                   , comment: "True if power of the mount is forced" }
 
     parts:

@@ -244,7 +244,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Default power of the cooling fan in percent</xhtml>
               </documentation>
             </variable>
-            <variable name="highTemp">
+            <variable name="hiTemp">
               <type><REAL /></type>
               <initialValue><simpleValue value="35.0" /></initialValue>
               <addData>
@@ -258,7 +258,7 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Fan turned up to max power at this temperature to prevent damage</xhtml>
               </documentation>
             </variable>
-            <variable name="maxTemp">
+            <variable name="hihiTemp">
               <type><REAL /></type>
               <initialValue><simpleValue value="40.0" /></initialValue>
               <addData>
@@ -284,6 +284,52 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the cooling fan is enabled</xhtml>
+              </documentation>
+            </variable>
+            <variable name="maxTimeInLimit">
+              <type><REAL /></type>
+              <initialValue><simpleValue value="60.0" /></initialValue>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Maximum time in seconds that the solar telescope is allowed to stay in a limit position before an error is raised</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="FanStruct">
+        <baseType>
+          <struct>
+            <variable name="health">
+              <type><derived name="HealthStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Health status of the cooling fan</xhtml>
+              </documentation>
+            </variable>
+            <variable name="power">
+              <type><REAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Power of the cooling fan in percent</xhtml>
               </documentation>
             </variable>
           </struct>
@@ -442,8 +488,8 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="config">
-              <type><derived name="SolarConfig" /></type>
+            <variable name="fan">
+              <type><derived name="FanStruct" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -457,8 +503,8 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="fanOk">
-              <type><BOOL /></type>
+            <variable name="config">
+              <type><derived name="SolarConfig" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -489,21 +535,6 @@
             </variable>
             <variable name="powerMount">
               <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-            <variable name="powerFan">
-              <type><REAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -879,6 +910,20 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Current status description</xhtml>
               </documentation>
             </variable>
+            <variable name="fan">
+              <type><derived name="FanStruct" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Status of the cooling fan</xhtml>
+              </documentation>
+            </variable>
             <variable name="config">
               <type><derived name="SolarConfig" /></type>
               <addData>
@@ -891,20 +936,6 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Configuration of the solar telescope</xhtml>
-              </documentation>
-            </variable>
-            <variable name="fanOk">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the cooling fan is working</xhtml>
               </documentation>
             </variable>
             <variable name="powerPC" address="%Q*">
@@ -933,20 +964,6 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the solar mount is enabled</xhtml>
-              </documentation>
-            </variable>
-            <variable name="powerFan">
-              <type><REAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Power of the cooling fan in percent</xhtml>
               </documentation>
             </variable>
             <variable name="forced">
@@ -1157,11 +1174,10 @@ model.lsAl2 := THIS^.lsAl2;
 model.hsAl := THIS^.hsAl;
 model.editableConfig := THIS^.editableConfig;
 model.actualStatus := THIS^.actualStatus;
+model.fan := THIS^.fan;
 model.config := THIS^.config;
-model.fanOk := THIS^.fanOk;
 model.powerPC := THIS^.powerPC;
 model.powerMount := THIS^.powerMount;
-model.powerFan := THIS^.powerFan;
 model.forced := THIS^.forced;
 model.stat := THIS^.stat;
 THIS^.parts.configManager._copyToModel_ConfigManager( model := model.parts.configManager );
@@ -1220,6 +1236,8 @@ THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
             </Object>
           </Folder>
           <Folder Name="Structs">
+            <Object Name="FanStruct">
+            </Object>
           </Folder>
           <Folder Name="Processes">
             <Folder Name="Args">
