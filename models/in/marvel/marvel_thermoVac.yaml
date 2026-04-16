@@ -166,16 +166,19 @@
   !CONFIG InnerRoomConfig:
     items:
       enabled: { type: t_bool, comment: "True if the inner room is enabled", initial: !BOOL TRUE }
-      shared              : { type: InnerRoomSharedConfig, comment: "Shared config for the inner room" }
+      shared              : { type: InnerRoomSharedConfig, comment: "Config shared by inner room's parts" }
       
-      isSimulated     : {type: t_bool, comment: "True if the vessel temperature control is in simulation mode"}
-      setPointTarget             : { type: t_double  , comment: "set point temperature in kelvin" }
-      rampVPos                   : { type: t_double  , comment: "velocity of temperature change in K/s while ramping up" }
-      rampVNeg                   : { type: t_double  , comment: "velocity of temperature change in K/s while ramping down" }
-      rampStart                  : { type: t_double  , comment: "temperature in kelvin at which the ramp starts (e.g. to avoid overshoot)" }
-      hihiPtp               : { type: t_double, comment: "max dev from setpoint for the vessel" }
-      hiPtp            : { type: t_double  , comment: "warning dev from setpoint for the vessel" }
-      minSenRequired     : { type: t_int8, comment: "minimum number of sensors required to stay in operation" }
+      isSimulated     : {type: t_bool, comment: "True if the innerroom temperature control is in simulation mode"}
+      setPointTarget             : { type: t_double  , comment: "set point temperature in celsius" }
+      rampVPos                   : { type: t_double  , comment: "velocity of temperature change in C/s while ramping up" }
+      rampVNeg                   : { type: t_double  , comment: "velocity of temperature change in C/s while ramping down" }
+      rampStart                  : { type: t_double  , comment: "temperature in celsius at which the ramp starts" }
+      hihiPtp               : { type: t_double, comment: "Ptp value at which an alarm is given" }
+      hiPtp            : { type: t_double  , comment: "Ptp value at which a warning is given" }
+      minInitTime              : { type: t_double, comment: "Minimum time in seconds before initialization can be finished", initial: !DOUBLE 10.0 }
+      maxInitTime              : { type: t_double, comment: "Maximum time in seconds before initialization is failed", initial: !DOUBLE 120.0 }
+
+      minSenRequired     : { type: t_int16, comment: "minimum number of sensors required to stay in operation" , initial: !INT16 4}
 
       #sensors
       tAbove:          { type: MeasurementConfig2, comment: "Config for temp sensor above the vessel" }
@@ -193,15 +196,18 @@
   !CONFIG VesselConfig:
     items:
       enabled: { type: t_bool, comment: "True if the vessel is enabled", initial: !BOOL TRUE }
-      isSimulated : {type: t_bool, comment: "True if the vessel temperature control is in simulation mode"}
-      setPointTarget             : { type: t_double  , comment: "set point temperature in kelvin" }
-      rampVPos                   : { type: t_double  , comment: "velocity of temperature change in K/s while ramping up" }
-      rampVNeg                   : { type: t_double  , comment: "velocity of temperature change in K/s while ramping down" }
-      rampStart                  : { type: t_double  , comment: "temperature in kelvin at which the ramp starts (e.g. to avoid overshoot)" }
+      shared              : { type: InnerRoomSharedConfig, comment: "Config shared by vessels's parts" }
+      
+      isSimulated     : {type: t_bool, comment: "True if the vessel temperature control is in simulation mode"}
+      setPointTarget             : { type: t_double  , comment: "set point temperature in celsius" }
+      rampVPos                   : { type: t_double  , comment: "velocity of temperature change in C/s while ramping up" }
+      rampVNeg                   : { type: t_double  , comment: "velocity of temperature change in C/s while ramping down" }
+      rampStart                  : { type: t_double  , comment: "temperature in celsius at which the ramp starts" }
       hihiPtp               : { type: t_double, comment: "Ptp value at which an alarm is given" }
-      hiPtp            : { type: t_double  , comment: "Ptp value at which a warming is given" }
- 
-      shared              : { type: VesselSharedConfig, comment: "Shared config for the vessel" }
+      hiPtp            : { type: t_double  , comment: "Ptp value at which a warning is given" }
+      minInitTime              : { type: t_double, comment: "Minimum time in seconds before initialization can be finished", initial: !DOUBLE 10.0 }
+      maxInitTime              : { type: t_double, comment: "Maximum time in seconds before initialization is failed", initial: !DOUBLE 120.0 }
+
  
       #sensors
       tLegNE:       { type: MeasurementConfig2, comment: "Config for Leg NE" }
@@ -259,15 +265,19 @@
   #####################
   !CONFIG ShieldConfig:
     items:
-      enabled: { type: t_bool, comment: "True if the inner room is enabled", initial: !BOOL TRUE }
-      shared              : { type: ShieldSharedConfig, comment: "Shared config for the inner room" }
-      isSimulated     : {type: t_bool, comment: "True if the vessel temperature control is in simulation mode"}
-      setPointTarget             : { type: t_double  , comment: "set point temperature in kelvin" }
-      rampVPos                   : { type: t_double  , comment: "velocity of temperature change in K/s while ramping up" }
-      rampVNeg                   : { type: t_double  , comment: "velocity of temperature change in K/s while ramping down" }
-      rampStart                  : { type: t_double  , comment: "temperature in kelvin at which the ramp starts (e.g. to avoid overshoot)" }
-      hihiPtp               : { type: t_double, comment: "max dev from setpoint for the vessel" }
-      hiPtp            : { type: t_double  , comment: "warning dev from setpoint for the vessel" }
+      enabled: { type: t_bool, comment: "True if the shield is enabled", initial: !BOOL TRUE }
+      shared              : { type: InnerRoomSharedConfig, comment: "Config shared by shield's parts" }
+      
+      isSimulated     : {type: t_bool, comment: "True if the shield temperature control is in simulation mode"}
+      setPointTarget             : { type: t_double  , comment: "set point temperature in celsius" }
+      rampVPos                   : { type: t_double  , comment: "velocity of temperature change in C/s while ramping up" }
+      rampVNeg                   : { type: t_double  , comment: "velocity of temperature change in C/s while ramping down" }
+      rampStart                  : { type: t_double  , comment: "temperature in celsius at which the ramp starts" }
+      hihiPtp               : { type: t_double, comment: "Ptp value at which an alarm is given" }
+      hiPtp            : { type: t_double  , comment: "Ptp value at which a warning is given" }
+      minInitTime              : { type: t_double, comment: "Minimum time in seconds before initialization can be finished", initial: !DOUBLE 10.0 }
+      maxInitTime              : { type: t_double, comment: "Maximum time in seconds before initialization is failed", initial: !DOUBLE 120.0 }
+
 
       #sensors
       tTopNE:       { type: MeasurementConfig2, comment: "Config for shield top NE" }
@@ -308,7 +318,6 @@
     items:
       enabled: { type: t_bool, comment: "True if the bench is enabled", initial: !BOOL TRUE }
       shared              : { type: BenchSharedConfig, comment: "Shared config for the bench" }
-      hihiPtp               : { type: t_double, comment: "max ptp for the cryo" }
 
       #sensors
       tCentre:        { type: MeasurementConfig2, comment: "Config for bench centre" }
@@ -334,7 +343,6 @@
     items:
       enabled: { type: t_bool, comment: "True if the cryo is enabled", initial: !BOOL TRUE }
       shared              : { type: CryoSharedConfig, comment: "Shared config for the cryo" }
-      hihiPtp               : { type: t_double, comment: "max ptp for the cryo" }
 
       #sensors
       tRearOut:     { type: MeasurementConfig2, comment: "Config for cryo rear outside" }
@@ -351,6 +359,7 @@
   !CONFIG ThermoConfig:
     items:
       enabled: { type: t_bool, comment: "True if the thermo system is enabled", initial: !BOOL TRUE }
+      
       outerRoom: { type: OuterRoomConfig, comment: "Config for the outer room" }
       innerRoom: { type: InnerRoomConfig, comment: "Config for the inner room" }
       vessel: { type: VesselConfig, comment: "Config for the vessel" }
@@ -482,7 +491,7 @@
                                       !EQ [ stat.enabled, marvel_common.EnabledStatus.disabled ] ] ]
 
         reset:
-          isEnabled    : !BOOL TRUE
+          isEnabled    : !EQ [ operator_ref, marvel_common.OperatorStatus.tech ]
         resetPtp:
           isEnabled    : !EQ [ stat.init, marvel_common.InitializationStatus.initialized ]
 
@@ -543,12 +552,13 @@
                                       !EQ [ stat.enabled, marvel_common.EnabledStatus.disabled ] ] ]
         lock:
           isEnabled    : !AND [  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ,
-                                !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
+                                !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ,
+                                !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.unknown ], !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ] ] ]
         unlock:
           isEnabled    : !AND [  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ,
                                 !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
         reset:
-          isEnabled : !BOOL TRUE
+          isEnabled : !EQ [ operator_ref, marvel_common.OperatorStatus.tech ]
 
       ##stat##
         enabled:
@@ -625,12 +635,13 @@
                                       !EQ [ stat.enabled, marvel_common.EnabledStatus.disabled ] ] ]
         lock:
           isEnabled    : !AND [  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ,
-                                !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
+                                !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ,
+                                !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.unknown ], !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ] ] ]
         unlock:
           isEnabled    : !AND [  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ,
                                 !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
         reset:
-          isEnabled : !BOOL TRUE
+          isEnabled : !EQ [ operator_ref, marvel_common.OperatorStatus.tech ]
         resetPtp:
           isEnabled : !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] 
    
@@ -767,12 +778,13 @@
                                       !EQ [ stat.enabled, marvel_common.EnabledStatus.disabled ] ] ]
         lock:
           isEnabled    : !AND [  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ,
-                                !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
+                                !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ,
+                                !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.unknown ], !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ] ] ]
         unlock:
           isEnabled    : !AND [  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ,
                                 !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
         reset:
-          isEnabled : !BOOL TRUE
+          isEnabled : !EQ [ operator_ref, marvel_common.OperatorStatus.tech ]
         
         resetPtp:
           isEnabled : !EQ [ stat.init, marvel_common.InitializationStatus.initialized ]
@@ -926,12 +938,13 @@
                                       !EQ [ stat.enabled, marvel_common.EnabledStatus.disabled ] ] ]
         lock:
           isEnabled    : !AND [  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ,
-                                !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
+                                !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ,
+                                !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.unknown ], !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ] ] ]
         unlock:
           isEnabled    : !AND [  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ,
                                 !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
         reset:
-          isEnabled : !BOOL TRUE
+          isEnabled : !EQ [ operator_ref, marvel_common.OperatorStatus.tech ]
         
         resetPtp:
           isEnabled : !EQ [ stat.init, marvel_common.InitializationStatus.initialized ]
@@ -1043,12 +1056,13 @@
                                       !EQ [ stat.enabled, marvel_common.EnabledStatus.disabled ] ] ]
         lock:
           isEnabled    : !AND [  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ,
-                                !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
+                                !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ,
+                                !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.unknown ], !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ] ] ]
         unlock:
           isEnabled    : !AND [  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ,
                                 !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
         reset:
-          isEnabled : !BOOL TRUE
+          isEnabled : !EQ [ operator_ref, marvel_common.OperatorStatus.tech ]
         
         resetPtp:
           isEnabled : !EQ [ stat.init, marvel_common.InitializationStatus.initialized ]
@@ -1142,12 +1156,13 @@
                                       !EQ [ stat.enabled, marvel_common.EnabledStatus.disabled ] ] ]
         lock:
           isEnabled    : !AND [  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ,
-                                !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
+                                !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ,
+                                !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.unknown ], !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ] ] ]
         unlock:
           isEnabled    : !AND [  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ,
                                 !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
         reset:
-          isEnabled : !BOOL TRUE
+          isEnabled : !EQ [ operator_ref, marvel_common.OperatorStatus.tech ]
         
         resetPtp:
           isEnabled : !EQ [ stat.init, marvel_common.InitializationStatus.initialized ]
@@ -1311,12 +1326,13 @@
                                     !EQ [ stat.enabled, marvel_common.EnabledStatus.disabled ] ] ]
       lock:
         isEnabled    : !AND [  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ,
-                              !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
+                              !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ,
+                              !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.unknown ], !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ] ] ]
       unlock:
         isEnabled    : !AND [  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ,
                               !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
       reset:
-        isEnabled : !BOOL TRUE
+        isEnabled : !EQ [ operator_ref, marvel_common.OperatorStatus.tech ]
       
       resetPtp:
         isEnabled : !EQ [ stat.init, marvel_common.InitializationStatus.initialized ]
@@ -1398,12 +1414,13 @@
                             !EQ [ stat.enabled, marvel_common.EnabledStatus.disabled ] ] ]
         lock:
           isEnabled    : !AND [  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ,
-                                !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
+                                !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ,
+                                !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.unknown ], !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ] ] ]
         unlock:
           isEnabled    : !AND [  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ,
                                 !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
         reset:
-          isEnabled : !BOOL TRUE
+          isEnabled : !EQ [ operator_ref, marvel_common.OperatorStatus.tech ]
 
   ### MAIN STATEMACHINE #################################### 
 
@@ -1463,13 +1480,6 @@
         
 
       calls:
-        health:
-          superState          : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ] ]
-          isGood :  !OR [ !AND [ !MTCS_SUMMARIZE_GOOD [ parts.thermo, parts.vac ], !NOT [error] ], ## not error and both parts good health
-                          !AND [ !EQ [ parts.thermo.stat.health, marvel_common.HealthStatus.good ], !EQ [ parts.vac.stat.enabled, marvel_common.EnabledStatus.disabled ],!NOT [error] ], ## not error, thermo good, vac disabled
-                          !AND [ !EQ [ parts.vac.stat.health, marvel_common.HealthStatus.good ], !EQ [ parts.thermo.stat.enabled, marvel_common.EnabledStatus.disabled ],!NOT [error] ] ] ## not error, vac good, thermo disabled
-          hasWarning: !MTCS_SUMMARIZE_WARN [ parts.thermo, parts.vac ]
-          
         busy:
           superState          : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ] ]
           isBusy : !MTCS_SUMMARIZE_BUSY [ parts.thermo, parts.vac ]
@@ -1480,12 +1490,13 @@
                                       !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
         lock:
           isEnabled    : !AND [  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ,
-                                !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
+                                !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ,
+                                !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.unknown ], !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ] ] ]
         unlock:
           isEnabled    : !AND [  !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ,
                                 !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
         reset:
-          isEnabled : !BOOL TRUE
+          isEnabled : !EQ [ operator_ref, marvel_common.OperatorStatus.tech ]
 
       ###parts##
         thermo:

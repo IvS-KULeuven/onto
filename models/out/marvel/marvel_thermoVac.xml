@@ -3873,7 +3873,7 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Shared config for the inner room</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config shared by inner room&#39;s parts</xhtml>
               </documentation>
             </variable>
             <variable name="isSimulated">
@@ -3886,7 +3886,7 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the vessel temperature control is in simulation mode</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the innerroom temperature control is in simulation mode</xhtml>
               </documentation>
             </variable>
             <variable name="setPointTarget">
@@ -3899,7 +3899,7 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">set point temperature in kelvin</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">set point temperature in celsius</xhtml>
               </documentation>
             </variable>
             <variable name="rampVPos">
@@ -3912,7 +3912,7 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">velocity of temperature change in K/s while ramping up</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">velocity of temperature change in C/s while ramping up</xhtml>
               </documentation>
             </variable>
             <variable name="rampVNeg">
@@ -3925,7 +3925,7 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">velocity of temperature change in K/s while ramping down</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">velocity of temperature change in C/s while ramping down</xhtml>
               </documentation>
             </variable>
             <variable name="rampStart">
@@ -3938,7 +3938,7 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">temperature in kelvin at which the ramp starts (e.g. to avoid overshoot)</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">temperature in celsius at which the ramp starts</xhtml>
               </documentation>
             </variable>
             <variable name="hihiPtp">
@@ -3951,7 +3951,7 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">max dev from setpoint for the vessel</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Ptp value at which an alarm is given</xhtml>
               </documentation>
             </variable>
             <variable name="hiPtp">
@@ -3964,11 +3964,40 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">warning dev from setpoint for the vessel</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Ptp value at which a warning is given</xhtml>
+              </documentation>
+            </variable>
+            <variable name="minInitTime">
+              <type><LREAL /></type>
+              <initialValue><simpleValue value="10.0" /></initialValue>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Minimum time in seconds before initialization can be finished</xhtml>
+              </documentation>
+            </variable>
+            <variable name="maxInitTime">
+              <type><LREAL /></type>
+              <initialValue><simpleValue value="120.0" /></initialValue>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Maximum time in seconds before initialization is failed</xhtml>
               </documentation>
             </variable>
             <variable name="minSenRequired">
-              <type><SINT /></type>
+              <type><INT /></type>
+              <initialValue><simpleValue value="4" /></initialValue>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -4065,6 +4094,19 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the vessel is enabled</xhtml>
               </documentation>
             </variable>
+            <variable name="shared">
+              <type><derived name="InnerRoomSharedConfig" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config shared by vessels&#39;s parts</xhtml>
+              </documentation>
+            </variable>
             <variable name="isSimulated">
               <type><BOOL /></type>
               <addData>
@@ -4088,7 +4130,7 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">set point temperature in kelvin</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">set point temperature in celsius</xhtml>
               </documentation>
             </variable>
             <variable name="rampVPos">
@@ -4101,7 +4143,7 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">velocity of temperature change in K/s while ramping up</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">velocity of temperature change in C/s while ramping up</xhtml>
               </documentation>
             </variable>
             <variable name="rampVNeg">
@@ -4114,7 +4156,7 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">velocity of temperature change in K/s while ramping down</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">velocity of temperature change in C/s while ramping down</xhtml>
               </documentation>
             </variable>
             <variable name="rampStart">
@@ -4127,7 +4169,7 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">temperature in kelvin at which the ramp starts (e.g. to avoid overshoot)</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">temperature in celsius at which the ramp starts</xhtml>
               </documentation>
             </variable>
             <variable name="hihiPtp">
@@ -4153,11 +4195,12 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Ptp value at which a warming is given</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Ptp value at which a warning is given</xhtml>
               </documentation>
             </variable>
-            <variable name="shared">
-              <type><derived name="VesselSharedConfig" /></type>
+            <variable name="minInitTime">
+              <type><LREAL /></type>
+              <initialValue><simpleValue value="10.0" /></initialValue>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -4166,7 +4209,21 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Shared config for the vessel</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Minimum time in seconds before initialization can be finished</xhtml>
+              </documentation>
+            </variable>
+            <variable name="maxInitTime">
+              <type><LREAL /></type>
+              <initialValue><simpleValue value="120.0" /></initialValue>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Maximum time in seconds before initialization is failed</xhtml>
               </documentation>
             </variable>
             <variable name="tLegNE">
@@ -4680,11 +4737,11 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the inner room is enabled</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the shield is enabled</xhtml>
               </documentation>
             </variable>
             <variable name="shared">
-              <type><derived name="ShieldSharedConfig" /></type>
+              <type><derived name="InnerRoomSharedConfig" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -4693,7 +4750,7 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Shared config for the inner room</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Config shared by shield&#39;s parts</xhtml>
               </documentation>
             </variable>
             <variable name="isSimulated">
@@ -4706,7 +4763,7 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the vessel temperature control is in simulation mode</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">True if the shield temperature control is in simulation mode</xhtml>
               </documentation>
             </variable>
             <variable name="setPointTarget">
@@ -4719,7 +4776,7 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">set point temperature in kelvin</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">set point temperature in celsius</xhtml>
               </documentation>
             </variable>
             <variable name="rampVPos">
@@ -4732,7 +4789,7 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">velocity of temperature change in K/s while ramping up</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">velocity of temperature change in C/s while ramping up</xhtml>
               </documentation>
             </variable>
             <variable name="rampVNeg">
@@ -4745,7 +4802,7 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">velocity of temperature change in K/s while ramping down</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">velocity of temperature change in C/s while ramping down</xhtml>
               </documentation>
             </variable>
             <variable name="rampStart">
@@ -4758,7 +4815,7 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">temperature in kelvin at which the ramp starts (e.g. to avoid overshoot)</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">temperature in celsius at which the ramp starts</xhtml>
               </documentation>
             </variable>
             <variable name="hihiPtp">
@@ -4771,7 +4828,7 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">max dev from setpoint for the vessel</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Ptp value at which an alarm is given</xhtml>
               </documentation>
             </variable>
             <variable name="hiPtp">
@@ -4784,7 +4841,35 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">warning dev from setpoint for the vessel</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Ptp value at which a warning is given</xhtml>
+              </documentation>
+            </variable>
+            <variable name="minInitTime">
+              <type><LREAL /></type>
+              <initialValue><simpleValue value="10.0" /></initialValue>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Minimum time in seconds before initialization can be finished</xhtml>
+              </documentation>
+            </variable>
+            <variable name="maxInitTime">
+              <type><LREAL /></type>
+              <initialValue><simpleValue value="120.0" /></initialValue>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Maximum time in seconds before initialization is failed</xhtml>
               </documentation>
             </variable>
             <variable name="tTopNE">
@@ -5197,19 +5282,6 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Shared config for the bench</xhtml>
               </documentation>
             </variable>
-            <variable name="hihiPtp">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">max ptp for the cryo</xhtml>
-              </documentation>
-            </variable>
             <variable name="tCentre">
               <type><derived name="MeasurementConfig2" /></type>
               <addData>
@@ -5423,19 +5495,6 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Shared config for the cryo</xhtml>
-              </documentation>
-            </variable>
-            <variable name="hihiPtp">
-              <type><LREAL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">max ptp for the cryo</xhtml>
               </documentation>
             </variable>
             <variable name="tRearOut">
@@ -10226,7 +10285,7 @@ THIS^.proc.resetPtp._copyToModel_Process( model := model.proc.resetPtp );
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">proc.initialize( isEnabled := NOT((stat.init = InitializationStatus.shutdown) OR ((stat.init = InitializationStatus.initializingFailed) OR ((stat.init = InitializationStatus.initialized) OR (stat.enabled = EnabledStatus.disabled)))) );
-proc.reset( isEnabled := TRUE );
+proc.reset( isEnabled := operator_ref = OperatorStatus.tech );
 proc.force( isEnabled := (operator_ref = OperatorStatus.tech) AND ((stat.init = InitializationStatus.initialized) AND (NOT(isForced))) );
 </xhtml>
           </ST>
@@ -10507,8 +10566,8 @@ stat.busy := F_BusyStatus(
 proc.initialize( isEnabled := NOT((stat.init = InitializationStatus.initialized) OR ((stat.init = InitializationStatus.initializingFailed) OR ((stat.init = InitializationStatus.locked) OR (stat.enabled = EnabledStatus.disabled)))) );
 proc.start( isEnabled := (stat.control = TempControlStatus.idle) AND ((stat.init = InitializationStatus.initialized) AND (NOT(stat.init = InitializationStatus.locked))) );
 proc.stop( isEnabled := (NOT(stat.control = TempControlStatus.idle)) AND (stat.init = InitializationStatus.initialized) );
-proc.reset( isEnabled := TRUE );
-proc.lock( isEnabled := (operator_ref = OperatorStatus.tech) AND (NOT(stat.init = InitializationStatus.locked)) );
+proc.reset( isEnabled := operator_ref = OperatorStatus.tech );
+proc.lock( isEnabled := (operator_ref = OperatorStatus.tech) AND ((NOT(stat.init = InitializationStatus.locked)) AND ((stat.init = InitializationStatus.unknown) OR (stat.init = InitializationStatus.shutdown))) );
 proc.unlock( isEnabled := (operator_ref = OperatorStatus.tech) AND (stat.init = InitializationStatus.locked) );
 </xhtml>
           </ST>
@@ -10873,9 +10932,9 @@ stat.busy := F_BusyStatus(
 proc.initialize( isEnabled := NOT((stat.init = InitializationStatus.initialized) OR ((stat.init = InitializationStatus.initializingFailed) OR ((stat.init = InitializationStatus.locked) OR (stat.enabled = EnabledStatus.disabled)))) );
 proc.start( isEnabled := (stat.control = TempControlStatus.idle) AND ((stat.init = InitializationStatus.initialized) AND (NOT(stat.init = InitializationStatus.locked))) );
 proc.stop( isEnabled := (NOT(stat.control = TempControlStatus.idle)) AND (stat.init = InitializationStatus.initialized) );
-proc.reset( isEnabled := TRUE );
+proc.reset( isEnabled := operator_ref = OperatorStatus.tech );
 proc.resetPtp( isEnabled := stat.init = InitializationStatus.initialized );
-proc.lock( isEnabled := (operator_ref = OperatorStatus.tech) AND (NOT(stat.init = InitializationStatus.locked)) );
+proc.lock( isEnabled := (operator_ref = OperatorStatus.tech) AND ((NOT(stat.init = InitializationStatus.locked)) AND ((stat.init = InitializationStatus.unknown) OR (stat.init = InitializationStatus.shutdown))) );
 proc.unlock( isEnabled := (operator_ref = OperatorStatus.tech) AND (stat.init = InitializationStatus.locked) );
 </xhtml>
           </ST>
@@ -11420,9 +11479,9 @@ stat.busy := F_BusyStatus(
 proc.initialize( isEnabled := NOT((stat.init = InitializationStatus.initialized) OR ((stat.init = InitializationStatus.initializingFailed) OR ((stat.init = InitializationStatus.locked) OR (stat.enabled = EnabledStatus.disabled)))) );
 proc.start( isEnabled := (stat.control = TempControlStatus.idle) AND ((stat.init = InitializationStatus.initialized) AND (NOT(stat.init = InitializationStatus.locked))) );
 proc.stop( isEnabled := (NOT(stat.control = TempControlStatus.idle)) AND (stat.init = InitializationStatus.initialized) );
-proc.reset( isEnabled := TRUE );
+proc.reset( isEnabled := operator_ref = OperatorStatus.tech );
 proc.resetPtp( isEnabled := stat.init = InitializationStatus.initialized );
-proc.lock( isEnabled := (operator_ref = OperatorStatus.tech) AND (NOT(stat.init = InitializationStatus.locked)) );
+proc.lock( isEnabled := (operator_ref = OperatorStatus.tech) AND ((NOT(stat.init = InitializationStatus.locked)) AND ((stat.init = InitializationStatus.unknown) OR (stat.init = InitializationStatus.shutdown))) );
 proc.unlock( isEnabled := (operator_ref = OperatorStatus.tech) AND (stat.init = InitializationStatus.locked) );
 </xhtml>
           </ST>
@@ -11950,9 +12009,9 @@ stat.busy := F_BusyStatus(
 proc.initialize( isEnabled := NOT((stat.init = InitializationStatus.initialized) OR ((stat.init = InitializationStatus.initializingFailed) OR ((stat.init = InitializationStatus.locked) OR (stat.enabled = EnabledStatus.disabled)))) );
 proc.start( isEnabled := (stat.control = TempControlStatus.idle) AND ((stat.init = InitializationStatus.initialized) AND (NOT(stat.init = InitializationStatus.locked))) );
 proc.stop( isEnabled := (NOT(stat.control = TempControlStatus.idle)) AND (stat.init = InitializationStatus.initialized) );
-proc.reset( isEnabled := TRUE );
+proc.reset( isEnabled := operator_ref = OperatorStatus.tech );
 proc.resetPtp( isEnabled := stat.init = InitializationStatus.initialized );
-proc.lock( isEnabled := (operator_ref = OperatorStatus.tech) AND (NOT(stat.init = InitializationStatus.locked)) );
+proc.lock( isEnabled := (operator_ref = OperatorStatus.tech) AND ((NOT(stat.init = InitializationStatus.locked)) AND ((stat.init = InitializationStatus.unknown) OR (stat.init = InitializationStatus.shutdown))) );
 proc.unlock( isEnabled := (operator_ref = OperatorStatus.tech) AND (stat.init = InitializationStatus.locked) );
 </xhtml>
           </ST>
@@ -12347,9 +12406,9 @@ stat.busy := F_BusyStatus(
 proc.initialize( isEnabled := NOT((stat.init = InitializationStatus.initialized) OR ((stat.init = InitializationStatus.initializingFailed) OR ((stat.init = InitializationStatus.locked) OR (stat.enabled = EnabledStatus.disabled)))) );
 proc.start( isEnabled := (stat.control = TempControlStatus.idle) AND ((stat.init = InitializationStatus.initialized) AND (NOT(stat.init = InitializationStatus.locked))) );
 proc.stop( isEnabled := (NOT(stat.control = TempControlStatus.idle)) AND (stat.init = InitializationStatus.initialized) );
-proc.reset( isEnabled := TRUE );
+proc.reset( isEnabled := operator_ref = OperatorStatus.tech );
 proc.resetPtp( isEnabled := stat.init = InitializationStatus.initialized );
-proc.lock( isEnabled := (operator_ref = OperatorStatus.tech) AND (NOT(stat.init = InitializationStatus.locked)) );
+proc.lock( isEnabled := (operator_ref = OperatorStatus.tech) AND ((NOT(stat.init = InitializationStatus.locked)) AND ((stat.init = InitializationStatus.unknown) OR (stat.init = InitializationStatus.shutdown))) );
 proc.unlock( isEnabled := (operator_ref = OperatorStatus.tech) AND (stat.init = InitializationStatus.locked) );
 </xhtml>
           </ST>
@@ -12714,9 +12773,9 @@ stat.busy := F_BusyStatus(
 proc.initialize( isEnabled := NOT((stat.init = InitializationStatus.initialized) OR ((stat.init = InitializationStatus.initializingFailed) OR ((stat.init = InitializationStatus.locked) OR (stat.enabled = EnabledStatus.disabled)))) );
 proc.start( isEnabled := (stat.control = TempControlStatus.idle) AND ((stat.init = InitializationStatus.initialized) AND (NOT(stat.init = InitializationStatus.locked))) );
 proc.stop( isEnabled := (NOT(stat.control = TempControlStatus.idle)) AND (stat.init = InitializationStatus.initialized) );
-proc.reset( isEnabled := TRUE );
+proc.reset( isEnabled := operator_ref = OperatorStatus.tech );
 proc.resetPtp( isEnabled := stat.init = InitializationStatus.initialized );
-proc.lock( isEnabled := (operator_ref = OperatorStatus.tech) AND (NOT(stat.init = InitializationStatus.locked)) );
+proc.lock( isEnabled := (operator_ref = OperatorStatus.tech) AND ((NOT(stat.init = InitializationStatus.locked)) AND ((stat.init = InitializationStatus.unknown) OR (stat.init = InitializationStatus.shutdown))) );
 proc.unlock( isEnabled := (operator_ref = OperatorStatus.tech) AND (stat.init = InitializationStatus.locked) );
 </xhtml>
           </ST>
@@ -13031,8 +13090,8 @@ proc.initialize( isEnabled := NOT((stat.init = InitializationStatus.initialized)
 proc.start( isEnabled := (stat.control = TempControlStatus.idle) AND ((stat.init = InitializationStatus.initialized) AND (NOT(stat.init = InitializationStatus.locked))) );
 proc.stop( isEnabled := (NOT(stat.control = TempControlStatus.idle)) AND (stat.init = InitializationStatus.initialized) );
 proc.resetPtp( isEnabled := stat.init = InitializationStatus.initialized );
-proc.reset( isEnabled := TRUE );
-proc.lock( isEnabled := (operator_ref = OperatorStatus.tech) AND (NOT(stat.init = InitializationStatus.locked)) );
+proc.reset( isEnabled := operator_ref = OperatorStatus.tech );
+proc.lock( isEnabled := (operator_ref = OperatorStatus.tech) AND ((NOT(stat.init = InitializationStatus.locked)) AND ((stat.init = InitializationStatus.unknown) OR (stat.init = InitializationStatus.shutdown))) );
 proc.unlock( isEnabled := (operator_ref = OperatorStatus.tech) AND (stat.init = InitializationStatus.locked) );
 </xhtml>
           </ST>
@@ -13255,8 +13314,8 @@ THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
     superState := TRUE,
     isEnabled := config_ref.enabled);
 proc.initialize( isEnabled := NOT((stat.init = InitializationStatus.initialized) OR ((stat.init = InitializationStatus.initializingFailed) OR ((stat.init = InitializationStatus.locked) OR (stat.enabled = EnabledStatus.disabled)))) );
-proc.reset( isEnabled := TRUE );
-proc.lock( isEnabled := (operator_ref = OperatorStatus.tech) AND (NOT(stat.init = InitializationStatus.locked)) );
+proc.reset( isEnabled := operator_ref = OperatorStatus.tech );
+proc.lock( isEnabled := (operator_ref = OperatorStatus.tech) AND ((NOT(stat.init = InitializationStatus.locked)) AND ((stat.init = InitializationStatus.unknown) OR (stat.init = InitializationStatus.shutdown))) );
 proc.unlock( isEnabled := (operator_ref = OperatorStatus.tech) AND (stat.init = InitializationStatus.locked) );
 </xhtml>
           </ST>
@@ -13508,16 +13567,12 @@ parts.vac(
     operator_ref := operator_ref,
     config_ref := config.vac);
 parts.configManager( isEnabled := operator_ref = OperatorStatus.tech );
-stat.health := F_HealthStatus(
-    superState := NOT(stat.init = InitializationStatus.shutdown),
-    isGood := ((((parts.thermo.stat.health = HealthStatus.good) OR (parts.thermo.stat.health = HealthStatus.warning)) AND ((parts.vac.stat.health = HealthStatus.good) OR (parts.vac.stat.health = HealthStatus.warning))) AND (NOT(error))) OR (((parts.thermo.stat.health = HealthStatus.good) AND ((parts.vac.stat.enabled = EnabledStatus.disabled) AND (NOT(error)))) OR ((parts.vac.stat.health = HealthStatus.good) AND ((parts.thermo.stat.enabled = EnabledStatus.disabled) AND (NOT(error))))),
-    hasWarning := (parts.thermo.stat.health = HealthStatus.warning) OR (parts.vac.stat.health = HealthStatus.warning));
 stat.busy := F_BusyStatus(
     superState := NOT(stat.init = InitializationStatus.shutdown),
     isBusy := (parts.thermo.stat.busy = BusyStatus.busy) OR (parts.vac.stat.busy = BusyStatus.busy));
 proc.initialize( isEnabled := NOT((stat.init = InitializationStatus.initialized) OR ((stat.init = InitializationStatus.initializingFailed) OR (stat.init = InitializationStatus.locked))) );
-proc.reset( isEnabled := TRUE );
-proc.lock( isEnabled := (operator_ref = OperatorStatus.tech) AND (NOT(stat.init = InitializationStatus.locked)) );
+proc.reset( isEnabled := operator_ref = OperatorStatus.tech );
+proc.lock( isEnabled := (operator_ref = OperatorStatus.tech) AND ((NOT(stat.init = InitializationStatus.locked)) AND ((stat.init = InitializationStatus.unknown) OR (stat.init = InitializationStatus.shutdown))) );
 proc.unlock( isEnabled := (operator_ref = OperatorStatus.tech) AND (stat.init = InitializationStatus.locked) );
 </xhtml>
           </ST>
