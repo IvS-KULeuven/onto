@@ -3745,8 +3745,9 @@
       <dataType name="ThermoSharedConfig">
         <baseType>
           <struct>
-            <variable name="spacer">
+            <variable name="resendEvents">
               <type><BOOL /></type>
+              <initialValue><simpleValue value="FALSE" /></initialValue>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -3755,7 +3756,21 @@
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">place holder, shared config currently not used</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">True if events should be resend when staying active for longer periods of time</xhtml>
+              </documentation>
+            </variable>
+            <variable name="resendInterval">
+              <type><LREAL /></type>
+              <initialValue><simpleValue value="300.0" /></initialValue>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Interval in seconds at which events are resend</xhtml>
               </documentation>
             </variable>
           </struct>
@@ -5735,6 +5750,34 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">config for the vacum control system</xhtml>
+              </documentation>
+            </variable>
+            <variable name="resendEvents">
+              <type><BOOL /></type>
+              <initialValue><simpleValue value="FALSE" /></initialValue>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">True if events should be resend when staying active for longer periods of time</xhtml>
+              </documentation>
+            </variable>
+            <variable name="resendInterval">
+              <type><LREAL /></type>
+              <initialValue><simpleValue value="300.0" /></initialValue>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Interval in seconds at which events are resend</xhtml>
               </documentation>
             </variable>
           </struct>
@@ -13085,7 +13128,7 @@ stat.control := F_TempControlStatus(
     isActive := (parts.outerRoom.stat.control = TempControlStatus.active) OR ((parts.innerRoom.stat.control = TempControlStatus.active) OR ((parts.vessel.stat.control = TempControlStatus.active) OR ((parts.shield.stat.control = TempControlStatus.active) OR ((parts.bench.stat.control = TempControlStatus.active) OR (parts.cryo.stat.control = TempControlStatus.active))))));
 stat.busy := F_BusyStatus(
     superState := NOT(stat.init = InitializationStatus.shutdown),
-    isBusy := (parts.outerRoom.stat.busy = BusyStatus.busy) OR ((parts.innerRoom.stat.busy = BusyStatus.busy) OR ((parts.vessel.stat.busy = BusyStatus.busy) OR ((parts.shield.stat.busy = BusyStatus.busy) OR ((parts.bench.stat.busy = BusyStatus.busy) OR (parts.cryo.stat.busy = BusyStatus.busy))))));
+    isBusy := ((parts.outerRoom.stat.busy = BusyStatus.busy) OR ((parts.innerRoom.stat.busy = BusyStatus.busy) OR ((parts.vessel.stat.busy = BusyStatus.busy) OR ((parts.shield.stat.busy = BusyStatus.busy) OR ((parts.bench.stat.busy = BusyStatus.busy) OR (parts.cryo.stat.busy = BusyStatus.busy)))))) OR (stat.init = InitializationStatus.initializing));
 proc.initialize( isEnabled := NOT((stat.init = InitializationStatus.initialized) OR ((stat.init = InitializationStatus.initializingFailed) OR ((stat.init = InitializationStatus.locked) OR (stat.enabled = EnabledStatus.disabled)))) );
 proc.start( isEnabled := (stat.control = TempControlStatus.idle) AND ((stat.init = InitializationStatus.initialized) AND (NOT(stat.init = InitializationStatus.locked))) );
 proc.stop( isEnabled := (NOT(stat.control = TempControlStatus.idle)) AND (stat.init = InitializationStatus.initialized) );
@@ -13569,7 +13612,7 @@ parts.vac(
 parts.configManager( isEnabled := operator_ref = OperatorStatus.tech );
 stat.busy := F_BusyStatus(
     superState := NOT(stat.init = InitializationStatus.shutdown),
-    isBusy := (parts.thermo.stat.busy = BusyStatus.busy) OR (parts.vac.stat.busy = BusyStatus.busy));
+    isBusy := ((parts.thermo.stat.busy = BusyStatus.busy) OR (parts.vac.stat.busy = BusyStatus.busy)) OR (stat.init = InitializationStatus.initializing));
 proc.initialize( isEnabled := NOT((stat.init = InitializationStatus.initialized) OR ((stat.init = InitializationStatus.initializingFailed) OR (stat.init = InitializationStatus.locked))) );
 proc.reset( isEnabled := operator_ref = OperatorStatus.tech );
 proc.lock( isEnabled := (operator_ref = OperatorStatus.tech) AND ((NOT(stat.init = InitializationStatus.locked)) AND ((stat.init = InitializationStatus.unknown) OR (stat.init = InitializationStatus.shutdown))) );

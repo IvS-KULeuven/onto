@@ -91,7 +91,7 @@
           isEnabled: !AND [ powerMount, !NOT [ forced ] ]
 
         powerOnPc:
-           isEnabled: !AND [ !EQ [stat.init, marvel_common.InitializationStatus.initialized], !NOT [powerPC]]
+           isEnabled: !AND [ !EQ [stat.init, marvel_common.InitializationStatus.initialized], !NOT [powerPC], ]
 
         powerOffPc:
            isEnabled: powerPC

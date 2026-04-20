@@ -136,6 +136,7 @@
 
   ### shared config for the cryo ###
   !CONFIG CryoSharedConfig:
+       
     items:
       sensors              : { type: SharedMeasurementConfig, comment: "Shared config for the temperature sensors in the cryo" }
       heaters:             { type: SharedHeaterConfig, comment: "Shared config for the heaters in the cryo" }
@@ -143,7 +144,8 @@
   ### shared config for all thermo parts ###
   !CONFIG ThermoSharedConfig:
     items:
-      spacer : { type: t_bool, comment : "place holder, shared config currently not used"}
+      resendEvents : { type: t_bool, comment : "True if events should be resend when staying active for longer periods of time", initial: !BOOL FALSE }
+      resendInterval : { type: t_double, comment: "Interval in seconds at which events are resend", initial: !DOUBLE 300.0 }
           
 
 
@@ -380,6 +382,10 @@
     items:
       thermo: {type: ThermoConfig, comment: "Config for the thermo control system"}
       vac:    {type: VacConfig, comment: "config for the vacum control system"}
+
+      resendEvents : { type: t_bool, comment : "True if events should be resend when staying active for longer periods of time", initial: !BOOL FALSE }
+      resendInterval : { type: t_double, comment: "Interval in seconds at which events are resend", initial: !DOUBLE 300.0 }
+      
       
       
 
@@ -1293,7 +1299,7 @@
         isEnabled: config_ref.enabled
       busy:
           superState          : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ] ]
-          isBusy : !MTCS_SUMMARIZE_BUSY [ parts.outerRoom, parts.innerRoom, parts.vessel, parts.shield, parts.bench, parts.cryo ]
+          isBusy : !OR [ !MTCS_SUMMARIZE_BUSY [ parts.outerRoom, parts.innerRoom, parts.vessel, parts.shield, parts.bench, parts.cryo ] , !EQ [ stat.init, marvel_common.InitializationStatus.initializing ] ]
 
       control:
           superState          : !EQ [ stat.init, marvel_common.InitializationStatus.initialized ]    
@@ -1482,7 +1488,7 @@
       calls:
         busy:
           superState          : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ] ]
-          isBusy : !MTCS_SUMMARIZE_BUSY [ parts.thermo, parts.vac ]
+          isBusy : !OR [ !MTCS_SUMMARIZE_BUSY [ parts.thermo, parts.vac ], !EQ [ stat.init, marvel_common.InitializationStatus.initializing ] ]
       ##proc##
         initialize:
           isEnabled    : !NOT [ !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ,
