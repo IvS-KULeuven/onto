@@ -1067,6 +1067,9 @@
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">parts.configManager( isEnabled := operator_ref = OperatorStatus.tech );
+stat.busy := F_BusyStatus(
+    superState := TRUE,
+    isBusy := (stat.init = InitializationStatus.initializing) OR forced);
 proc.initialize( isEnabled := (NOT(stat.init = InitializationStatus.initialized)) AND ((NOT(stat.init = InitializationStatus.initializing)) AND (NOT(stat.init = InitializationStatus.locked))) );
 proc.powerOnPc( isEnabled := (stat.init = InitializationStatus.initialized) AND (NOT(powerPC)) );
 proc.powerOffPc( isEnabled := powerPC );

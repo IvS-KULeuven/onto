@@ -89,8 +89,7 @@
   !CONFIG SharedHeaterConfig:
     items:
             simulation                 : {type: SimulationConfig}
-            hihiDeviation               : { type: t_double, comment: "max dev from setpoint" }
-            hiDeviation              : { type: t_double  , comment: "warning dev from setpoint" }
+            hihilolo                      : { type: marvel_common.HiHiLoLoAlarmConfig, comment: "Alarm config for the heater's deviation from setpoint" }
             pwmPeriod                   : { type: t_uint16, comment: "period of the pwm signlas in ms", initial: !UINT16 1000 }
             pwmInstantUpdate              : { type: t_bool, comment: "True if the PWM signal is updated instantly when the power changes"}
             maxPower                  : { type: t_double, comment: "Maximum total power of all heaters in percentage", initial: !DOUBLE 100.0 }
@@ -144,8 +143,7 @@
   ### shared config for all thermo parts ###
   !CONFIG ThermoSharedConfig:
     items:
-      resendEvents : { type: t_bool, comment : "True if events should be resend when staying active for longer periods of time", initial: !BOOL FALSE }
-      resendInterval : { type: t_double, comment: "Interval in seconds at which events are resend", initial: !DOUBLE 300.0 }
+      placeHolder : { type: t_bool, comment: "placeholder for the shared config of the thermo system, can be extended in the future" }
           
 
 
@@ -383,9 +381,6 @@
       thermo: {type: ThermoConfig, comment: "Config for the thermo control system"}
       vac:    {type: VacConfig, comment: "config for the vacum control system"}
 
-      resendEvents : { type: t_bool, comment : "True if events should be resend when staying active for longer periods of time", initial: !BOOL FALSE }
-      resendInterval : { type: t_double, comment: "Interval in seconds at which events are resend", initial: !DOUBLE 300.0 }
-      
       
       
 
@@ -461,10 +456,8 @@
     variables_output:
         power                   : { type: t_double, comment: "Current power of the heater in percentage" } 
         deviation               : { type: t_double, comment: "Current error between set point and associated temperature" }
-        isControlled            : { type: t_bool, comment: "True if the heater is in controlled state" }
         isForced                 : { type: t_bool, comment: "True if the heater power is forced (overwriting the normal control)" }
         simTemp                  : { type: t_double, comment: "Simulated temperature for testing the heater control" }
-        
         
     variables_input:     
         setPoint                : { type: t_double, comment: "Current set point of the heater in kelvin" }
@@ -481,9 +474,10 @@
       init                        : { type: marvel_common.InitializationStatus }
       enabled         : { type: marvel_common.EnabledStatus        , comment: "Is the heater enabled?" }
       health          : { type: marvel_common.HealthStatus         , comment: "Is the heater healthy?" }
+      alarm           : { type: marvel_common.HiHiLoLoAlarmStatus  , comment: "Alarm status"}
 
     proc:
-      initialize      : { type: marvel_common.Process                     , comment: "Initialize the heater" }
+      initialize      : { type: marvel_common.Process, comment: "Initialize the heater" }
       reset           : { type: marvel_common.Process                     , comment: "Reset the heater" }
       force : {type: ForceHeater, comment: "Force a certain power output to the heater"}
 
@@ -491,18 +485,19 @@
 
       #proc
         initialize:
-          isEnabled    : !NOT [ !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.shutdown ],
-                                      !EQ [ stat.init, marvel_common.InitializationStatus.initializingFailed ],
-                                      !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ,
-                                      !EQ [ stat.enabled, marvel_common.EnabledStatus.disabled ] ] ]
-
+          isEnabled    : !NOT [ !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ,
+                                      !EQ [ stat.init, marvel_common.InitializationStatus.initializingFailed ] ,
+                                      !EQ [ stat.init, marvel_common.InitializationStatus.locked ]  ,
+                                      !EQ [ stat.init, marvel_common.InitializationStatus.initializing ] ] ]
         reset:
           isEnabled    : !EQ [ operator_ref, marvel_common.OperatorStatus.tech ]
-        resetPtp:
-          isEnabled    : !EQ [ stat.init, marvel_common.InitializationStatus.initialized ]
 
         force:
-          isEnabled: !AND [ !EQ [operator_ref, marvel_common.OperatorStatus.tech], !EQ [stat.init, marvel_common.InitializationStatus.initialized ], !NOT [isForced]]
+          isEnabled: !AND [ !EQ [operator_ref, marvel_common.OperatorStatus.tech], !NOT [isForced], !EQ [ stat.enabled, marvel_common.EnabledStatus.enabled ] , !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ]
+
+        enabled:
+          superState   : !BOOL TRUE
+          isEnabled    : config_ref.enabled
        
 ### main state machines ##########################################################    
 

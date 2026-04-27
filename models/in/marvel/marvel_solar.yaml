@@ -116,3 +116,8 @@
         
         reset:
           isEnabled: !BOOL TRUE
+
+        #stat
+        busy:
+          superState: !BOOL TRUE
+          isBusy: !OR [!EQ [ stat.init, marvel_common.InitializationStatus.initializing], forced ]
