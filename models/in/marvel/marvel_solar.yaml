@@ -14,110 +14,107 @@
 ########################################################################################################################
 
 !LIBRARY marvel_solar:
-
   !STRUCT FanStruct:
     items:
-      health: {type: marvel_common.HealthStatus, comment: "Health status of the cooling fan"}
-      power: {type: t_float, comment: "Power of the cooling fan in percent"}
+      health: { type: marvel_common.HealthStatus, comment: "Health status of the cooling fan" }
+      power: { type: t_float, comment: "Power of the cooling fan in percent" }
 
   !CONFIG SolarConfig:
     items:
-      defPowerFan: {type: t_float, comment: "Default power of the cooling fan in percent", initial: !DOUBLE 30.0}
-      hiTemp: {type: t_float, comment: "Fan turned up to max power at this temperature to prevent damage", initial: !DOUBLE 35.0}
-      hihiTemp: {type: t_float, comment: "Maximum allowed temperature before the solar telescope is shut down to prevent damage", initial: !DOUBLE 40.0}
-      fanEnabled: {type: t_bool, comment: "True if the cooling fan is enabled", initial: !BOOL TRUE}
-      maxTimeInLimit: {type: t_float, comment: "Maximum time in seconds that the solar telescope is allowed to stay in a limit position before an error is raised", initial: !DOUBLE 60.0}
-
-
+      defPowerFan: { type: t_float, comment: "Default power of the cooling fan in percent", initial: !DOUBLE "30.0" }
+      hiTemp: { type: t_float, comment: "Fan turned up to max power at this temperature to prevent damage", initial: !DOUBLE "35.0" }
+      hihiTemp: { type: t_float, comment: "Maximum allowed temperature before the solar telescope is shut down to prevent damage", initial: !DOUBLE "40.0" }
+      fanEnabled: { type: t_bool, comment: "True if the cooling fan is enabled", initial: !BOOL "TRUE" }
+      maxTimeInLimit: { type: t_float, comment: "Maximum time in seconds that the solar telescope is allowed to stay in a limit position before an error is raised", initial: !DOUBLE "60.0" }
 
   !STATEMACHINE Solar:
     references:
-      activity_ref            : { type: marvel_common.ActivityStatus              , comment: "Shared activity status"}
-      services_ref            : { type: marvel_services.Services                  , comment: "Shared services", expand: false}
-      operator_ref           : { type: marvel_common.OperatorStatus               , comment: "Shared operation status"}
-     
+      activity_ref: { type: marvel_common.ActivityStatus, comment: "Shared activity status" }
+      services_ref: { type: marvel_services.Services, comment: "Shared services", expand: false }
+      operator_ref: { type: marvel_common.OperatorStatus, comment: "Shared operation status" }
 
     variables_input:
-      temp              : { type: t_float           , comment: "The measured temperature"}
+      #temp senosr
+      temp: { type: t_float, comment: "The measured temperature" }
 
-    #sensors azimuth
-      lsAz1        : { type: t_bool                                                , comment: "limit switch azi 1 (soft) (west) (B1)"  }
-      lsAz2          : { type: t_bool                                                , comment: "limit switch azi 2 (hard) (nord) (B2)" }
-      lsAz3           : { type: t_bool                                                , comment: "limit switch azi 3 (soft) (east) (B3)"  }
-      hsAz            : { type: t_bool                                                , comment: "State of home sensor azi (south) (B4)"  }
-    
-    #sensors altiude 
-      lsAl1           : { type: t_bool                                                , comment: "limit switch alti 1 (soft) (top) (B5)"}
-      lsAl2           : { type: t_bool                                                , comment: "limit switch alti 2 (hard) (mid) (B6)"}
-      hsAl            : { type: t_bool                                                , comment: "State of home sensor alti + limit (bottom) (B7)" }
-    
-    
+      #sensors azimuth
+      sAziWest: { type: t_bool, comment: "limit switch azi 1 (soft) (west) (B1)" }
+      sAziNord: { type: t_bool, comment: "limit switch azi 2 (hard) (nord) (B2)" }
+      sAziEast: { type: t_bool, comment: "limit switch azi 3 (soft) (east) (B3)" }
+      sAziSouth: { type: t_bool, comment: "Home sensor azi (south) (B4)" }
+
+      #sensors altiude
+      sAltiTop: { type: t_bool, comment: "limit switch alti 1 (soft) (top) (B5)" }
+      sAltiMid: { type: t_bool, comment: "limit switch alti 2 (hard) (mid) (B6)" }
+      sAltiBot: { type: t_bool, comment: "Home sensor alti + limit (bottom) (B7)" }
+
     variables_input_rw:
-      editableConfig            : { type: SolarConfig                          , comment: "Editable configuration of the solar telescope" , expand: false }     
+      editableConfig: { type: SolarConfig, comment: "Editable configuration of the solar telescope", expand: false }
 
     variables_output:
-      fan          : { type: FanStruct, comment: "Status of the cooling fan", expand: false }
-      config       :   { type: SolarConfig, comment: "Configuration of the solar telescope" }
-      powerPC      : { type: t_bool                   , comment: "True if the solar pc is enabled", address: "%Q*"  }
-      powerMount   : { type: t_bool                   , comment: "True if the solar mount is enabled", address: "%Q*"  }
-      forced   : { type: t_bool                   , comment: "True if power of the mount is forced" }
+      fan: { type: FanStruct, comment: "The cooling fan power and status", expand: false }
+      config: { type: SolarConfig, comment: "Configuration of the solar telescope" }
+      powerPC: { type: t_bool, comment: "True if the solar pc is enabled", address: "%Q*" }
+      powerMount: { type: t_bool, comment: "True if the solar mount is enabled", address: "%Q*" }
+      forced: { type: t_bool, comment: "True if power of the mount is forced" }
 
     parts:
-        configManager:
-          comment                     : "The config manager (to load/save/activate configuration data)"
-          type                        : marvel_common.ConfigManager
+      configManager:
+        comment: "The config manager (to load/save/activate configuration data)"
+        type: marvel_common.ConfigManager
 
     stat:
-      health                      : { type: marvel_common.HealthStatus }
-      busy                        : { type: marvel_common.BusyStatus                   , comment: "True if the solar telescope is busy" }
-      init                : { type: marvel_common.InitializationStatus              , comment: "True if the solar telescope is initialized" }
+      health: { type: marvel_common.HealthStatus }
+      busy: { type: marvel_common.BusyStatus, comment: "True if the solar telescope is busy" }
+      init: { type: marvel_common.InitializationStatus, comment: "True if the solar telescope is initialized" }
 
     proc:
-      initialize                        : { type: marvel_common.Process                         , comment: "Initialize the solar telescope" }
-      powerOnPc                    : { type: marvel_common.Process                         , comment: "enable power to to solar pc and mount" }
-      powerOffPc                   : { type: marvel_common.Process                         , comment: "Stop power to solar pc and mount" }
-      powerOnMount                     : { type: marvel_common.Process                         , comment: "enable power to to solar mount and mount" }
-      powerOffMount                    : { type: marvel_common.Process                         , comment: "Stop power to solar mount and mount" }
-      manualPowerOn                     : { type: marvel_common.Process                         , comment: "overwrite hard limits" }
-      manualPowerOff                   : { type: marvel_common.Process                         , comment: "Stop overwriting hard limits" }
-      lock                 : { type: marvel_common.Process                         , comment: "Lock the solar telescope"}
-      unlock               : { type: marvel_common.Process                         , comment: "Unlock the solar telescope"}
-      reset                : { type: marvel_common.Process                         , comment: "Reset the solar telescope"}
-    
+      initialize: { type: marvel_common.Process, comment: "Initialize the solar telescope" }
+      powerOnPc: { type: marvel_common.Process, comment: "enable power to to solar pc and mount" }
+      powerOffPc: { type: marvel_common.Process, comment: "Stop power to solar pc and mount" }
+      powerOnMount: { type: marvel_common.Process, comment: "enable power to to solar mount and mount" }
+      powerOffMount: { type: marvel_common.Process, comment: "Stop power to solar mount and mount" }
+      manualPowerOn: { type: marvel_common.Process, comment: "overwrite hard limits" }
+      manualPowerOff: { type: marvel_common.Process, comment: "Stop overwriting hard limits" }
+      lock: { type: marvel_common.Process, comment: "Lock the solar telescope" }
+      unlock: { type: marvel_common.Process, comment: "Unlock the solar telescope" }
+      reset: { type: marvel_common.Process, comment: "Reset the solar telescope" }
+
     calls:
-        powerOnMount:
-          isEnabled: !AND [ !EQ [stat.init, marvel_common.InitializationStatus.initialized],!NOT [powerMount],  !NOT [!EQ [ stat.health, marvel_common.HealthStatus.bad]], !NOT [forced]]
-        powerOffMount:
-          isEnabled: !AND [ powerMount, !NOT [ forced ] ]
+      powerOnMount:
+        isEnabled: !AND [ !EQ [ stat.init, marvel_common.InitializationStatus.initialized ], !NOT [ powerMount ], !NOT [ !EQ [ stat.health, marvel_common.HealthStatus.bad ] ], !NOT [ forced ] ]
 
-        powerOnPc:
-           isEnabled: !AND [ !EQ [stat.init, marvel_common.InitializationStatus.initialized], !NOT [powerPC], ]
+      powerOffMount:
+        isEnabled: !AND [ powerMount, !NOT [ forced ] ]
 
-        powerOffPc:
-           isEnabled: powerPC
+      powerOnPc:
+        isEnabled: !AND [ !EQ [ stat.init, marvel_common.InitializationStatus.initialized ], !NOT [ powerPC ] ]
 
-        manualPowerOn:
-          isEnabled: !AND [!EQ [operator_ref, marvel_common.OperatorStatus.tech], !NOT [forced] ]
+      powerOffPc:
+        isEnabled: powerPC
 
-        manualPowerOff:
-          isEnabled: !AND [ forced, !EQ [operator_ref, marvel_common.OperatorStatus.tech] ]
+      manualPowerOn:
+        isEnabled: !AND [ !EQ [ operator_ref, marvel_common.OperatorStatus.tech ], !NOT [ forced ] ]
 
-        initialize:
-          isEnabled: !AND [ !NOT [!EQ [stat.init, marvel_common.InitializationStatus.initialized]], !NOT [!EQ [ stat.init, marvel_common.InitializationStatus.initializing]], !NOT [!EQ [ stat.init, marvel_common.InitializationStatus.locked]] ]
+      manualPowerOff:
+        isEnabled: !AND [ forced, !EQ [ operator_ref, marvel_common.OperatorStatus.tech ] ]
 
-        configManager:
-          isEnabled: !EQ [operator_ref, marvel_common.OperatorStatus.tech]
+      initialize:
+        isEnabled: !AND [ !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.initializing ] ], !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
 
-        lock:
-          isEnabled: !AND [!EQ [operator_ref, marvel_common.OperatorStatus.tech], !NOT [!EQ [ stat.init, marvel_common.InitializationStatus.locked]]]   
+      configManager:
+        isEnabled: !EQ [ operator_ref, marvel_common.OperatorStatus.tech ]
 
-        unlock:
-          isEnabled: !AND [!EQ [operator_ref, marvel_common.OperatorStatus.tech], !EQ [ stat.init, marvel_common.InitializationStatus.locked]]    
-        
-        reset:
-          isEnabled: !BOOL TRUE
+      lock:
+        isEnabled: !AND [ !EQ [ operator_ref, marvel_common.OperatorStatus.tech ], !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ] ]
 
-        #stat
-        busy:
-          superState: !BOOL TRUE
-          isBusy: !OR [!EQ [ stat.init, marvel_common.InitializationStatus.initializing], forced ]
+      unlock:
+        isEnabled: !AND [ !EQ [ operator_ref, marvel_common.OperatorStatus.tech ], !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
+
+      reset:
+        isEnabled: !BOOL "TRUE"
+
+      #stat
+      busy:
+        superState: !BOOL "TRUE"
+        isBusy: !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.initializing ], forced ]
