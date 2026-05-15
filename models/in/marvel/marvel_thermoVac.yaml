@@ -460,7 +460,7 @@
       initialize:
         isEnabled: !NOT [ !OR [ !EQ [ stat.init, marvel_common.InitializationStatus.locked ], !EQ [ stat.init, marvel_common.InitializationStatus.initializing ] ] ]
       reset:
-        isEnabled: !EQ [ operator_ref, marvel_common.OperatorStatus.tech ]
+        isEnabled: !BOOL "TRUE"
       force:
         isEnabled: !AND [ !EQ [ operator_ref, marvel_common.OperatorStatus.tech ], !NOT [ isForced ], !EQ [ stat.enabled, marvel_common.EnabledStatus.enabled ], !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ]
 
@@ -576,7 +576,7 @@
       unlock:
         isEnabled: !AND [ !EQ [ operator_ref, marvel_common.OperatorStatus.tech ], !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
       reset:
-        isEnabled: !EQ [ operator_ref, marvel_common.OperatorStatus.tech ]
+        isEnabled: !BOOL "TRUE"
       clearPtp:
         isEnabled: !AND [ !EQ [ operator_ref, marvel_common.OperatorStatus.tech ], !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ]
       ###stat###
@@ -694,7 +694,7 @@
       unlock:
         isEnabled: !AND [ !EQ [ operator_ref, marvel_common.OperatorStatus.tech ], !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
       reset:
-        isEnabled: !EQ [ operator_ref, marvel_common.OperatorStatus.tech ]
+        isEnabled: !BOOL "TRUE"
       clearPtp:
         isEnabled: !AND [ !EQ [ operator_ref, marvel_common.OperatorStatus.tech ], !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ]
 
@@ -830,7 +830,7 @@
       unlock:
         isEnabled: !AND [ !EQ [ operator_ref, marvel_common.OperatorStatus.tech ], !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
       reset:
-        isEnabled: !EQ [ operator_ref, marvel_common.OperatorStatus.tech ]
+        isEnabled: !BOOL "TRUE"
       clearPtp:
         isEnabled: !AND [ !EQ [ operator_ref, marvel_common.OperatorStatus.tech ], !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ]
       ###stat###
@@ -1129,7 +1129,7 @@
       unlock:
         isEnabled: !AND [ !EQ [ operator_ref, marvel_common.OperatorStatus.tech ], !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
       reset:
-        isEnabled: !EQ [ operator_ref, marvel_common.OperatorStatus.tech ]
+        isEnabled: !BOOL "TRUE"
 
       clearPtp:
         isEnabled: !AND [ !EQ [ operator_ref, marvel_common.OperatorStatus.tech ], !EQ [ stat.init, marvel_common.InitializationStatus.initialized ] ]
@@ -1210,7 +1210,7 @@
       unlock:
         isEnabled: !AND [ !EQ [ operator_ref, marvel_common.OperatorStatus.tech ], !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
       reset:
-        isEnabled: !EQ [ operator_ref, marvel_common.OperatorStatus.tech ]
+        isEnabled: !BOOL "TRUE"
 
   ### MAIN STATEMACHINE ####################################
 
@@ -1278,7 +1278,7 @@
       unlock:
         isEnabled: !AND [ !EQ [ operator_ref, marvel_common.OperatorStatus.tech ], !EQ [ stat.init, marvel_common.InitializationStatus.locked ] ]
       reset:
-        isEnabled: !EQ [ operator_ref, marvel_common.OperatorStatus.tech ]
+        isEnabled: !BOOL "TRUE"
 
       ###parts##
       thermo:

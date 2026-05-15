@@ -10125,7 +10125,7 @@ THIS^.proc.clearPtp._copyToModel_Process( model := model.proc.clearPtp );
     superState := TRUE,
     isEnabled := config_ref.enabled);
 proc.initialize( isEnabled := NOT((stat.init = InitializationStatus.locked) OR (stat.init = InitializationStatus.initializing)) );
-proc.reset( isEnabled := operator_ref = OperatorStatus.tech );
+proc.reset( isEnabled := TRUE );
 proc.force( isEnabled := (operator_ref = OperatorStatus.tech) AND ((NOT(isForced)) AND ((stat.enabled = EnabledStatus.enabled) AND (stat.init = InitializationStatus.initialized))) );
 </xhtml>
           </ST>
@@ -10744,7 +10744,7 @@ stat.busy := F_BusyStatus(
 proc.initialize( isEnabled := NOT((stat.init = InitializationStatus.locked) OR (stat.enabled = EnabledStatus.disabled)) );
 proc.start( isEnabled := (stat.control = TempControlStatus.idle) AND ((stat.init = InitializationStatus.initialized) AND (stat.enabled = EnabledStatus.enabled)) );
 proc.stop( isEnabled := (NOT(stat.control = TempControlStatus.idle)) AND (stat.init = InitializationStatus.initialized) );
-proc.reset( isEnabled := operator_ref = OperatorStatus.tech );
+proc.reset( isEnabled := TRUE );
 proc.clearPtp( isEnabled := (operator_ref = OperatorStatus.tech) AND (stat.init = InitializationStatus.initialized) );
 proc.lock( isEnabled := (operator_ref = OperatorStatus.tech) AND (NOT(stat.init = InitializationStatus.locked)) );
 proc.unlock( isEnabled := (operator_ref = OperatorStatus.tech) AND (stat.init = InitializationStatus.locked) );
@@ -11291,7 +11291,7 @@ stat.busy := F_BusyStatus(
 proc.initialize( isEnabled := NOT((stat.init = InitializationStatus.locked) OR (stat.enabled = EnabledStatus.disabled)) );
 proc.start( isEnabled := (stat.control = TempControlStatus.idle) AND ((stat.init = InitializationStatus.initialized) AND (stat.enabled = EnabledStatus.enabled)) );
 proc.stop( isEnabled := (NOT(stat.control = TempControlStatus.idle)) AND (stat.init = InitializationStatus.initialized) );
-proc.reset( isEnabled := operator_ref = OperatorStatus.tech );
+proc.reset( isEnabled := TRUE );
 proc.clearPtp( isEnabled := (operator_ref = OperatorStatus.tech) AND (stat.init = InitializationStatus.initialized) );
 proc.lock( isEnabled := (operator_ref = OperatorStatus.tech) AND (NOT(stat.init = InitializationStatus.locked)) );
 proc.unlock( isEnabled := (operator_ref = OperatorStatus.tech) AND (stat.init = InitializationStatus.locked) );
@@ -11821,7 +11821,7 @@ stat.busy := F_BusyStatus(
 proc.initialize( isEnabled := NOT((stat.init = InitializationStatus.locked) OR (stat.enabled = EnabledStatus.disabled)) );
 proc.start( isEnabled := (stat.control = TempControlStatus.idle) AND ((stat.init = InitializationStatus.initialized) AND (stat.enabled = EnabledStatus.enabled)) );
 proc.stop( isEnabled := (NOT(stat.control = TempControlStatus.idle)) AND (stat.init = InitializationStatus.initialized) );
-proc.reset( isEnabled := operator_ref = OperatorStatus.tech );
+proc.reset( isEnabled := TRUE );
 proc.clearPtp( isEnabled := (operator_ref = OperatorStatus.tech) AND (stat.init = InitializationStatus.initialized) );
 proc.lock( isEnabled := (operator_ref = OperatorStatus.tech) AND (NOT(stat.init = InitializationStatus.locked)) );
 proc.unlock( isEnabled := (operator_ref = OperatorStatus.tech) AND (stat.init = InitializationStatus.locked) );
@@ -12812,7 +12812,7 @@ proc.initialize( isEnabled := NOT((stat.init = InitializationStatus.locked) OR (
 proc.start( isEnabled := (stat.control = TempControlStatus.idle) AND ((stat.init = InitializationStatus.initialized) AND (stat.enabled = EnabledStatus.enabled)) );
 proc.stop( isEnabled := (NOT(stat.control = TempControlStatus.idle)) AND (stat.init = InitializationStatus.initialized) );
 proc.clearPtp( isEnabled := (operator_ref = OperatorStatus.tech) AND (stat.init = InitializationStatus.initialized) );
-proc.reset( isEnabled := operator_ref = OperatorStatus.tech );
+proc.reset( isEnabled := TRUE );
 proc.lock( isEnabled := (operator_ref = OperatorStatus.tech) AND (NOT(stat.init = InitializationStatus.locked)) );
 proc.unlock( isEnabled := (operator_ref = OperatorStatus.tech) AND (stat.init = InitializationStatus.locked) );
 </xhtml>
@@ -13036,7 +13036,7 @@ THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
     superState := TRUE,
     isEnabled := config_ref.enabled);
 proc.initialize( isEnabled := NOT((stat.init = InitializationStatus.locked) OR (stat.enabled = EnabledStatus.disabled)) );
-proc.reset( isEnabled := operator_ref = OperatorStatus.tech );
+proc.reset( isEnabled := TRUE );
 proc.lock( isEnabled := (operator_ref = OperatorStatus.tech) AND (NOT(stat.init = InitializationStatus.locked)) );
 proc.unlock( isEnabled := (operator_ref = OperatorStatus.tech) AND (stat.init = InitializationStatus.locked) );
 </xhtml>
@@ -13293,7 +13293,7 @@ stat.busy := F_BusyStatus(
     superState := NOT(stat.init = InitializationStatus.shutdown),
     isBusy := ((parts.thermo.stat.busy = BusyStatus.busy) OR (parts.vac.stat.busy = BusyStatus.busy)) OR (stat.init = InitializationStatus.initializing));
 proc.initialize( isEnabled := NOT(stat.init = InitializationStatus.locked) );
-proc.reset( isEnabled := operator_ref = OperatorStatus.tech );
+proc.reset( isEnabled := TRUE );
 proc.lock( isEnabled := (operator_ref = OperatorStatus.tech) AND (NOT(stat.init = InitializationStatus.locked)) );
 proc.unlock( isEnabled := (operator_ref = OperatorStatus.tech) AND (stat.init = InitializationStatus.locked) );
 </xhtml>
