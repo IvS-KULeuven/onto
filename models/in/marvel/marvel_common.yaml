@@ -2455,3 +2455,13 @@
             # isEnabled       : !AND [ isEnabled, !EQ [ stat.busy, BusyStatus.idle ] ]
         # save:
             # isEnabled       : !AND [ isEnabled, !EQ [ stat.busy, BusyStatus.idle ] ]
+
+  ########################################################################################################################
+  # EventManager
+  ########################################################################################################################
+  !STATEMACHINE EventManager:
+    variables_output:
+        alarmCount          : { type: t_int16                      , comment: "Number of alarms" }
+    stat:
+        health              : { type: HealthStatus                  , comment: "Is the event manager in a healthy state?" }
+        busy                : { type: BusyStatus                    , comment: "Is the event manager in a busy state?" }
