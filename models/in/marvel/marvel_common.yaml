@@ -2105,7 +2105,9 @@
               isEnabled                   : !BOOL TRUE
           open:
               isEnabled                   : !OR [ !EQ [ state, beckhoff_vision.ETcVnCameraState.TCVN_CS_INITIAL ], 
-                                                  !EQ [ state, beckhoff_vision.ETcVnCameraState.TCVN_CS_INITIALIZED ] ]
+                                                  !EQ [ state, beckhoff_vision.ETcVnCameraState.TCVN_CS_INITIALIZED ],
+                                                  !EQ [ state, beckhoff_vision.ETcVnCameraState.TCVN_CS_OPENING ],
+                                                  !EQ [ state, beckhoff_vision.ETcVnCameraState.TCVN_CS_OPENED ] ]
           close:
               isEnabled                   : !NOT [ !OR [ !EQ [ state, beckhoff_vision.ETcVnCameraState.TCVN_CS_INITIAL ], 
                                                          !EQ [ state, beckhoff_vision.ETcVnCameraState.TCVN_CS_INITIALIZED ] ] ]

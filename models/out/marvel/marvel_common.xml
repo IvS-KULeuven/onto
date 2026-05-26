@@ -16674,7 +16674,7 @@ THIS^.proc.diagnostics._copyToModel_ModbusRTUBusDiagnosticsProcess( model := mod
 stat.busy := F_BusyStatus(
     superState := NOT(state = ETcVnCameraState.TCVN_CS_INITIAL),
     isBusy := (state = ETcVnCameraState.TCVN_CS_INITIALIZING) OR ((state = ETcVnCameraState.TCVN_CS_OPENING) OR (state = ETcVnCameraState.TCVN_CS_CLOSING)));
-proc.open( isEnabled := (state = ETcVnCameraState.TCVN_CS_INITIAL) OR (state = ETcVnCameraState.TCVN_CS_INITIALIZED) );
+proc.open( isEnabled := (state = ETcVnCameraState.TCVN_CS_INITIAL) OR ((state = ETcVnCameraState.TCVN_CS_INITIALIZED) OR ((state = ETcVnCameraState.TCVN_CS_OPENING) OR (state = ETcVnCameraState.TCVN_CS_OPENED))) );
 proc.close( isEnabled := NOT((state = ETcVnCameraState.TCVN_CS_INITIAL) OR (state = ETcVnCameraState.TCVN_CS_INITIALIZED)) );
 proc.startAcquiring( isEnabled := (state = ETcVnCameraState.TCVN_CS_INITIAL) OR ((state = ETcVnCameraState.TCVN_CS_INITIALIZED) OR (state = ETcVnCameraState.TCVN_CS_OPENED)) );
 proc.stopAcquiring( isEnabled := NOT((state = ETcVnCameraState.TCVN_CS_INITIAL) OR (state = ETcVnCameraState.TCVN_CS_INITIALIZED)) );
