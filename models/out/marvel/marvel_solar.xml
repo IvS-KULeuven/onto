@@ -230,8 +230,22 @@
       <dataType name="SolarConfig">
         <baseType>
           <struct>
+            <variable name="simulated">
+              <type><BOOL /></type>
+              <initialValue><simpleValue value="TRUE" /></initialValue>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">TRUE if the solar telescope is simulated, FALSE if not</xhtml>
+              </documentation>
+            </variable>
             <variable name="defPowerFan">
-              <type><REAL /></type>
+              <type><LREAL /></type>
               <initialValue><simpleValue value="30.0" /></initialValue>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -245,7 +259,7 @@
               </documentation>
             </variable>
             <variable name="hiTemp">
-              <type><REAL /></type>
+              <type><LREAL /></type>
               <initialValue><simpleValue value="35.0" /></initialValue>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -259,7 +273,7 @@
               </documentation>
             </variable>
             <variable name="hihiTemp">
-              <type><REAL /></type>
+              <type><LREAL /></type>
               <initialValue><simpleValue value="40.0" /></initialValue>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -287,7 +301,7 @@
               </documentation>
             </variable>
             <variable name="maxTimeInLimit">
-              <type><REAL /></type>
+              <type><LREAL /></type>
               <initialValue><simpleValue value="60.0" /></initialValue>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -320,7 +334,7 @@
               </documentation>
             </variable>
             <variable name="power">
-              <type><REAL /></type>
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -339,7 +353,7 @@
         <baseType>
           <struct>
             <variable name="temp">
-              <type><REAL /></type>
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -769,7 +783,7 @@
         <interface>
           <inputVars>
             <variable name="temp">
-              <type><REAL /></type>
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>

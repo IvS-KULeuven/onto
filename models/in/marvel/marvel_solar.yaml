@@ -17,16 +17,16 @@
   !STRUCT FanStruct:
     items:
       health  : { type: marvel_common.HealthStatus  , comment: "Health status of the cooling fan" }
-      power   : { type: t_float                     , comment: "Power of the cooling fan in percent" }
+      power   : { type: t_double                    , comment: "Power of the cooling fan in percent" }
 
   !CONFIG SolarConfig:
     items:
-      defPowerFan     : { type: t_float,  comment: "Default power of the cooling fan in percent", initial: !DOUBLE "30.0" }
-      hiTemp          : { type: t_float,  comment: "Fan turned up to max power at this temperature to prevent damage", initial: !DOUBLE "35.0" }
-      hihiTemp        : { type: t_float,  comment: "Maximum allowed temperature before the solar telescope is shut down to prevent damage", initial: !DOUBLE "40.0" }
-      fanEnabled      : { type: t_bool,   comment: "True if the cooling fan is enabled", initial: !BOOL "TRUE" }
-      maxTimeInLimit  : { type: t_float,  comment: "Maximum time in seconds that the solar telescope is allowed to stay in a limit position before an error is raised", initial: !DOUBLE "60.0" }
-
+      simulated       : { type: t_bool,    comment: "TRUE if the solar telescope is simulated, FALSE if not", initial: !BOOL "TRUE"}
+      defPowerFan     : { type: t_double,  comment: "Default power of the cooling fan in percent", initial: !DOUBLE "30.0" }
+      hiTemp          : { type: t_double,  comment: "Fan turned up to max power at this temperature to prevent damage", initial: !DOUBLE "35.0" }
+      hihiTemp        : { type: t_double,  comment: "Maximum allowed temperature before the solar telescope is shut down to prevent damage", initial: !DOUBLE "40.0" }
+      fanEnabled      : { type: t_bool,    comment: "True if the cooling fan is enabled", initial: !BOOL "TRUE" }
+      maxTimeInLimit  : { type: t_double,  comment: "Maximum time in seconds that the solar telescope is allowed to stay in a limit position before an error is raised", initial: !DOUBLE "60.0" }
   !STATEMACHINE Solar:
     references:
       activity_ref: { type: marvel_common.ActivityStatus, comment: "Shared activity status" }
@@ -35,7 +35,7 @@
 
     variables_input:
       #temp senosr
-      temp: { type: t_float, comment: "The measured temperature" }
+      temp: { type: t_double, comment: "The measured temperature" }
 
       #sensors azimuth
       sAziWest  : { type: t_bool, comment: "limit switch azi 1 (soft) (west) (B1)" }
