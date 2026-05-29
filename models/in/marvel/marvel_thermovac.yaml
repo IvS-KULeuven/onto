@@ -360,8 +360,8 @@
   ################################
   !CONFIG ThermoVacConfig:
     items:
-      thermo: { type: ThermoConfig, comment: "Thermo control config" }
-      vac: { type: VacConfig, comment: "Vacuum control config" }
+      thermo: { type: ThermoConfig, comment: "Thermo config" }
+      vac: { type: VacConfig, comment: "Vacuum config" }
 
   ########################################################################################################################
   # state machine's
@@ -423,7 +423,7 @@
   ###################################
   ### state machine single heater ###
   ###################################
-  !STATEMACHINE HeaterControl:
+  !STATEMACHINE Heater:
     variables_output:
       power: { type: t_double, comment: "Current power of the heater in percentage" }
       deviation: { type: t_double, comment: "Current error between set point and associated temperature" }
@@ -469,7 +469,7 @@
   ################################
   ### state machine outer room ###
   ################################
-  !STATEMACHINE OuterRoomControl:
+  !STATEMACHINE OuterRoom:
 
     parts:
       tFloorE: { type: TempMeasurement, comment: "Floor sensor East", arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
@@ -520,7 +520,7 @@
   ################################
   ### state machine inner room ###
   ################################
-  !STATEMACHINE InnerRoomControl:
+  !STATEMACHINE InnerRoom:
     variables_output:
       setPoint: { type: t_double, comment: "The ramped setpoint used by the pid" }
       avgTemp: { type: t_double, comment: "Average temperature of the vessel in kelvin" }
@@ -536,7 +536,7 @@
       tEast: { type: TempMeasurement, comment: "3rd temp sensor", arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
       tWest: { type: TempMeasurement, comment: "4th temp sensor", arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
 
-      htDucts: { type: HeaterControl, comment: "Test heater", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
+      htDucts: { type: Heater, comment: "Test heater", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
 
       ref: { type: RefSensor, comment: "Reference 'sensor' for calibration purposes" }
 
@@ -596,9 +596,8 @@
 
   ####################################
   ### state machine vessel control ###
-
   ####################################
-  !STATEMACHINE VesselControl:
+  !STATEMACHINE Vessel:
     variables_output:
       setPoint: { type: t_double, comment: "The ramped setpoint used by the pid" }
       avgTemp: { type: t_double, comment: "Average temperature of the vessel in kelvin" }
@@ -637,24 +636,24 @@
       tLidN: { type: TempMeasurement, comment: "Vessel Lid N", arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
       tLidS: { type: TempMeasurement, comment: "Vessel Lid S", arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
 
-      htLegNE: { type: HeaterControl, comment: "Heater control for Leg NE", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
-      htLegNW: { type: HeaterControl, comment: "Heater control for Leg NW", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
-      htLegSE: { type: HeaterControl, comment: "Heater control for Leg SE", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
-      htLegSW: { type: HeaterControl, comment: "Heater control for Leg SW", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
-      htLegTopNE: { type: HeaterControl, comment: "Heater control for Leg Top NE", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
-      htLegTopNW: { type: HeaterControl, comment: "Heater control for Leg Top NW", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
-      htLegTopSE: { type: HeaterControl, comment: "Heater control for Leg Top SE", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
-      htLegTopSW: { type: HeaterControl, comment: "Heater control for Leg Top SW", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
-      htBotNE: { type: HeaterControl, comment: "Heater control for Vessel Bottom NE", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
-      htBotNW: { type: HeaterControl, comment: "Heater control for Vessel Bottom NW", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
-      htBotSE: { type: HeaterControl, comment: "Heater control for Vessel Bottom SE", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
-      htBotSW: { type: HeaterControl, comment: "Heater control for Vessel Bottom SW", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
-      htSideN: { type: HeaterControl, comment: "Heater control for Vessel Side NE", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
-      htSideS: { type: HeaterControl, comment: "Heater control for Vessel Side NW", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
-      htSideE: { type: HeaterControl, comment: "Heater control for Vessel Side SE", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
-      htSideW: { type: HeaterControl, comment: "Heater control for Vessel Side SW", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
-      htLidN: { type: HeaterControl, comment: "Heater control for Vessel Lid N", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
-      htLidS: { type: HeaterControl, comment: "Heater control for Vessel Lid S", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
+      htLegNE: { type: Heater, comment: "Heater control for Leg NE", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
+      htLegNW: { type: Heater, comment: "Heater control for Leg NW", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
+      htLegSE: { type: Heater, comment: "Heater control for Leg SE", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
+      htLegSW: { type: Heater, comment: "Heater control for Leg SW", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
+      htLegTopNE: { type: Heater, comment: "Heater control for Leg Top NE", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
+      htLegTopNW: { type: Heater, comment: "Heater control for Leg Top NW", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
+      htLegTopSE: { type: Heater, comment: "Heater control for Leg Top SE", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
+      htLegTopSW: { type: Heater, comment: "Heater control for Leg Top SW", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
+      htBotNE: { type: Heater, comment: "Heater control for Vessel Bottom NE", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
+      htBotNW: { type: Heater, comment: "Heater control for Vessel Bottom NW", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
+      htBotSE: { type: Heater, comment: "Heater control for Vessel Bottom SE", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
+      htBotSW: { type: Heater, comment: "Heater control for Vessel Bottom SW", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
+      htSideN: { type: Heater, comment: "Heater control for Vessel Side NE", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
+      htSideS: { type: Heater, comment: "Heater control for Vessel Side NW", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
+      htSideE: { type: Heater, comment: "Heater control for Vessel Side SE", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
+      htSideW: { type: Heater, comment: "Heater control for Vessel Side SW", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
+      htLidN: { type: Heater, comment: "Heater control for Vessel Lid N", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
+      htLidS: { type: Heater, comment: "Heater control for Vessel Lid S", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
 
       ref: { type: RefSensor, comment: "Reference 'sensor' for calibration purposes" }
 
@@ -750,7 +749,7 @@
   ####################################
   ### state machine shield control ###
   ####################################
-  !STATEMACHINE ShieldControl:
+  !STATEMACHINE Shield:
     variables_output:
       setPoint: { type: t_double, comment: "The ramped setpoint used by the pid" }
       avgTemp: { type: t_double, comment: "Average temperature of the vessel in kelvin" }
@@ -777,20 +776,20 @@
       tCentre: { type: TempMeasurement, comment: "Shield centre", arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
       tCentreTh10k: { type: TempMeasurement, comment: "Shield centre TH10k", arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
 
-      htTopNE: { type: HeaterControl, comment: "Heater control for shield top NE", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
-      htTopNW: { type: HeaterControl, comment: "Heater control for shield top NW", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
-      htTopSE: { type: HeaterControl, comment: "Heater control for shield top SE", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
-      htTopSW: { type: HeaterControl, comment: "Heater control for shield top SW", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
-      htSideN: { type: HeaterControl, comment: "Heater control for shield side N", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
-      htSideS: { type: HeaterControl, comment: "Heater control for shield side S", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
-      htSideNE: { type: HeaterControl, comment: "Heater control for shield side NE", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
-      htSideSE: { type: HeaterControl, comment: "Heater control for shield side SE", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
-      htSideNW: { type: HeaterControl, comment: "Heater control for shield side NW", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
-      htSideSW: { type: HeaterControl, comment: "Heater control for shield side SW", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
-      htBotNE: { type: HeaterControl, comment: "Heater control for shield bottom NE", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
-      htBotNW: { type: HeaterControl, comment: "Heater control for shield bottom NW", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
-      htBotS: { type: HeaterControl, comment: "Heater control for shield bottom S", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
-      htCentre: { type: HeaterControl, comment: "Heater control for shield centre", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
+      htTopNE: { type: Heater, comment: "Heater control for shield top NE", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
+      htTopNW: { type: Heater, comment: "Heater control for shield top NW", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
+      htTopSE: { type: Heater, comment: "Heater control for shield top SE", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
+      htTopSW: { type: Heater, comment: "Heater control for shield top SW", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
+      htSideN: { type: Heater, comment: "Heater control for shield side N", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
+      htSideS: { type: Heater, comment: "Heater control for shield side S", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
+      htSideNE: { type: Heater, comment: "Heater control for shield side NE", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
+      htSideSE: { type: Heater, comment: "Heater control for shield side SE", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
+      htSideNW: { type: Heater, comment: "Heater control for shield side NW", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
+      htSideSW: { type: Heater, comment: "Heater control for shield side SW", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
+      htBotNE: { type: Heater, comment: "Heater control for shield bottom NE", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
+      htBotNW: { type: Heater, comment: "Heater control for shield bottom NW", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
+      htBotS: { type: Heater, comment: "Heater control for shield bottom S", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
+      htCentre: { type: Heater, comment: "Heater control for shield centre", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
 
       ref: { type: RefSensor, comment: "Reference 'sensor' for calibration purposes" }
 
@@ -875,7 +874,7 @@
   ###################################
   ### state machine bench control ###
   ###################################
-  !STATEMACHINE BenchControl:
+  !STATEMACHINE Bench:
     parts:
       tCentre: { type: TempMeasurement, comment: "Bench centre", arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
       tCentreTH10k: { type: TempMeasurement, comment: "Bench centre TH10k", arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
@@ -888,10 +887,10 @@
       tCam: { type: TempMeasurement, comment: "Camera", arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
       tInOptics: { type: TempMeasurement, comment: "In-optics", arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
 
-      htCollBench: { type: HeaterControl, comment: "Heater control for collimator bench", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
-      htEchelleCryo: { type: HeaterControl, comment: "Heater control for echelle cryo", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
-      htCamCryo: { type: HeaterControl, comment: "Heater control for camera cryo", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
-      htEchellePrism: { type: HeaterControl, comment: "Heater control for echelle/prism", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
+      htCollBench: { type: Heater, comment: "Heater control for collimator bench", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
+      htEchelleCryo: { type: Heater, comment: "Heater control for echelle cryo", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
+      htCamCryo: { type: Heater, comment: "Heater control for camera cryo", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
+      htEchellePrism: { type: Heater, comment: "Heater control for echelle/prism", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
 
       ref: { type: RefSensor, comment: "Reference 'sensor' for calibration purposes" }
 
@@ -946,7 +945,7 @@
   ##################################
   ### state machine cryo control ###
   ##################################
-  !STATEMACHINE CryoControl:
+  !STATEMACHINE Cryo:
     variables_output:
       tStatCryoRearPwr: { type: t_bool, comment: "Thermostat switch cryo rear power ", address: "%Q*" }
 
@@ -965,9 +964,9 @@
       tRearIn: { type: TempMeasurement, comment: "Cryo rear inside", arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
       tFront: { type: TempMeasurement, comment: "Cryo front", arguments: { config_ref: { type: MeasurementConfig2 }, sharedConfig_ref: { type: SharedMeasurementConfig } } }
 
-      htRearOut: { type: HeaterControl, comment: "Heater control for cryo rear outside", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
-      htRearIn: { type: HeaterControl, comment: "Heater control for cryo rear inside", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
-      htRearFront: { type: HeaterControl, comment: "Heater control for cryo front", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
+      htRearOut: { type: Heater, comment: "Heater control for cryo rear outside", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
+      htRearIn: { type: Heater, comment: "Heater control for cryo rear inside", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
+      htRearFront: { type: Heater, comment: "Heater control for cryo front", arguments: { config_ref: { type: HeaterConfig }, sharedConfig_ref: { type: SharedHeaterConfig }, operator_ref: { type: marvel_common.OperatorStatus } } }
 
       ref: { type: RefSensor, comment: "Reference 'sensor' for calibration purposes" }
 
@@ -1008,7 +1007,7 @@
   ###################################
   ### state machine thermo system ###
   ###################################
-  !STATEMACHINE ThermoControl:
+  !STATEMACHINE Thermo:
     variables_output:
       roomsStatHealth: { type: marvel_common.HealthStatus, comment: "Summerization of health states rooms, used for hmi" }
       roomsStatBusy: { type: marvel_common.BusyStatus, comment: "Summerization of busy states rooms, used for hmi" }
@@ -1021,7 +1020,7 @@
 
     parts:
       outerRoom:
-        type: OuterRoomControl
+        type: OuterRoom
         expand: false
         comment: "State machine for the outer room temperature control"
         arguments:
@@ -1031,7 +1030,7 @@
           config_ref: { type: OuterRoomConfig, expand: false }
           sharedConfig_ref: { type: ThermoSharedConfig, expand: false }
       innerRoom:
-        type: InnerRoomControl
+        type: InnerRoom
         expand: false
         comment: "State machine for the inner room temperature control"
         arguments:
@@ -1041,7 +1040,7 @@
           config_ref: { type: InnerRoomConfig, expand: false }
           sharedConfig_ref: { type: ThermoSharedConfig, expand: false }
       vessel:
-        type: VesselControl
+        type: Vessel
         expand: false
         comment: "State machine for the vessel temperature control"
         arguments:
@@ -1051,7 +1050,7 @@
           config_ref: { type: VesselConfig, expand: false }
           sharedConfig_ref: { type: ThermoSharedConfig, expand: false }
       shield:
-        type: ShieldControl
+        type: Shield
         expand: false
         comment: "State machine for the shield temperature control"
         arguments:
@@ -1061,7 +1060,7 @@
           config_ref: { type: ShieldConfig, expand: false }
           sharedConfig_ref: { type: ThermoSharedConfig, expand: false }
       bench:
-        type: BenchControl
+        type: Bench
         expand: false
         comment: "State machine for the bench temperature control"
         arguments:
@@ -1071,7 +1070,7 @@
           config_ref: { type: BenchConfig, expand: false }
           sharedConfig_ref: { type: ThermoSharedConfig, expand: false }
       cryo:
-        type: CryoControl
+        type: Cryo
         expand: false
         comment: "State machine for the cryo temperature control"
         arguments:
@@ -1179,7 +1178,7 @@
   ############################
   ### state machine vacuum ###
   ############################
-  !STATEMACHINE VacControl:
+  !STATEMACHINE Vac:
     references:
       config_ref: { type: VacConfig, comment: "active configuration of the thermo control system" }
       activity_ref: { type: marvel_common.ActivityStatus, comment: "Shared activity status" }
@@ -1217,7 +1216,7 @@
   ###############################
   ### state machine thermovac ###
   ###############################
-  !STATEMACHINE ThermoVacControl:
+  !STATEMACHINE ThermoVac:
     variables_input_rw:
       editableConfig: { type: ThermoVacConfig, comment: "Editable configuration of the thermo vac system", expand: false }
 
@@ -1243,7 +1242,7 @@
 
     parts:
       thermo:
-        type: ThermoControl
+        type: Thermo
         expand: false
         comment: "statemachine of the thermal control system"
         arguments:
@@ -1253,7 +1252,7 @@
           config_ref: { type: ThermoConfig, expand: false }
 
       vac:
-        type: VacControl
+        type: Vac
         expand: false
         comment: "statemachine of the vac control system"
         arguments:
