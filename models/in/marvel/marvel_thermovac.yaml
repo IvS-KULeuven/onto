@@ -381,12 +381,14 @@
   !STATEMACHINE TempMeasurement:
     variables_hidden:
       rawValue: { type: t_float, comment: "Raw measured value", address: "%I*" }
+      error: { type: t_bool, comment: "True if sensor error" }
 
     variables_output:
       value: { type: t_double, comment: "Measured value" }
       ptp1: { type: t_double }
       ptp2: { type: t_double }
-      error: { type: t_bool, comment: "True if sensor error" }
+      
+      
 
     variables_input:
       isSimulated: { type: t_bool }
@@ -1008,9 +1010,6 @@
   ### state machine thermo system ###
   ###################################
   !STATEMACHINE Thermo:
-    variables_output:
-      roomsStatHealth: { type: marvel_common.HealthStatus, comment: "Summerization of health states rooms, used for hmi" }
-      roomsStatBusy: { type: marvel_common.BusyStatus, comment: "Summerization of busy states rooms, used for hmi" }
 
     references:
       config_ref: { type: ThermoConfig, comment: "active configuration of the thermo control system" }
@@ -1086,6 +1085,8 @@
       health: { type: marvel_common.HealthStatus, comment: "Is the healthy?" }
       busy: { type: marvel_common.BusyStatus, comment: "Is the vessel busy with a procedure?" }
       control: { type: TempControlStatus, comment: "control state of the thermo control system" }
+      roomsStatHealth: { type: marvel_common.HealthStatus, comment: "Summerization of health states rooms, used for hmi" }
+      roomsStatBusy: { type: marvel_common.BusyStatus, comment: "Summerization of busy states rooms, used for hmi" }
 
     proc:
       initialize: { type: marvel_common.Process, comment: "Start initializing" }
@@ -1222,7 +1223,6 @@
 
     variables_output:
       config: { type: ThermoVacConfig, comment: "active configuration of the thermo vac system" }
-      error: { type: t_bool, comment: "Indicates if thermo vac itself has an error" }
 
     references:
       activity_ref: { type: marvel_common.ActivityStatus, comment: "Shared activity status" }

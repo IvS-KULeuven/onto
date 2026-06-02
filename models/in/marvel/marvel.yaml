@@ -69,6 +69,18 @@
           u3                  : { type: t_bool                              , comment: "True to use Unit 3" }
           u4                  : { type: t_bool                              , comment: "True to use Unit 4" }
   
+  ########################################################################################################################
+  # MarvelStatus
+  ########################################################################################################################
+
+  !STRUCT MarvelStatus:
+    items:
+        noOfFailedOperatorChanges     : { type: t_uint16                    , comment: "How many times has a wrong password been entered?"}
+        shuttersStatus                : { type: t_string, len: 16           , comment: "Summary of the domes open/closed state" }
+        noOfRaisedUnconfirmedAlarms   : { type: t_uint16                    , comment: "Number of raised unconfirmed alarms" }
+        noOfRaisedConfirmedAlarms     : { type: t_uint16                    , comment: "Number of raised confirmed alarms" }
+        noOfClearedUnconfirmedAlarms : { type: t_uint16                     , comment: "Number of cleared unconfirmed alarms" }
+
 
   ########################################################################################################################
   # Marvel
@@ -83,10 +95,8 @@
           # remoteconnectionPortStatus  : { type: t_bool                      , comment: "True to notify that there is a connection port established" }
           
       variables_output:
-    #      seqs                          : { type: !ARRAY [0, 5, marvel_common.SequenceStatus_M ] , comment: "Sequences" }
-          noOfFailedOperatorChanges     : { type: t_uint16                    , comment: "How many times has a wrong password been entered?"}
-          shuttersStatus                : { type: t_string, len: 16           , comment: "Summary of the domes open/closed state" }
-          config                        : { type: MarvelConfig                , comment: "Active configuration", expand: false }
+          config                        : { type: MarvelConfig                , comment: "Active configuration" }
+          status                        : { type: MarvelStatus                , comment: "Summary status", expand: false }
       parts:
           u1:
               type : marvel_unit.Unit
@@ -271,6 +281,7 @@
           shuttersHealth              : { type: marvel_common.HealthStatus }
           shuttersBusy                : { type: marvel_common.BusyStatus }
           shuttersAperture            : { type: marvel_common.ApertureStatus }
+          eventsHealth                : { type: marvel_common.HealthStatus }
       proc:
           initialize                  : { type: marvel_common.Process                         , comment: "Start initializing the whole MTCS" }      
           lock                        : { type: marvel_common.Process                         , comment: "Lock the whole MTCS" }

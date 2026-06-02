@@ -3119,6 +3119,36 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">control state of the thermo control system</xhtml>
               </documentation>
             </variable>
+            <variable name="roomsStatHealth">
+              <type><derived name="HealthStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Summerization of health states rooms, used for hmi</xhtml>
+              </documentation>
+            </variable>
+            <variable name="roomsStatBusy">
+              <type><derived name="BusyStatus" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Summerization of busy states rooms, used for hmi</xhtml>
+              </documentation>
+            </variable>
           </struct>
         </baseType>
       </dataType>
@@ -5846,21 +5876,6 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="error">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
             <variable name="stat">
               <type><derived name="TempMeasurementStatuses" /></type>
               <addData>
@@ -6844,36 +6859,6 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="roomsStatHealth">
-              <type><derived name="HealthStatus" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-            <variable name="roomsStatBusy">
-              <type><derived name="BusyStatus" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
             <variable name="stat">
               <type><derived name="ThermoStatuses" /></type>
               <addData>
@@ -7003,21 +6988,6 @@
             </variable>
             <variable name="config">
               <type><derived name="ThermoVacConfig" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-            <variable name="error">
-              <type><BOOL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -9697,6 +9667,19 @@ model.value := THIS^.value;
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Raw measured value</xhtml>
               </documentation>
             </variable>
+            <variable name="error">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">True if sensor error</xhtml>
+              </documentation>
+            </variable>
           </inputVars>
           <outputVars>
             <variable name="actualStatus">
@@ -9753,20 +9736,6 @@ model.value := THIS^.value;
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-            <variable name="error">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">True if sensor error</xhtml>
               </documentation>
             </variable>
             <variable name="stat">
@@ -9920,7 +9889,6 @@ model.actualStatus := THIS^.actualStatus;
 model.value := THIS^.value;
 model.ptp1 := THIS^.ptp1;
 model.ptp2 := THIS^.ptp2;
-model.error := THIS^.error;
 model.stat := THIS^.stat;
 THIS^.proc.initialize._copyToModel_Process( model := model.proc.initialize );
 THIS^.proc.clearPtp._copyToModel_Process( model := model.proc.clearPtp );
@@ -12635,34 +12603,6 @@ THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Current status description</xhtml>
               </documentation>
             </variable>
-            <variable name="roomsStatHealth">
-              <type><derived name="HealthStatus" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Summerization of health states rooms, used for hmi</xhtml>
-              </documentation>
-            </variable>
-            <variable name="roomsStatBusy">
-              <type><derived name="BusyStatus" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Summerization of busy states rooms, used for hmi</xhtml>
-              </documentation>
-            </variable>
             <variable name="stat">
               <type><derived name="ThermoStatuses" /></type>
               <addData>
@@ -12904,8 +12844,6 @@ THIS^.proc.unlock._copyFromModel_Process( model := model.proc.unlock );
               <body>
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">model.actualStatus := THIS^.actualStatus;
-model.roomsStatHealth := THIS^.roomsStatHealth;
-model.roomsStatBusy := THIS^.roomsStatBusy;
 model.stat := THIS^.stat;
 THIS^.parts.outerRoom._copyToModel_OuterRoom( model := model.parts.outerRoom );
 THIS^.parts.innerRoom._copyToModel_InnerRoom( model := model.parts.innerRoom );
@@ -13178,20 +13116,6 @@ THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">active configuration of the thermo vac system</xhtml>
               </documentation>
             </variable>
-            <variable name="error">
-              <type><BOOL /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="OPC.UA.DA" Value="1" />
-                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Indicates if thermo vac itself has an error</xhtml>
-              </documentation>
-            </variable>
             <variable name="stat">
               <type><derived name="ThermoVacStatuses" /></type>
               <addData>
@@ -13382,7 +13306,6 @@ THIS^.proc.unlock._copyFromModel_Process( model := model.proc.unlock );
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">model.editableConfig := THIS^.editableConfig;
 model.actualStatus := THIS^.actualStatus;
 model.config := THIS^.config;
-model.error := THIS^.error;
 model.stat := THIS^.stat;
 THIS^.parts.thermo._copyToModel_Thermo( model := model.parts.thermo );
 THIS^.parts.vac._copyToModel_Vac( model := model.parts.vac );
