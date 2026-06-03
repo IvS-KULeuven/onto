@@ -1223,6 +1223,19 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Send 2 software triggers, with a given duration in between</xhtml>
               </documentation>
             </variable>
+            <variable name="setSource">
+              <type><derived name="GigECameraSetSourceProcess" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Set the camera source</xhtml>
+              </documentation>
+            </variable>
           </struct>
         </baseType>
       </dataType>
@@ -4916,6 +4929,25 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Duration in seconds of the pulse</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="GigECameraSetSourceProcessArgs">
+        <baseType>
+          <struct>
+            <variable name="source">
+              <type><derived name="GigECameraSources" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Camera source to set</xhtml>
               </documentation>
             </variable>
           </struct>
@@ -8876,6 +8908,34 @@
         </data>
         </addData>
       </dataType>
+      <dataType name="M_GigECameraSetSourceProcess">
+        <baseType>
+          <struct>
+            <variable name="set">
+              <type><derived name="GigECameraSetSourceProcessArgs" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="3" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+        <addData>
+        <data name="http://www.3s-software.com/plcopenxml/datatypeinheritance" handleUnknown="implementation">
+          <Inheritance>
+            <Extends>M_BaseProcess</Extends>
+          </Inheritance>
+        </data>
+        </addData>
+      </dataType>
       <dataType name="M_Arg1LrealProcess">
         <baseType>
           <struct>
@@ -9462,6 +9522,19 @@
             </variable>
             <variable name="pulseTrigger">
               <type><derived name="M_GigECameraPulseTrigger" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="setSource">
+              <type><derived name="M_GigECameraSetSourceProcess" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -16768,6 +16841,7 @@ proc.reset( isEnabled := TRUE );
 proc.setParam( isEnabled := TRUE );
 proc.trigger( isEnabled := TRUE );
 proc.pulseTrigger( isEnabled := TRUE );
+proc.setSource( isEnabled := TRUE );
 </xhtml>
           </ST>
         </body>
@@ -16813,6 +16887,7 @@ THIS^.proc.reset._copyFromModel_Process( model := model.proc.reset );
 THIS^.proc.setParam._copyFromModel_GigECameraSetParamProcess( model := model.proc.setParam );
 THIS^.proc.trigger._copyFromModel_Process( model := model.proc.trigger );
 THIS^.proc.pulseTrigger._copyFromModel_GigECameraPulseTrigger( model := model.proc.pulseTrigger );
+THIS^.proc.setSource._copyFromModel_GigECameraSetSourceProcess( model := model.proc.setSource );
 </xhtml>
                 </ST>
               </body>
@@ -16877,6 +16952,7 @@ THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
 THIS^.proc.setParam._copyToModel_GigECameraSetParamProcess( model := model.proc.setParam );
 THIS^.proc.trigger._copyToModel_Process( model := model.proc.trigger );
 THIS^.proc.pulseTrigger._copyToModel_GigECameraPulseTrigger( model := model.proc.pulseTrigger );
+THIS^.proc.setSource._copyToModel_GigECameraSetSourceProcess( model := model.proc.setSource );
 </xhtml>
                 </ST>
               </body>
@@ -25315,6 +25391,231 @@ SUPER^._copyToModel_BaseProcess( model := model );
           </data>
         </addData>
       </pou>
+      <pou name="GigECameraSetSourceProcess" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="set">
+              <type><derived name="GigECameraSetSourceProcessArgs" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="3" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Arguments to be set, before writing do_request TRUE</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="get">
+              <type><derived name="GigECameraSetSourceProcessArgs" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Arguments in use by the process, if do_request was accepted</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <inOutVars>
+          </inOutVars>
+          <localVars>
+          </localVars>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/pouinheritance" handleUnknown="implementation">
+              <Inheritance>
+                <Extends>BaseProcess</Extends>
+              </Inheritance>
+            </data>
+          </addData>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+    do_request_result := request( source := set.source );
+    do_request := FALSE;
+END_IF;
+SUPER^();
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="start">
+              <interface>
+                <inputVars>
+                  <variable name="source">
+                    <type><derived name="GigECameraSources" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Camera source to set</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.source := source;
+THIS^.stat.busy := BusyStatus.busy;
+THIS^.stat.health := HealthStatus.good;
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="request">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                  <variable name="source">
+                    <type><derived name="GigECameraSources" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Camera source to set</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF THIS^.stat.enabled = EnabledStatus.enabled THEN
+    request := RequestResults.ACCEPTED;
+    THIS^.start( source := source );
+ELSE
+    request := RequestResults.REJECTED;
+END_IF;
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyFromModel_GigECameraSetSourceProcess">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_GigECameraSetSourceProcess" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.set := model.set;
+SUPER^._copyFromModel_BaseProcess( model := model );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyToModel_GigECameraSetSourceProcess">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_GigECameraSetSourceProcess" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">model.set := THIS^.set;
+SUPER^._copyToModel_BaseProcess( model := model );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+        </addData>
+      </pou>
       <pou name="Arg1LrealProcess" pouType="functionBlock">
         <interface>
           <inputVars>
@@ -26211,6 +26512,8 @@ SUPER^._copyToModel_BaseProcess( model := model );
               </Object>
               <Object Name="GigECameraPulseTriggerArgs">
               </Object>
+              <Object Name="GigECameraSetSourceProcessArgs">
+              </Object>
               <Object Name="Arg1LrealProcessArgs">
               </Object>
               <Object Name="Ell114SendProcessArgs">
@@ -26408,6 +26711,12 @@ SUPER^._copyToModel_BaseProcess( model := model );
               <Object Name="_copyFromModel_GigECameraPulseTrigger" />
               <Object Name="_copyToModel_GigECameraPulseTrigger" />
             </Object>
+            <Object Name="GigECameraSetSourceProcess">
+              <Object Name="start" />
+              <Object Name="request" />
+              <Object Name="_copyFromModel_GigECameraSetSourceProcess" />
+              <Object Name="_copyToModel_GigECameraSetSourceProcess" />
+            </Object>
             <Object Name="Arg1LrealProcess">
               <Object Name="start" />
               <Object Name="request" />
@@ -26581,6 +26890,8 @@ SUPER^._copyToModel_BaseProcess( model := model );
             <Object Name="M_GigECameraSetParamProcess">
             </Object>
             <Object Name="M_GigECameraPulseTrigger">
+            </Object>
+            <Object Name="M_GigECameraSetSourceProcess">
             </Object>
             <Object Name="M_Arg1LrealProcess">
             </Object>

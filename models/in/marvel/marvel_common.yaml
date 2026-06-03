@@ -2064,6 +2064,14 @@
   
 
   ########################################################################################################################
+  # GigECameraSetSourceProcess
+  ########################################################################################################################
+  !PROCESS GigECameraSetSourceProcess:
+    extends: BaseProcess
+    arguments:
+        source: { type: GigECameraSources, comment: "Camera source to set" }
+
+  ########################################################################################################################
   # GigECamera
   ########################################################################################################################
 
@@ -2100,6 +2108,7 @@
           setParam                        : { type: GigECameraSetParamProcess                   , comment: "Set a param value" }
           trigger                         : { type: marvel_common.Process                       , comment: "Send a software trigger" }
           pulseTrigger                    : { type: GigECameraPulseTrigger                      , comment: "Send 2 software triggers, with a given duration in between" }
+          setSource                       : { type: GigECameraSetSourceProcess                  , comment: "Set the camera source" }
       calls:
           reset:
               isEnabled                   : !BOOL TRUE
@@ -2123,6 +2132,8 @@
           trigger:
               isEnabled                   : !BOOL TRUE
           pulseTrigger:
+              isEnabled                   : !BOOL TRUE
+          setSource:
               isEnabled                   : !BOOL TRUE
           # stat
           health:
