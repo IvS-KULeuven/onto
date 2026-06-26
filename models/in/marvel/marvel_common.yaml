@@ -1715,6 +1715,38 @@
             isBusy      : !EQ [ proc.setEnabled.stat.busy, BusyStatus.busy ]
 
 
+  ########################################################################################################################
+  # Fuse
+  ########################################################################################################################
+  !STATEMACHINE Fuse:
+    variables_input:
+        enabled         : { type: t_bool                , comment: "Is the fuse on?"                , address: "%I*" }
+        tripped         : { type: t_bool                , comment: "Is the fuse tripped?"           , address: "%I*" }
+        overload        : { type: t_bool                , comment: "Is the fuse overloaded?"        , address: "%I*" }
+    variables_hidden:
+        isEnabled       : { type: t_bool                , comment: "Is control enabled?" }
+    variables_output:
+        resetOutput     : { type: t_bool                , comment: "Reset, to bind to EL9227-5500"   , address: "%Q*" }
+        switchOutput    : { type: t_bool                , comment: "Switch, to bind to EL9227-5500"  , address: "%Q*" }
+    proc:
+        setEnabled      : { type: SetEnabledProcess     , comment: "Set the relay enabled or disabled" }
+        reset           : { type: Process               , comment: "Reset the fuse" }
+    stat:
+        busy            : { type: BusyStatus            , comment: "Is the Fuse in a busy state?" }
+        health          : { type: HealthStatus          , comment: "Is the Fuse in a healthy state?" }
+    calls:
+        reset:
+            isEnabled   : !AND [ isEnabled, !EQ [ proc.reset.stat.busy, BusyStatus.idle ], tripped ]
+        setEnabled:
+            isEnabled   : !AND [ isEnabled, !EQ [ proc.setEnabled.stat.busy, BusyStatus.idle ] ]
+        busy:
+            superState  : !BOOL TRUE
+            isBusy      : !OR [ !EQ [ proc.setEnabled.stat.busy, BusyStatus.busy ], !EQ [ proc.reset.stat.busy, BusyStatus.busy ] ]
+        health:
+            superState  : !BOOL TRUE
+            hasWarning  : overload
+            isGood      : !NOT [ tripped ]
+
 
   ########################################################################################################################
   # Led
