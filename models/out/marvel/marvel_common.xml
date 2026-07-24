@@ -479,18 +479,22 @@
               <value name="_NONE_" value="0" />
               <value name="fExposureTime" value="1" />
               <value name="fAcquisitionFrameRate" value="2" />
-              <value name="nGainSelector" value="3" />
-              <value name="fGain" value="4" />
-              <value name="nWidth" value="5" />
-              <value name="nHeight" value="6" />
-              <value name="nOffsetX" value="7" />
-              <value name="nOffsetY" value="8" />
-              <value name="nBinningSelector" value="9" />
-              <value name="nBinningHorizontal" value="10" />
-              <value name="nBinningVertical" value="11" />
-              <value name="nTriggerSelector" value="12" />
-              <value name="nTriggerMode" value="13" />
-              <value name="_END_" value="14" />
+              <value name="fLinkAcquisitionFrameRate" value="3" />
+              <value name="nGainSelector" value="4" />
+              <value name="fGain" value="5" />
+              <value name="nWidth" value="6" />
+              <value name="nHeight" value="7" />
+              <value name="nWidthMax" value="8" />
+              <value name="nHeightMax" value="9" />
+              <value name="nOffsetX" value="10" />
+              <value name="nOffsetY" value="11" />
+              <value name="nBinningSelector" value="12" />
+              <value name="nBinningHorizontal" value="13" />
+              <value name="nBinningVertical" value="14" />
+              <value name="nTriggerSelector" value="15" />
+              <value name="nTriggerMode" value="16" />
+              <value name="fDeviceTemperature" value="17" />
+              <value name="_END_" value="18" />
             </values>
           </enum>
         </baseType>
@@ -7532,6 +7536,21 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
+            <variable name="linkAcquisitionFrameRate">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
             <variable name="exposureTime">
               <type><LREAL /></type>
               <addData>
@@ -7637,6 +7656,36 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
+            <variable name="widthMax">
+              <type><UDINT /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="heightMax">
+              <type><UDINT /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
             <variable name="binningSelector">
               <type><UDINT /></type>
               <addData>
@@ -7699,6 +7748,21 @@
             </variable>
             <variable name="triggerSelector">
               <type><UDINT /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="deviceTemperature">
+              <type><LREAL /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -17086,6 +17150,20 @@ THIS^.proc.diagnostics._copyToModel_ModbusRTUBusDiagnosticsProcess( model := mod
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Acquisition frame rate in Hz</xhtml>
               </documentation>
             </variable>
+            <variable name="linkAcquisitionFrameRate">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Acquisition frame rate in Hz, limited by the link bandwidth</xhtml>
+              </documentation>
+            </variable>
             <variable name="exposureTime">
               <type><LREAL /></type>
               <addData>
@@ -17184,6 +17262,34 @@ THIS^.proc.diagnostics._copyToModel_ModbusRTUBusDiagnosticsProcess( model := mod
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Offset of the frame in Y direction, in pixels</xhtml>
               </documentation>
             </variable>
+            <variable name="widthMax">
+              <type><UDINT /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Maximum width of the frame, in pixels</xhtml>
+              </documentation>
+            </variable>
+            <variable name="heightMax">
+              <type><UDINT /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Maximum height of the frame, in pixels</xhtml>
+              </documentation>
+            </variable>
             <variable name="binningSelector">
               <type><UDINT /></type>
               <addData>
@@ -17252,6 +17358,20 @@ THIS^.proc.diagnostics._copyToModel_ModbusRTUBusDiagnosticsProcess( model := mod
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Trigger selector</xhtml>
+              </documentation>
+            </variable>
+            <variable name="deviceTemperature">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Temperature of the camera, in °C</xhtml>
               </documentation>
             </variable>
             <variable name="stat">
@@ -17393,6 +17513,7 @@ model.source := THIS^.source;
 model.actualStatus := THIS^.actualStatus;
 model.frameCounter := THIS^.frameCounter;
 model.acquisitionFrameRate := THIS^.acquisitionFrameRate;
+model.linkAcquisitionFrameRate := THIS^.linkAcquisitionFrameRate;
 model.exposureTime := THIS^.exposureTime;
 model.gainSelector := THIS^.gainSelector;
 model.gain := THIS^.gain;
@@ -17400,11 +17521,14 @@ model.width := THIS^.width;
 model.height := THIS^.height;
 model.offsetX := THIS^.offsetX;
 model.offsetY := THIS^.offsetY;
+model.widthMax := THIS^.widthMax;
+model.heightMax := THIS^.heightMax;
 model.binningSelector := THIS^.binningSelector;
 model.binningHorizontal := THIS^.binningHorizontal;
 model.binningVertical := THIS^.binningVertical;
 model.triggerMode := THIS^.triggerMode;
 model.triggerSelector := THIS^.triggerSelector;
+model.deviceTemperature := THIS^.deviceTemperature;
 model.stat := THIS^.stat;
 THIS^.proc.open._copyToModel_Process( model := model.proc.open );
 THIS^.proc.close._copyToModel_Process( model := model.proc.close );

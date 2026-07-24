@@ -2055,10 +2055,13 @@
         - _NONE_
         - fExposureTime
         - fAcquisitionFrameRate
+        - fLinkAcquisitionFrameRate
         - nGainSelector
         - fGain
         - nWidth
         - nHeight
+        - nWidthMax
+        - nHeightMax
         - nOffsetX
         - nOffsetY
         - nBinningSelector
@@ -2066,6 +2069,7 @@
         - nBinningVertical
         - nTriggerSelector
         - nTriggerMode
+        - fDeviceTemperature
         - _END_
   
   ########################################################################################################################
@@ -2116,6 +2120,7 @@
           frameCounter                    : { type: t_uint32                                    , comment: "Number of frames taken"}
           # parameters
           acquisitionFrameRate            : { type: t_double                                    , comment: "Acquisition frame rate in Hz"}
+          linkAcquisitionFrameRate        : { type: t_double                                    , comment: "Acquisition frame rate in Hz, limited by the link bandwidth"}
           exposureTime                    : { type: t_double                                    , comment: "Exposure time in s"}
           gainSelector                    : { type: t_uint32                                    , comment: "Gain selector"}
           gain                            : { type: t_double                                    , comment: "Gain (unitless)"}
@@ -2123,11 +2128,14 @@
           height                          : { type: t_uint32                                    , comment: "Height of the frame, in pixels"}
           offsetX                         : { type: t_uint32                                    , comment: "Offset of the frame in X direction, in pixels"}
           offsetY                         : { type: t_uint32                                    , comment: "Offset of the frame in Y direction, in pixels"}
+          widthMax                        : { type: t_uint32                                    , comment: "Maximum width of the frame, in pixels"}
+          heightMax                       : { type: t_uint32                                    , comment: "Maximum height of the frame, in pixels"}
           binningSelector                 : { type: t_uint32                                    , comment: "Binning engine (sensor or FPGA)"}
           binningHorizontal               : { type: t_uint32                                    , comment: "Horizontal binning"}
           binningVertical                 : { type: t_uint32                                    , comment: "Vertical binning"}
           triggerMode                     : { type: t_uint32                                    , comment: "Trigger mode"}
           triggerSelector                 : { type: t_uint32                                    , comment: "Trigger selector"}
+          deviceTemperature               : { type: t_double                                    , comment: "Temperature of the camera, in °C"}
       stat:
           health                          : { type: marvel_common.HealthStatus }
           busy                            : { type: marvel_common.BusyStatus }
