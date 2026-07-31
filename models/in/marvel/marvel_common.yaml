@@ -2083,6 +2083,19 @@
           fvalue        : { type: t_double                      , comment: "Double Value" }
   
   ########################################################################################################################
+  # GigECameraSetParam2Process
+  ########################################################################################################################
+  !PROCESS GigECameraSetParam2Process:
+      extends: marvel_common.BaseProcess
+      arguments:
+          param1        : { type: GigECameraParams              , comment: "UInt32 Parameter 1"}
+          nValue1       : { type: t_uint32                      , comment: "Integer Value of Parameter 1" }
+          fvalue1       : { type: t_double                      , comment: "Double Value of Parameter 1" }
+          param2        : { type: GigECameraParams              , comment: "UInt32 Parameter 2"}
+          nValue2       : { type: t_uint32                      , comment: "Integer Value of Parameter 2" }
+          fvalue2       : { type: t_double                      , comment: "Double Value of Parameter 2" }
+
+  ########################################################################################################################
   # GigECameraPulseTrigger
   ########################################################################################################################
   !PROCESS GigECameraPulseTrigger:
@@ -2118,12 +2131,16 @@
       variables_output:
           # general
           frameCounter                    : { type: t_uint32                                    , comment: "Number of frames taken"}
+          loopCounter                     : { type: t_uint32                                    , comment: "Number of parameter loops done"}
+          loopSuccessCounter              : { type: t_uint32                                    , comment: "Number of successful parameter loops"}
           # parameters
           acquisitionFrameRate            : { type: t_double                                    , comment: "Acquisition frame rate in Hz"}
           linkAcquisitionFrameRate        : { type: t_double                                    , comment: "Acquisition frame rate in Hz, limited by the link bandwidth"}
           exposureTime                    : { type: t_double                                    , comment: "Exposure time in s"}
           gainSelector                    : { type: t_uint32                                    , comment: "Gain selector"}
-          gain                            : { type: t_double                                    , comment: "Gain (unitless)"}
+          gain                            : { type: t_double                                    , comment: "Gain (unitless) of the current GainSelector"}
+          gainAnalog                      : { type: t_double                                    , comment: "Gain (unitless) of the last time GainSelector was set to Analog"}
+          gainDigital                     : { type: t_double                                    , comment: "Gain (unitless) of the last time GainSelector was set to Digital"}
           width                           : { type: t_uint32                                    , comment: "Width of the frame, in pixels"}
           height                          : { type: t_uint32                                    , comment: "Height of the frame, in pixels"}
           offsetX                         : { type: t_uint32                                    , comment: "Offset of the frame in X direction, in pixels"}
@@ -2146,6 +2163,8 @@
           stopAcquiring                   : { type: marvel_common.Process                       , comment: "Stop acquiring frames" }
           reset                           : { type: marvel_common.Process                       , comment: "Reset any errors" }
           setParam                        : { type: GigECameraSetParamProcess                   , comment: "Set a param value" }
+          setParam2                       : { type: GigECameraSetParam2Process                  , comment: "Set 2 param values (e.g. selector + value)" }
+          setAnalogGain                   : { type: GigECameraSetParam2Process                  , comment: "Set 2 param values (e.g. selector + value)" }
           trigger                         : { type: marvel_common.Process                       , comment: "Send a software trigger" }
           pulseTrigger                    : { type: GigECameraPulseTrigger                      , comment: "Send 2 software triggers, with a given duration in between" }
           setSource                       : { type: GigECameraSetSourceProcess                  , comment: "Set the camera source" }
@@ -2168,6 +2187,8 @@
               isEnabled                   : !NOT [ !OR [ !EQ [ state, beckhoff_vision.ETcVnCameraState.TCVN_CS_INITIAL ], 
                                                          !EQ [ state, beckhoff_vision.ETcVnCameraState.TCVN_CS_INITIALIZED ] ] ]
           setParam:
+              isEnabled                   : !BOOL TRUE
+          setParam2:
               isEnabled                   : !BOOL TRUE
           trigger:
               isEnabled                   : !BOOL TRUE
