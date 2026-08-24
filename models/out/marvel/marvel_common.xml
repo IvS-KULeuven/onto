@@ -494,7 +494,10 @@
               <value name="nTriggerSelector" value="15" />
               <value name="nTriggerMode" value="16" />
               <value name="fDeviceTemperature" value="17" />
-              <value name="_END_" value="18" />
+              <value name="nAcquisitionMode" value="18" />
+              <value name="fBlackLevel" value="19" />
+              <value name="nBlackLevelAuto" value="20" />
+              <value name="_END_" value="21" />
             </values>
           </enum>
         </baseType>
@@ -1220,6 +1223,19 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Reset any errors</xhtml>
               </documentation>
             </variable>
+            <variable name="setup">
+              <type><derived name="GigECameraSetupProcess" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Setup the camera with the given parameters</xhtml>
+              </documentation>
+            </variable>
             <variable name="setParam">
               <type><derived name="GigECameraSetParamProcess" /></type>
               <addData>
@@ -1234,19 +1250,6 @@
               </documentation>
             </variable>
             <variable name="setParam2">
-              <type><derived name="GigECameraSetParam2Process" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Set 2 param values (e.g. selector + value)</xhtml>
-              </documentation>
-            </variable>
-            <variable name="setAnalogGain">
               <type><derived name="GigECameraSetParam2Process" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -5010,6 +5013,20 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Double Value</xhtml>
               </documentation>
             </variable>
+            <variable name="refresh">
+              <type><BOOL /></type>
+              <initialValue><simpleValue value="TRUE" /></initialValue>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Refresh the parameter set after the write (slower!)</xhtml>
+              </documentation>
+            </variable>
           </struct>
         </baseType>
       </dataType>
@@ -5094,6 +5111,20 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Double Value of Parameter 2</xhtml>
               </documentation>
             </variable>
+            <variable name="refresh">
+              <type><BOOL /></type>
+              <initialValue><simpleValue value="TRUE" /></initialValue>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Refresh the parameter set after the write (slower!)</xhtml>
+              </documentation>
+            </variable>
           </struct>
         </baseType>
       </dataType>
@@ -5130,6 +5161,299 @@
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Camera source to set</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
+      <dataType name="GigECameraSetupProcessArgs">
+        <baseType>
+          <struct>
+            <variable name="doExposureTime">
+              <type><BOOL /></type>
+              <initialValue><simpleValue value="TRUE" /></initialValue>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">If TRUE, set the exposure time</xhtml>
+              </documentation>
+            </variable>
+            <variable name="exposureTime">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Exposure time in seconds</xhtml>
+              </documentation>
+            </variable>
+            <variable name="doFrameRate">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">If TRUE, set the acquisition frame rate</xhtml>
+              </documentation>
+            </variable>
+            <variable name="frameRate">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Acquisition frame rate in Hz</xhtml>
+              </documentation>
+            </variable>
+            <variable name="doWindowXY">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">If TRUE, set the window XY position</xhtml>
+              </documentation>
+            </variable>
+            <variable name="windowX">
+              <type><UDINT /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Window X position in pixels</xhtml>
+              </documentation>
+            </variable>
+            <variable name="windowY">
+              <type><UDINT /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Window Y position in pixels</xhtml>
+              </documentation>
+            </variable>
+            <variable name="doWindowWH">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">If TRUE, set the window width and height</xhtml>
+              </documentation>
+            </variable>
+            <variable name="windowWidth">
+              <type><UDINT /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Window width in pixels</xhtml>
+              </documentation>
+            </variable>
+            <variable name="windowHeight">
+              <type><UDINT /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Window height in pixels</xhtml>
+              </documentation>
+            </variable>
+            <variable name="doBinning">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">If TRUE, set the binning</xhtml>
+              </documentation>
+            </variable>
+            <variable name="binningX">
+              <type><UDINT /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Binning X factor</xhtml>
+              </documentation>
+            </variable>
+            <variable name="binningY">
+              <type><UDINT /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Binning Y factor</xhtml>
+              </documentation>
+            </variable>
+            <variable name="doAnalogGain">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">If TRUE, set the analog gain</xhtml>
+              </documentation>
+            </variable>
+            <variable name="analogGain">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Analog gain</xhtml>
+              </documentation>
+            </variable>
+            <variable name="doDigitalGain">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">If TRUE, set the digital gain</xhtml>
+              </documentation>
+            </variable>
+            <variable name="digitalGain">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Digital gain</xhtml>
+              </documentation>
+            </variable>
+            <variable name="blackLevel">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Black level (0 .. 511 for 12-bit images)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="blackLevelAuto">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">If TRUE, black level is set automatically. If FALSE, black level is set manually</xhtml>
+              </documentation>
+            </variable>
+            <variable name="doBlackLevel">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">If TRUE, set the black level and black level auto</xhtml>
+              </documentation>
+            </variable>
+            <variable name="continuous">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">If TRUE, set the continuous acquisition mode, trigger mode, etc. to continuous imaging</xhtml>
+              </documentation>
+            </variable>
+            <variable name="doContinuous">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">If TRUE, set the continuous acquisition mode, trigger mode, etc.</xhtml>
               </documentation>
             </variable>
           </struct>
@@ -7661,6 +7985,36 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
+            <variable name="connected">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="acquiring">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
             <variable name="acquisitionFrameRate">
               <type><LREAL /></type>
               <addData>
@@ -7917,6 +8271,51 @@
               </documentation>
             </variable>
             <variable name="triggerSelector">
+              <type><UDINT /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="acquisitionMode">
+              <type><UDINT /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="blackLevel">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="blackLevelAuto">
               <type><UDINT /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -9390,6 +9789,34 @@
         </data>
         </addData>
       </dataType>
+      <dataType name="M_GigECameraSetupProcess">
+        <baseType>
+          <struct>
+            <variable name="set">
+              <type><derived name="GigECameraSetupProcessArgs" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="3" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+        <addData>
+        <data name="http://www.3s-software.com/plcopenxml/datatypeinheritance" handleUnknown="implementation">
+          <Inheritance>
+            <Extends>M_BaseProcess</Extends>
+          </Inheritance>
+        </data>
+        </addData>
+      </dataType>
       <dataType name="M_Arg1LrealProcess">
         <baseType>
           <struct>
@@ -9980,6 +10407,19 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
+            <variable name="setup">
+              <type><derived name="M_GigECameraSetupProcess" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
             <variable name="setParam">
               <type><derived name="M_GigECameraSetParamProcess" /></type>
               <addData>
@@ -9994,19 +10434,6 @@
               </documentation>
             </variable>
             <variable name="setParam2">
-              <type><derived name="M_GigECameraSetParam2Process" /></type>
-              <addData>
-                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
-                  <Attributes>
-                    <Attribute Name="TcHmiSymbol.Show" Value="" />
-                  </Attributes>
-                </data>
-              </addData>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
-              </documentation>
-            </variable>
-            <variable name="setAnalogGain">
               <type><derived name="M_GigECameraSetParam2Process" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -17388,6 +17815,34 @@ THIS^.proc.diagnostics._copyToModel_ModbusRTUBusDiagnosticsProcess( model := mod
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Number of successful parameter loops</xhtml>
               </documentation>
             </variable>
+            <variable name="connected">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Is the camera connected?</xhtml>
+              </documentation>
+            </variable>
+            <variable name="acquiring">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Is the camera acquiring frames?</xhtml>
+              </documentation>
+            </variable>
             <variable name="acquisitionFrameRate">
               <type><LREAL /></type>
               <addData>
@@ -17640,6 +18095,48 @@ THIS^.proc.diagnostics._copyToModel_ModbusRTUBusDiagnosticsProcess( model := mod
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Trigger selector</xhtml>
               </documentation>
             </variable>
+            <variable name="acquisitionMode">
+              <type><UDINT /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Acquisition mode</xhtml>
+              </documentation>
+            </variable>
+            <variable name="blackLevel">
+              <type><LREAL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Black level (0 .. 511 for 12-bit images)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="blackLevelAuto">
+              <type><UDINT /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Black level auto enum</xhtml>
+              </documentation>
+            </variable>
             <variable name="deviceTemperature">
               <type><LREAL /></type>
               <addData>
@@ -17697,12 +18194,12 @@ stat.busy := F_BusyStatus(
     isBusy := (state = ETcVnCameraState.TCVN_CS_INITIALIZING) OR ((state = ETcVnCameraState.TCVN_CS_OPENING) OR (state = ETcVnCameraState.TCVN_CS_CLOSING)));
 proc.open( isEnabled := (state = ETcVnCameraState.TCVN_CS_INITIAL) OR ((state = ETcVnCameraState.TCVN_CS_INITIALIZED) OR ((state = ETcVnCameraState.TCVN_CS_OPENING) OR (state = ETcVnCameraState.TCVN_CS_OPENED))) );
 proc.close( isEnabled := NOT((state = ETcVnCameraState.TCVN_CS_INITIAL) OR (state = ETcVnCameraState.TCVN_CS_INITIALIZED)) );
-proc.startAcquiring( isEnabled := (state = ETcVnCameraState.TCVN_CS_INITIAL) OR ((state = ETcVnCameraState.TCVN_CS_INITIALIZED) OR (state = ETcVnCameraState.TCVN_CS_OPENED)) );
+proc.startAcquiring( isEnabled := ((state = ETcVnCameraState.TCVN_CS_INITIAL) OR ((state = ETcVnCameraState.TCVN_CS_INITIALIZED) OR (state = ETcVnCameraState.TCVN_CS_OPENED))) AND (proc.stopAcquiring.stat.busy = BusyStatus.idle) );
 proc.stopAcquiring( isEnabled := NOT((state = ETcVnCameraState.TCVN_CS_INITIAL) OR (state = ETcVnCameraState.TCVN_CS_INITIALIZED)) );
 proc.reset( isEnabled := TRUE );
+proc.setup( isEnabled := TRUE );
 proc.setParam( isEnabled := TRUE );
 proc.setParam2( isEnabled := TRUE );
-proc.setAnalogGain();
 proc.trigger( isEnabled := TRUE );
 proc.pulseTrigger( isEnabled := TRUE );
 proc.setSource( isEnabled := TRUE );
@@ -17748,9 +18245,9 @@ THIS^.proc.close._copyFromModel_Process( model := model.proc.close );
 THIS^.proc.startAcquiring._copyFromModel_Process( model := model.proc.startAcquiring );
 THIS^.proc.stopAcquiring._copyFromModel_Process( model := model.proc.stopAcquiring );
 THIS^.proc.reset._copyFromModel_Process( model := model.proc.reset );
+THIS^.proc.setup._copyFromModel_GigECameraSetupProcess( model := model.proc.setup );
 THIS^.proc.setParam._copyFromModel_GigECameraSetParamProcess( model := model.proc.setParam );
 THIS^.proc.setParam2._copyFromModel_GigECameraSetParam2Process( model := model.proc.setParam2 );
-THIS^.proc.setAnalogGain._copyFromModel_GigECameraSetParam2Process( model := model.proc.setAnalogGain );
 THIS^.proc.trigger._copyFromModel_Process( model := model.proc.trigger );
 THIS^.proc.pulseTrigger._copyFromModel_GigECameraPulseTrigger( model := model.proc.pulseTrigger );
 THIS^.proc.setSource._copyFromModel_GigECameraSetSourceProcess( model := model.proc.setSource );
@@ -17798,6 +18295,8 @@ model.actualStatus := THIS^.actualStatus;
 model.frameCounter := THIS^.frameCounter;
 model.loopCounter := THIS^.loopCounter;
 model.loopSuccessCounter := THIS^.loopSuccessCounter;
+model.connected := THIS^.connected;
+model.acquiring := THIS^.acquiring;
 model.acquisitionFrameRate := THIS^.acquisitionFrameRate;
 model.linkAcquisitionFrameRate := THIS^.linkAcquisitionFrameRate;
 model.exposureTime := THIS^.exposureTime;
@@ -17816,6 +18315,9 @@ model.binningHorizontal := THIS^.binningHorizontal;
 model.binningVertical := THIS^.binningVertical;
 model.triggerMode := THIS^.triggerMode;
 model.triggerSelector := THIS^.triggerSelector;
+model.acquisitionMode := THIS^.acquisitionMode;
+model.blackLevel := THIS^.blackLevel;
+model.blackLevelAuto := THIS^.blackLevelAuto;
 model.deviceTemperature := THIS^.deviceTemperature;
 model.stat := THIS^.stat;
 THIS^.proc.open._copyToModel_Process( model := model.proc.open );
@@ -17823,9 +18325,9 @@ THIS^.proc.close._copyToModel_Process( model := model.proc.close );
 THIS^.proc.startAcquiring._copyToModel_Process( model := model.proc.startAcquiring );
 THIS^.proc.stopAcquiring._copyToModel_Process( model := model.proc.stopAcquiring );
 THIS^.proc.reset._copyToModel_Process( model := model.proc.reset );
+THIS^.proc.setup._copyToModel_GigECameraSetupProcess( model := model.proc.setup );
 THIS^.proc.setParam._copyToModel_GigECameraSetParamProcess( model := model.proc.setParam );
 THIS^.proc.setParam2._copyToModel_GigECameraSetParam2Process( model := model.proc.setParam2 );
-THIS^.proc.setAnalogGain._copyToModel_GigECameraSetParam2Process( model := model.proc.setAnalogGain );
 THIS^.proc.trigger._copyToModel_Process( model := model.proc.trigger );
 THIS^.proc.pulseTrigger._copyToModel_GigECameraPulseTrigger( model := model.proc.pulseTrigger );
 THIS^.proc.setSource._copyToModel_GigECameraSetSourceProcess( model := model.proc.setSource );
@@ -25813,7 +26315,8 @@ SUPER^._copyToModel_BaseProcess( model := model );
     do_request_result := request(
     param := set.param,
     nValue := set.nValue,
-    fvalue := set.fvalue);
+    fvalue := set.fvalue,
+    refresh := set.refresh);
     do_request := FALSE;
 END_IF;
 SUPER^();
@@ -25861,6 +26364,19 @@ SUPER^();
                       <xhtml xmlns="http://www.w3.org/1999/xhtml">Double Value</xhtml>
                     </documentation>
                   </variable>
+                  <variable name="refresh">
+                    <type><BOOL /></type>
+                    <initialValue><simpleValue value="TRUE" /></initialValue>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Refresh the parameter set after the write (slower!)</xhtml>
+                    </documentation>
+                  </variable>
                 </inputVars>
                 <outputVars>
                 </outputVars>
@@ -25881,6 +26397,7 @@ SUPER^();
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.param := param;
 THIS^.get.nValue := nValue;
 THIS^.get.fvalue := fvalue;
+THIS^.get.refresh := refresh;
 THIS^.stat.busy := BusyStatus.busy;
 THIS^.stat.health := HealthStatus.good;
 </xhtml>
@@ -25929,6 +26446,19 @@ THIS^.stat.health := HealthStatus.good;
                       <xhtml xmlns="http://www.w3.org/1999/xhtml">Double Value</xhtml>
                     </documentation>
                   </variable>
+                  <variable name="refresh">
+                    <type><BOOL /></type>
+                    <initialValue><simpleValue value="TRUE" /></initialValue>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Refresh the parameter set after the write (slower!)</xhtml>
+                    </documentation>
+                  </variable>
                 </inputVars>
                 <outputVars>
                 </outputVars>
@@ -25951,7 +26481,8 @@ THIS^.stat.health := HealthStatus.good;
     THIS^.start(
         param := param,
         nValue := nValue,
-        fvalue := fvalue);
+        fvalue := fvalue,
+        refresh := refresh);
 ELSE
     request := RequestResults.REJECTED;
 END_IF;
@@ -26097,7 +26628,8 @@ SUPER^._copyToModel_BaseProcess( model := model );
     fvalue1 := set.fvalue1,
     param2 := set.param2,
     nValue2 := set.nValue2,
-    fvalue2 := set.fvalue2);
+    fvalue2 := set.fvalue2,
+    refresh := set.refresh);
     do_request := FALSE;
 END_IF;
 SUPER^();
@@ -26181,6 +26713,19 @@ SUPER^();
                       <xhtml xmlns="http://www.w3.org/1999/xhtml">Double Value of Parameter 2</xhtml>
                     </documentation>
                   </variable>
+                  <variable name="refresh">
+                    <type><BOOL /></type>
+                    <initialValue><simpleValue value="TRUE" /></initialValue>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Refresh the parameter set after the write (slower!)</xhtml>
+                    </documentation>
+                  </variable>
                 </inputVars>
                 <outputVars>
                 </outputVars>
@@ -26204,6 +26749,7 @@ THIS^.get.fvalue1 := fvalue1;
 THIS^.get.param2 := param2;
 THIS^.get.nValue2 := nValue2;
 THIS^.get.fvalue2 := fvalue2;
+THIS^.get.refresh := refresh;
 THIS^.stat.busy := BusyStatus.busy;
 THIS^.stat.health := HealthStatus.good;
 </xhtml>
@@ -26288,6 +26834,19 @@ THIS^.stat.health := HealthStatus.good;
                       <xhtml xmlns="http://www.w3.org/1999/xhtml">Double Value of Parameter 2</xhtml>
                     </documentation>
                   </variable>
+                  <variable name="refresh">
+                    <type><BOOL /></type>
+                    <initialValue><simpleValue value="TRUE" /></initialValue>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Refresh the parameter set after the write (slower!)</xhtml>
+                    </documentation>
+                  </variable>
                 </inputVars>
                 <outputVars>
                 </outputVars>
@@ -26313,7 +26872,8 @@ THIS^.stat.health := HealthStatus.good;
         fvalue1 := fvalue1,
         param2 := param2,
         nValue2 := nValue2,
-        fvalue2 := fvalue2);
+        fvalue2 := fvalue2,
+        refresh := refresh);
 ELSE
     request := RequestResults.REJECTED;
 END_IF;
@@ -26822,6 +27382,802 @@ SUPER^._copyFromModel_BaseProcess( model := model );
                 <inOutVars>
                   <variable name="model">
                     <type><derived name="M_GigECameraSetSourceProcess" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">model.set := THIS^.set;
+SUPER^._copyToModel_BaseProcess( model := model );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+        </addData>
+      </pou>
+      <pou name="GigECameraSetupProcess" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="set">
+              <type><derived name="GigECameraSetupProcessArgs" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="3" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Arguments to be set, before writing do_request TRUE</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="get">
+              <type><derived name="GigECameraSetupProcessArgs" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Arguments in use by the process, if do_request was accepted</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <inOutVars>
+          </inOutVars>
+          <localVars>
+          </localVars>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/pouinheritance" handleUnknown="implementation">
+              <Inheritance>
+                <Extends>BaseProcess</Extends>
+              </Inheritance>
+            </data>
+          </addData>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+    do_request_result := request(
+    doExposureTime := set.doExposureTime,
+    exposureTime := set.exposureTime,
+    doFrameRate := set.doFrameRate,
+    frameRate := set.frameRate,
+    doWindowXY := set.doWindowXY,
+    windowX := set.windowX,
+    windowY := set.windowY,
+    doWindowWH := set.doWindowWH,
+    windowWidth := set.windowWidth,
+    windowHeight := set.windowHeight,
+    doBinning := set.doBinning,
+    binningX := set.binningX,
+    binningY := set.binningY,
+    doAnalogGain := set.doAnalogGain,
+    analogGain := set.analogGain,
+    doDigitalGain := set.doDigitalGain,
+    digitalGain := set.digitalGain,
+    blackLevel := set.blackLevel,
+    blackLevelAuto := set.blackLevelAuto,
+    doBlackLevel := set.doBlackLevel,
+    continuous := set.continuous,
+    doContinuous := set.doContinuous);
+    do_request := FALSE;
+END_IF;
+SUPER^();
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="start">
+              <interface>
+                <inputVars>
+                  <variable name="doExposureTime">
+                    <type><BOOL /></type>
+                    <initialValue><simpleValue value="TRUE" /></initialValue>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">If TRUE, set the exposure time</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="exposureTime">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Exposure time in seconds</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="doFrameRate">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">If TRUE, set the acquisition frame rate</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="frameRate">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Acquisition frame rate in Hz</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="doWindowXY">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">If TRUE, set the window XY position</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="windowX">
+                    <type><UDINT /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Window X position in pixels</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="windowY">
+                    <type><UDINT /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Window Y position in pixels</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="doWindowWH">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">If TRUE, set the window width and height</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="windowWidth">
+                    <type><UDINT /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Window width in pixels</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="windowHeight">
+                    <type><UDINT /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Window height in pixels</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="doBinning">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">If TRUE, set the binning</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="binningX">
+                    <type><UDINT /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Binning X factor</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="binningY">
+                    <type><UDINT /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Binning Y factor</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="doAnalogGain">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">If TRUE, set the analog gain</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="analogGain">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Analog gain</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="doDigitalGain">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">If TRUE, set the digital gain</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="digitalGain">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Digital gain</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="blackLevel">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Black level (0 .. 511 for 12-bit images)</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="blackLevelAuto">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">If TRUE, black level is set automatically. If FALSE, black level is set manually</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="doBlackLevel">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">If TRUE, set the black level and black level auto</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="continuous">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">If TRUE, set the continuous acquisition mode, trigger mode, etc. to continuous imaging</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="doContinuous">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">If TRUE, set the continuous acquisition mode, trigger mode, etc.</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.doExposureTime := doExposureTime;
+THIS^.get.exposureTime := exposureTime;
+THIS^.get.doFrameRate := doFrameRate;
+THIS^.get.frameRate := frameRate;
+THIS^.get.doWindowXY := doWindowXY;
+THIS^.get.windowX := windowX;
+THIS^.get.windowY := windowY;
+THIS^.get.doWindowWH := doWindowWH;
+THIS^.get.windowWidth := windowWidth;
+THIS^.get.windowHeight := windowHeight;
+THIS^.get.doBinning := doBinning;
+THIS^.get.binningX := binningX;
+THIS^.get.binningY := binningY;
+THIS^.get.doAnalogGain := doAnalogGain;
+THIS^.get.analogGain := analogGain;
+THIS^.get.doDigitalGain := doDigitalGain;
+THIS^.get.digitalGain := digitalGain;
+THIS^.get.blackLevel := blackLevel;
+THIS^.get.blackLevelAuto := blackLevelAuto;
+THIS^.get.doBlackLevel := doBlackLevel;
+THIS^.get.continuous := continuous;
+THIS^.get.doContinuous := doContinuous;
+THIS^.stat.busy := BusyStatus.busy;
+THIS^.stat.health := HealthStatus.good;
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="request">
+              <interface>
+                <returnType><derived name="RequestResults" /></returnType>
+                <inputVars>
+                  <variable name="doExposureTime">
+                    <type><BOOL /></type>
+                    <initialValue><simpleValue value="TRUE" /></initialValue>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">If TRUE, set the exposure time</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="exposureTime">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Exposure time in seconds</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="doFrameRate">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">If TRUE, set the acquisition frame rate</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="frameRate">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Acquisition frame rate in Hz</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="doWindowXY">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">If TRUE, set the window XY position</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="windowX">
+                    <type><UDINT /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Window X position in pixels</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="windowY">
+                    <type><UDINT /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Window Y position in pixels</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="doWindowWH">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">If TRUE, set the window width and height</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="windowWidth">
+                    <type><UDINT /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Window width in pixels</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="windowHeight">
+                    <type><UDINT /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Window height in pixels</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="doBinning">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">If TRUE, set the binning</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="binningX">
+                    <type><UDINT /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Binning X factor</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="binningY">
+                    <type><UDINT /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Binning Y factor</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="doAnalogGain">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">If TRUE, set the analog gain</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="analogGain">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Analog gain</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="doDigitalGain">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">If TRUE, set the digital gain</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="digitalGain">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Digital gain</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="blackLevel">
+                    <type><LREAL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Black level (0 .. 511 for 12-bit images)</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="blackLevelAuto">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">If TRUE, black level is set automatically. If FALSE, black level is set manually</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="doBlackLevel">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">If TRUE, set the black level and black level auto</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="continuous">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">If TRUE, set the continuous acquisition mode, trigger mode, etc. to continuous imaging</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="doContinuous">
+                    <type><BOOL /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">If TRUE, set the continuous acquisition mode, trigger mode, etc.</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                      <Attribute Name="TcRpcEnable" Value="1" />
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF THIS^.stat.enabled = EnabledStatus.enabled THEN
+    request := RequestResults.ACCEPTED;
+    THIS^.start(
+        doExposureTime := doExposureTime,
+        exposureTime := exposureTime,
+        doFrameRate := doFrameRate,
+        frameRate := frameRate,
+        doWindowXY := doWindowXY,
+        windowX := windowX,
+        windowY := windowY,
+        doWindowWH := doWindowWH,
+        windowWidth := windowWidth,
+        windowHeight := windowHeight,
+        doBinning := doBinning,
+        binningX := binningX,
+        binningY := binningY,
+        doAnalogGain := doAnalogGain,
+        analogGain := analogGain,
+        doDigitalGain := doDigitalGain,
+        digitalGain := digitalGain,
+        blackLevel := blackLevel,
+        blackLevelAuto := blackLevelAuto,
+        doBlackLevel := doBlackLevel,
+        continuous := continuous,
+        doContinuous := doContinuous);
+ELSE
+    request := RequestResults.REJECTED;
+END_IF;
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyFromModel_GigECameraSetupProcess">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_GigECameraSetupProcess" /></type>
+                    <addData>
+                      <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                        <Attributes>
+                          <Attribute Name="OPC.UA.DA" Value="0" />
+                        </Attributes>
+                      </data>
+                    </addData>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+                    </documentation>
+                  </variable>
+                </inOutVars>
+                <localVars>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                    <Attributes>
+                    </Attributes>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.set := model.set;
+SUPER^._copyFromModel_BaseProcess( model := model );
+</xhtml>
+                </ST>
+              </body>
+            </Method>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+            <Method name="_copyToModel_GigECameraSetupProcess">
+              <interface>
+                <inputVars>
+                </inputVars>
+                <outputVars>
+                </outputVars>
+                <inOutVars>
+                  <variable name="model">
+                    <type><derived name="M_GigECameraSetupProcess" /></type>
                     <addData>
                       <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                         <Attributes>
@@ -27762,6 +29118,8 @@ SUPER^._copyToModel_BaseProcess( model := model );
               </Object>
               <Object Name="GigECameraSetSourceProcessArgs">
               </Object>
+              <Object Name="GigECameraSetupProcessArgs">
+              </Object>
               <Object Name="Arg1LrealProcessArgs">
               </Object>
               <Object Name="Ell114SendProcessArgs">
@@ -27971,6 +29329,12 @@ SUPER^._copyToModel_BaseProcess( model := model );
               <Object Name="_copyFromModel_GigECameraSetSourceProcess" />
               <Object Name="_copyToModel_GigECameraSetSourceProcess" />
             </Object>
+            <Object Name="GigECameraSetupProcess">
+              <Object Name="start" />
+              <Object Name="request" />
+              <Object Name="_copyFromModel_GigECameraSetupProcess" />
+              <Object Name="_copyToModel_GigECameraSetupProcess" />
+            </Object>
             <Object Name="Arg1LrealProcess">
               <Object Name="start" />
               <Object Name="request" />
@@ -28150,6 +29514,8 @@ SUPER^._copyToModel_BaseProcess( model := model );
             <Object Name="M_GigECameraPulseTrigger">
             </Object>
             <Object Name="M_GigECameraSetSourceProcess">
+            </Object>
+            <Object Name="M_GigECameraSetupProcess">
             </Object>
             <Object Name="M_Arg1LrealProcess">
             </Object>

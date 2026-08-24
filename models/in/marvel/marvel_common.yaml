@@ -2070,6 +2070,9 @@
         - nTriggerSelector
         - nTriggerMode
         - fDeviceTemperature
+        - nAcquisitionMode
+        - fBlackLevel
+        - nBlackLevelAuto
         - _END_
   
   ########################################################################################################################
@@ -2078,9 +2081,10 @@
   !PROCESS GigECameraSetParamProcess:
       extends: marvel_common.BaseProcess
       arguments:
-          param         : { type: GigECameraParams              , comment: "UInt32 Parameter"}
-          nValue        : { type: t_uint32                      , comment: "Integer Value" }
-          fvalue        : { type: t_double                      , comment: "Double Value" }
+          param         : { type: GigECameraParams                           , comment: "UInt32 Parameter"}
+          nValue        : { type: t_uint32                                   , comment: "Integer Value" }
+          fvalue        : { type: t_double                                   , comment: "Double Value" }
+          refresh       : { type: t_bool       , initial: !BOOL TRUE         , comment: "Refresh the parameter set after the write (slower!)" }
   
   ########################################################################################################################
   # GigECameraSetParam2Process
@@ -2088,12 +2092,13 @@
   !PROCESS GigECameraSetParam2Process:
       extends: marvel_common.BaseProcess
       arguments:
-          param1        : { type: GigECameraParams              , comment: "UInt32 Parameter 1"}
-          nValue1       : { type: t_uint32                      , comment: "Integer Value of Parameter 1" }
-          fvalue1       : { type: t_double                      , comment: "Double Value of Parameter 1" }
-          param2        : { type: GigECameraParams              , comment: "UInt32 Parameter 2"}
-          nValue2       : { type: t_uint32                      , comment: "Integer Value of Parameter 2" }
-          fvalue2       : { type: t_double                      , comment: "Double Value of Parameter 2" }
+          param1        : { type: GigECameraParams                           , comment: "UInt32 Parameter 1"}
+          nValue1       : { type: t_uint32                                   , comment: "Integer Value of Parameter 1" }
+          fvalue1       : { type: t_double                                   , comment: "Double Value of Parameter 1" }
+          param2        : { type: GigECameraParams                           , comment: "UInt32 Parameter 2"}
+          nValue2       : { type: t_uint32                                   , comment: "Integer Value of Parameter 2" }
+          fvalue2       : { type: t_double                                   , comment: "Double Value of Parameter 2" }
+          refresh       : { type: t_bool       , initial: !BOOL TRUE         , comment: "Refresh the parameter set after the write (slower!)" }
 
   ########################################################################################################################
   # GigECameraPulseTrigger
@@ -2120,6 +2125,37 @@
     arguments:
         source: { type: GigECameraSources, comment: "Camera source to set" }
 
+
+  ########################################################################################################################
+  # GigECameraSetupProcess
+  ########################################################################################################################
+  !PROCESS GigECameraSetupProcess:
+    extends: BaseProcess
+    arguments:
+        doExposureTime  : { type: t_bool  , initial: !BOOL TRUE, comment: "If TRUE, set the exposure time" }
+        exposureTime    : { type: t_double, comment: "Exposure time in seconds" }
+        doFrameRate     : { type: t_bool  , comment: "If TRUE, set the acquisition frame rate" }
+        frameRate       : { type: t_double, comment: "Acquisition frame rate in Hz" }
+        doWindowXY      : { type: t_bool  , comment: "If TRUE, set the window XY position" }
+        windowX         : { type: t_uint32, comment: "Window X position in pixels" }
+        windowY         : { type: t_uint32, comment: "Window Y position in pixels" }
+        doWindowWH      : { type: t_bool  , comment: "If TRUE, set the window width and height" }
+        windowWidth     : { type: t_uint32, comment: "Window width in pixels" }
+        windowHeight    : { type: t_uint32, comment: "Window height in pixels" }
+        doBinning       : { type: t_bool  , comment: "If TRUE, set the binning" }
+        binningX        : { type: t_uint32, comment: "Binning X factor" }
+        binningY        : { type: t_uint32, comment: "Binning Y factor" }
+        doAnalogGain    : { type: t_bool  , comment: "If TRUE, set the analog gain" }
+        analogGain      : { type: t_double, comment: "Analog gain" }
+        doDigitalGain   : { type: t_bool  , comment: "If TRUE, set the digital gain" }
+        digitalGain     : { type: t_double, comment: "Digital gain" }
+        blackLevel      : { type: t_double, comment: "Black level (0 .. 511 for 12-bit images)" }
+        blackLevelAuto  : { type: t_bool  , comment: "If TRUE, black level is set automatically. If FALSE, black level is set manually" }
+        doBlackLevel    : { type: t_bool  , comment: "If TRUE, set the black level and black level auto" }
+        continuous      : { type: t_bool  , comment: "If TRUE, set the continuous acquisition mode, trigger mode, etc. to continuous imaging" }
+        doContinuous    : { type: t_bool  , comment: "If TRUE, set the continuous acquisition mode, trigger mode, etc." }
+
+
   ########################################################################################################################
   # GigECamera
   ########################################################################################################################
@@ -2133,6 +2169,8 @@
           frameCounter                    : { type: t_uint32                                    , comment: "Number of frames taken"}
           loopCounter                     : { type: t_uint32                                    , comment: "Number of parameter loops done"}
           loopSuccessCounter              : { type: t_uint32                                    , comment: "Number of successful parameter loops"}
+          connected                       : { type: t_bool                                      , comment: "Is the camera connected?"}
+          acquiring                       : { type: t_bool                                      , comment: "Is the camera acquiring frames?"}
           # parameters
           acquisitionFrameRate            : { type: t_double                                    , comment: "Acquisition frame rate in Hz"}
           linkAcquisitionFrameRate        : { type: t_double                                    , comment: "Acquisition frame rate in Hz, limited by the link bandwidth"}
@@ -2152,6 +2190,9 @@
           binningVertical                 : { type: t_uint32                                    , comment: "Vertical binning"}
           triggerMode                     : { type: t_uint32                                    , comment: "Trigger mode"}
           triggerSelector                 : { type: t_uint32                                    , comment: "Trigger selector"}
+          acquisitionMode                 : { type: t_uint32                                    , comment: "Acquisition mode"}
+          blackLevel                      : { type: t_double                                    , comment: "Black level (0 .. 511 for 12-bit images)"}
+          blackLevelAuto                  : { type: t_uint32                                    , comment: "Black level auto enum"}
           deviceTemperature               : { type: t_double                                    , comment: "Temperature of the camera, in °C"}
       stat:
           health                          : { type: marvel_common.HealthStatus }
@@ -2162,14 +2203,16 @@
           startAcquiring                  : { type: marvel_common.Process                       , comment: "Start acquiring frames" }
           stopAcquiring                   : { type: marvel_common.Process                       , comment: "Stop acquiring frames" }
           reset                           : { type: marvel_common.Process                       , comment: "Reset any errors" }
+          setup                           : { type: GigECameraSetupProcess                      , comment: "Setup the camera with the given parameters" }
           setParam                        : { type: GigECameraSetParamProcess                   , comment: "Set a param value" }
           setParam2                       : { type: GigECameraSetParam2Process                  , comment: "Set 2 param values (e.g. selector + value)" }
-          setAnalogGain                   : { type: GigECameraSetParam2Process                  , comment: "Set 2 param values (e.g. selector + value)" }
           trigger                         : { type: marvel_common.Process                       , comment: "Send a software trigger" }
           pulseTrigger                    : { type: GigECameraPulseTrigger                      , comment: "Send 2 software triggers, with a given duration in between" }
           setSource                       : { type: GigECameraSetSourceProcess                  , comment: "Set the camera source" }
       calls:
           reset:
+              isEnabled                   : !BOOL TRUE
+          setup:
               isEnabled                   : !BOOL TRUE
           open:
               isEnabled                   : !OR [ !EQ [ state, beckhoff_vision.ETcVnCameraState.TCVN_CS_INITIAL ], 
@@ -2180,9 +2223,12 @@
               isEnabled                   : !NOT [ !OR [ !EQ [ state, beckhoff_vision.ETcVnCameraState.TCVN_CS_INITIAL ], 
                                                          !EQ [ state, beckhoff_vision.ETcVnCameraState.TCVN_CS_INITIALIZED ] ] ]
           startAcquiring:
-              isEnabled                   : !OR [ !EQ [ state, beckhoff_vision.ETcVnCameraState.TCVN_CS_INITIAL ], 
-                                                  !EQ [ state, beckhoff_vision.ETcVnCameraState.TCVN_CS_INITIALIZED ], 
-                                                  !EQ [ state, beckhoff_vision.ETcVnCameraState.TCVN_CS_OPENED ] ]
+              isEnabled                   : !AND [
+                                                  !OR [ !EQ [ state, beckhoff_vision.ETcVnCameraState.TCVN_CS_INITIAL ], 
+                                                        !EQ [ state, beckhoff_vision.ETcVnCameraState.TCVN_CS_INITIALIZED ], 
+                                                        !EQ [ state, beckhoff_vision.ETcVnCameraState.TCVN_CS_OPENED ] ],
+                                                  !EQ [ proc.stopAcquiring.stat.busy, BusyStatus.idle ]
+                                            ]
           stopAcquiring:
               isEnabled                   : !NOT [ !OR [ !EQ [ state, beckhoff_vision.ETcVnCameraState.TCVN_CS_INITIAL ], 
                                                          !EQ [ state, beckhoff_vision.ETcVnCameraState.TCVN_CS_INITIALIZED ] ] ]
