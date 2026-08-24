@@ -1436,6 +1436,21 @@
       <dataType name="BaseProcessStatuses">
         <baseType>
           <struct>
+            <variable name="handle">
+              <type><UDINT /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Actual handle of the stat data</xhtml>
+              </documentation>
+            </variable>
             <variable name="enabled">
               <type><derived name="EnabledStatus" /></type>
               <addData>
@@ -3555,6 +3570,38 @@
           </struct>
         </baseType>
       </dataType>
+      <dataType name="AtomicRequest">
+        <baseType>
+          <struct>
+            <variable name="handle">
+              <type><UDINT /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Handle of the request</xhtml>
+              </documentation>
+            </variable>
+            <variable name="request">
+              <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Write TRUE to request the start of the process</xhtml>
+              </documentation>
+            </variable>
+          </struct>
+        </baseType>
+      </dataType>
       <dataType name="MercatorMeteoExchange">
         <baseType>
           <struct>
@@ -5515,6 +5562,21 @@
           <struct>
             <variable name="do_request">
               <type><BOOL /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="3" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="atomic">
+              <type><derived name="AtomicRequest" /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -11614,6 +11676,20 @@ END_IF;
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Write TRUE to request the start of the process</xhtml>
               </documentation>
             </variable>
+            <variable name="atomic">
+              <type><derived name="AtomicRequest" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="3" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Handle of the request</xhtml>
+              </documentation>
+            </variable>
             <variable name="do_request_result">
               <type><derived name="RequestResults" /></type>
               <addData>
@@ -11672,6 +11748,7 @@ END_IF;
               <body>
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.do_request := model.do_request;
+THIS^.atomic := model.atomic;
 </xhtml>
                 </ST>
               </body>
@@ -11711,6 +11788,7 @@ END_IF;
               <body>
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">model.do_request := THIS^.do_request;
+model.atomic := THIS^.atomic;
 model.do_request_result := THIS^.do_request_result;
 model.actualStatus := THIS^.actualStatus;
 model.stat := THIS^.stat;
@@ -19086,7 +19164,12 @@ model.stat := THIS^.stat;
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
+    do_request := TRUE;
+    stat.handle := atomic.handle;
+    atomic.request := FALSE;
+END_IF;
+IF do_request THEN
     do_request_result := request();
     do_request := FALSE;
 END_IF;
@@ -19284,7 +19367,12 @@ END_IF;
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
+    do_request := TRUE;
+    stat.handle := atomic.handle;
+    atomic.request := FALSE;
+END_IF;
+IF do_request THEN
     do_request_result := request( id := set.id );
     do_request := FALSE;
 END_IF;
@@ -19509,7 +19597,12 @@ SUPER^._copyToModel_BaseProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
+    do_request := TRUE;
+    stat.handle := atomic.handle;
+    atomic.request := FALSE;
+END_IF;
+IF do_request THEN
     do_request_result := request( id := set.id );
     do_request := FALSE;
 END_IF;
@@ -19706,7 +19799,12 @@ SUPER^._copyToModel_BaseProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
+    do_request := TRUE;
+    stat.handle := atomic.handle;
+    atomic.request := FALSE;
+END_IF;
+IF do_request THEN
     do_request_result := request();
     do_request := FALSE;
 END_IF;
@@ -19904,7 +20002,12 @@ END_IF;
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
+    do_request := TRUE;
+    stat.handle := atomic.handle;
+    atomic.request := FALSE;
+END_IF;
+IF do_request THEN
     do_request_result := request( setpoint := set.setpoint );
     do_request := FALSE;
 END_IF;
@@ -20129,7 +20232,12 @@ SUPER^._copyToModel_BaseProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
+    do_request := TRUE;
+    stat.handle := atomic.handle;
+    atomic.request := FALSE;
+END_IF;
+IF do_request THEN
     do_request_result := request( parameter := set.parameter );
     do_request := FALSE;
 END_IF;
@@ -20354,7 +20462,12 @@ SUPER^._copyToModel_BaseProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
+    do_request := TRUE;
+    stat.handle := atomic.handle;
+    atomic.request := FALSE;
+END_IF;
+IF do_request THEN
     do_request_result := request(
     position := set.position,
     maxVelocity := set.maxVelocity);
@@ -20608,7 +20721,12 @@ SUPER^._copyToModel_BaseMcProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
+    do_request := TRUE;
+    stat.handle := atomic.handle;
+    atomic.request := FALSE;
+END_IF;
+IF do_request THEN
     do_request_result := request(
     distance := set.distance,
     maxVelocity := set.maxVelocity);
@@ -20862,7 +20980,12 @@ SUPER^._copyToModel_BaseMcProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
+    do_request := TRUE;
+    stat.handle := atomic.handle;
+    atomic.request := FALSE;
+END_IF;
+IF do_request THEN
     do_request_result := request( enable := set.enable );
     do_request := FALSE;
 END_IF;
@@ -21087,7 +21210,12 @@ SUPER^._copyToModel_BaseMcProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
+    do_request := TRUE;
+    stat.handle := atomic.handle;
+    atomic.request := FALSE;
+END_IF;
+IF do_request THEN
     do_request_result := request( value := set.value );
     do_request := FALSE;
 END_IF;
@@ -21312,7 +21440,12 @@ SUPER^._copyToModel_BaseMcProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
+    do_request := TRUE;
+    stat.handle := atomic.handle;
+    atomic.request := FALSE;
+END_IF;
+IF do_request THEN
     do_request_result := request(
     deceleration := set.deceleration,
     jerk := set.jerk);
@@ -21566,7 +21699,12 @@ SUPER^._copyToModel_BaseMcProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
+    do_request := TRUE;
+    stat.handle := atomic.handle;
+    atomic.request := FALSE;
+END_IF;
+IF do_request THEN
     do_request_result := request( value := set.value );
     do_request := FALSE;
 END_IF;
@@ -21791,7 +21929,12 @@ SUPER^._copyToModel_BaseMcProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
+    do_request := TRUE;
+    stat.handle := atomic.handle;
+    atomic.request := FALSE;
+END_IF;
+IF do_request THEN
     do_request_result := request( enabled := set.enabled );
     do_request := FALSE;
 END_IF;
@@ -22016,7 +22159,12 @@ SUPER^._copyToModel_BaseProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
+    do_request := TRUE;
+    stat.handle := atomic.handle;
+    atomic.request := FALSE;
+END_IF;
+IF do_request THEN
     do_request_result := request(
     parameterNumber := set.parameterNumber,
     value := set.value);
@@ -22283,7 +22431,12 @@ SUPER^._copyToModel_BaseMcProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
+    do_request := TRUE;
+    stat.handle := atomic.handle;
+    atomic.request := FALSE;
+END_IF;
+IF do_request THEN
     do_request_result := request( parameterNumber := set.parameterNumber );
     do_request := FALSE;
 END_IF;
@@ -22509,7 +22662,12 @@ SUPER^._copyToModel_BaseMcProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
+    do_request := TRUE;
+    stat.handle := atomic.handle;
+    atomic.request := FALSE;
+END_IF;
+IF do_request THEN
     do_request_result := request(
     parameterNumber := set.parameterNumber,
     value := set.value);
@@ -22776,7 +22934,12 @@ SUPER^._copyToModel_BaseMcProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
+    do_request := TRUE;
+    stat.handle := atomic.handle;
+    atomic.request := FALSE;
+END_IF;
+IF do_request THEN
     do_request_result := request( parameterNumber := set.parameterNumber );
     do_request := FALSE;
 END_IF;
@@ -23015,7 +23178,12 @@ SUPER^._copyToModel_BaseMcProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
+    do_request := TRUE;
+    stat.handle := atomic.handle;
+    atomic.request := FALSE;
+END_IF;
+IF do_request THEN
     do_request_result := request(
     risingEdge := set.risingEdge,
     timeout := set.timeout);
@@ -23270,7 +23438,12 @@ SUPER^._copyToModel_BaseMcProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
+    do_request := TRUE;
+    stat.handle := atomic.handle;
+    atomic.request := FALSE;
+END_IF;
+IF do_request THEN
     do_request_result := request( state := set.state );
     do_request := FALSE;
 END_IF;
@@ -23495,7 +23668,12 @@ SUPER^._copyToModel_BaseProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
+    do_request := TRUE;
+    stat.handle := atomic.handle;
+    atomic.request := FALSE;
+END_IF;
+IF do_request THEN
     do_request_result := request(
     state := set.state,
     password := set.password);
@@ -23749,7 +23927,12 @@ SUPER^._copyToModel_BaseProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
+    do_request := TRUE;
+    stat.handle := atomic.handle;
+    atomic.request := FALSE;
+END_IF;
+IF do_request THEN
     do_request_result := request( state := set.state );
     do_request := FALSE;
 END_IF;
@@ -23974,7 +24157,12 @@ SUPER^._copyToModel_BaseProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
+    do_request := TRUE;
+    stat.handle := atomic.handle;
+    atomic.request := FALSE;
+END_IF;
+IF do_request THEN
     do_request_result := request( filePath := set.filePath );
     do_request := FALSE;
 END_IF;
@@ -24199,7 +24387,12 @@ SUPER^._copyToModel_BaseXmlDataSrvProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
+    do_request := TRUE;
+    stat.handle := atomic.handle;
+    atomic.request := FALSE;
+END_IF;
+IF do_request THEN
     do_request_result := request( filePath := set.filePath );
     do_request := FALSE;
 END_IF;
@@ -24396,7 +24589,12 @@ SUPER^._copyToModel_BaseXmlDataSrvProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
+    do_request := TRUE;
+    stat.handle := atomic.handle;
+    atomic.request := FALSE;
+END_IF;
+IF do_request THEN
     do_request_result := request();
     do_request := FALSE;
 END_IF;
@@ -24620,7 +24818,12 @@ END_IF;
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
+    do_request := TRUE;
+    stat.handle := atomic.handle;
+    atomic.request := FALSE;
+END_IF;
+IF do_request THEN
     do_request_result := request(
     unitID := set.unitID,
     address := set.address);
@@ -24889,7 +25092,12 @@ SUPER^._copyToModel_BaseProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
+    do_request := TRUE;
+    stat.handle := atomic.handle;
+    atomic.request := FALSE;
+END_IF;
+IF do_request THEN
     do_request_result := request(
     unitID := set.unitID,
     address := set.address,
@@ -25197,7 +25405,12 @@ SUPER^._copyToModel_BaseProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
+    do_request := TRUE;
+    stat.handle := atomic.handle;
+    atomic.request := FALSE;
+END_IF;
+IF do_request THEN
     do_request_result := request(
     unitID := set.unitID,
     address := set.address);
@@ -25466,7 +25679,12 @@ SUPER^._copyToModel_BaseProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
+    do_request := TRUE;
+    stat.handle := atomic.handle;
+    atomic.request := FALSE;
+END_IF;
+IF do_request THEN
     do_request_result := request(
     unitID := set.unitID,
     address := set.address,
@@ -25774,7 +25992,12 @@ SUPER^._copyToModel_BaseProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
+    do_request := TRUE;
+    stat.handle := atomic.handle;
+    atomic.request := FALSE;
+END_IF;
+IF do_request THEN
     do_request_result := request(
     unitID := set.unitID,
     subFunction := set.subFunction,
@@ -26057,7 +26280,12 @@ SUPER^._copyToModel_BaseProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
+    do_request := TRUE;
+    stat.handle := atomic.handle;
+    atomic.request := FALSE;
+END_IF;
+IF do_request THEN
     do_request_result := request(
     alpha := set.alpha,
     delta := set.delta);
@@ -26311,7 +26539,12 @@ SUPER^._copyToModel_BaseProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
+    do_request := TRUE;
+    stat.handle := atomic.handle;
+    atomic.request := FALSE;
+END_IF;
+IF do_request THEN
     do_request_result := request(
     param := set.param,
     nValue := set.nValue,
@@ -26621,7 +26854,12 @@ SUPER^._copyToModel_BaseProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
+    do_request := TRUE;
+    stat.handle := atomic.handle;
+    atomic.request := FALSE;
+END_IF;
+IF do_request THEN
     do_request_result := request(
     param1 := set.param1,
     nValue1 := set.nValue1,
@@ -27012,7 +27250,12 @@ SUPER^._copyToModel_BaseProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
+    do_request := TRUE;
+    stat.handle := atomic.handle;
+    atomic.request := FALSE;
+END_IF;
+IF do_request THEN
     do_request_result := request( duration := set.duration );
     do_request := FALSE;
 END_IF;
@@ -27237,7 +27480,12 @@ SUPER^._copyToModel_BaseProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
+    do_request := TRUE;
+    stat.handle := atomic.handle;
+    atomic.request := FALSE;
+END_IF;
+IF do_request THEN
     do_request_result := request( source := set.source );
     do_request := FALSE;
 END_IF;
@@ -27462,7 +27710,12 @@ SUPER^._copyToModel_BaseProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
+    do_request := TRUE;
+    stat.handle := atomic.handle;
+    atomic.request := FALSE;
+END_IF;
+IF do_request THEN
     do_request_result := request(
     doExposureTime := set.doExposureTime,
     exposureTime := set.exposureTime,
@@ -28258,7 +28511,12 @@ SUPER^._copyToModel_BaseProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
+    do_request := TRUE;
+    stat.handle := atomic.handle;
+    atomic.request := FALSE;
+END_IF;
+IF do_request THEN
     do_request_result := request( setpoint := set.setpoint );
     do_request := FALSE;
 END_IF;
@@ -28496,7 +28754,12 @@ SUPER^._copyToModel_BaseProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
+    do_request := TRUE;
+    stat.handle := atomic.handle;
+    atomic.request := FALSE;
+END_IF;
+IF do_request THEN
     do_request_result := request(
     cmd := set.cmd,
     arg := set.arg);
@@ -29044,6 +29307,8 @@ SUPER^._copyToModel_BaseProcess( model := model );
             <Object Name="Force">
             </Object>
             <Object Name="Fraction">
+            </Object>
+            <Object Name="AtomicRequest">
             </Object>
             <Object Name="MercatorMeteoExchange">
             </Object>

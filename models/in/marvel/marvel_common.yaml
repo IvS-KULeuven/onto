@@ -755,6 +755,11 @@
     #         value : !MUL [newFractionValue, !DOUBLE 100 ]
     #         unit  : Units.PERCENT
 
+  !STRUCT AtomicRequest:
+    items:
+        handle      : { type: t_uint32, comment: "Handle of the request" }
+        request     : { type: t_bool  , comment: "Write TRUE to request the start of the process" }
+
   ########################################################################################################################
   # BaseProcess
   ########################################################################################################################
@@ -762,12 +767,14 @@
     variables_hidden:
         isEnabled           : { type: t_bool, comment: "Should the trigger be enabled?" }
     stat:
+        handle              : { type: t_uint32         , comment: "Actual handle of the stat data" }
         enabled             : { type: EnabledStatus    , comment: "Is the process enabled or not?" }
         busy                : { type: BusyStatus       , comment: "Is the process busy or not?" }
         health              : { type: HealthStatus     , comment: "Is the process in a healthy state or not?" }
         started             : { type: StartedStatus    , comment: "Is the process started or not?" }
     local_rw:
         do_request          : { type: t_bool           , comment: "Write TRUE to request the start of the process" }
+        atomic              : { type: AtomicRequest    , comment: "Handle of the request" }
     local:
         do_request_result   : { type: RequestResults   , comment: "Result of the request" }
     calls:

@@ -13369,7 +13369,12 @@ THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
+    do_request := TRUE;
+    stat.handle := atomic.handle;
+    atomic.request := FALSE;
+END_IF;
+IF do_request THEN
     do_request_result := request( power := set.power );
     do_request := FALSE;
 END_IF;

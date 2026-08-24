@@ -1469,8 +1469,23 @@ class Process(FunctionBlock):
         if "arguments" in args:
             for arg_name in args["arguments"]:
                 request_call.assignments.append(ASSIGN([self.request.get_child(arg_name, False),  self.var_in["set"].get_child(arg_name, False)]))
+
+        if is_marvel():
+            self.implementation = [
+                IfThen(
+                    name = "ifthenAtomic", 
+                    parent = self, 
+                    if_ = self.get_child("atomic").get_child("request"),
+                    then_ = [
+                        ASSIGN([self.children["do_request"], Bool("TRUE")]),
+                        ASSIGN([self.children["stat"].get_child("handle"), self.get_child("atomic").get_child("handle")]),
+                        ASSIGN([self.get_child("atomic").get_child("request"), Bool("FALSE")])
+                    ])
+            ]
+        else:
+            self.implementation = []
         
-        self.implementation = [
+        self.implementation += [
             IfThen(
                 name = "ifthen", 
                 parent = self, 
@@ -1482,6 +1497,7 @@ class Process(FunctionBlock):
             Call("callSuper", self, { "calls": PLC_DEREF(self.children["SUPER"]) })
             
         ]
+        
 
 
 def make_marvel_status(name, parent, args={}):
