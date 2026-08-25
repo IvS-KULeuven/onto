@@ -13369,14 +13369,10 @@ THIS^.proc.unlock._copyToModel_Process( model := model.proc.unlock );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
-    do_request := TRUE;
-    stat.handle := atomic.handle;
-    atomic.request := FALSE;
-END_IF;
-IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request OR atomic.request THEN
     do_request_result := request( power := set.power );
     do_request := FALSE;
+    atomic.request := FALSE;
 END_IF;
 SUPER^();
 </xhtml>
@@ -13417,6 +13413,11 @@ SUPER^();
               <body>
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.power := power;
+IF THIS^.atomic.request THEN
+    THIS^.stat.handle := THIS^.atomic.handle;
+ELSE
+    THIS^.stat.handle := 0;
+END_IF;
 THIS^.stat.busy := BusyStatus.busy;
 THIS^.stat.health := HealthStatus.good;
 </xhtml>
@@ -13463,6 +13464,9 @@ THIS^.stat.health := HealthStatus.good;
     THIS^.start( power := power );
 ELSE
     request := RequestResults.REJECTED;
+    IF THIS^.atomic.request THEN
+        THIS^.lastRejectedHandle := THIS^.atomic.handle;
+    END_IF;
 END_IF;
 </xhtml>
                 </ST>

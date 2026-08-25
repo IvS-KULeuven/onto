@@ -977,14 +977,10 @@ THIS^.proc.setCameraParamSet._copyToModel_GuidingCameraParamSetProcess( model :=
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
-    do_request := TRUE;
-    stat.handle := atomic.handle;
-    atomic.request := FALSE;
-END_IF;
-IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request OR atomic.request THEN
     do_request_result := request( vMag := set.vMag );
     do_request := FALSE;
+    atomic.request := FALSE;
 END_IF;
 SUPER^();
 </xhtml>
@@ -1025,6 +1021,11 @@ SUPER^();
               <body>
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.vMag := vMag;
+IF THIS^.atomic.request THEN
+    THIS^.stat.handle := THIS^.atomic.handle;
+ELSE
+    THIS^.stat.handle := 0;
+END_IF;
 THIS^.stat.busy := BusyStatus.busy;
 THIS^.stat.health := HealthStatus.good;
 </xhtml>
@@ -1071,6 +1072,9 @@ THIS^.stat.health := HealthStatus.good;
     THIS^.start( vMag := vMag );
 ELSE
     request := RequestResults.REJECTED;
+    IF THIS^.atomic.request THEN
+        THIS^.lastRejectedHandle := THIS^.atomic.handle;
+    END_IF;
 END_IF;
 </xhtml>
                 </ST>
@@ -1207,14 +1211,10 @@ SUPER^._copyToModel_BaseProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
-    do_request := TRUE;
-    stat.handle := atomic.handle;
-    atomic.request := FALSE;
-END_IF;
-IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request OR atomic.request THEN
     do_request_result := request( vMag := set.vMag );
     do_request := FALSE;
+    atomic.request := FALSE;
 END_IF;
 SUPER^();
 </xhtml>
@@ -1255,6 +1255,11 @@ SUPER^();
               <body>
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.vMag := vMag;
+IF THIS^.atomic.request THEN
+    THIS^.stat.handle := THIS^.atomic.handle;
+ELSE
+    THIS^.stat.handle := 0;
+END_IF;
 THIS^.stat.busy := BusyStatus.busy;
 THIS^.stat.health := HealthStatus.good;
 </xhtml>
@@ -1301,6 +1306,9 @@ THIS^.stat.health := HealthStatus.good;
     THIS^.start( vMag := vMag );
 ELSE
     request := RequestResults.REJECTED;
+    IF THIS^.atomic.request THEN
+        THIS^.lastRejectedHandle := THIS^.atomic.handle;
+    END_IF;
 END_IF;
 </xhtml>
                 </ST>
@@ -1437,14 +1445,10 @@ SUPER^._copyToModel_BaseProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
-    do_request := TRUE;
-    stat.handle := atomic.handle;
-    atomic.request := FALSE;
-END_IF;
-IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request OR atomic.request THEN
     do_request_result := request( paramSet := set.paramSet );
     do_request := FALSE;
+    atomic.request := FALSE;
 END_IF;
 SUPER^();
 </xhtml>
@@ -1485,6 +1489,11 @@ SUPER^();
               <body>
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.paramSet := paramSet;
+IF THIS^.atomic.request THEN
+    THIS^.stat.handle := THIS^.atomic.handle;
+ELSE
+    THIS^.stat.handle := 0;
+END_IF;
 THIS^.stat.busy := BusyStatus.busy;
 THIS^.stat.health := HealthStatus.good;
 </xhtml>
@@ -1531,6 +1540,9 @@ THIS^.stat.health := HealthStatus.good;
     THIS^.start( paramSet := paramSet );
 ELSE
     request := RequestResults.REJECTED;
+    IF THIS^.atomic.request THEN
+        THIS^.lastRejectedHandle := THIS^.atomic.handle;
+    END_IF;
 END_IF;
 </xhtml>
                 </ST>

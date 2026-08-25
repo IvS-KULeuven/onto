@@ -765,7 +765,11 @@
   ########################################################################################################################
   !STATEMACHINE BaseProcess:
     variables_hidden:
-        isEnabled           : { type: t_bool, comment: "Should the trigger be enabled?" }
+        isEnabled           : { type: t_bool           , comment: "Should the trigger be enabled?" }
+        atomic              : { type: AtomicRequest    , comment: "Handle of the request" }
+    variables_output:
+        atomic_out          : { type: t_uint64         , comment: "Atomic output variable" }
+        lastRejectedHandle  : { type: t_uint32         , comment: "Handle of the last rejected request" }
     stat:
         handle              : { type: t_uint32         , comment: "Actual handle of the stat data" }
         enabled             : { type: EnabledStatus    , comment: "Is the process enabled or not?" }
@@ -774,7 +778,7 @@
         started             : { type: StartedStatus    , comment: "Is the process started or not?" }
     local_rw:
         do_request          : { type: t_bool           , comment: "Write TRUE to request the start of the process" }
-        atomic              : { type: AtomicRequest    , comment: "Handle of the request" }
+        atomic_in           : { type: t_uint64         , comment: "Atomic input variable (4 bytes )" }
     local:
         do_request_result   : { type: RequestResults   , comment: "Result of the request" }
     calls:

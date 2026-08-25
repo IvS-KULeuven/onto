@@ -298,6 +298,14 @@ class String(Primitive):
     def __init__(self, value: str) -> None:
         super().__init__(str(value))
 
+class UInt32(Primitive):
+    def __init__(self, value: str) -> None:
+        try:
+            v = int(value)
+        except:
+            v = eval(value)
+        super().__init__(v)
+
 
 #####################################################################################
 ## Custom pyyaml constructors (such as !DOUBLE)
@@ -331,6 +339,9 @@ def String_constructor(loader, node):
     value = loader.construct_scalar(node)
     return String(value)
 
+def UInt32_constructor(loader, node):
+    value = loader.construct_scalar(node)
+    return UInt32(value)
 
 #####################################################################################
 ## MTCS_SUMMARIZE_... operations

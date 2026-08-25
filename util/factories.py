@@ -1401,7 +1401,20 @@ class Process(FunctionBlock):
                 assignment.resolve_children(self)
                 start.implementation.append(assignment)
 
-        if versions.CODEGEN_VERSION == versions.CodeGenVersion.MARVEL:        
+        if versions.CODEGEN_VERSION == versions.CodeGenVersion.MARVEL:
+            start.implementation.append(
+                IfThen(
+                    name = "ifthen",
+                    parent = start,
+                    if_ = self.get_child("atomic").get_child("request"),
+                    then_ = [
+                        ASSIGN([self.get_child("stat").get_child("handle"), self.get_child("atomic").get_child("handle")])
+                    ],
+                    else_ = [
+                        ASSIGN([self.get_child("stat").get_child("handle"), UInt32(0)])
+                    ]
+                )
+            )                
             start.implementation.append(
                 ASSIGN([self.get_child(statuses()).get_child("busy"), resolve("marvel_common.BusyStatus.busy", context=parent)]))
             start.implementation.append(
@@ -1450,19 +1463,43 @@ class Process(FunctionBlock):
         else:
             raise Exception("Invalid version")
 
-        self.request.implementation = [
-            IfThen(
-                name = "ifthen", 
-                parent = self.request, 
-                if_ = req_if,
-                then_ = [
-                    ASSIGN([self.request, resolve(f"{get_common_lib()}.RequestResults.ACCEPTED", self.parent)]),
-                    start_call
-                ],
-                else_ = [
-                    ASSIGN([self.request, resolve(f"{get_common_lib()}.RequestResults.REJECTED", self.parent)])
-                ])
-        ]
+        if is_marvel():
+            self.request.implementation = [
+                IfThen(
+                    name = "ifthen", 
+                    parent = self.request, 
+                    if_ = req_if,
+                    then_ = [
+                        ASSIGN([self.request, resolve(f"{get_common_lib()}.RequestResults.ACCEPTED", self.parent)]),
+                        start_call
+                    ],
+                    else_ = [
+                        ASSIGN([self.request, resolve(f"{get_common_lib()}.RequestResults.REJECTED", self.parent)]),
+                        IfThen(
+                            name = "ifthenAtomic",
+                            parent = self.request,
+                            if_ = self.get_child("atomic").get_child("request"),
+                            then_ = [
+                                ASSIGN([self.get_child("lastRejectedHandle"), self.get_child("atomic").get_child("handle")])
+                            ]
+                        )
+                    ]
+                )
+            ]
+        elif is_mtcs():
+            self.request.implementation = [
+                IfThen(
+                    name = "ifthen", 
+                    parent = self.request, 
+                    if_ = req_if,
+                    then_ = [
+                        ASSIGN([self.request, resolve(f"{get_common_lib()}.RequestResults.ACCEPTED", self.parent)]),
+                        start_call
+                    ],
+                    else_ = [
+                        ASSIGN([self.request, resolve(f"{get_common_lib()}.RequestResults.REJECTED", self.parent)])
+                    ])
+            ]
         
         request_call = Call("call_request", self.request)
         request_call.calls = self.request
@@ -1473,31 +1510,30 @@ class Process(FunctionBlock):
         if is_marvel():
             self.implementation = [
                 IfThen(
-                    name = "ifthenAtomic", 
+                    name = "ifthen", 
                     parent = self, 
-                    if_ = self.get_child("atomic").get_child("request"),
+                    if_ = OR([self.get_child("do_request"), self.get_child("atomic").get_child("request")]),
                     then_ = [
-                        ASSIGN([self.children["do_request"], Bool("TRUE")]),
-                        ASSIGN([self.children["stat"].get_child("handle"), self.get_child("atomic").get_child("handle")]),
+                        ASSIGN([self.get_child("do_request_result"), request_call]),
+                        ASSIGN([self.children["do_request"], Bool("FALSE")]),
                         ASSIGN([self.get_child("atomic").get_child("request"), Bool("FALSE")])
-                    ])
+                    ]),
+                Call("callSuper", self, { "calls": PLC_DEREF(self.children["SUPER"]) })
             ]
         else:
-            self.implementation = []
         
-        self.implementation += [
-            IfThen(
-                name = "ifthen", 
-                parent = self, 
-                if_ = self.get_child("do_request"),
-                then_ = [
-                    ASSIGN([self.get_child("do_request_result"), request_call]),
-                    ASSIGN([self.children["do_request"], Bool("FALSE")])
-                ]),
-            Call("callSuper", self, { "calls": PLC_DEREF(self.children["SUPER"]) })
+            self.implementation += [
+                IfThen(
+                    name = "ifthen", 
+                    parent = self, 
+                    if_ = self.get_child("do_request"),
+                    then_ = [
+                        ASSIGN([self.get_child("do_request_result"), request_call]),
+                        ASSIGN([self.children["do_request"], Bool("FALSE")])
+                    ]),
+                Call("callSuper", self, { "calls": PLC_DEREF(self.children["SUPER"]) })
+            ]
             
-        ]
-        
 
 
 def make_marvel_status(name, parent, args={}):

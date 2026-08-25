@@ -5575,8 +5575,8 @@
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
               </documentation>
             </variable>
-            <variable name="atomic">
-              <type><derived name="AtomicRequest" /></type>
+            <variable name="atomic_in">
+              <type><ULINT /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -5607,6 +5607,36 @@
             </variable>
             <variable name="actualStatus">
               <type><string /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="atomic_out">
+              <type><ULINT /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                    <Attribute Name="TcHmiSymbol.Show" Value="" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"></xhtml>
+              </documentation>
+            </variable>
+            <variable name="lastRejectedHandle">
+              <type><UDINT /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -11629,6 +11659,19 @@ END_IF;
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Should the trigger be enabled?</xhtml>
               </documentation>
             </variable>
+            <variable name="atomic">
+              <type><derived name="AtomicRequest" /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="0" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Handle of the request</xhtml>
+              </documentation>
+            </variable>
           </inputVars>
           <outputVars>
             <variable name="actualStatus">
@@ -11643,6 +11686,34 @@ END_IF;
               </addData>
               <documentation>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Current status description</xhtml>
+              </documentation>
+            </variable>
+            <variable name="atomic_out">
+              <type><ULINT /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Atomic output variable</xhtml>
+              </documentation>
+            </variable>
+            <variable name="lastRejectedHandle">
+              <type><UDINT /></type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="OPC.UA.DA" Value="1" />
+                    <Attribute Name="OPC.UA.DA.Access" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Handle of the last rejected request</xhtml>
               </documentation>
             </variable>
             <variable name="stat">
@@ -11676,8 +11747,8 @@ END_IF;
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">Write TRUE to request the start of the process</xhtml>
               </documentation>
             </variable>
-            <variable name="atomic">
-              <type><derived name="AtomicRequest" /></type>
+            <variable name="atomic_in">
+              <type><ULINT /></type>
               <addData>
                 <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
                   <Attributes>
@@ -11687,7 +11758,7 @@ END_IF;
                 </data>
               </addData>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">Handle of the request</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Atomic input variable (4 bytes )</xhtml>
               </documentation>
             </variable>
             <variable name="do_request_result">
@@ -11748,7 +11819,7 @@ END_IF;
               <body>
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.do_request := model.do_request;
-THIS^.atomic := model.atomic;
+THIS^.atomic_in := model.atomic_in;
 </xhtml>
                 </ST>
               </body>
@@ -11788,9 +11859,11 @@ THIS^.atomic := model.atomic;
               <body>
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">model.do_request := THIS^.do_request;
-model.atomic := THIS^.atomic;
+model.atomic_in := THIS^.atomic_in;
 model.do_request_result := THIS^.do_request_result;
 model.actualStatus := THIS^.actualStatus;
+model.atomic_out := THIS^.atomic_out;
+model.lastRejectedHandle := THIS^.lastRejectedHandle;
 model.stat := THIS^.stat;
 </xhtml>
                 </ST>
@@ -19164,14 +19237,10 @@ model.stat := THIS^.stat;
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
-    do_request := TRUE;
-    stat.handle := atomic.handle;
-    atomic.request := FALSE;
-END_IF;
-IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request OR atomic.request THEN
     do_request_result := request();
     do_request := FALSE;
+    atomic.request := FALSE;
 END_IF;
 SUPER^();
 </xhtml>
@@ -19199,7 +19268,12 @@ SUPER^();
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.stat.busy := BusyStatus.busy;
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF THIS^.atomic.request THEN
+    THIS^.stat.handle := THIS^.atomic.handle;
+ELSE
+    THIS^.stat.handle := 0;
+END_IF;
+THIS^.stat.busy := BusyStatus.busy;
 THIS^.stat.health := HealthStatus.good;
 </xhtml>
                 </ST>
@@ -19233,6 +19307,9 @@ THIS^.stat.health := HealthStatus.good;
     THIS^.start();
 ELSE
     request := RequestResults.REJECTED;
+    IF THIS^.atomic.request THEN
+        THIS^.lastRejectedHandle := THIS^.atomic.handle;
+    END_IF;
 END_IF;
 </xhtml>
                 </ST>
@@ -19367,14 +19444,10 @@ END_IF;
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
-    do_request := TRUE;
-    stat.handle := atomic.handle;
-    atomic.request := FALSE;
-END_IF;
-IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request OR atomic.request THEN
     do_request_result := request( id := set.id );
     do_request := FALSE;
+    atomic.request := FALSE;
 END_IF;
 SUPER^();
 </xhtml>
@@ -19415,6 +19488,11 @@ SUPER^();
               <body>
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.id := id;
+IF THIS^.atomic.request THEN
+    THIS^.stat.handle := THIS^.atomic.handle;
+ELSE
+    THIS^.stat.handle := 0;
+END_IF;
 THIS^.stat.busy := BusyStatus.busy;
 THIS^.stat.health := HealthStatus.good;
 </xhtml>
@@ -19461,6 +19539,9 @@ THIS^.stat.health := HealthStatus.good;
     THIS^.start( id := id );
 ELSE
     request := RequestResults.REJECTED;
+    IF THIS^.atomic.request THEN
+        THIS^.lastRejectedHandle := THIS^.atomic.handle;
+    END_IF;
 END_IF;
 </xhtml>
                 </ST>
@@ -19597,14 +19678,10 @@ SUPER^._copyToModel_BaseProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
-    do_request := TRUE;
-    stat.handle := atomic.handle;
-    atomic.request := FALSE;
-END_IF;
-IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request OR atomic.request THEN
     do_request_result := request( id := set.id );
     do_request := FALSE;
+    atomic.request := FALSE;
 END_IF;
 SUPER^();
 </xhtml>
@@ -19645,6 +19722,11 @@ SUPER^();
               <body>
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.id := id;
+IF THIS^.atomic.request THEN
+    THIS^.stat.handle := THIS^.atomic.handle;
+ELSE
+    THIS^.stat.handle := 0;
+END_IF;
 THIS^.stat.busy := BusyStatus.busy;
 THIS^.stat.health := HealthStatus.good;
 </xhtml>
@@ -19691,6 +19773,9 @@ THIS^.stat.health := HealthStatus.good;
     THIS^.start( id := id );
 ELSE
     request := RequestResults.REJECTED;
+    IF THIS^.atomic.request THEN
+        THIS^.lastRejectedHandle := THIS^.atomic.handle;
+    END_IF;
 END_IF;
 </xhtml>
                 </ST>
@@ -19799,14 +19884,10 @@ SUPER^._copyToModel_BaseProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
-    do_request := TRUE;
-    stat.handle := atomic.handle;
-    atomic.request := FALSE;
-END_IF;
-IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request OR atomic.request THEN
     do_request_result := request();
     do_request := FALSE;
+    atomic.request := FALSE;
 END_IF;
 SUPER^();
 </xhtml>
@@ -19834,7 +19915,12 @@ SUPER^();
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.stat.busy := BusyStatus.busy;
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF THIS^.atomic.request THEN
+    THIS^.stat.handle := THIS^.atomic.handle;
+ELSE
+    THIS^.stat.handle := 0;
+END_IF;
+THIS^.stat.busy := BusyStatus.busy;
 THIS^.stat.health := HealthStatus.good;
 </xhtml>
                 </ST>
@@ -19868,6 +19954,9 @@ THIS^.stat.health := HealthStatus.good;
     THIS^.start();
 ELSE
     request := RequestResults.REJECTED;
+    IF THIS^.atomic.request THEN
+        THIS^.lastRejectedHandle := THIS^.atomic.handle;
+    END_IF;
 END_IF;
 </xhtml>
                 </ST>
@@ -20002,14 +20091,10 @@ END_IF;
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
-    do_request := TRUE;
-    stat.handle := atomic.handle;
-    atomic.request := FALSE;
-END_IF;
-IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request OR atomic.request THEN
     do_request_result := request( setpoint := set.setpoint );
     do_request := FALSE;
+    atomic.request := FALSE;
 END_IF;
 SUPER^();
 </xhtml>
@@ -20050,6 +20135,11 @@ SUPER^();
               <body>
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.setpoint := setpoint;
+IF THIS^.atomic.request THEN
+    THIS^.stat.handle := THIS^.atomic.handle;
+ELSE
+    THIS^.stat.handle := 0;
+END_IF;
 THIS^.stat.busy := BusyStatus.busy;
 THIS^.stat.health := HealthStatus.good;
 </xhtml>
@@ -20096,6 +20186,9 @@ THIS^.stat.health := HealthStatus.good;
     THIS^.start( setpoint := setpoint );
 ELSE
     request := RequestResults.REJECTED;
+    IF THIS^.atomic.request THEN
+        THIS^.lastRejectedHandle := THIS^.atomic.handle;
+    END_IF;
 END_IF;
 </xhtml>
                 </ST>
@@ -20232,14 +20325,10 @@ SUPER^._copyToModel_BaseProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
-    do_request := TRUE;
-    stat.handle := atomic.handle;
-    atomic.request := FALSE;
-END_IF;
-IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request OR atomic.request THEN
     do_request_result := request( parameter := set.parameter );
     do_request := FALSE;
+    atomic.request := FALSE;
 END_IF;
 SUPER^();
 </xhtml>
@@ -20280,6 +20369,11 @@ SUPER^();
               <body>
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.parameter := parameter;
+IF THIS^.atomic.request THEN
+    THIS^.stat.handle := THIS^.atomic.handle;
+ELSE
+    THIS^.stat.handle := 0;
+END_IF;
 THIS^.stat.busy := BusyStatus.busy;
 THIS^.stat.health := HealthStatus.good;
 </xhtml>
@@ -20326,6 +20420,9 @@ THIS^.stat.health := HealthStatus.good;
     THIS^.start( parameter := parameter );
 ELSE
     request := RequestResults.REJECTED;
+    IF THIS^.atomic.request THEN
+        THIS^.lastRejectedHandle := THIS^.atomic.handle;
+    END_IF;
 END_IF;
 </xhtml>
                 </ST>
@@ -20462,16 +20559,12 @@ SUPER^._copyToModel_BaseProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
-    do_request := TRUE;
-    stat.handle := atomic.handle;
-    atomic.request := FALSE;
-END_IF;
-IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request OR atomic.request THEN
     do_request_result := request(
     position := set.position,
     maxVelocity := set.maxVelocity);
     do_request := FALSE;
+    atomic.request := FALSE;
 END_IF;
 SUPER^();
 </xhtml>
@@ -20525,6 +20618,11 @@ SUPER^();
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.position := position;
 THIS^.get.maxVelocity := maxVelocity;
+IF THIS^.atomic.request THEN
+    THIS^.stat.handle := THIS^.atomic.handle;
+ELSE
+    THIS^.stat.handle := 0;
+END_IF;
 THIS^.stat.busy := BusyStatus.busy;
 THIS^.stat.health := HealthStatus.good;
 </xhtml>
@@ -20585,6 +20683,9 @@ THIS^.stat.health := HealthStatus.good;
         maxVelocity := maxVelocity);
 ELSE
     request := RequestResults.REJECTED;
+    IF THIS^.atomic.request THEN
+        THIS^.lastRejectedHandle := THIS^.atomic.handle;
+    END_IF;
 END_IF;
 </xhtml>
                 </ST>
@@ -20721,16 +20822,12 @@ SUPER^._copyToModel_BaseMcProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
-    do_request := TRUE;
-    stat.handle := atomic.handle;
-    atomic.request := FALSE;
-END_IF;
-IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request OR atomic.request THEN
     do_request_result := request(
     distance := set.distance,
     maxVelocity := set.maxVelocity);
     do_request := FALSE;
+    atomic.request := FALSE;
 END_IF;
 SUPER^();
 </xhtml>
@@ -20784,6 +20881,11 @@ SUPER^();
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.distance := distance;
 THIS^.get.maxVelocity := maxVelocity;
+IF THIS^.atomic.request THEN
+    THIS^.stat.handle := THIS^.atomic.handle;
+ELSE
+    THIS^.stat.handle := 0;
+END_IF;
 THIS^.stat.busy := BusyStatus.busy;
 THIS^.stat.health := HealthStatus.good;
 </xhtml>
@@ -20844,6 +20946,9 @@ THIS^.stat.health := HealthStatus.good;
         maxVelocity := maxVelocity);
 ELSE
     request := RequestResults.REJECTED;
+    IF THIS^.atomic.request THEN
+        THIS^.lastRejectedHandle := THIS^.atomic.handle;
+    END_IF;
 END_IF;
 </xhtml>
                 </ST>
@@ -20980,14 +21085,10 @@ SUPER^._copyToModel_BaseMcProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
-    do_request := TRUE;
-    stat.handle := atomic.handle;
-    atomic.request := FALSE;
-END_IF;
-IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request OR atomic.request THEN
     do_request_result := request( enable := set.enable );
     do_request := FALSE;
+    atomic.request := FALSE;
 END_IF;
 SUPER^();
 </xhtml>
@@ -21028,6 +21129,11 @@ SUPER^();
               <body>
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.enable := enable;
+IF THIS^.atomic.request THEN
+    THIS^.stat.handle := THIS^.atomic.handle;
+ELSE
+    THIS^.stat.handle := 0;
+END_IF;
 THIS^.stat.busy := BusyStatus.busy;
 THIS^.stat.health := HealthStatus.good;
 </xhtml>
@@ -21074,6 +21180,9 @@ THIS^.stat.health := HealthStatus.good;
     THIS^.start( enable := enable );
 ELSE
     request := RequestResults.REJECTED;
+    IF THIS^.atomic.request THEN
+        THIS^.lastRejectedHandle := THIS^.atomic.handle;
+    END_IF;
 END_IF;
 </xhtml>
                 </ST>
@@ -21210,14 +21319,10 @@ SUPER^._copyToModel_BaseMcProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
-    do_request := TRUE;
-    stat.handle := atomic.handle;
-    atomic.request := FALSE;
-END_IF;
-IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request OR atomic.request THEN
     do_request_result := request( value := set.value );
     do_request := FALSE;
+    atomic.request := FALSE;
 END_IF;
 SUPER^();
 </xhtml>
@@ -21258,6 +21363,11 @@ SUPER^();
               <body>
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.value := value;
+IF THIS^.atomic.request THEN
+    THIS^.stat.handle := THIS^.atomic.handle;
+ELSE
+    THIS^.stat.handle := 0;
+END_IF;
 THIS^.stat.busy := BusyStatus.busy;
 THIS^.stat.health := HealthStatus.good;
 </xhtml>
@@ -21304,6 +21414,9 @@ THIS^.stat.health := HealthStatus.good;
     THIS^.start( value := value );
 ELSE
     request := RequestResults.REJECTED;
+    IF THIS^.atomic.request THEN
+        THIS^.lastRejectedHandle := THIS^.atomic.handle;
+    END_IF;
 END_IF;
 </xhtml>
                 </ST>
@@ -21440,16 +21553,12 @@ SUPER^._copyToModel_BaseMcProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
-    do_request := TRUE;
-    stat.handle := atomic.handle;
-    atomic.request := FALSE;
-END_IF;
-IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request OR atomic.request THEN
     do_request_result := request(
     deceleration := set.deceleration,
     jerk := set.jerk);
     do_request := FALSE;
+    atomic.request := FALSE;
 END_IF;
 SUPER^();
 </xhtml>
@@ -21503,6 +21612,11 @@ SUPER^();
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.deceleration := deceleration;
 THIS^.get.jerk := jerk;
+IF THIS^.atomic.request THEN
+    THIS^.stat.handle := THIS^.atomic.handle;
+ELSE
+    THIS^.stat.handle := 0;
+END_IF;
 THIS^.stat.busy := BusyStatus.busy;
 THIS^.stat.health := HealthStatus.good;
 </xhtml>
@@ -21563,6 +21677,9 @@ THIS^.stat.health := HealthStatus.good;
         jerk := jerk);
 ELSE
     request := RequestResults.REJECTED;
+    IF THIS^.atomic.request THEN
+        THIS^.lastRejectedHandle := THIS^.atomic.handle;
+    END_IF;
 END_IF;
 </xhtml>
                 </ST>
@@ -21699,14 +21816,10 @@ SUPER^._copyToModel_BaseMcProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
-    do_request := TRUE;
-    stat.handle := atomic.handle;
-    atomic.request := FALSE;
-END_IF;
-IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request OR atomic.request THEN
     do_request_result := request( value := set.value );
     do_request := FALSE;
+    atomic.request := FALSE;
 END_IF;
 SUPER^();
 </xhtml>
@@ -21747,6 +21860,11 @@ SUPER^();
               <body>
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.value := value;
+IF THIS^.atomic.request THEN
+    THIS^.stat.handle := THIS^.atomic.handle;
+ELSE
+    THIS^.stat.handle := 0;
+END_IF;
 THIS^.stat.busy := BusyStatus.busy;
 THIS^.stat.health := HealthStatus.good;
 </xhtml>
@@ -21793,6 +21911,9 @@ THIS^.stat.health := HealthStatus.good;
     THIS^.start( value := value );
 ELSE
     request := RequestResults.REJECTED;
+    IF THIS^.atomic.request THEN
+        THIS^.lastRejectedHandle := THIS^.atomic.handle;
+    END_IF;
 END_IF;
 </xhtml>
                 </ST>
@@ -21929,14 +22050,10 @@ SUPER^._copyToModel_BaseMcProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
-    do_request := TRUE;
-    stat.handle := atomic.handle;
-    atomic.request := FALSE;
-END_IF;
-IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request OR atomic.request THEN
     do_request_result := request( enabled := set.enabled );
     do_request := FALSE;
+    atomic.request := FALSE;
 END_IF;
 SUPER^();
 </xhtml>
@@ -21977,6 +22094,11 @@ SUPER^();
               <body>
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.enabled := enabled;
+IF THIS^.atomic.request THEN
+    THIS^.stat.handle := THIS^.atomic.handle;
+ELSE
+    THIS^.stat.handle := 0;
+END_IF;
 THIS^.stat.busy := BusyStatus.busy;
 THIS^.stat.health := HealthStatus.good;
 </xhtml>
@@ -22023,6 +22145,9 @@ THIS^.stat.health := HealthStatus.good;
     THIS^.start( enabled := enabled );
 ELSE
     request := RequestResults.REJECTED;
+    IF THIS^.atomic.request THEN
+        THIS^.lastRejectedHandle := THIS^.atomic.handle;
+    END_IF;
 END_IF;
 </xhtml>
                 </ST>
@@ -22159,16 +22284,12 @@ SUPER^._copyToModel_BaseProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
-    do_request := TRUE;
-    stat.handle := atomic.handle;
-    atomic.request := FALSE;
-END_IF;
-IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request OR atomic.request THEN
     do_request_result := request(
     parameterNumber := set.parameterNumber,
     value := set.value);
     do_request := FALSE;
+    atomic.request := FALSE;
 END_IF;
 SUPER^();
 </xhtml>
@@ -22222,6 +22343,11 @@ SUPER^();
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.parameterNumber := parameterNumber;
 THIS^.get.value := value;
+IF THIS^.atomic.request THEN
+    THIS^.stat.handle := THIS^.atomic.handle;
+ELSE
+    THIS^.stat.handle := 0;
+END_IF;
 THIS^.stat.busy := BusyStatus.busy;
 THIS^.stat.health := HealthStatus.good;
 </xhtml>
@@ -22282,6 +22408,9 @@ THIS^.stat.health := HealthStatus.good;
         value := value);
 ELSE
     request := RequestResults.REJECTED;
+    IF THIS^.atomic.request THEN
+        THIS^.lastRejectedHandle := THIS^.atomic.handle;
+    END_IF;
 END_IF;
 </xhtml>
                 </ST>
@@ -22431,14 +22560,10 @@ SUPER^._copyToModel_BaseMcProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
-    do_request := TRUE;
-    stat.handle := atomic.handle;
-    atomic.request := FALSE;
-END_IF;
-IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request OR atomic.request THEN
     do_request_result := request( parameterNumber := set.parameterNumber );
     do_request := FALSE;
+    atomic.request := FALSE;
 END_IF;
 SUPER^();
 </xhtml>
@@ -22479,6 +22604,11 @@ SUPER^();
               <body>
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.parameterNumber := parameterNumber;
+IF THIS^.atomic.request THEN
+    THIS^.stat.handle := THIS^.atomic.handle;
+ELSE
+    THIS^.stat.handle := 0;
+END_IF;
 THIS^.stat.busy := BusyStatus.busy;
 THIS^.stat.health := HealthStatus.good;
 </xhtml>
@@ -22525,6 +22655,9 @@ THIS^.stat.health := HealthStatus.good;
     THIS^.start( parameterNumber := parameterNumber );
 ELSE
     request := RequestResults.REJECTED;
+    IF THIS^.atomic.request THEN
+        THIS^.lastRejectedHandle := THIS^.atomic.handle;
+    END_IF;
 END_IF;
 </xhtml>
                 </ST>
@@ -22662,16 +22795,12 @@ SUPER^._copyToModel_BaseMcProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
-    do_request := TRUE;
-    stat.handle := atomic.handle;
-    atomic.request := FALSE;
-END_IF;
-IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request OR atomic.request THEN
     do_request_result := request(
     parameterNumber := set.parameterNumber,
     value := set.value);
     do_request := FALSE;
+    atomic.request := FALSE;
 END_IF;
 SUPER^();
 </xhtml>
@@ -22725,6 +22854,11 @@ SUPER^();
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.parameterNumber := parameterNumber;
 THIS^.get.value := value;
+IF THIS^.atomic.request THEN
+    THIS^.stat.handle := THIS^.atomic.handle;
+ELSE
+    THIS^.stat.handle := 0;
+END_IF;
 THIS^.stat.busy := BusyStatus.busy;
 THIS^.stat.health := HealthStatus.good;
 </xhtml>
@@ -22785,6 +22919,9 @@ THIS^.stat.health := HealthStatus.good;
         value := value);
 ELSE
     request := RequestResults.REJECTED;
+    IF THIS^.atomic.request THEN
+        THIS^.lastRejectedHandle := THIS^.atomic.handle;
+    END_IF;
 END_IF;
 </xhtml>
                 </ST>
@@ -22934,14 +23071,10 @@ SUPER^._copyToModel_BaseMcProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
-    do_request := TRUE;
-    stat.handle := atomic.handle;
-    atomic.request := FALSE;
-END_IF;
-IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request OR atomic.request THEN
     do_request_result := request( parameterNumber := set.parameterNumber );
     do_request := FALSE;
+    atomic.request := FALSE;
 END_IF;
 SUPER^();
 </xhtml>
@@ -22982,6 +23115,11 @@ SUPER^();
               <body>
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.parameterNumber := parameterNumber;
+IF THIS^.atomic.request THEN
+    THIS^.stat.handle := THIS^.atomic.handle;
+ELSE
+    THIS^.stat.handle := 0;
+END_IF;
 THIS^.stat.busy := BusyStatus.busy;
 THIS^.stat.health := HealthStatus.good;
 </xhtml>
@@ -23028,6 +23166,9 @@ THIS^.stat.health := HealthStatus.good;
     THIS^.start( parameterNumber := parameterNumber );
 ELSE
     request := RequestResults.REJECTED;
+    IF THIS^.atomic.request THEN
+        THIS^.lastRejectedHandle := THIS^.atomic.handle;
+    END_IF;
 END_IF;
 </xhtml>
                 </ST>
@@ -23178,16 +23319,12 @@ SUPER^._copyToModel_BaseMcProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
-    do_request := TRUE;
-    stat.handle := atomic.handle;
-    atomic.request := FALSE;
-END_IF;
-IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request OR atomic.request THEN
     do_request_result := request(
     risingEdge := set.risingEdge,
     timeout := set.timeout);
     do_request := FALSE;
+    atomic.request := FALSE;
 END_IF;
 SUPER^();
 </xhtml>
@@ -23241,6 +23378,11 @@ SUPER^();
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.risingEdge := risingEdge;
 THIS^.get.timeout := timeout;
+IF THIS^.atomic.request THEN
+    THIS^.stat.handle := THIS^.atomic.handle;
+ELSE
+    THIS^.stat.handle := 0;
+END_IF;
 THIS^.stat.busy := BusyStatus.busy;
 THIS^.stat.health := HealthStatus.good;
 </xhtml>
@@ -23301,6 +23443,9 @@ THIS^.stat.health := HealthStatus.good;
         timeout := timeout);
 ELSE
     request := RequestResults.REJECTED;
+    IF THIS^.atomic.request THEN
+        THIS^.lastRejectedHandle := THIS^.atomic.handle;
+    END_IF;
 END_IF;
 </xhtml>
                 </ST>
@@ -23438,14 +23583,10 @@ SUPER^._copyToModel_BaseMcProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
-    do_request := TRUE;
-    stat.handle := atomic.handle;
-    atomic.request := FALSE;
-END_IF;
-IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request OR atomic.request THEN
     do_request_result := request( state := set.state );
     do_request := FALSE;
+    atomic.request := FALSE;
 END_IF;
 SUPER^();
 </xhtml>
@@ -23486,6 +23627,11 @@ SUPER^();
               <body>
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.state := state;
+IF THIS^.atomic.request THEN
+    THIS^.stat.handle := THIS^.atomic.handle;
+ELSE
+    THIS^.stat.handle := 0;
+END_IF;
 THIS^.stat.busy := BusyStatus.busy;
 THIS^.stat.health := HealthStatus.good;
 </xhtml>
@@ -23532,6 +23678,9 @@ THIS^.stat.health := HealthStatus.good;
     THIS^.start( state := state );
 ELSE
     request := RequestResults.REJECTED;
+    IF THIS^.atomic.request THEN
+        THIS^.lastRejectedHandle := THIS^.atomic.handle;
+    END_IF;
 END_IF;
 </xhtml>
                 </ST>
@@ -23668,16 +23817,12 @@ SUPER^._copyToModel_BaseProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
-    do_request := TRUE;
-    stat.handle := atomic.handle;
-    atomic.request := FALSE;
-END_IF;
-IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request OR atomic.request THEN
     do_request_result := request(
     state := set.state,
     password := set.password);
     do_request := FALSE;
+    atomic.request := FALSE;
 END_IF;
 SUPER^();
 </xhtml>
@@ -23731,6 +23876,11 @@ SUPER^();
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.state := state;
 THIS^.get.password := password;
+IF THIS^.atomic.request THEN
+    THIS^.stat.handle := THIS^.atomic.handle;
+ELSE
+    THIS^.stat.handle := 0;
+END_IF;
 THIS^.stat.busy := BusyStatus.busy;
 THIS^.stat.health := HealthStatus.good;
 </xhtml>
@@ -23791,6 +23941,9 @@ THIS^.stat.health := HealthStatus.good;
         password := password);
 ELSE
     request := RequestResults.REJECTED;
+    IF THIS^.atomic.request THEN
+        THIS^.lastRejectedHandle := THIS^.atomic.handle;
+    END_IF;
 END_IF;
 </xhtml>
                 </ST>
@@ -23927,14 +24080,10 @@ SUPER^._copyToModel_BaseProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
-    do_request := TRUE;
-    stat.handle := atomic.handle;
-    atomic.request := FALSE;
-END_IF;
-IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request OR atomic.request THEN
     do_request_result := request( state := set.state );
     do_request := FALSE;
+    atomic.request := FALSE;
 END_IF;
 SUPER^();
 </xhtml>
@@ -23975,6 +24124,11 @@ SUPER^();
               <body>
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.state := state;
+IF THIS^.atomic.request THEN
+    THIS^.stat.handle := THIS^.atomic.handle;
+ELSE
+    THIS^.stat.handle := 0;
+END_IF;
 THIS^.stat.busy := BusyStatus.busy;
 THIS^.stat.health := HealthStatus.good;
 </xhtml>
@@ -24021,6 +24175,9 @@ THIS^.stat.health := HealthStatus.good;
     THIS^.start( state := state );
 ELSE
     request := RequestResults.REJECTED;
+    IF THIS^.atomic.request THEN
+        THIS^.lastRejectedHandle := THIS^.atomic.handle;
+    END_IF;
 END_IF;
 </xhtml>
                 </ST>
@@ -24157,14 +24314,10 @@ SUPER^._copyToModel_BaseProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
-    do_request := TRUE;
-    stat.handle := atomic.handle;
-    atomic.request := FALSE;
-END_IF;
-IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request OR atomic.request THEN
     do_request_result := request( filePath := set.filePath );
     do_request := FALSE;
+    atomic.request := FALSE;
 END_IF;
 SUPER^();
 </xhtml>
@@ -24205,6 +24358,11 @@ SUPER^();
               <body>
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.filePath := filePath;
+IF THIS^.atomic.request THEN
+    THIS^.stat.handle := THIS^.atomic.handle;
+ELSE
+    THIS^.stat.handle := 0;
+END_IF;
 THIS^.stat.busy := BusyStatus.busy;
 THIS^.stat.health := HealthStatus.good;
 </xhtml>
@@ -24251,6 +24409,9 @@ THIS^.stat.health := HealthStatus.good;
     THIS^.start( filePath := filePath );
 ELSE
     request := RequestResults.REJECTED;
+    IF THIS^.atomic.request THEN
+        THIS^.lastRejectedHandle := THIS^.atomic.handle;
+    END_IF;
 END_IF;
 </xhtml>
                 </ST>
@@ -24387,14 +24548,10 @@ SUPER^._copyToModel_BaseXmlDataSrvProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
-    do_request := TRUE;
-    stat.handle := atomic.handle;
-    atomic.request := FALSE;
-END_IF;
-IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request OR atomic.request THEN
     do_request_result := request( filePath := set.filePath );
     do_request := FALSE;
+    atomic.request := FALSE;
 END_IF;
 SUPER^();
 </xhtml>
@@ -24435,6 +24592,11 @@ SUPER^();
               <body>
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.filePath := filePath;
+IF THIS^.atomic.request THEN
+    THIS^.stat.handle := THIS^.atomic.handle;
+ELSE
+    THIS^.stat.handle := 0;
+END_IF;
 THIS^.stat.busy := BusyStatus.busy;
 THIS^.stat.health := HealthStatus.good;
 </xhtml>
@@ -24481,6 +24643,9 @@ THIS^.stat.health := HealthStatus.good;
     THIS^.start( filePath := filePath );
 ELSE
     request := RequestResults.REJECTED;
+    IF THIS^.atomic.request THEN
+        THIS^.lastRejectedHandle := THIS^.atomic.handle;
+    END_IF;
 END_IF;
 </xhtml>
                 </ST>
@@ -24589,14 +24754,10 @@ SUPER^._copyToModel_BaseXmlDataSrvProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
-    do_request := TRUE;
-    stat.handle := atomic.handle;
-    atomic.request := FALSE;
-END_IF;
-IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request OR atomic.request THEN
     do_request_result := request();
     do_request := FALSE;
+    atomic.request := FALSE;
 END_IF;
 SUPER^();
 </xhtml>
@@ -24624,7 +24785,12 @@ SUPER^();
               </interface>
               <body>
                 <ST>
-                  <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.stat.busy := BusyStatus.busy;
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF THIS^.atomic.request THEN
+    THIS^.stat.handle := THIS^.atomic.handle;
+ELSE
+    THIS^.stat.handle := 0;
+END_IF;
+THIS^.stat.busy := BusyStatus.busy;
 THIS^.stat.health := HealthStatus.good;
 </xhtml>
                 </ST>
@@ -24658,6 +24824,9 @@ THIS^.stat.health := HealthStatus.good;
     THIS^.start();
 ELSE
     request := RequestResults.REJECTED;
+    IF THIS^.atomic.request THEN
+        THIS^.lastRejectedHandle := THIS^.atomic.handle;
+    END_IF;
 END_IF;
 </xhtml>
                 </ST>
@@ -24818,16 +24987,12 @@ END_IF;
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
-    do_request := TRUE;
-    stat.handle := atomic.handle;
-    atomic.request := FALSE;
-END_IF;
-IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request OR atomic.request THEN
     do_request_result := request(
     unitID := set.unitID,
     address := set.address);
     do_request := FALSE;
+    atomic.request := FALSE;
 END_IF;
 SUPER^();
 </xhtml>
@@ -24881,6 +25046,11 @@ SUPER^();
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.unitID := unitID;
 THIS^.get.address := address;
+IF THIS^.atomic.request THEN
+    THIS^.stat.handle := THIS^.atomic.handle;
+ELSE
+    THIS^.stat.handle := 0;
+END_IF;
 THIS^.stat.busy := BusyStatus.busy;
 THIS^.stat.health := HealthStatus.good;
 </xhtml>
@@ -24941,6 +25111,9 @@ THIS^.stat.health := HealthStatus.good;
         address := address);
 ELSE
     request := RequestResults.REJECTED;
+    IF THIS^.atomic.request THEN
+        THIS^.lastRejectedHandle := THIS^.atomic.handle;
+    END_IF;
 END_IF;
 </xhtml>
                 </ST>
@@ -25092,17 +25265,13 @@ SUPER^._copyToModel_BaseProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
-    do_request := TRUE;
-    stat.handle := atomic.handle;
-    atomic.request := FALSE;
-END_IF;
-IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request OR atomic.request THEN
     do_request_result := request(
     unitID := set.unitID,
     address := set.address,
     value := set.value);
     do_request := FALSE;
+    atomic.request := FALSE;
 END_IF;
 SUPER^();
 </xhtml>
@@ -25169,6 +25338,11 @@ SUPER^();
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.unitID := unitID;
 THIS^.get.address := address;
 THIS^.get.value := value;
+IF THIS^.atomic.request THEN
+    THIS^.stat.handle := THIS^.atomic.handle;
+ELSE
+    THIS^.stat.handle := 0;
+END_IF;
 THIS^.stat.busy := BusyStatus.busy;
 THIS^.stat.health := HealthStatus.good;
 </xhtml>
@@ -25242,6 +25416,9 @@ THIS^.stat.health := HealthStatus.good;
         value := value);
 ELSE
     request := RequestResults.REJECTED;
+    IF THIS^.atomic.request THEN
+        THIS^.lastRejectedHandle := THIS^.atomic.handle;
+    END_IF;
 END_IF;
 </xhtml>
                 </ST>
@@ -25405,16 +25582,12 @@ SUPER^._copyToModel_BaseProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
-    do_request := TRUE;
-    stat.handle := atomic.handle;
-    atomic.request := FALSE;
-END_IF;
-IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request OR atomic.request THEN
     do_request_result := request(
     unitID := set.unitID,
     address := set.address);
     do_request := FALSE;
+    atomic.request := FALSE;
 END_IF;
 SUPER^();
 </xhtml>
@@ -25468,6 +25641,11 @@ SUPER^();
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.unitID := unitID;
 THIS^.get.address := address;
+IF THIS^.atomic.request THEN
+    THIS^.stat.handle := THIS^.atomic.handle;
+ELSE
+    THIS^.stat.handle := 0;
+END_IF;
 THIS^.stat.busy := BusyStatus.busy;
 THIS^.stat.health := HealthStatus.good;
 </xhtml>
@@ -25528,6 +25706,9 @@ THIS^.stat.health := HealthStatus.good;
         address := address);
 ELSE
     request := RequestResults.REJECTED;
+    IF THIS^.atomic.request THEN
+        THIS^.lastRejectedHandle := THIS^.atomic.handle;
+    END_IF;
 END_IF;
 </xhtml>
                 </ST>
@@ -25679,17 +25860,13 @@ SUPER^._copyToModel_BaseProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
-    do_request := TRUE;
-    stat.handle := atomic.handle;
-    atomic.request := FALSE;
-END_IF;
-IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request OR atomic.request THEN
     do_request_result := request(
     unitID := set.unitID,
     address := set.address,
     value := set.value);
     do_request := FALSE;
+    atomic.request := FALSE;
 END_IF;
 SUPER^();
 </xhtml>
@@ -25756,6 +25933,11 @@ SUPER^();
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.unitID := unitID;
 THIS^.get.address := address;
 THIS^.get.value := value;
+IF THIS^.atomic.request THEN
+    THIS^.stat.handle := THIS^.atomic.handle;
+ELSE
+    THIS^.stat.handle := 0;
+END_IF;
 THIS^.stat.busy := BusyStatus.busy;
 THIS^.stat.health := HealthStatus.good;
 </xhtml>
@@ -25829,6 +26011,9 @@ THIS^.stat.health := HealthStatus.good;
         value := value);
 ELSE
     request := RequestResults.REJECTED;
+    IF THIS^.atomic.request THEN
+        THIS^.lastRejectedHandle := THIS^.atomic.handle;
+    END_IF;
 END_IF;
 </xhtml>
                 </ST>
@@ -25992,17 +26177,13 @@ SUPER^._copyToModel_BaseProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
-    do_request := TRUE;
-    stat.handle := atomic.handle;
-    atomic.request := FALSE;
-END_IF;
-IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request OR atomic.request THEN
     do_request_result := request(
     unitID := set.unitID,
     subFunction := set.subFunction,
     subData := set.subData);
     do_request := FALSE;
+    atomic.request := FALSE;
 END_IF;
 SUPER^();
 </xhtml>
@@ -26069,6 +26250,11 @@ SUPER^();
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.unitID := unitID;
 THIS^.get.subFunction := subFunction;
 THIS^.get.subData := subData;
+IF THIS^.atomic.request THEN
+    THIS^.stat.handle := THIS^.atomic.handle;
+ELSE
+    THIS^.stat.handle := 0;
+END_IF;
 THIS^.stat.busy := BusyStatus.busy;
 THIS^.stat.health := HealthStatus.good;
 </xhtml>
@@ -26142,6 +26328,9 @@ THIS^.stat.health := HealthStatus.good;
         subData := subData);
 ELSE
     request := RequestResults.REJECTED;
+    IF THIS^.atomic.request THEN
+        THIS^.lastRejectedHandle := THIS^.atomic.handle;
+    END_IF;
 END_IF;
 </xhtml>
                 </ST>
@@ -26280,16 +26469,12 @@ SUPER^._copyToModel_BaseProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
-    do_request := TRUE;
-    stat.handle := atomic.handle;
-    atomic.request := FALSE;
-END_IF;
-IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request OR atomic.request THEN
     do_request_result := request(
     alpha := set.alpha,
     delta := set.delta);
     do_request := FALSE;
+    atomic.request := FALSE;
 END_IF;
 SUPER^();
 </xhtml>
@@ -26343,6 +26528,11 @@ SUPER^();
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.alpha := alpha;
 THIS^.get.delta := delta;
+IF THIS^.atomic.request THEN
+    THIS^.stat.handle := THIS^.atomic.handle;
+ELSE
+    THIS^.stat.handle := 0;
+END_IF;
 THIS^.stat.busy := BusyStatus.busy;
 THIS^.stat.health := HealthStatus.good;
 </xhtml>
@@ -26403,6 +26593,9 @@ THIS^.stat.health := HealthStatus.good;
         delta := delta);
 ELSE
     request := RequestResults.REJECTED;
+    IF THIS^.atomic.request THEN
+        THIS^.lastRejectedHandle := THIS^.atomic.handle;
+    END_IF;
 END_IF;
 </xhtml>
                 </ST>
@@ -26539,18 +26732,14 @@ SUPER^._copyToModel_BaseProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
-    do_request := TRUE;
-    stat.handle := atomic.handle;
-    atomic.request := FALSE;
-END_IF;
-IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request OR atomic.request THEN
     do_request_result := request(
     param := set.param,
     nValue := set.nValue,
     fvalue := set.fvalue,
     refresh := set.refresh);
     do_request := FALSE;
+    atomic.request := FALSE;
 END_IF;
 SUPER^();
 </xhtml>
@@ -26631,6 +26820,11 @@ SUPER^();
 THIS^.get.nValue := nValue;
 THIS^.get.fvalue := fvalue;
 THIS^.get.refresh := refresh;
+IF THIS^.atomic.request THEN
+    THIS^.stat.handle := THIS^.atomic.handle;
+ELSE
+    THIS^.stat.handle := 0;
+END_IF;
 THIS^.stat.busy := BusyStatus.busy;
 THIS^.stat.health := HealthStatus.good;
 </xhtml>
@@ -26718,6 +26912,9 @@ THIS^.stat.health := HealthStatus.good;
         refresh := refresh);
 ELSE
     request := RequestResults.REJECTED;
+    IF THIS^.atomic.request THEN
+        THIS^.lastRejectedHandle := THIS^.atomic.handle;
+    END_IF;
 END_IF;
 </xhtml>
                 </ST>
@@ -26854,12 +27051,7 @@ SUPER^._copyToModel_BaseProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
-    do_request := TRUE;
-    stat.handle := atomic.handle;
-    atomic.request := FALSE;
-END_IF;
-IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request OR atomic.request THEN
     do_request_result := request(
     param1 := set.param1,
     nValue1 := set.nValue1,
@@ -26869,6 +27061,7 @@ IF do_request THEN
     fvalue2 := set.fvalue2,
     refresh := set.refresh);
     do_request := FALSE;
+    atomic.request := FALSE;
 END_IF;
 SUPER^();
 </xhtml>
@@ -26988,6 +27181,11 @@ THIS^.get.param2 := param2;
 THIS^.get.nValue2 := nValue2;
 THIS^.get.fvalue2 := fvalue2;
 THIS^.get.refresh := refresh;
+IF THIS^.atomic.request THEN
+    THIS^.stat.handle := THIS^.atomic.handle;
+ELSE
+    THIS^.stat.handle := 0;
+END_IF;
 THIS^.stat.busy := BusyStatus.busy;
 THIS^.stat.health := HealthStatus.good;
 </xhtml>
@@ -27114,6 +27312,9 @@ THIS^.stat.health := HealthStatus.good;
         refresh := refresh);
 ELSE
     request := RequestResults.REJECTED;
+    IF THIS^.atomic.request THEN
+        THIS^.lastRejectedHandle := THIS^.atomic.handle;
+    END_IF;
 END_IF;
 </xhtml>
                 </ST>
@@ -27250,14 +27451,10 @@ SUPER^._copyToModel_BaseProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
-    do_request := TRUE;
-    stat.handle := atomic.handle;
-    atomic.request := FALSE;
-END_IF;
-IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request OR atomic.request THEN
     do_request_result := request( duration := set.duration );
     do_request := FALSE;
+    atomic.request := FALSE;
 END_IF;
 SUPER^();
 </xhtml>
@@ -27298,6 +27495,11 @@ SUPER^();
               <body>
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.duration := duration;
+IF THIS^.atomic.request THEN
+    THIS^.stat.handle := THIS^.atomic.handle;
+ELSE
+    THIS^.stat.handle := 0;
+END_IF;
 THIS^.stat.busy := BusyStatus.busy;
 THIS^.stat.health := HealthStatus.good;
 </xhtml>
@@ -27344,6 +27546,9 @@ THIS^.stat.health := HealthStatus.good;
     THIS^.start( duration := duration );
 ELSE
     request := RequestResults.REJECTED;
+    IF THIS^.atomic.request THEN
+        THIS^.lastRejectedHandle := THIS^.atomic.handle;
+    END_IF;
 END_IF;
 </xhtml>
                 </ST>
@@ -27480,14 +27685,10 @@ SUPER^._copyToModel_BaseProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
-    do_request := TRUE;
-    stat.handle := atomic.handle;
-    atomic.request := FALSE;
-END_IF;
-IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request OR atomic.request THEN
     do_request_result := request( source := set.source );
     do_request := FALSE;
+    atomic.request := FALSE;
 END_IF;
 SUPER^();
 </xhtml>
@@ -27528,6 +27729,11 @@ SUPER^();
               <body>
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.source := source;
+IF THIS^.atomic.request THEN
+    THIS^.stat.handle := THIS^.atomic.handle;
+ELSE
+    THIS^.stat.handle := 0;
+END_IF;
 THIS^.stat.busy := BusyStatus.busy;
 THIS^.stat.health := HealthStatus.good;
 </xhtml>
@@ -27574,6 +27780,9 @@ THIS^.stat.health := HealthStatus.good;
     THIS^.start( source := source );
 ELSE
     request := RequestResults.REJECTED;
+    IF THIS^.atomic.request THEN
+        THIS^.lastRejectedHandle := THIS^.atomic.handle;
+    END_IF;
 END_IF;
 </xhtml>
                 </ST>
@@ -27710,12 +27919,7 @@ SUPER^._copyToModel_BaseProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
-    do_request := TRUE;
-    stat.handle := atomic.handle;
-    atomic.request := FALSE;
-END_IF;
-IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request OR atomic.request THEN
     do_request_result := request(
     doExposureTime := set.doExposureTime,
     exposureTime := set.exposureTime,
@@ -27740,6 +27944,7 @@ IF do_request THEN
     continuous := set.continuous,
     doContinuous := set.doContinuous);
     do_request := FALSE;
+    atomic.request := FALSE;
 END_IF;
 SUPER^();
 </xhtml>
@@ -28054,6 +28259,11 @@ THIS^.get.blackLevelAuto := blackLevelAuto;
 THIS^.get.doBlackLevel := doBlackLevel;
 THIS^.get.continuous := continuous;
 THIS^.get.doContinuous := doContinuous;
+IF THIS^.atomic.request THEN
+    THIS^.stat.handle := THIS^.atomic.handle;
+ELSE
+    THIS^.stat.handle := 0;
+END_IF;
 THIS^.stat.busy := BusyStatus.busy;
 THIS^.stat.health := HealthStatus.good;
 </xhtml>
@@ -28375,6 +28585,9 @@ THIS^.stat.health := HealthStatus.good;
         doContinuous := doContinuous);
 ELSE
     request := RequestResults.REJECTED;
+    IF THIS^.atomic.request THEN
+        THIS^.lastRejectedHandle := THIS^.atomic.handle;
+    END_IF;
 END_IF;
 </xhtml>
                 </ST>
@@ -28511,14 +28724,10 @@ SUPER^._copyToModel_BaseProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
-    do_request := TRUE;
-    stat.handle := atomic.handle;
-    atomic.request := FALSE;
-END_IF;
-IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request OR atomic.request THEN
     do_request_result := request( setpoint := set.setpoint );
     do_request := FALSE;
+    atomic.request := FALSE;
 END_IF;
 SUPER^();
 </xhtml>
@@ -28559,6 +28768,11 @@ SUPER^();
               <body>
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.setpoint := setpoint;
+IF THIS^.atomic.request THEN
+    THIS^.stat.handle := THIS^.atomic.handle;
+ELSE
+    THIS^.stat.handle := 0;
+END_IF;
 THIS^.stat.busy := BusyStatus.busy;
 THIS^.stat.health := HealthStatus.good;
 </xhtml>
@@ -28605,6 +28819,9 @@ THIS^.stat.health := HealthStatus.good;
     THIS^.start( setpoint := setpoint );
 ELSE
     request := RequestResults.REJECTED;
+    IF THIS^.atomic.request THEN
+        THIS^.lastRejectedHandle := THIS^.atomic.handle;
+    END_IF;
 END_IF;
 </xhtml>
                 </ST>
@@ -28754,16 +28971,12 @@ SUPER^._copyToModel_BaseProcess( model := model );
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF atomic.request THEN
-    do_request := TRUE;
-    stat.handle := atomic.handle;
-    atomic.request := FALSE;
-END_IF;
-IF do_request THEN
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF do_request OR atomic.request THEN
     do_request_result := request(
     cmd := set.cmd,
     arg := set.arg);
     do_request := FALSE;
+    atomic.request := FALSE;
 END_IF;
 SUPER^();
 </xhtml>
@@ -28817,6 +29030,11 @@ SUPER^();
                 <ST>
                   <xhtml xmlns="http://www.w3.org/1999/xhtml">THIS^.get.cmd := cmd;
 THIS^.get.arg := arg;
+IF THIS^.atomic.request THEN
+    THIS^.stat.handle := THIS^.atomic.handle;
+ELSE
+    THIS^.stat.handle := 0;
+END_IF;
 THIS^.stat.busy := BusyStatus.busy;
 THIS^.stat.health := HealthStatus.good;
 </xhtml>
@@ -28877,6 +29095,9 @@ THIS^.stat.health := HealthStatus.good;
         arg := arg);
 ELSE
     request := RequestResults.REJECTED;
+    IF THIS^.atomic.request THEN
+        THIS^.lastRejectedHandle := THIS^.atomic.handle;
+    END_IF;
 END_IF;
 </xhtml>
                 </ST>
