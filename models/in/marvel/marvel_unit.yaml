@@ -146,8 +146,8 @@
           initialize:
               isEnabled           : !NOT [ !EQ [ stat.init, marvel_common.InitializationStatus.initializing ] ]
           point:
-              isEnabled           : !AND [ parts.telescope.proc.slewToCoordinates.isEnabled,
-                                           parts.dome.proc.syncWithAxes.isEnabled ]
+              isEnabled           : !AND [ !EQ [ stat.init, marvel_common.InitializationStatus.initialized ],
+                                           !EQ [ proc.point.stat.busy, marvel_common.BusyStatus.idle ] ]
           stop:
               isEnabled           : !OR  [ parts.telescope.proc.abortSlew.isEnabled,
                                            parts.dome.proc.stop.isEnabled ]

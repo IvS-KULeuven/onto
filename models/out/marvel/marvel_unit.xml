@@ -710,7 +710,7 @@ stat.busy := F_BusyStatus(
     superState := NOT(stat.init = InitializationStatus.shutdown),
     isBusy := (parts.dome.stat.busy = BusyStatus.busy) OR ((parts.telescope.stat.busy = BusyStatus.busy) OR ((parts.fem.stat.busy = BusyStatus.busy) OR (parts.configManager.stat.busy = BusyStatus.busy))));
 proc.initialize( isEnabled := NOT(stat.init = InitializationStatus.initializing) );
-proc.point( isEnabled := parts.telescope.proc.slewToCoordinates.isEnabled AND parts.dome.proc.syncWithAxes.isEnabled );
+proc.point( isEnabled := (stat.init = InitializationStatus.initialized) AND (proc.point.stat.busy = BusyStatus.idle) );
 proc.stop( isEnabled := parts.telescope.proc.abortSlew.isEnabled OR parts.dome.proc.stop.isEnabled );
 </xhtml>
           </ST>
