@@ -2166,6 +2166,21 @@
         continuous      : { type: t_bool  , comment: "If TRUE, set the continuous acquisition mode, trigger mode, etc. to continuous imaging" }
         doContinuous    : { type: t_bool  , comment: "If TRUE, set the continuous acquisition mode, trigger mode, etc." }
 
+  ########################################################################################################################
+  # GigECameraMultiTriggerAlgorithms
+  ########################################################################################################################
+  !ENUMERATION GigECameraMultiTriggerAlgorithms:
+    items:
+        - SUM
+  
+  ########################################################################################################################
+  # GigECameraMultiTriggerProcess
+  ########################################################################################################################
+  !PROCESS GigECameraMultiTriggerProcess:
+    extends: BaseProcess
+    arguments:
+      count   : { type: t_uint32                          , comment: "Number of triggers to send" }
+      algo    : { type: GigECameraMultiTriggerAlgorithms  , comment: "Algorithm to use for the multi-trigger" }
 
   ########################################################################################################################
   # GigECamera
@@ -2182,6 +2197,9 @@
           loopSuccessCounter              : { type: t_uint32                                    , comment: "Number of successful parameter loops"}
           channelOpen                     : { type: t_bool                                      , comment: "Is the camera's control channel open?"}
           acquiring                       : { type: t_bool                                      , comment: "Is the camera acquiring frames?"}
+          # multi triggering
+          actualMultiTriggerNumber        : { type: t_uint32                                    , comment: "Number of triggers sent for the current multi-trigger process"}
+          maxMultiTriggerNumber           : { type: t_uint32                                    , comment: "Maximum number of triggers that will be sent in the current multi-trigger process"}
           # parameters
           acquisitionFrameRate            : { type: t_double                                    , comment: "Acquisition frame rate in Hz"}
           linkAcquisitionFrameRate        : { type: t_double                                    , comment: "Acquisition frame rate in Hz, limited by the link bandwidth"}
@@ -2219,6 +2237,8 @@
           setParam2                       : { type: GigECameraSetParam2Process                  , comment: "Set 2 param values (e.g. selector + value)" }
           trigger                         : { type: marvel_common.Process                       , comment: "Send a software trigger" }
           pulseTrigger                    : { type: GigECameraPulseTrigger                      , comment: "Send 2 software triggers, with a given duration in between" }
+          multiTrigger                    : { type: GigECameraMultiTriggerProcess               , comment: "Send multiple software triggers" }
+          multiTriggerAbort               : { type: marvel_common.Process                       , comment: "Abort the multi-trigger process" }  
           setSource                       : { type: GigECameraSetSourceProcess                  , comment: "Set the camera source" }
       calls:
           reset:
@@ -2251,6 +2271,10 @@
               isEnabled                   : !BOOL TRUE
           pulseTrigger:
               isEnabled                   : !BOOL TRUE
+          multiTrigger:
+              isEnabled                   : !BOOL TRUE
+          multiTriggerAbort:
+              isEnabled                   : !EQ [ proc.multiTrigger.stat.busy, BusyStatus.busy ]
           setSource:
               isEnabled                   : !BOOL TRUE
           # stat
